@@ -9,13 +9,7 @@
        url('/fonts/ObelixPro.svg#ObelixPro') format('svg'); /* Legacy iOS */
 }
 
-@import url("https://fonts.googleapis.com/css?family=Open+Sans|Raleway:100,400,700");
-
-html { 
-  -ms-text-size-adjust: 100%; 
-  -webkit-text-size-adjust: 100%; 
-  font-size: 20px; 
-}
+@import url("https://fonts.googleapis.com/css?family=Open+Sans|Raleway:100,500,700");
 
 html, body { margin: 0px; 
   padding: 0px; 
@@ -23,7 +17,9 @@ html, body { margin: 0px;
   color: #ffffff; 
   background-color: #212121; 
   font-family: 'Raleway', sans-serif; 
-  font-weight: 400; 
+  font-weight: 100; 
+  font-size: 20px!important;
+  letter-spacing: 1px;
 }
 
 section { 
@@ -41,7 +37,7 @@ h1, h2, h3, h4, h5, h6 {
 }
 
 h1, h3, h5 { 
-  font-family: 'Raleway', sans-serif; 
+  font-family: 'Open Sans', sans-serif; 
 }
 
 h1 { 
@@ -75,7 +71,7 @@ a:hover {
 }
 
 :root { 
-  --app-primary-color: #c6f0fc; 
+  --app-primary-color: #ffffff; 
   --app-secondary-color: #99cc00; 
   --default-primary-color: #c6f0fc; 
   --dark-primary-color: #424b4b; 
@@ -87,6 +83,8 @@ a:hover {
   --secondary-text-color: #ffffff; 
   --disabled-text-color: grey; 
   --divider-color: #e0e0e0; 
+  --primary-button-clor: #ffffff;
+  --priary-button-background-color: #000000;
   --paper-checkbox-checked-color: #96e3f9; 
   --paper-checkbox-checked-ink-color: #3b8183; 
   --paper-checkbox-unchecked-color: #424b4b; 

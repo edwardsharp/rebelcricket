@@ -61,15 +61,15 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
       }
 
       h1 {
-        font-size: 24px;
+        font-size: 28px;
         font-weight: 500;
         line-height: 28px;
         margin: 0;
       }
 
       .price {
-        margin: 16px 0 40px;
-        font-size: 16px;
+        margin: 20px 0 40px;
+        font-size: 20px;
         color: var(--app-secondary-color);
       }
 
@@ -79,12 +79,11 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
 
       .description > h2 {
         margin: 16px 0;
-        font-size: 13px;
+        font-size: 25px;
       }
 
       .description > p {
         margin: 0;
-        color: var(--app-secondary-color);
       }
 
       .pickers {
@@ -154,7 +153,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
       <div class="detail" has-content$="[[_isDefined(item)]]">
         <h1>[[item.title]]</h1>
         <div class="price">[[_formatPrice(item.price)]]</div>
-        <div class="pickers">
+     <!--    <div class="pickers">
           <rebelcricket-select>
             <label id="sizeLabel" prefix>Size</label>
             <select id="sizeSelect" aria-labelledby="sizeLabel">
@@ -181,14 +180,14 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
               <rebelcricket-underline></rebelcricket-underline>
             </rebelcricket-md-decorator>
           </rebelcricket-select>
-        </div>
+        </div> -->
         <div class="description">
           <h2>Description</h2>
           <p id="desc"></p>
         </div>
-        <rebelcricket-button responsive>
+        <!-- <rebelcricket-button responsive>
           <button on-tap="_addToCart" aria-label="Add this item to cart">Add to Cart</button>
-        </rebelcricket-button>
+        </rebelcricket-button> -->
       </div>
     </div>
 
@@ -241,8 +240,8 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
             this.$.desc.innerHTML = this._unescapeText(text);
 
             // Reset the select menus.
-            this.$.quantitySelect.value = '1';
-            this.$.sizeSelect.value = 'M';
+            // this.$.quantitySelect.value = '1';
+            // this.$.sizeSelect.value = 'M';
 
             this.fire('change-section', {
               category: item.category,

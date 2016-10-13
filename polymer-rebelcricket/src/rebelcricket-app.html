@@ -32,7 +32,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
       :host {
         display: block;
         position: relative;
-        padding-top: 630px;
+        padding-top: 580px;
         padding-bottom: 64px;
         min-height: 100vh;
         --paper-button-ink-color: var(--app-secondary-color);
@@ -462,7 +462,14 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
         this.page = page || 'home';
         // Scroll to the top of the page on every *route* change. Use `Polymer.AppLayout.scroll`
         // with `behavior: 'silent'` to disable header scroll effects during the scroll.
-        // Polymer.AppLayout.scroll({ top: 0, behavior: 'silent' });
+        var headerOffset = 0;
+        if(page != 'home'){
+          headerOffset = document.querySelector('rebelcricket-app::shadow app-header').clientHeight;
+        }
+        Polymer.AppLayout.scroll({ 
+          top: headerOffset, 
+          behavior: 'silent' 
+        });
         
         // Close the drawer - in case the *route* change came from a link in the drawer.
         this.drawerOpened = false;
