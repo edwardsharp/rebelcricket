@@ -83,7 +83,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
         margin-top: 5vw;
         margin-left: 4vw;
         transform: rotateZ(-3deg);
-    
+       
       }
 
       .logo {
@@ -245,7 +245,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
         .rebelcricket-logo-container {
        
           /*border: 45px solid white;*/
-          box-shadow: 0 0 2px 10px white;
+          box-shadow: 0 0 1px 10px white;
           border-radius: 9999px;
           -moz-border-radius: 9999px;
           -webkit-border-radius: 9999px;
@@ -259,7 +259,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
           margin-top: 17px;
           margin-left: 12px;
           transform: rotateZ(-3deg);
-      
+          letter-spacing: 1px;
         }
 
         .menu-btn {
@@ -464,7 +464,13 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
         // with `behavior: 'silent'` to disable header scroll effects during the scroll.
         var headerOffset = 0;
         if(page != 'home'){
-          headerOffset = document.querySelector('rebelcricket-app::shadow app-header').clientHeight;
+          try{
+            //this querySelector doesn't work in safari :(
+            headerOffset = document.querySelector('rebelcricket-app::shadow app-header').clientHeight;
+          }catch(err){
+            //o noz!
+          }
+          
         }
         Polymer.AppLayout.scroll({ 
           top: headerOffset, 
