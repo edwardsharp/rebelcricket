@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>RebelContact</title>
+  <script src="http://code.jquery.com/jquery-1.9.1.min.js"></script>
+  <script>
+    $(document).ready(function () {
+      // $.ajax({
+      //   url: '/rebel_contacts',
+      //   method: 'GET'
+      // }).done(function (data) {
+      //   $('#all').html('All Rebel Contacts');
+      //   data.forEach(function (d) {
+      //     $('#rebel_contacts-index').append("<p><strong>" + d.subject + "</strong>: " + d.body + "</p>");
+      //   });
+      // });
+
+      $('#new-submit').click(function () {
+        var data = {};
+        // Get the data from the form elements
+        data.name = $('#new-name').val();
+        data.email = $('#new-email').val();
+        data.subject = $('#new-subject').val();
+        data.body = $('#new-body').val();
+        $.ajax({
+          url: '/new',
+          method: 'POST',
+          data: data
+        }).success(function (response) {
+          // console.log(response);
+          $('#status').html('thx!');
+        }).fail(function() {
+          $('#status').html('not successful, sorry. :(');
+        });
+        // stop the form from being submit'd
+        return false;
+      });
+    });
+  </script>
+</head>
+<body>
+  <div id="rebel_contacts-index">
+    <h2 id="all"></h2>
+  </div>
+
+
+  <h2>New Rebel Contact</h2>
+  <form id="new-rebel_contact">
+    <p><strong>name:</strong></p>
+    <input id="new-name" name="name" type="text">
+
+    <p><strong>email:</strong></p>
+    <input id="new-email" name="email" type="text">
+    
+    <p><strong>subject:</strong></p>
+    <input id="new-subject" name="subject" type="text">
+
+    <p><strong>body:</strong></p>
+    <textarea id="new-body" name="body"></textarea>
+
+    <p><input id="new-submit" type="submit"></p>
+  </form>
+  <h1 id="status"></h1>
+</body>
+</html>
