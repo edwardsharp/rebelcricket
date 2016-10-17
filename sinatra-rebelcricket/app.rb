@@ -40,7 +40,7 @@ class RebelContact
   property :id, Serial, key: true
   property :created_at, DateTime
   property :name, String, length: 255, required: true
-  property :email, String, length: 255, format: :email_address, required: true
+  property :email, String, length: 255, required: true
   property :subject, Text, required: true
   property :body, Text, required: true
   property :message_sent, Boolean
