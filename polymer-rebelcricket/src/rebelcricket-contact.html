@@ -1,0 +1,136 @@
+<link rel="import" href="../bower_components/polymer/polymer.html">
+<!-- <link rel="import" href="../core-ajax/core-ajax.html"> -->
+<link rel="import" href="../bower_components/iron-form/iron-form.html">
+<link rel="import" href="../bower_components/iron-ajax/iron-ajax.html">
+<link rel="import" href="../bower_components/paper-input/paper-input.html">
+<link rel="import" href="../bower_components/paper-button/paper-button.html">
+<link rel="import" href="../bower_components/paper-spinner/paper-spinner.html">
+
+<dom-module id="rebelcricket-contact">
+<!-- <polymer-element name="rebel-contact"> -->
+
+  <template>
+    <style>    
+      #rebelContact {
+        margin: 3em;
+      }
+    </style>
+
+
+    <form is="iron-form" method="post" action="http://localhost:3000/new" id="rebelContact">
+      <paper-input name="name" label="Name" required auto-validate></paper-input>
+      <paper-input name="email" label="Email" type="email" required auto-validate></paper-input>
+      <paper-input name="subject" label="Subject" required auto-validate></paper-input>
+      <paper-input name="body" label="Message" required auto-validate></paper-input>
+  
+      <br>
+      <paper-button raised onclick="_delayedSubmit(event)" disabled id="rebelContactSubmit">
+        <paper-spinner id="spinner" hidden></paper-spinner>Submit</paper-button>
+      <paper-button raised onclick="_reset(event)">Reset</paper-button>
+      <div class="output"></div>
+    </form>
+
+
+
+  </template>
+
+  <script>
+
+  Polymer({
+    is: 'rebelcricket-contact',
+    
+    // properties: {
+
+    //   categories: {
+    //     type: Array
+    //   },
+
+    //   visible: {
+    //     type: Boolean,
+    //     observer: '_visibleChanged'
+    //   }
+
+    // },
+
+    // _visibleChanged: function(visible) {
+    //   if (visible) {
+    //     this.fire('change-section', { title: 'Home' });
+    //   }
+    // },
+
+    // properties: {
+
+    //   visible: {
+    //     type: Boolean,
+    //     observer: '_visibleChanged'
+    //   }
+
+    // },
+    listeners: {
+      'change': function(event) {
+        // Validate the entire form to see if we should enable the `Submit` button.
+        this.$.rebelContact.disabled = !this.$.rebelContact.validate();
+      },
+      'iron-form-submit': function(event) {
+        this.$.spinner.active = false;
+        this.$.spinner.hidden = true;
+        this.$.rebelContactSubmit.disabled = false;
+        this.querySelector('.output').innerHTML = JSON.stringify(event.detail);
+      }
+    },
+
+    // _visibleChanged: function(visible) {
+    //   console.log('_visibleChanged!');
+    //   if (visible) {
+    //     console.log('_visibleChanged, gonna fire change-section');
+
+    //     // this.fire('change-section', { title: 'Contact' });
+    //   }
+    // },
+
+    _delayedSubmit: function(event){
+      this.$.spinner.active = true;
+      this.$.spinner.hidden = false;
+      this.$.rebelContactSubmit.disabled = true;
+      // Simulate a slow server response.
+      setTimeout(function() {
+        Polymer.dom(event).localTarget.parentElement.submit();
+      }, 1000);
+    },
+    _reset: function(event){
+      var form = Polymer.dom(event).localTarget.parentElement
+      form.reset();
+      form.querySelector('.output').innerHTML = '';
+    }
+  });
+
+
+  // rebelcricketContact.addEventListener('change', function(event) {
+  //   // Validate the entire form to see if we should enable the `Submit` button.
+  //   rebelContactSubmit.disabled = !rebelcricketContact.validate();
+  // });
+  // function _delayedSubmit(event) {
+  //   spinner.active = true;
+  //   spinner.hidden = false;
+  //   rebelContactSubmit.disabled = true;
+  //   // Simulate a slow server response.
+  //   setTimeout(function() {
+  //     Polymer.dom(event).localTarget.parentElement.submit();
+  //   }, 1000);
+  // }
+  // function _reset(event) {
+  //   var form = Polymer.dom(event).localTarget.parentElement
+  //   form.reset();
+  //   form.querySelector('.output').innerHTML = '';
+  // }
+  // document.getElementById('rebel-contact').addEventListener('iron-form-submit', function(event) {
+  //   spinner.active = false;
+  //   spinner.hidden = true;
+  //   rebelContactSubmit.disabled = false;
+  //   this.querySelector('.output').innerHTML = JSON.stringify(event.detail);
+  // });
+
+  </script>
+
+<!-- </polymer-element> -->
+</dom-module>

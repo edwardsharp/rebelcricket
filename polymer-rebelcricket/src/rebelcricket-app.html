@@ -1,12 +1,4 @@
-<!--
-@license
-Copyright (c) 2016 The Polymer Project Authors. All rights reserved.
-This code may only be used under the BSD style license found at http://polymer.github.io/LICENSE.txt
-The complete set of authors may be found at http://polymer.github.io/AUTHORS.txt
-The complete set of contributors may be found at http://polymer.github.io/CONTRIBUTORS.txt
-Code distributed by Google as part of the polymer project is also
-subject to an additional IP rights grant found at http://polymer.github.io/PATENTS.txt
--->
+<link rel="import" href="rebelcricket-pouchdb.html">
 <link rel="import" href="../bower_components/polymer/polymer.html">
 <link rel="import" href="../bower_components/app-layout/app-header/app-header.html">
 <link rel="import" href="../bower_components/app-layout/app-scroll-effects/effects/waterfall.html">
@@ -19,6 +11,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
 <link rel="import" href="../bower_components/iron-pages/iron-pages.html">
 <link rel="import" href="../bower_components/iron-selector/iron-selector.html">
 <link rel="import" href="rebelcricket-category-data.html">
+<link rel="import" href="rebelcricket-contact.html">
 <!-- Since 'home' is the default route, eagerly load it. -->
 <link rel="import" href="rebelcricket-home.html">
 <link rel="import" href="rebelcricket-theme-dark.html">
@@ -79,6 +72,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
       .rebelcricket-logo {
         font-family: 'ObelixPro';
         font-size: 8vw;
+        font-weight: 100;
         line-height: 7vw;
         margin-top: 5vw;
         margin-left: 4vw;
@@ -207,8 +201,11 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
 
       app-drawer {
         z-index: 3;
-      }
 
+      }
+      #contentContainer {
+        background-color: #333!important;
+      }
       iron-pages {
         max-width: 1440px;
         margin: 0 auto;
@@ -222,6 +219,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
         text-align: center;
         margin-top: 20px;
         line-height: 24px;
+        font-size: 12px;
       }
 
       footer > a {
@@ -356,6 +354,9 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
                 <a href="/list/[[category.name]]">[[category.title]]</a>
               </rebelcricket-tab>
             </template>
+            <rebelcricket-tab name="rebelcricket-contact">
+              <a name="rebelcricket-contact" href="/contact">Contact</a>
+            </rebelcricket-tab>
           </rebelcricket-tabs>
         </template>
       </div>
@@ -366,9 +367,10 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
       <!-- Two-way bind `drawerOpened` since app-drawer can update `opened` itself. -->
       <app-drawer opened="{{drawerOpened}}" swipe-open tabindex="0">
         <iron-selector role="navigation" class="drawer-list" selected="[[categoryName]]" attr-for-selected="name">
-          <template is="dom-repeat" items="[[categories]]" as="category" initial-count="4">
+          <template is="dom-repeat" items="[[categories]]" as="category" initial-count="3">
             <a name="[[category.name]]" href="/list/[[category.name]]">[[category.title]]</a>
           </template>
+          <a name="rebelcricket-contact" href="/contact">Contact</a>
         </iron-selector>
       </app-drawer>
     </template>
@@ -376,6 +378,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
     <iron-pages role="main" selected="[[page]]" attr-for-selected="name" selected-attribute="visible">
       <!-- home view -->
       <rebelcricket-home name="home" categories="[[categories]]"></rebelcricket-home>
+      <rebelcricket-contact name="contact"></rebelcricket-contact>
       <!-- list view of items in a category -->
       <rebelcricket-list name="list" route="[[subroute]]" offline="[[offline]]"></rebelcricket-list>
       <!-- detail view of one item -->
@@ -606,7 +609,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
       },
 
       _computeShouldShowTabs: function(page, smallScreen) {
-        return (page === 'home' || page === 'list' || page === 'detail') && !smallScreen;
+        return (page == 'contact' || page === 'home' || page === 'list' || page === 'detail') && !smallScreen;
       },
 
       _computeShouldRenderTabs: function(_shouldShowTabs, loadComplete) {
