@@ -6,4 +6,4 @@ gem 'data_mapper'
 gem 'dm-postgres-adapter'
 gem 'dotenv'
 gem 'mailgun-ruby'
-
+gem 'sinatra-cross_origin', git: 'https://github.com/britg/sinatra-cross_origin.git'

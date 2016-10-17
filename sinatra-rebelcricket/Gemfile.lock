@@ -1,3 +1,9 @@
+GIT
+  remote: https://github.com/britg/sinatra-cross_origin.git
+  revision: 2a66ffbc91a0e69d6c29d14dbaf92091542e3781
+  specs:
+    sinatra-cross_origin (0.3.2)
+
 GEM
   remote: https://rubygems.org/
   specs:
@@ -95,6 +101,7 @@ DEPENDENCIES
   json
   mailgun-ruby
   sinatra
+  sinatra-cross_origin!
 
 BUNDLED WITH
    1.13.4
