@@ -53,7 +53,7 @@
           <br>
           <paper-button raised on-tap="_submit" id="rebelContactSubmit" class="custom">
             Submit</paper-button>
-          <paper-button raised on-tap="_reset" class="custom">Reset</paper-button>
+          <!-- <paper-button raised on-tap="_reset" class="custom">Reset</paper-button> -->
           <paper-spinner id="spinner" hidden ></paper-spinner>
           <div class="output"></div>
         </form>
@@ -84,15 +84,15 @@
         this.$.rebelContactSubmit.disabled = true;
         this.$.rebelContact.submit();
       }
-    },
-
-    _reset(event) {
-      var form = Polymer.dom(event).localTarget.parentElement
-      form.reset();
-      form.querySelector('.output').innerHTML = '';
-
-      form.querySelector('#rebelContactSubmit').disabled = true;
     }
+    // ,
+    // _reset(event) {
+    //   var form = Polymer.dom(event).localTarget.parentElement
+    //   form.reset();
+    //   form.querySelector('.output').innerHTML = '';
+
+    //   form.querySelector('#rebelContactSubmit').disabled = true;
+    // }
 
   });
 
