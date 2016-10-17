@@ -25,18 +25,44 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
 
     #about-container {
       text-align: center;
-      margin: 2em;
-
+      margin: 3em;
     }
     #about-container h1, #about-container h2 {
-      letter-spacing: 5px;
+      letter-spacing: 2px;
+    }
+
+    a{
+      color: var(--light-primary-color);
+    }
+    a:visited {
+      color: var(--light-primary-color);
+    }
+    a:hover {
+      color: var(--app-secondary-color);
+    }
+
+    #about-container p {
+      margin-left: 15%;
+      margin-right: 15%;
+    }
+    @media (max-width: 767px) {
+      #about-container {
+        text-align: center;
+        margin: 2em;
+      }
+      #about-container h1, #about-container h2 {
+        letter-spacing: 0;
+      }
+      #about-container p {
+        margin-left: 0;
+        margin-right: 0;
+      }
     }
     </style>
 
     <div id="about-container">
 
-      <h1>Call us at 503-545-1450</h1>
-      <h2>Rebel Cricket Screen Prints</h2>
+      <h1>Call us at <a href="tel://1-503-545-2011">503&#x2011;545&#x2011;1450</a></h1>
       <h3>Custom screen printing and Pre-press services</h2>
 
       <p>An Oregon built and trusted business for the past decade we provide
