@@ -24,9 +24,9 @@
       <paper-input name="body" label="Message" required auto-validate></paper-input>
   
       <br>
-      <paper-button raised onclick="_delayedSubmit(event)" disabled id="rebelContactSubmit">
+      <paper-button raised on-tap="_delayedSubmit" disabled id="rebelContactSubmit">
         <paper-spinner id="spinner" hidden></paper-spinner>Submit</paper-button>
-      <paper-button raised onclick="_reset(event)">Reset</paper-button>
+      <paper-button raised on-tap="_reset">Reset</paper-button>
       <div class="output"></div>
     </form>
 
@@ -39,6 +39,50 @@
   Polymer({
     is: 'rebelcricket-contact',
     
+
+    // ready() is called when element is ready at load time.
+    ready() {
+      // this.$.elementID allows easy selection of elements within own element.
+      this.$.rebelContact.addEventListener('change', function(event) {
+        // console.log(Polymer.dom(this.root).querySelector('#rebelContactSubmit').disabled);
+        // console.log(this.$.rebelContact);
+        Polymer.dom(this.root).querySelector('#rebelContactSubmit').disabled = !this.validate();
+      });
+
+      this.$.rebelContact.addEventListener('iron-form-submit', function(event) {
+        // Changed from this.QS to Polymer.dom(this.root).QS to prevent potential conflicts later,
+        // as this only selects an element from my-view2.
+        // Polymer.dom(this.root).querySelector('.output').innerHTML = JSON.stringify(event.detail);
+    
+
+        this.querySelector('#spinner').active = false;
+        this.querySelector('#spinner').hidden = true;
+        this.querySelector('#rebelContactSubmit').disabled = false;
+        
+        this.querySelector('.output').innerHTML = 'Thank You!';
+
+      });
+    },
+
+    // _submit(event) {
+    //   Polymer.dom(event).localTarget.parentElement.submit();
+    // },
+
+    _delayedSubmit: function(event){
+      this.$.spinner.active = true;
+      this.$.spinner.hidden = false;
+      this.$.rebelContactSubmit.disabled = true;
+      this.$.rebelContact.submit();
+    },
+
+    _reset(event) {
+      var form = Polymer.dom(event).localTarget.parentElement
+      form.reset();
+      form.querySelector('.output').innerHTML = '';
+
+      form.querySelector('#rebelContactSubmit').disabled = true;
+    }
+
     // properties: {
 
     //   categories: {
@@ -66,18 +110,20 @@
     //   }
 
     // },
-    listeners: {
-      'change': function(event) {
-        // Validate the entire form to see if we should enable the `Submit` button.
-        this.$.rebelContact.disabled = !this.$.rebelContact.validate();
-      },
-      'iron-form-submit': function(event) {
-        this.$.spinner.active = false;
-        this.$.spinner.hidden = true;
-        this.$.rebelContactSubmit.disabled = false;
-        this.querySelector('.output').innerHTML = JSON.stringify(event.detail);
-      }
-    },
+    // listeners: {
+    //   'change': function() {
+    //     // Validate the entire form to see if we should enable the `Submit` button.
+    //     console.log(this.$.rebelContactSubmit);
+    //     console.log(this.$.rebelContact);
+    //     this.$.rebelContactSubmit.disabled = !this.$.rebelContact.validate();
+    //   },
+    //   'iron-form-submit': function() {
+    //     this.$.spinner.active = false;
+    //     this.$.spinner.hidden = true;
+    //     this.$.rebelContactSubmit.disabled = false;
+    //     this.querySelector('.output').innerHTML = JSON.stringify(event.detail);
+    //   }
+    // },
 
     // _visibleChanged: function(visible) {
     //   console.log('_visibleChanged!');
@@ -88,20 +134,20 @@
     //   }
     // },
 
-    _delayedSubmit: function(event){
-      this.$.spinner.active = true;
-      this.$.spinner.hidden = false;
-      this.$.rebelContactSubmit.disabled = true;
-      // Simulate a slow server response.
-      setTimeout(function() {
-        Polymer.dom(event).localTarget.parentElement.submit();
-      }, 1000);
-    },
-    _reset: function(event){
-      var form = Polymer.dom(event).localTarget.parentElement
-      form.reset();
-      form.querySelector('.output').innerHTML = '';
-    }
+    // _delayedSubmit: function(){
+    //   this.$.spinner.active = true;
+    //   this.$.spinner.hidden = false;
+    //   this.$.rebelContactSubmit.disabled = true;
+    //   // Simulate a slow server response.
+
+    //   setTimeout(function() {
+    //     this.rebelContact.submit();
+    //   }, 1000);
+    // },
+    // _reset: function(){
+    //   this.$.rebelContact.reset();
+    //   this.$.rebelContact.querySelector('.output').innerHTML = '';
+    // }
   });
 
 
