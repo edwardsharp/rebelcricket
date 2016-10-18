@@ -44,7 +44,7 @@
 
     <div class="container flex-center-justified">
       <div class="rebel-contact-wrapper">
-        <form is="iron-form" method="post" action="http://localhost:3000/new" id="rebelContact">
+        <form is="iron-form" method="post" id="rebelContact">
           <paper-input name="name" label="Name" required auto-validate></paper-input>
           <paper-input name="email" label="Email" type="email" required auto-validate></paper-input>
           <paper-input name="subject" label="Subject" required auto-validate></paper-input>
@@ -69,6 +69,9 @@
     is: 'rebelcricket-contact',
     
     ready() {
+      
+      this.$.rebelContact.action = window.location.origin + '/rebelcontact';
+
       this.$.rebelContact.addEventListener('iron-form-submit', function(event) {
         this.querySelector('#spinner').active = false;
         this.querySelector('#spinner').hidden = true;
