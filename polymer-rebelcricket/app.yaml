@@ -17,6 +17,10 @@ handlers:
   static_dir: images
   secure: always
 
+- url: /fonts
+  static_dir: fonts
+  secure: always
+
 - url: /src
   static_dir: src
   secure: always

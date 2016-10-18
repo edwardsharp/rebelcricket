@@ -1,6 +1,8 @@
 <link rel="import" href="../bower_components/polymer/polymer.html">
 <link rel="import" href="../bower_components/iron-form/iron-form.html">
 <link rel="import" href="../bower_components/iron-ajax/iron-ajax.html">
+<link rel="import" href="../bower_components/iron-icon/iron-icon.html">
+<link rel="import" href="rebelcricket-icons.html">
 <link rel="import" href="../bower_components/paper-input/paper-input.html">
 <link rel="import" href="../bower_components/paper-input/paper-textarea.html">
 <link rel="import" href="../bower_components/paper-button/paper-button.html">
@@ -40,9 +42,24 @@
         padding: 3em;
       }
 
+       @media (max-width: 767px) {
+        .rebel-contact-wrapper{
+          min-width: 99%;
+        }
+
+       }
+
     </style>
 
     <div class="container flex-center-justified">
+    <header>
+      <h1>Contact</h1>
+    </header>
+    </div>
+    <div class="container flex-center-justified">
+
+      
+
       <div class="rebel-contact-wrapper">
         <form is="iron-form" method="post" id="rebelContact">
           <paper-input name="name" label="Name" required auto-validate></paper-input>
@@ -52,7 +69,9 @@
 
           <br>
           <paper-button raised on-tap="_submit" id="rebelContactSubmit" class="custom">
-            Submit</paper-button>
+            SEND &nbsp;
+            <iron-icon icon="send"></iron-icon>
+          </paper-button>
           <!-- <paper-button raised on-tap="_reset" class="custom">Reset</paper-button> -->
           <paper-spinner id="spinner" hidden ></paper-spinner>
           <div class="output"></div>
@@ -68,7 +87,7 @@
   Polymer({
     is: 'rebelcricket-contact',
     
-    ready() {
+    ready: function(){
       
       this.$.rebelContact.action = window.location.origin + '/rebelcontact';
 

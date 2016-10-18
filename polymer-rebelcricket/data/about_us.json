@@ -1,6 +1,6 @@
 [
   {
-    "name":"About Us",
+    "name":"mission",
     "title":"Mission",
     "category":"about_us",
     "price":0.00,
@@ -9,7 +9,7 @@
     "largeImage":"/data/images/apparel.jpg"
   },
   {
-    "name":"About Us",
+    "name":"art_requirements",
     "title":"Art Requirements",
     "category":"about_us",
     "price":0.00,

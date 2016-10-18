@@ -12,6 +12,7 @@
    "src/**/*",
    "data/**/*",
    "images/**/*",
+   "fonts/**/*",
    "bower.json"
   ],
   "includeDependencies": [
