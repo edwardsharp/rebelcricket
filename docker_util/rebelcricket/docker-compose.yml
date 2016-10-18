@@ -1,6 +1,7 @@
 version: "2"
 services:
   web:
+    restart: always
     image: hub.sked.site:5000/rebelcricket
     environment:
       - DATABASE_URL=postgres://rebelcricket@pg/rebelcricket
@@ -8,6 +9,7 @@ services:
       - MAILGUN_DOMAIN=mg.lacuna.club
       - MAIL_GOES_TO=edward@edwardsharp.net
       - SERVE_TEST_INDEX=false
+      - VIRTUAL_HOST=http://rebelcricket.lacuna.club
     ports:
       - "8080:8080"
     links:
