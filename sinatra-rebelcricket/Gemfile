@@ -2,8 +2,12 @@ source 'https://rubygems.org'
 gem 'sinatra'
 
 gem 'json'
-gem 'data_mapper'
 gem 'dm-postgres-adapter'
-gem 'dotenv'
+gem 'data_mapper'
 gem 'mailgun-ruby'
 gem 'sinatra-cross_origin', git: 'https://github.com/britg/sinatra-cross_origin.git'
+gem 'unicorn'
+
+group :development do
+  gem 'dotenv'
+end

@@ -11,7 +11,7 @@ configure do
   enable :cross_origin
 end
 
-Dotenv.load
+Dotenv.load unless ENV['RACK_ENV'] == 'production'
 
 # Setup DataMapper with a database URL. On Heroku, ENV['DATABASE_URL'] will be
 # set, when working locally this line will fall back to using SQLite in the
@@ -86,19 +86,19 @@ DataMapper.finalize
 DataMapper.auto_upgrade!
 
 if ENV['SERVE_TEST_INDEX'] == 'true'
-  get '/' do
+  get '/rebelcontact' do
     send_file './rebel_contact.html'
   end
 end
 
 # # Route to show all RebelContacts, ordered like a blog
-# get '/rebel_contacts' do
+# get '/' do
 #   content_type :json
 #   @rebel_contacts = RebelContact.all(order: :created_at.desc)
 #   @rebel_contacts.to_json
 # end
 
-post '/new' do
+post '/rebelcontact' do
   content_type :json
 
   # params_json = JSON.parse(request.body.read)

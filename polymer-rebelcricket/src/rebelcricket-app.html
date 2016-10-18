@@ -605,7 +605,7 @@
       },
 
       _computeShouldShowTabs: function(page, smallScreen) {
-        return (page == 'contact' || page === 'home' || page === 'list' || page === 'detail') && !smallScreen;
+        return (page === 'contact' || page === 'home' || page === 'list' || page === 'detail') && !smallScreen;
       },
 
       _computeShouldRenderTabs: function(_shouldShowTabs, loadComplete) {

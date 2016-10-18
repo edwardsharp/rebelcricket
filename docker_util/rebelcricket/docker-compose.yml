@@ -1,0 +1,22 @@
+version: "2"
+services:
+  web:
+    image: hub.sked.site:5000/rebelcricket
+    environment:
+      - DATABASE_URL=postgres://rebelcricket@pg/rebelcricket
+      - MAILGUN_API_KEY=key
+      - MAILGUN_DOMAIN=mg.lacuna.club
+      - MAIL_GOES_TO=edward@edwardsharp.net
+      - SERVE_TEST_INDEX=false
+    ports:
+      - "8080:8080"
+    links:
+      - pg:pg
+    restart: always
+    network_mode: "bridge"
+  pg:
+    restart: always
+    image: postgres:9.6
+    network_mode: "bridge"
+    volumes:
+      - ./init-user-db.sh:/docker-entrypoint-initdb.d/init-user-db.sh

@@ -23,7 +23,7 @@
         data.subject = $('#new-subject').val();
         data.body = $('#new-body').val();
         $.ajax({
-          url: '/new',
+          url: '/rebelcontact',
           method: 'POST',
           data: data
         }).success(function (response) {

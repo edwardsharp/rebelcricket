@@ -33,6 +33,15 @@ Install [polymer-cli](https://github.com/Polymer/polymer-cli):
 
     polymer build
 
+### Docker
+
+    docker build -f docker_util/rebelcricket/Dockerfile -t hub.sked.site:5000/rebelcricket .
+    docker push hub.sked.site:5000/rebelcricket
+    cd docker_util/rebelcricket && docker-compose up
+    
+    # sysadmin
+    bash -c "clear && docker exec -it rebelcricket_web_1 /bin/bash"
+
 ### Test the build
 
 This command serves the minified version of the app in an unbundled state, as it would be served by a push-compatible server:
@@ -42,3 +51,10 @@ This command serves the minified version of the app in an unbundled state, as it
 This command serves the minified version of the app generated using fragment bundling:
 
     polymer serve build/bundled
+
+    # -or use python-
+
+    python -m SimpleHTTPServer 8000
+
+    python3 -m http.server
+
