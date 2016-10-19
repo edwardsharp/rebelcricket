@@ -35,3 +35,4 @@ config/secrets.yml
 
 # Ignore Byebug command history file.
 .byebug_history
+/docker_util/couchdb/data
