@@ -375,6 +375,7 @@
       <!-- home view -->
       <rebelcricket-home name="home" categories="[[categories]]"></rebelcricket-home>
       <rebelcricket-contact name="contact"></rebelcricket-contact>
+      <rebelcricket-design name="design"></rebelcricket-design>
       <!-- list view of items in a category -->
       <rebelcricket-list name="list" route="[[subroute]]" offline="[[offline]]"></rebelcricket-list>
       <!-- detail view of one item -->
@@ -605,7 +606,7 @@
       },
 
       _computeShouldShowTabs: function(page, smallScreen) {
-        return (page === 'contact' || page === 'home' || page === 'list' || page === 'detail') && !smallScreen;
+        return (page === 'design' || page === 'contact' || page === 'home' || page === 'list' || page === 'detail') && !smallScreen;
       },
 
       _computeShouldRenderTabs: function(_shouldShowTabs, loadComplete) {

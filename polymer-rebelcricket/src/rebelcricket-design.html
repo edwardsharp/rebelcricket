@@ -1,0 +1,141 @@
+<link rel="import" href="../bower_components/polymer/polymer.html">
+<!-- <link rel="import" href="rebelcricket-pouchdb.html"> -->
+<link rel="import" href="../bower_components/app-pouchdb/pouchdb.html">
+<link rel="import" href="../bower_components/app-pouchdb/app-pouchdb-database-behavior.html">
+<link rel="import" href="../bower_components/app-pouchdb/app-pouchdb-document.html">
+
+<script src="../bower_components/pouchdb/dist/pouchdb.js"></script>
+<script src="../bower_components/fabric.js/dist/fabric.js"></script>
+<script src="../bower_components/blob-util/dist/blob-util.js"></script>
+
+<dom-module id="rebelcricket-design">
+  <template>
+    <style is="custom-style">    
+
+      paper-button.custom {
+        background: white;
+        color: #333;
+      }
+
+      paper-button.custom:hover {
+        background: #333;
+        color: white;
+      }
+
+      paper-button[disabled] {
+        background: #333;
+        color: gray;
+      }
+
+      .container{
+        text-align: center;
+      }
+
+      .flex-wrap {
+        @apply(--layout-horizontal);
+        @apply(--layout-wrap);
+      }
+
+      .flex-wrap div {
+        min-width: 200px;
+      }
+      @media (max-width: 767px) {
+
+
+      }
+
+    </style>
+
+    <app-pouchdb-document
+      db-name="http://localhost:5984/cats"
+      doc-id="parsnip"
+      data="{{cat}}">
+    </app-pouchdb-document>
+
+
+    <img id="catImage">
+
+
+    <div class="container">
+    <header>
+      <h1>Design</h1>
+    </header>
+    <div class="flex-wrap">
+      <div class="">
+        <input id="catFile" type="file"></input>
+
+        <input
+          id="catInput"
+          is="iron-input"
+          bind-value="{{cat.name}}">
+        </input>
+      </div>
+      <div class=""><canvas id="c" width="300" height="300" style="border:1px solid #ccc"></canvas></div>
+      <div class="">two</div>
+    </div>
+    </div>
+
+  </template>
+
+  <script>
+
+  Polymer({
+    is: 'rebelcricket-design',
+    behaviors: [
+      Polymer.AppPouchDBDatabaseBehavior
+    ],
+    ready: function(){
+
+      console.log(this.$.catImage);
+      var canvas = new fabric.Canvas(this.$.c);
+
+      var rect = new fabric.Rect({
+          top : 100,
+          left : 100,
+          width : 60,
+          height : 70,
+          fill : 'red'
+      });
+
+      canvas.add(rect);
+
+      //file upload
+      var db = new PouchDB('http://localhost:5984/cats');
+
+      var catImage = this.$.catImage;
+
+      db.getAttachment('mydoc', 'filename').then(function (blobOrBuffer) {
+        // handle result
+        
+        var blobURL = blobUtil.createObjectURL(blobOrBuffer);
+        catImage.src = blobURL;
+
+      }).catch(function (err) {
+        console.log(err);
+      });
+
+      var input = this.$.catFile;
+      input.addEventListener('change', function () {
+        var file = input.files[0]; // file is a Blob
+
+        db.put({
+          _id: 'mydoc',
+          _attachments: {
+            filename: {
+              type: file.type,
+              data: file
+            }
+          }
+        }).catch(function (err) {
+          console.log(err);
+        });
+      });
+
+    }
+
+
+  });
+
+
+  </script>
+</dom-module>

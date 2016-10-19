@@ -33,6 +33,14 @@ Install [polymer-cli](https://github.com/Polymer/polymer-cli):
 
     polymer build
 
+### CouchDB
+
+    #setup cors
+    npm install -g add-cors-to-couchdb
+    add-cors-to-couchdb http://localhost:5984 -u myusername -p mypassword
+
+then visit http://localhost:5984/_utils/config.html to see/edit cors config
+
 ### Docker
 
     docker build -f docker_util/rebelcricket/Dockerfile -t hub.sked.site:5000/rebelcricket .
