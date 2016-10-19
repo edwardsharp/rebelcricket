@@ -2,9 +2,13 @@
 <!-- <link rel="import" href="rebelcricket-pouchdb.html"> -->
 <link rel="import" href="../bower_components/app-pouchdb/pouchdb.html">
 <link rel="import" href="../bower_components/app-pouchdb/app-pouchdb-database-behavior.html">
+<link rel="import" href="../bower_components/app-pouchdb/app-pouchdb-index.html">
+<link rel="import" href="../bower_components/app-pouchdb/app-pouchdb-query.html"> 
 <link rel="import" href="../bower_components/app-pouchdb/app-pouchdb-document.html">
-
+<!-- <link rel="import" href="../bower_components/app-pouchdb/app-pouchdb-conflict-resolution.html">
+ -->
 <script src="../bower_components/pouchdb/dist/pouchdb.js"></script>
+<script src="../bower_components/pouchdb-find/dist/pouchdb.find.js"></script>
 <script src="../bower_components/fabric.js/dist/fabric.js"></script>
 <script src="../bower_components/blob-util/dist/blob-util.js"></script>
 
@@ -53,8 +57,24 @@
     </app-pouchdb-document>
 
 
-    <img id="catImage">
+    <app-pouchdb-index
+      db-name="http://localhost:5984/cats"
+      fields='["name"]'>
+    </app-pouchdb-index>
+    <app-pouchdb-query
+      db-name="http://localhost:5984/cats"
+      selector="name $exists true"
+      fields='["_id","name"]'
+      sort='["name"]'
+      data="{{cats}}">
+    </app-pouchdb-query>
 
+    <img id="catImage" height="100" width="100">
+
+    <template id="rebelCats" is="dom-repeat" items="{{cats}}">
+      <div>cat name: <span>{{item.name}}</span></div>
+      <div>cat foo: <span>{{item.foo}}</span></div>
+    </template>
 
     <div class="container">
     <header>
