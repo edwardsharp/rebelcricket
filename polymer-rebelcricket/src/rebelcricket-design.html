@@ -56,6 +56,11 @@
       data="{{cat}}">
     </app-pouchdb-document>
 
+      <app-pouchdb-document
+        db-name="http://localhost:5984/cats"
+        doc-id="mydoc"
+        data="{{mydoc}}">
+      </app-pouchdb-document>
 
     <app-pouchdb-index
       db-name="http://localhost:5984/cats"
@@ -69,29 +74,46 @@
       data="{{cats}}">
     </app-pouchdb-query>
 
-    <img id="catImage" height="100" width="100">
-
-    <template id="rebelCats" is="dom-repeat" items="{{cats}}">
-      <div>cat name: <span>{{item.name}}</span></div>
-      <div>cat foo: <span>{{item.foo}}</span></div>
-    </template>
+    <app-pouchdb-query
+      db-name="http://localhost:5984/cats"
+      selector="_attachments $exists true"
+      fields='["_id","_attachments"]'
+      data="{{designImages}}">
+    </app-pouchdb-query>
 
     <div class="container">
     <header>
       <h1>Design</h1>
     </header>
     <div class="flex-wrap">
-      <div class="">
-        <input id="catFile" type="file"></input>
-
+      <div>
         <input
           id="catInput"
           is="iron-input"
           bind-value="{{cat.name}}">
         </input>
       </div>
-      <div class=""><canvas id="c" width="300" height="300" style="border:1px solid #ccc"></canvas></div>
-      <div class="">two</div>
+      <div>
+        <canvas id="c" width="300" height="300" style="border:1px solid #ccc"></canvas>
+      </div>
+      <div>
+
+
+        <template is="dom-repeat" items="{{designImages}}">
+          <template is="dom-repeat" items="{{_attachmentKeys(item._attachments)}}" as="attachment">
+            <img src="http://localhost:5984/cats/{{item._id}}/{{ attachment }}" height="100" width="100">
+          </template>
+        </template>
+        <br>
+        <input id="catFile" type="file"></input>
+        <br>
+        <select>
+        <template id="rebelCats" is="dom-repeat" items="{{cats}}">
+          <option value="{{item.name">{{item.name}}</option>
+        </template>
+        </select>
+
+      </div>
     </div>
     </div>
 
@@ -104,9 +126,42 @@
     behaviors: [
       Polymer.AppPouchDBDatabaseBehavior
     ],
+    // properties: {
+    //   mydoc: Object
+    // },
+
+    // _toArray: function(obj) {
+    //   return Object.keys(this.mydoc).map(function(key) {
+    //     return {
+    //         name: key,
+    //         value: this.mydoc[key]
+    //     };
+    //   });
+    // },
+    _log: function(wut){
+      console.log('wut:',wut);
+    },
+    _attachmentKeys: function(attachments){
+      if(attachments != undefined){
+        return Object.keys(attachments);
+      }
+    },
+    // _getImgSrc: function(attachment){
+    //   var db = new PouchDB('http://localhost:5984/cats');
+    //   db.getAttachment('mydoc', attachment).then(function (blobOrBuffer) {
+    //     return URL.createObjectURL(blobOrBuffer);
+    //   }).catch(function (err) {
+    //     console.log(err);
+    //   });
+    //   // Object.keys(attachment);
+    //   // console.log('_getImgSrc:',attachment);
+    //   // console.log('_getImgSrc:',URL.createObjectURL(attachment));
+    //   // return URL.createObjectURL(attachment);
+    // },
     ready: function(){
 
-      console.log(this.$.catImage);
+      // console.log('mydoc:',this.mydoc);
+
       var canvas = new fabric.Canvas(this.$.c);
 
       var rect = new fabric.Rect({
@@ -124,31 +179,66 @@
 
       var catImage = this.$.catImage;
 
-      db.getAttachment('mydoc', 'filename').then(function (blobOrBuffer) {
-        // handle result
-        
-        var blobURL = blobUtil.createObjectURL(blobOrBuffer);
-        catImage.src = blobURL;
+      // console.log('designImages:',this.designImages);
 
-      }).catch(function (err) {
-        console.log(err);
-      });
+      // var images = [];
+      // db.get('mydoc').then(function (doc) {
+      //   // var img = document.createElement('img');
+      //   // Polymer.dom(this.$.designImages).appendChild(img);
+      //   for(var key in doc._attachments) {
+      //     // skip loop if the property is from prototype
+      //     if (!doc._attachments.hasOwnProperty(key)) continue;
+      //     // var obj = doc._attachments[key];
+      //     db.getAttachment('mydoc', key).then(function (blobOrBuffer) {
+      //       console.log('URL.createObjectURL(blobOrBuffer):',URL.createObjectURL(blobOrBuffer));
+      //       console.log('blobOrBuffer:',blobOrBuffer);
+      //       // console.log('blobUtil.createObjectURL(blobOrBuffer):',blobUtil.createObjectURL(blobOrBuffer));
+      //       images.push({ src: URL.createObjectURL(blobOrBuffer) });
+      //     }).catch(function (err) {
+      //       console.log(err);
+      //     });
+
+      //   }
+
+      //   //this.pushImages(images);
+      //   //this.designImages.push(images);
+        
+
+      // });
+
+      
+
+      
 
       var input = this.$.catFile;
       input.addEventListener('change', function () {
         var file = input.files[0]; // file is a Blob
 
-        db.put({
-          _id: 'mydoc',
-          _attachments: {
-            filename: {
-              type: file.type,
-              data: file
-            }
-          }
+        // console.log('input file:',file);
+
+        // var attachments = {};
+        // attachments[file.name] = {
+        //   content_type: file.type,
+        //   type: file.type,
+        //   data: file
+        // }
+
+        // db.put({
+        //   _id: 'mydoc',
+        //   _attachments: attachments
+        // }).catch(function (err) {
+        //   console.log(err);
+        // });
+
+        // var attachment = new Blob(file, {type: file.type});
+        db.putAttachment(file.name, file.name, file, file.type).then(function (result) {
+          // handle result
         }).catch(function (err) {
           console.log(err);
         });
+
+
+
       });
 
     }
