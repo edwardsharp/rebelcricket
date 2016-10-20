@@ -5,8 +5,12 @@
 <link rel="import" href="../bower_components/app-pouchdb/app-pouchdb-index.html">
 <link rel="import" href="../bower_components/app-pouchdb/app-pouchdb-query.html"> 
 <link rel="import" href="../bower_components/app-pouchdb/app-pouchdb-document.html">
-<!-- <link rel="import" href="../bower_components/app-pouchdb/app-pouchdb-conflict-resolution.html">
- -->
+<!-- <link rel="import" href="../bower_components/app-pouchdb/app-pouchdb-conflict-resolution.html"> -->
+<link rel="import" href="../bower_components/paper-toggle-button/paper-toggle-button.html">
+<link rel="import" href="../bower_components/paper-item/paper-item.html">
+<link rel="import" href="../bower_components/paper-listbox/paper-listbox.html">
+<link rel="import" href="../bower_components/paper-dropdown-menu/paper-dropdown-menu.html">
+<link rel="import" href="../bower_components/paper-swatch-picker/paper-swatch-picker.html">
 <script src="../bower_components/pouchdb/dist/pouchdb.js"></script>
 <script src="../bower_components/pouchdb-find/dist/pouchdb.find.js"></script>
 <script src="../bower_components/fabric.js/dist/fabric.js"></script>
@@ -31,6 +35,15 @@
         color: gray;
       }
 
+      paper-toggle-button.green {
+        --paper-toggle-button-checked-bar-color:  var(--paper-green-500);
+        --paper-toggle-button-checked-button-color:  var(--paper-green-500);
+        --paper-toggle-button-checked-ink-color: var(--paper-green-500);
+        --paper-toggle-button-unchecked-bar-color:  var(--paper-teal-500);
+        --paper-toggle-button-unchecked-button-color:  var(--paper-teal-500);
+        --paper-toggle-button-unchecked-ink-color: var(--paper-teal-500);
+      }
+
       .container{
         text-align: center;
       }
@@ -42,6 +55,39 @@
 
       .flex-wrap div {
         min-width: 200px;
+      }
+
+      #design-controls{
+        text-align: center;
+        padding: 1em;
+      }
+      #design-element-container{
+        width: 530px;
+        height: 630px;
+        position: relative;
+      }
+
+      #design-element-img-container{
+        position: absolute;
+        top: 0;
+        left: 0;
+        z-index: 1;
+      }
+      #design-element-canvas-container {
+
+        position: absolute;
+        top:115px;
+        left: 165px;
+        z-index: 2;
+      }
+
+      canvas:hover{
+        border:thin solid #ccc;
+      }
+
+
+      #catInput{
+        display: none;
       }
       @media (max-width: 767px) {
 
@@ -86,15 +132,35 @@
       <h1>Design</h1>
     </header>
     <div class="flex-wrap">
-      <div>
+      <div id="design-controls">
         <input
           id="catInput"
           is="iron-input"
           bind-value="{{cat.name}}">
         </input>
+        <br>
+        <paper-dropdown-menu label="Style" on-iron-select="styleSelected">
+          <paper-listbox class="dropdown-content" selected="0">
+            <paper-item value="crew">Crew</paper-item>
+            <paper-item value="womens_crew">Women's Crew</paper-item>
+            <paper-item value="hoodie">Hoodie</paper-item>
+            <paper-item value="longsleeve">Long Sleeve</paper-item>
+            <!-- <paper-item value="tank">Tank</paper-item> -->
+          </paper-listbox>
+        </paper-dropdown-menu>
+        <br>
+        <paper-toggle-button class="green" id="toggle-design-element-img" on-tap="toggleDesignElementImg">Back</paper-toggle-button>
+        <br>
+        <paper-swatch-picker color="{{designElementColor}}" column-count=5 color-list='["#65a5f2", "#83be54", "#f0d551", "#e5943c", "#a96ddb"]'></paper-swatch-picker>
+
       </div>
-      <div>
-        <canvas id="c" width="300" height="300" style="border:1px solid #ccc"></canvas>
+      <div id="design-element-container">
+        <div id="design-element-img-container">
+          <img id="design-element-img">
+        </div>
+        <div id="design-element-canvas-container">
+          <canvas id="c" width="200" height="400"></canvas>
+        </div>
       </div>
       <div>
 
@@ -126,10 +192,12 @@
     behaviors: [
       Polymer.AppPouchDBDatabaseBehavior
     ],
-    // properties: {
-    //   mydoc: Object
-    // },
-
+    properties: {
+      designElementColor: String
+    },
+    listeners: {
+      'color-picker-selected': 'designElementColorChange'
+    },
     // _toArray: function(obj) {
     //   return Object.keys(this.mydoc).map(function(key) {
     //     return {
@@ -138,6 +206,31 @@
     //     };
     //   });
     // },
+    designElementColorChange: function(e){
+      console.log('designElementColorChange',e.detail.color);
+      console.log("this.$$('#design-element-img'):",this.$$('#design-element-img'));
+      // var t = Polymer.dom(e).localTarget; // design-element-img-container
+      this.$$('#design-element-img').setAttribute('style', 'background-color:'+e.detail.color);
+      // t.customStyle['--background-color'] = e.detail.color;
+      // customStyle['--color'] 
+      // .customStyle['--an-ele-name-bgcolor'] = 'pink'; //background-color
+      // t.updateStyles();
+      // Polymer.updateStyles();
+    },
+    styleSelected: function(e){
+      this.$$('#design-element-img').src = '/images/design/'+e.target.selectedItem.getAttribute('value')+'_front.png';
+      this.$$('#toggle-design-element-img').checked = false;
+    },
+    toggleDesignElementImg: function(e){
+      console.log('toggleDesignElementImg e.target.checked:',e.target.checked);
+      if(e.target.checked){
+        this.$$('#design-element-img').src = this.$$('#design-element-img').src.replace(/front/, 'back');
+        e.target.innerHTML = 'Front';
+      }else{
+        this.$$('#design-element-img').src = this.$$('#design-element-img').src.replace(/back/, 'front');
+        e.target.innerHTML = 'Back';
+      }
+    },
     _log: function(wut){
       console.log('wut:',wut);
     },
