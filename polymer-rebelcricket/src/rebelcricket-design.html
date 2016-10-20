@@ -17,7 +17,7 @@
 <script src="../bower_components/pouchdb-find/dist/pouchdb.find.js"></script>
 <script src="../bower_components/fabric.js/dist/fabric.js"></script>
 <script src="../bower_components/blob-util/dist/blob-util.js"></script>
-
+<script src="fabric-filters.js"></script>
 <dom-module id="rebelcricket-design">
   <template>
     <style is="custom-style" include="rebelcricket-common-styles">    
@@ -59,10 +59,10 @@
         min-width: 200px;
       }
 
-      #design-controls{
+      #design-controls, #objectTools{
         padding-left: 2em;
-        padding-right: 2em;
       }
+
       #design-element-container{
         width: 530px;
         height: 630px;
@@ -135,12 +135,6 @@
     </header>
     <div class="flex-wrap">
       <div id="design-controls">
-        <input
-          id="catInput"
-          is="iron-input"
-          bind-value="{{cat.name}}">
-        </input>
-        <br>
         <paper-dropdown-menu label="Style" on-iron-select="_styleSelected">
           <paper-listbox class="dropdown-content" selected="0">
             <paper-item value="crew">Crew</paper-item>
@@ -157,6 +151,11 @@
         <label for="catFile">Add Image</label>
         <input id="catFile" type="file"></input>
         <br><br>
+        <input
+          id="catInput"
+          is="iron-input"
+          bind-value="{{cat.name}}">
+        </input>
 <!-- 
         <template is="dom-repeat" items="{{designImages}}">
           <template is="dom-repeat" items="{{_attachmentKeys(item._attachments)}}" as="attachment">
@@ -165,13 +164,11 @@
         </template>
         <br> -->
 
-        <div id="objectTools" hidden$="{{objectToolsHidden}}">
-          <paper-button id="removeImage" on-tap="_removeImageFromCanvas" raised>remove image</paper-button>
-        </div>
+        
       </div>
       <div id="design-element-container">
         <div id="design-element-img-container">
-          <img id="design-element-img">
+          <img id="design-element-img" crossOrigin="Anonymous">
         </div>
         <div id="design-element-canvas-container">
           <canvas id="c" width="200" height="400"></canvas>
@@ -179,7 +176,99 @@
       </div>
       <div>
 
+        <div id="objectTools" hidden$="{{objectToolsHidden}}">
+          <paper-button class="custom" id="removeImage" on-tap="_removeImageFromCanvas" raised>remove image</paper-button>
 
+          <div class="controls">
+            <div>
+              <label><span>Grayscale:</span> <input type="checkbox" id="grayscale"></label>
+            </div>
+            <div>
+              <label><span>Invert:</span> <input type="checkbox" id="invert"></label>
+            </div>
+            <div>
+              <label><span>Sepia:</span> <input type="checkbox" id="sepia"></label>
+            </div>
+            <div>
+              <label><span>Sepia2:</span> <input type="checkbox" id="sepia2"></label>
+            </div>
+            <div>
+              <label><span>Remove white:</span> <input type="checkbox" id="remove-white"></label>
+              <br>
+              <label>Threshold: <input type="range" id="remove-white-threshold" value="60" min="0" max="255"></label>
+              <br>
+              <label>Distance: <input type="range" id="remove-white-distance" value="10" min="0" max="255"></label>
+            </div>
+            <div>
+              <label><span>Brightness:</span> <input type="checkbox" id="brightness"></label>
+              <br>
+              <label>Value: <input type="range" id="brightness-value" value="100" min="-255" max="255"></label>
+            </div>
+            <div>
+              <label><span>Contrast:</span> <input type="checkbox" id="contrast"></label>
+              <br>
+              <label>Value: <input type="range" id="contrast-value" value="0" min="-255" max="255"></label>
+            </div>
+            <div>
+              <label><span>Saturate:</span> <input type="checkbox" id="saturate"></label>
+              <br>
+              <label>Value: <input type="range" id="saturate-value" value="100" min="-100" max="100"></label>
+            </div>
+            <div>
+              <label><span>Noise:</span> <input type="checkbox" id="noise"></label>
+              <br>
+              <label>Value: <input type="range" id="noise-value" value="100" min="0" max="1000"></label>
+            </div>
+            <div>
+              <label><span>GradientTransparency:</span> <input type="checkbox" id="gradient-transparency"></label>
+              <br>
+              <label>Value: <input type="range" id="gradient-transparency-value" value="100" min="0" max="255"></label>
+            </div>
+            <div>
+              <label><span>Pixelate</span> <input type="checkbox" id="pixelate"></label>
+              <br>
+              <label>Value: <input type="range" id="pixelate-value" value="4" min="2" max="20"></label>
+            </div>
+            <div>
+              <label><span>Blur:</span> <input type="checkbox" id="blur"></label>
+            </div>
+            <div>
+              <label><span>Sharpen:</span> <input type="checkbox" id="sharpen"></label>
+            </div>
+            <div>
+              <label><span>Emboss:</span> <input type="checkbox" id="emboss"></label>
+            </div>
+            <div>
+              <label><span>Tint:</span> <input type="checkbox" id="tint"></label><br>
+              <label>Color: <input type="color" id="tint-color" value=""></label><br>
+              <label>Opacity: <input type="range" id="tint-opacity" min="0" max="1" value="1" step="0.1"></label><br>
+            </div>
+            <div>
+              <label><span>Multiply:</span> <input type="checkbox" id="multiply"></label><br>
+              <label>Color: <input type="color" id="multiply-color" value=""></label><br>
+            </div>
+            <div>
+            <label><span>Blend:</span> <input type="checkbox" id="blend"></label>
+            <br>
+            <label>Mode:</label>
+              <select id="blend-mode" name="blend-mode">
+                <option selected="" value="add">Add</option>
+                <option value="diff">Diff</option>
+                <option value="subtract">Subtract</option>
+                <option value="multiply">Multiply</option>
+                <option value="screen">Screen</option>
+                <option value="lighten">Lighten</option>
+                <option value="darken">Darken</option>
+              </select>
+              <br>
+              <label>Color: <input type="color" id="blend-color" value="#00f900"></label><br>
+            </div>
+          </div>
+
+
+
+
+        </div>
       
         
        <!--  <br>
@@ -224,24 +313,8 @@
       'color-picker-selected': '_designElementColorChange',
       'design-images-changed': '_designImagesChanged'
     },
-    // _toArray: function(obj) {
-    //   return Object.keys(this.mydoc).map(function(key) {
-    //     return {
-    //         name: key,
-    //         value: this.mydoc[key]
-    //     };
-    //   });
-    // },
     _designElementColorChange: function(e){
-      console.log('designElementColorChange',e.detail.color);
-      console.log("this.$$('#design-element-img'):",this.$$('#design-element-img'));
-      // var t = Polymer.dom(e).localTarget; // design-element-img-container
       this.$$('#design-element-img').setAttribute('style', 'background-color:'+e.detail.color);
-      // t.customStyle['--background-color'] = e.detail.color;
-      // customStyle['--color'] 
-      // .customStyle['--an-ele-name-bgcolor'] = 'pink'; //background-color
-      // t.updateStyles();
-      // Polymer.updateStyles();
     },
     _styleSelected: function(e){
       this.$$('#design-element-img').src = '/images/design/'+e.target.selectedItem.getAttribute('value')+'_front.png';
@@ -273,7 +346,7 @@
       fabric.Image.fromURL(url, function(oImg) {
         oImg.scaleToWidth(200);
         _thisCanvas.add(oImg);
-      });
+      },{ crossOrigin: 'Anonymous' });
     },
     _removeImageFromCanvas: function(e){
       console.log('_removeImageFromCanvas idx:',this.canvas.getActiveObject());
@@ -290,10 +363,7 @@
       }
     },
     _onObjectSelected: function(e){
-      // console.log('_onObjectSelected id:',this.canvas.getActiveObject().get('id'));
-
-      // this.$.removeImage.setAttribute('idx',this.canvas.getActiveObject().get('id'));
-      this.set('objectToolsHidden', false);
+       this.set('objectToolsHidden', false);
     },
     _onSelectionCleared: function(e){
       this.set('objectToolsHidden', true);
@@ -301,10 +371,8 @@
     ready: function(){
 
       this.canvas = new fabric.Canvas(this.$.c);
-      // console.log('mydoc:',this.mydoc);
 
-      console.log('this.canvas checck', this.canvas);
-
+      // draw something
       var rect = new fabric.Rect({
           top : 100,
           left : 100,
@@ -312,8 +380,9 @@
           height : 70,
           fill : 'red'
       });
-
       this.canvas.add(rect);
+      
+      initFabricFilters(this);
 
       this.canvas.on({
        'object:moving': function(e) {       
