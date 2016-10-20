@@ -44,7 +44,7 @@
         --paper-toggle-button-unchecked-ink-color: var(--paper-teal-500);
       }
 
-      .container{
+      .center{
         text-align: center;
       }
 
@@ -58,8 +58,8 @@
       }
 
       #design-controls{
-        text-align: center;
-        padding: 1em;
+        padding-left: 2em;
+        padding-right: 2em;
       }
       #design-element-container{
         width: 530px;
@@ -102,11 +102,11 @@
       data="{{cat}}">
     </app-pouchdb-document>
 
-      <app-pouchdb-document
+ <!--      <app-pouchdb-document
         db-name="http://localhost:5984/cats"
         doc-id="mydoc"
         data="{{mydoc}}">
-      </app-pouchdb-document>
+      </app-pouchdb-document> -->
 
     <app-pouchdb-index
       db-name="http://localhost:5984/cats"
@@ -128,7 +128,7 @@
     </app-pouchdb-query>
 
     <div class="container">
-    <header>
+    <header class="center">
       <h1>Design</h1>
     </header>
     <div class="flex-wrap">
@@ -139,7 +139,7 @@
           bind-value="{{cat.name}}">
         </input>
         <br>
-        <paper-dropdown-menu label="Style" on-iron-select="styleSelected">
+        <paper-dropdown-menu label="Style" on-iron-select="_styleSelected">
           <paper-listbox class="dropdown-content" selected="0">
             <paper-item value="crew">Crew</paper-item>
             <paper-item value="womens_crew">Women's Crew</paper-item>
@@ -148,11 +148,24 @@
             <!-- <paper-item value="tank">Tank</paper-item> -->
           </paper-listbox>
         </paper-dropdown-menu>
+        <paper-swatch-picker color="{{designElementColor}}" column-count=4 color-list='["#000000", "#65a5f2", "#83be54", "#f0d551", "#e5943c", "#a96ddb", "#B20000", "#ffffff"]'></paper-swatch-picker>
+        <br><br>
+        <paper-toggle-button class="green" id="toggle-design-element-img" on-tap="_toggleDesignElementImg">Show Back</paper-toggle-button>
         <br>
-        <paper-toggle-button class="green" id="toggle-design-element-img" on-tap="toggleDesignElementImg">Back</paper-toggle-button>
-        <br>
-        <paper-swatch-picker color="{{designElementColor}}" column-count=5 color-list='["#65a5f2", "#83be54", "#f0d551", "#e5943c", "#a96ddb"]'></paper-swatch-picker>
+        <label for="catFile">Add Image</label>
+        <input id="catFile" type="file"></input>
+        <br><br>
 
+        <template is="dom-repeat" items="{{designImages}}">
+          <template is="dom-repeat" items="{{_attachmentKeys(item._attachments)}}" as="attachment">
+            <img src="http://localhost:5984/cats/{{item._id}}/{{ attachment }}" height="50" width="50">
+          </template>
+        </template>
+        <br>
+
+        <div id="objectTools" hidden$="{{objectToolsHidden}}">
+          <h1> object toolz!</h1>
+        </div>
       </div>
       <div id="design-element-container">
         <div id="design-element-img-container">
@@ -165,19 +178,14 @@
       <div>
 
 
-        <template is="dom-repeat" items="{{designImages}}">
-          <template is="dom-repeat" items="{{_attachmentKeys(item._attachments)}}" as="attachment">
-            <img src="http://localhost:5984/cats/{{item._id}}/{{ attachment }}" height="100" width="100">
-          </template>
-        </template>
-        <br>
-        <input id="catFile" type="file"></input>
-        <br>
+      
+        
+       <!--  <br>
         <select>
         <template id="rebelCats" is="dom-repeat" items="{{cats}}">
           <option value="{{item.name">{{item.name}}</option>
         </template>
-        </select>
+        </select> -->
 
       </div>
     </div>
@@ -193,10 +201,26 @@
       Polymer.AppPouchDBDatabaseBehavior
     ],
     properties: {
-      designElementColor: String
+      designElementColor: String,
+      canvas: {
+        type: Object,
+        notify: true
+      },
+      designImages: {
+        type: Object,
+        notify: true
+        // value: function() { return {}; }
+      },
+      objectToolsHidden: {
+        type: Boolean,
+        notify: true,
+        value: true
+      }
+
     },
     listeners: {
-      'color-picker-selected': 'designElementColorChange'
+      'color-picker-selected': '_designElementColorChange',
+      'design-images-changed': '_designImagesChanged'
     },
     // _toArray: function(obj) {
     //   return Object.keys(this.mydoc).map(function(key) {
@@ -206,7 +230,7 @@
     //     };
     //   });
     // },
-    designElementColorChange: function(e){
+    _designElementColorChange: function(e){
       console.log('designElementColorChange',e.detail.color);
       console.log("this.$$('#design-element-img'):",this.$$('#design-element-img'));
       // var t = Polymer.dom(e).localTarget; // design-element-img-container
@@ -217,19 +241,37 @@
       // t.updateStyles();
       // Polymer.updateStyles();
     },
-    styleSelected: function(e){
+    _styleSelected: function(e){
       this.$$('#design-element-img').src = '/images/design/'+e.target.selectedItem.getAttribute('value')+'_front.png';
       this.$$('#toggle-design-element-img').checked = false;
     },
-    toggleDesignElementImg: function(e){
-      console.log('toggleDesignElementImg e.target.checked:',e.target.checked);
+    _toggleDesignElementImg: function(e){
+      console.log('_toggleDesignElementImg e.target.checked:',e.target.checked);
       if(e.target.checked){
         this.$$('#design-element-img').src = this.$$('#design-element-img').src.replace(/front/, 'back');
-        e.target.innerHTML = 'Front';
+        e.target.innerHTML = 'Show Front';
       }else{
         this.$$('#design-element-img').src = this.$$('#design-element-img').src.replace(/back/, 'front');
-        e.target.innerHTML = 'Back';
+        e.target.innerHTML = 'Show Back';
       }
+    },
+    _designImagesChanged: function(e){
+      this.designImages = e.detail.value;
+      console.log('_designImagesChanged e.detail:',e.detail.value,' this.designImages',this.designImages);
+      for(var key in this.designImages){
+        var attachments = Object.keys(this.designImages[key]._attachments);
+        for(var aKey in attachments){
+          console.log('src:','http://localhost:5984/cats/'+this.designImages[key]._id+'/'+attachments[aKey] )
+          e.target._addImageToCanvas('http://localhost:5984/cats/'+this.designImages[key]._id+'/'+attachments[aKey]);
+        }
+      }
+    },
+    _addImageToCanvas: function(url){
+      var _thisCanvas = this.canvas; //ugh, scope
+      fabric.Image.fromURL(url, function(oImg) {
+        oImg.scaleToWidth(200);
+        _thisCanvas.add(oImg);
+      });
     },
     _log: function(wut){
       console.log('wut:',wut);
@@ -239,23 +281,18 @@
         return Object.keys(attachments);
       }
     },
-    // _getImgSrc: function(attachment){
-    //   var db = new PouchDB('http://localhost:5984/cats');
-    //   db.getAttachment('mydoc', attachment).then(function (blobOrBuffer) {
-    //     return URL.createObjectURL(blobOrBuffer);
-    //   }).catch(function (err) {
-    //     console.log(err);
-    //   });
-    //   // Object.keys(attachment);
-    //   // console.log('_getImgSrc:',attachment);
-    //   // console.log('_getImgSrc:',URL.createObjectURL(attachment));
-    //   // return URL.createObjectURL(attachment);
-    // },
+    _onObjectSelected: function(e){
+      this.set('objectToolsHidden', false);
+    },
+    _onSelectionCleared: function(e){
+      this.set('objectToolsHidden', true);
+    },
     ready: function(){
 
+      this.canvas = new fabric.Canvas(this.$.c);
       // console.log('mydoc:',this.mydoc);
 
-      var canvas = new fabric.Canvas(this.$.c);
+      console.log('this.canvas checck', this.canvas);
 
       var rect = new fabric.Rect({
           top : 100,
@@ -265,7 +302,69 @@
           fill : 'red'
       });
 
-      canvas.add(rect);
+      this.canvas.add(rect);
+
+      // this.canvas.on('object:moving', function(options) { 
+      //   //snap to the edge of the canvas (but can go over the edge...)
+      //   if(options.target.top > -5 && options.target.top < 5){
+      //     options.target.set({
+      //       top: 0,
+      //     });
+      //   }
+      //   if(options.target.right > 195 && options.target.right < 205){
+      //     options.target.set({
+      //       right: 200,
+      //     });
+      //   }
+      //   if(options.target.bottom > 395 && options.target.bottom < 405){
+      //     options.target.set({
+      //       bottom: 400,
+      //     });
+      //   }
+      //   if(options.target.left > -5 && options.target.left < 5){
+      //     options.target.set({
+      //       left: 0,
+      //     });
+      //   }
+      // });
+
+
+      this.canvas.on({
+       'object:moving': function(e) {       
+          e.target.opacity = 0.5;
+          //snap to edge of canvas #TODO: look up canvas height/width
+          if(e.target.top > -5 && e.target.top < 5){
+            e.target.set({
+              top: 0,
+            });
+          }
+          if(e.target.right > 195 && e.target.right < 205){
+            e.target.set({
+              right: 200,
+            });
+          }
+          if(e.target.bottom > 395 && e.target.bottom < 405){
+            e.target.set({
+              bottom: 400,
+            });
+          }
+          if(e.target.left > -5 && e.target.left < 5){
+            e.target.set({
+              left: 0,
+            });
+          }
+
+        },
+        'object:modified': function(e) {        
+          e.target.opacity = 1;
+        },
+        //very important, need to bind to this scope...
+       'object:selected': this._onObjectSelected.bind(this),
+       'selection:cleared': this._onSelectionCleared.bind(this)
+      });
+      // designImages
+      // _attachmentKeys(item._attachments
+
 
       //file upload
       var db = new PouchDB('http://localhost:5984/cats');
