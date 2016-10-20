@@ -11,6 +11,8 @@
 <link rel="import" href="../bower_components/paper-listbox/paper-listbox.html">
 <link rel="import" href="../bower_components/paper-dropdown-menu/paper-dropdown-menu.html">
 <link rel="import" href="../bower_components/paper-swatch-picker/paper-swatch-picker.html">
+<link rel="import" href="../bower_components/paper-button/paper-button.html">
+
 <script src="../bower_components/pouchdb/dist/pouchdb.js"></script>
 <script src="../bower_components/pouchdb-find/dist/pouchdb.find.js"></script>
 <script src="../bower_components/fabric.js/dist/fabric.js"></script>
@@ -155,16 +157,16 @@
         <label for="catFile">Add Image</label>
         <input id="catFile" type="file"></input>
         <br><br>
-
+<!-- 
         <template is="dom-repeat" items="{{designImages}}">
           <template is="dom-repeat" items="{{_attachmentKeys(item._attachments)}}" as="attachment">
             <img src="http://localhost:5984/cats/{{item._id}}/{{ attachment }}" height="50" width="50">
           </template>
         </template>
-        <br>
+        <br> -->
 
         <div id="objectTools" hidden$="{{objectToolsHidden}}">
-          <h1> object toolz!</h1>
+          <paper-button id="removeImage" on-tap="_removeImageFromCanvas" raised>remove image</paper-button>
         </div>
       </div>
       <div id="design-element-container">
@@ -273,6 +275,12 @@
         _thisCanvas.add(oImg);
       });
     },
+    _removeImageFromCanvas: function(e){
+      console.log('_removeImageFromCanvas idx:',this.canvas.getActiveObject());
+      // this.canvas.item(this.$.removeImage.getAttribute('idx')).remove();
+      this.canvas.getActiveObject().remove();
+      // this.canvas.remove(obj);
+    },
     _log: function(wut){
       console.log('wut:',wut);
     },
@@ -282,6 +290,9 @@
       }
     },
     _onObjectSelected: function(e){
+      // console.log('_onObjectSelected id:',this.canvas.getActiveObject().get('id'));
+
+      // this.$.removeImage.setAttribute('idx',this.canvas.getActiveObject().get('id'));
       this.set('objectToolsHidden', false);
     },
     _onSelectionCleared: function(e){
@@ -303,31 +314,6 @@
       });
 
       this.canvas.add(rect);
-
-      // this.canvas.on('object:moving', function(options) { 
-      //   //snap to the edge of the canvas (but can go over the edge...)
-      //   if(options.target.top > -5 && options.target.top < 5){
-      //     options.target.set({
-      //       top: 0,
-      //     });
-      //   }
-      //   if(options.target.right > 195 && options.target.right < 205){
-      //     options.target.set({
-      //       right: 200,
-      //     });
-      //   }
-      //   if(options.target.bottom > 395 && options.target.bottom < 405){
-      //     options.target.set({
-      //       bottom: 400,
-      //     });
-      //   }
-      //   if(options.target.left > -5 && options.target.left < 5){
-      //     options.target.set({
-      //       left: 0,
-      //     });
-      //   }
-      // });
-
 
       this.canvas.on({
        'object:moving': function(e) {       
@@ -362,74 +348,21 @@
        'object:selected': this._onObjectSelected.bind(this),
        'selection:cleared': this._onSelectionCleared.bind(this)
       });
-      // designImages
-      // _attachmentKeys(item._attachments
-
 
       //file upload
       var db = new PouchDB('http://localhost:5984/cats');
 
-      var catImage = this.$.catImage;
-
-      // console.log('designImages:',this.designImages);
-
-      // var images = [];
-      // db.get('mydoc').then(function (doc) {
-      //   // var img = document.createElement('img');
-      //   // Polymer.dom(this.$.designImages).appendChild(img);
-      //   for(var key in doc._attachments) {
-      //     // skip loop if the property is from prototype
-      //     if (!doc._attachments.hasOwnProperty(key)) continue;
-      //     // var obj = doc._attachments[key];
-      //     db.getAttachment('mydoc', key).then(function (blobOrBuffer) {
-      //       console.log('URL.createObjectURL(blobOrBuffer):',URL.createObjectURL(blobOrBuffer));
-      //       console.log('blobOrBuffer:',blobOrBuffer);
-      //       // console.log('blobUtil.createObjectURL(blobOrBuffer):',blobUtil.createObjectURL(blobOrBuffer));
-      //       images.push({ src: URL.createObjectURL(blobOrBuffer) });
-      //     }).catch(function (err) {
-      //       console.log(err);
-      //     });
-
-      //   }
-
-      //   //this.pushImages(images);
-      //   //this.designImages.push(images);
-        
-
-      // });
-
-      
-
-      
-
       var input = this.$.catFile;
+      var _this = this;
       input.addEventListener('change', function () {
         var file = input.files[0]; // file is a Blob
 
-        // console.log('input file:',file);
-
-        // var attachments = {};
-        // attachments[file.name] = {
-        //   content_type: file.type,
-        //   type: file.type,
-        //   data: file
-        // }
-
-        // db.put({
-        //   _id: 'mydoc',
-        //   _attachments: attachments
-        // }).catch(function (err) {
-        //   console.log(err);
-        // });
-
-        // var attachment = new Blob(file, {type: file.type});
         db.putAttachment(file.name, file.name, file, file.type).then(function (result) {
           // handle result
+          _this._addImageToCanvas('http://localhost:5984/cats/'+file.name+'/'+file.name);
         }).catch(function (err) {
           console.log(err);
         });
-
-
 
       });
 
