@@ -16,6 +16,8 @@
 <link rel="import" href="../bower_components/paper-input/paper-input.html">
 <link rel="import" href="../bower_components/paper-input/paper-textarea.html">
 <link rel="import" href="../bower_components/paper-checkbox/paper-checkbox.html">
+<link rel="import" href="../bower_components/paper-fab/paper-fab.html">
+<link rel="import" href="rebelcricket-icons.html">
 
 <script src="../bower_components/pouchdb/dist/pouchdb.js"></script>
 <script src="../bower_components/pouchdb-find/dist/pouchdb.find.js"></script>
@@ -24,12 +26,12 @@
   <template>
     <style is="custom-style" include="rebelcricket-common-styles">    
 
-      paper-button.custom {
+      paper-button.custom, paper-fab.custom {
         background: white;
         color: #333;
       }
 
-      paper-button.custom:hover {
+      paper-button.custom:hover, paper-fab.custom:hover {
         background: #333;
         color: white;
       }
@@ -41,18 +43,29 @@
 
       paper-input, paper-textarea {
         width: 100%;
+        --paper-input-container-color: white;
+        --paper-input-container-input-color: white;
       }
 
       hr {
         width: 97%;
       }
 
-      .fit {
-        position: initial!important;
+      .section-label {
+        justify-content: center;
+      }
+      .section-label span{
+        color: black;
+        background-color: white;
+        border-radius: 5px;
+        width: 97%;
+        height: 1.5em;
+        text-align: center;
       }
 
       .center{
         text-align: center;
+        justify-content: center;
       }
 
       .flex-wrap {
@@ -66,10 +79,20 @@
 
      
 
-      @media (max-width: 767px) {
-
-
+      @media (max-width: 600px) {
+        .section-label span{
+          width: auto;
+          height: auto;
+          padding: 0 2px 0 2px;
+        }
       }
+
+      @media (max-width: 875px) {
+        .section-label span{
+          height: auto;
+        }
+      }
+
 
     </style>
  <!--    <app-route
@@ -77,17 +100,17 @@
         pattern="/:order_id"
         data="{{routeData}}"></app-route> -->
 
+<!--     <app-pouchdb-document
+      db-name="http://localhost:5984/models"
+      doc-id="order"
+      data="{{orderModel}}">
+    </app-pouchdb-document> -->
+
     <app-pouchdb-document
       db-name="http://localhost:5984/orders"
       doc-id="{{orderID}}"
       data="{{order}}">
     </app-pouchdb-document>
-
- <!--      <app-pouchdb-document
-        db-name="http://localhost:5984/cats"
-        doc-id="mydoc"
-        data="{{mydoc}}">
-      </app-pouchdb-document> -->
 
   
 
@@ -101,7 +124,7 @@
             <div class="xs7">
               <template is="dom-repeat" items="{{order.header.items0}}">
                 <div class$="[[item.col]]">
-                  <paper-input name="{{item.key}}" label="{{item.label}}" value="{{item.value}}"></paper-input>
+                  <paper-input name="[[item.key]]" label="[[item.label]]" value="{{item.value}}"></paper-input>
                 </div>
               </template>
             </div>
@@ -109,7 +132,7 @@
             <div class="xs5">
               <template is="dom-repeat" items="{{order.header.items1}}">
                 <div class$="[[item.col]]">
-                  <paper-input name="{{item.key}}" label="{{item.label}}" value="{{item.value}}"></paper-input>
+                  <paper-input name="[[item.key]]" label="[[item.label]]" value="{{item.value}}"></paper-input>
                 </div>
               </template>
             </div>
@@ -118,12 +141,12 @@
 
             <div class="xs7">
               <div class="xs8">[[order.header.label0]]</div>
-              <div class="xs4">[[order.header.label1]]</div>
+              <div class="section-label xs4"><span>[[order.header.label1]]</span></div>
             </div>
             <div class="xs5">
               <template is="dom-repeat" items="{{order.header.items2}}">
                 <div class$="[[item.col]]">
-                  <paper-input name="{{item.key}}" label="{{item.label}}" value="{{item.value}}"></paper-input>
+                  <paper-input name="[[item.key]]" label="[[item.label]]" value="{{item.value}}"></paper-input>
                 </div>
               </template>
             </div>
@@ -132,7 +155,7 @@
             <div class="xs5 offset-xs7">
               <template is="dom-repeat" items="{{order.header.items3}}">
                 <div class$="[[item.col]]">
-                  <paper-input name="{{item.key}}" label="{{item.label}}" value="{{item.value}}"></paper-input>
+                  <paper-input name="[[item.key]]" label="[[item.label]]" value="{{item.value}}"></paper-input>
                 </div>
               </template>
             </div>
@@ -145,45 +168,47 @@
           </iron-grid>
           <iron-grid>
             <div class="xs12 s6">
-              <div class="label s12">
-                [[order.job.label]]
+              <div class="section-label s12">
+                <span>[[order.job.label]]</span>
               </div>
               <template is="dom-repeat" items="{{order.job.items}}">
                 <div class$="[[item.col]]">
-                  <template is="dom-if" if="{{_isInput(item.type)}}">
-                    <paper-input name="{{item.key}}" label="{{item.label}}" value="{{item.value}}"></paper-input>
+                  <template is="dom-if" if="[[_isInput(item.type)]]">
+                    <paper-input name="[[item.key]]" label="[[item.label]]" value="{{item.value}}"></paper-input>
                   </template>
-                  <template is="dom-if" if="{{_isTextarea(item.type)}}">
-                    <paper-textarea rows="{{item.rows}}" name="{{item.key}}" label="{{item.label}}" value="{{item.value}}"></paper-textarea>
+                  <template is="dom-if" if="[[_isTextarea(item.type)]]">
+                    <paper-textarea rows="[[item.rows]]" name="[[item.key]]" label="[[item.label]]" value="{{item.value}}"></paper-textarea>
                   </template>
                 </div>
               </template>
             </div>
             <div class="xs12 m6">
-              <div class="label xs12">
-                [[order.client_contact_information.label]]
+              <div class="section-label xs12">
+                <span>[[order.client_contact_information.label]]</span>
               </div>
               <template is="dom-repeat" items="{{order.client_contact_information.items}}">
                 <div class$="[[item.col]]">
-                  <paper-input name="{{item.key}}" label="{{item.label}}" value="{{item.value}}"></paper-input>
+                  <paper-input name="[[item.key]]" label="[[item.label]]" value="{{item.value}}"></paper-input>
                 </div>
               </template>
             </div>
 
             <div class="xs12 s6">
-              <div class="label xs12">
-                [[order.job_completion_and_shipping.label]]
+              <div class="section-label xs12">
+                <span>[[order.job_completion_and_shipping.label]]</span>
               </div>
+              <br>
+              <br>
               <template is="dom-repeat" items="{{order.job_completion_and_shipping.items}}">
                 <div class$="[[item.col]]">
-                  <template is="dom-if" if="{{_isInput(item.type)}}">
-                    <paper-input name="{{item.key}}" label="{{item.label}}" value="{{item.value}}"></paper-input>
+                  <template is="dom-if" if="[[_isInput(item.type)]]">
+                    <paper-input name="[[item.key]]" label="[[item.label]]" value="{{item.value}}"></paper-input>
                   </template>
-                  <template is="dom-if" if="{{_isTextarea(item.type)}}">
-                    <paper-textarea rows="{{item.rows}}" name="{{item.key}}" label="{{item.label}}" value="{{item.value}}"></paper-textarea>
+                  <template is="dom-if" if="[[_isTextarea(item.type)]]">
+                    <paper-textarea rows="[[item.rows]]" name="[[item.key]]" label="[[item.label]]" value="{{item.value}}"></paper-textarea>
                   </template>
-                  <template is="dom-if" if="{{_isCheckbox(item.type)}}">
-                    <paper-checkbox checked="{{item.value}}"> {{item.label}}</paper-checkbox>
+                  <template is="dom-if" if="[[_isCheckbox(item.type)]]">
+                    <paper-checkbox checked="{{item.value}}"> [[item.label]]</paper-checkbox>
                   </template>
                 </div>
               </template>
@@ -195,51 +220,58 @@
             <template is="dom-repeat" items="{{order.line_items.items}}">
               <template is="dom-repeat" items="{{item}}">
                 <div class$="[[item.col]]">
-                  <template is="dom-if" if="{{_isInput(item.type)}}">
-                    <paper-input name="{{item.key}}" label="{{item.label}}" value="{{item.value}}" readonly$="{{item.readonly}}"></paper-input>
+                  <template is="dom-if" if="[[_isInput(item.type)]]">
+                    <paper-input name="[[item.key]]" label="[[item.label]]" value="{{item.value}}" readonly$="[[item.readonly]]"></paper-input>
                   </template>
                 </div>
               </template>
             </template>
-            <div class="xs12">
-              &plus;
+            <div class="xs12 center">
+<!--               <paper-button class="custom" on-tap="_addLineItemRow" raised>&plus;</paper-button> -->
+              <paper-fab mini on-tap="_addLineItemRow" icon="add" class="custom"></paper-fab>
             </div>
           </iron-grid>
           <br>
           <iron-grid>
-            <div class="xs12 s6 l4">
+            
               <template is="dom-repeat" items="{{order.graphic.items}}">
-                <template is="dom-repeat" items="{{item.top}}">
-                  <div class$="[[item.col]]">
-                    <template is="dom-if" if="{{_isInput(item.type)}}">
-                      <paper-input name="{{item.key}}" label="{{item.label}}" value="{{item.value}}" readonly$="{{item.readonly}}"></paper-input>
-                    </template>
-                  </div>
-                </template>
+                <div class="xs12 s6 l4">
+                  <template is="dom-repeat" items="{{item.top}}">
+                    <div class$="[[item.col]]">
+                      <template is="dom-if" if="[[_isInput(item.type)]]">
+                        <paper-input name="[[item.key]]" label="[[item.label]]" value="{{item.value}}" readonly$="[[item.readonly]]"></paper-input>
+                      </template>
+                    </div>
+                  </template>
 
-                <template is="dom-repeat" items="{{item.color_mesh_print}}">
-                  <div class$="[[item.col]]">
-                    <template is="dom-if" if="{{_isInput(item.type)}}">
-                      <paper-input name="{{item.key}}" label="{{item.label}}" value="{{item.value}}"></paper-input>
+                  <template is="dom-repeat" items="{{item.color_mesh_print}}">
+                    <template is="dom-repeat" items="{{item}}">
+                      <div class$="[[item.col]]">
+                        <template is="dom-if" if="[[_isInput(item.type)]]">
+                          <paper-input name="[[item.key]]" label="[[item.label]]" value="{{item.value}}"></paper-input>
+                        </template>
+                      </div>
                     </template>
+                  </template>
+                  <div class="xs12 center">
+                    <!-- <paper-button class="custom" on-tap="_addColorMeshPrint" raised>&plus;</paper-button> -->
+                    <paper-fab mini on-tap="_addColorMeshPrint" icon="add" class="custom"></paper-fab>
                   </div>
-                </template>
-                <div class="xs12">
-                  &plus;
+                  <template is="dom-repeat" items="{{item.bottom}}">
+                    <div class$="[[item.col]]">
+                      <template is="dom-if" if="[[_isInput(item.type)]]">
+                        <paper-input name="[[item.key]]" label="[[item.label]]" value="{{item.value}}"></paper-input>
+                      </template>
+                    </div>
+                  </template>
                 </div>
-                <template is="dom-repeat" items="{{item.bottom}}">
-                  <div class$="[[item.col]]">
-                    <template is="dom-if" if="{{_isInput(item.type)}}">
-                      <paper-input name="{{item.key}}" label="{{item.label}}" value="{{item.value}}"></paper-input>
-                    </template>
-                  </div>
-                </template>
               </template>
 
-              <div class="xs12">
-                &plus;
+              <div class="xs12 center">
+                <!-- <paper-button class="custom" on-tap="_addNewGraphic" raised>&plus;</paper-button> -->
+                <paper-fab mini on-tap="_addNewGraphic" icon="add" class="custom"></paper-fab>
               </div>
-            </div>
+            
           </iron-grid>
           
       </iron-grid-container>
@@ -297,109 +329,119 @@
       });
   };
 
+  var _now = function(){
+    var date = new Date();
+    return ("0"+(date.getMonth() + 1)).slice(-2) + "/" + ("0"+date.getDate()).slice(-2) + "/" +  date.getFullYear();
+  }
+  var orderModel = {
+    header: {
+      label0: 'REBEL CRICKET SCREEN PRINTS',
+      label1: 'WORK ORDER',
+      items0: [
+        {key: 'estimate_number', label: 'estimate #', type: 'text', col: 'xs12 s6'},
+        {key: 'invoice_number', label: 'invoice#', type: 'text', col: 'xs12 s6'}
+      ],
+      items1: [
+        {key: 'todays_date', label: 'TODAY\'S DATE', value: _now(), type: 'text', col: 'xs12'},
+      ],
+      items2: [
+        {key: 'purchase_order_number', label: 'PURCHASE ORDER #', type: 'text', col: 'xs12'},
+      ],
+      items3: [
+        {key: 'in_hands_date', label: 'IN-HANDS DATE', type: 'text', col: 'xs12'}
+      ]
+    },
+    job: {
+      label: 'JOB',
+      items: [
+        {key: 'job_name', label: 'JOB', type: 'text', col: 'xs8'},
+        {key: 'from_po', label: 'From P.O.#', type: 'text', col: 'xs4'},
+        {key: 'art_notes', label: 'ART NOTES', type: 'textarea', col: 'xs12', rows: 4},
+        {key: 'printers_notes', label: 'Printer\'s Notes', type: 'textarea', col: 'xs12', rows: 2}
+      ]
+    },
+    client_contact_information: {
+      label: 'CLIENT CONTACT INFORMATION',
+      items: [
+        {key: 'client_name', label: 'Name', type: 'text', col: 'xs12'},
+        {key: 'client_phone', label: 'Phone', type: 'text', col: 'xs12'},
+        {key: 'client_email', label: 'Email', type: 'text', col: 'xs12'}
+      ]
+    },
+    job_completion_and_shipping: {
+      label: 'COMPLETION & SHIPPING INSTRUCTIONS',  
+      items: [
+        {key: 'call_when_complete', label: 'Call when complete', type: 'checkbox', value: false, col: 'xs6'},
+        {key: 'will_call', label: 'Will Call', type: 'checkbox', value: false, col: 'xs3'},
+        {key: 'ship_via', label: 'Ship', type: 'checkbox', value: false, col: 'xs3'},
+        {key: 'ship_via_txt', label: 'Ship Via', type: 'text', col: 'xs6'},
+        {key: 'ship_by_date', label: 'Ship by date', type: 'text', col: 'xs6'},
+        {key: 'ship_to', label: 'Ship to', type: 'textarea', col: 'xs12', rows: 3}
+      ]
+    },
+    line_items: {
+      label: 'LINE ITEMS',
+      items: [
+        [
+          {key: 'brand', label: 'BRAND', type: 'text', col: 'xs4 s2 m1'},
+          {key: 'style', label: 'STYLE', type: 'text', col: 'xs4 s2 m1'},
+          {key: 'color', label: 'COLOR', type: 'text', col: 'xs4 s2 m1'},
+          {key: 'xs', label: 'XS', type: 'number', col: 'xs2 s2 m1'},
+          {key: 'sm', label: 'SM', type: 'number', col: 'xs2 s2 m1'},
+          {key: 'md', label: 'MD', type: 'number', col: 'xs2 s2 m1'},
+          {key: 'lg', label: 'LG', type: 'number', col: 'xs2 s2 m1'},
+          {key: 'xl', label: 'XL', type: 'number', col: 'xs2 s2 m1'},
+          {key: '2xl', label: '2XL', type: 'number', col: 'xs2 s2 m1'},
+          {key: '3xl', label: '3XL', type: 'number', col: 'xs4 s2 m1'},
+          {key: 'other', label: 'OTHER', type: 'number', col: 'xs4 s2 m1'},
+          {key: 'line_total', label: 'TOTAL', type: 'number', col: 'xs4 s2 m1', readonly: true},
+        ]
+      ]
+    },
+    graphic: {
+      items: [{
+        top: [
+          {key: 'graphic_name', label: 'Graphic', type: 'text', col: 'xs12'},
+          {key: 'new_setup', label: 'New setup', type: 'text', col: 'xs6'},
+          {key: 'resets', label: 'Resets', type: 'number', col: 'xs6'},
+          {key: 'placement', label: 'Placement', type: 'text', col: 'xs6'},
+          {key: 'line_items_total', label: 'Total', type: 'number', col: 'xs6', readonly: true},
+          {key: 'color_changes', label: 'Color changes', type: 'number', col: 'xs12'},
+          {key: 'pricing_group', label: 'Pricing group', type: 'text', col: 'xs6'},
+          {key: 'flash', label: 'Flash', type: 'text', col: 'xs6'}
+        ],
+        color_mesh_print: [ 
+          [
+            {key: 'graphic_color', label: 'COLOR', type:'text', col: 'xs4'},
+            {key: 'mesh', label: 'MESH', type:'text', col: 'xs4'},
+            {key: 'print_order', label: 'PRINT ORDER', type:'text', col: 'xs4'}
+          ]
+        ],
+        bottom: [
+          {key: 'setup_start', label: 'Setup start', type: 'text', col: 'xs12'},
+          {key: 'setup_complete', label: 'Setup complete', type: 'text', col: 'xs12'},
+          {key: 'approved_by', label: 'Approved by', type: 'text', col: 'xs12'},
+          {key: 'print_start', label: 'Print start', type: 'text', col: 'xs12'},
+          {key: 'breaks', label: 'Break/s', type: 'text', col: 'xs12'},
+          {key: 'print_end', label: 'Print end', type: 'text', col: 'xs12'}
+        ]
+      }]
+    }
+  };
+
+
   Polymer({
     is: 'rebelcricket-order',
     behaviors: [
       Polymer.AppPouchDBDatabaseBehavior
     ],
     properties: {
+      
       order: {
         type: Object,
         notify: true,
-        value: function(){
-          return {
-            header: {
-              label0: 'REBEL CRICKET SCREEN PRINTS',
-              label1: 'WORK ORDER',
-              items0: [
-                {key: 'estimate_number', label: 'estimate #', type: 'text', col: 'xs12 s6'},
-                {key: 'invoice_number', label: 'invoice#', type: 'text', col: 'xs12 s6'}
-              ],
-              items1: [
-                {key: 'todays_date', label: 'TODAY\'S DATE', value: this._now(), type: 'text', col: 'xs12'},
-              ],
-              items2: [
-                {key: 'purchase_order_number', label: 'PURCHASE ORDER #', type: 'text', col: 'xs12'},
-              ],
-              items3: [
-                {key: 'in_hands_date', label: 'IN-HANDS DATE', type: 'text', col: 'xs12'}
-              ]
-            },
-            job: {
-              label: 'JOB',
-              items: [
-                {key: 'job_name', label: 'JOB', type: 'text', col: 'xs8'},
-                {key: 'from_po', label: 'From P.O.#', type: 'text', col: 'xs4'},
-                {key: 'art_notes', label: 'ART NOTES', type: 'textarea', col: 'xs12', rows: 4},
-                {key: 'printers_notes', label: 'Printer\'s Notes', type: 'textarea', col: 'xs12', rows: 2}
-              ]
-            },
-            client_contact_information: {
-              label: 'CLIENT CONTACT INFORMATION',
-              items: [
-                {key: 'client_name', label: 'Name', type: 'text', col: 'xs12'},
-                {key: 'client_phone', label: 'Phone', type: 'text', col: 'xs12'},
-                {key: 'client_email', label: 'Email', type: 'text', col: 'xs12'}
-              ]
-            },
-            job_completion_and_shipping: {
-              label: 'COMPLETION & SHIPPING INSTRUCTIONS',  
-              items: [
-                {key: 'call_when_complete', label: 'Call when complete', type: 'checkbox', value: false, col: 'xs6'},
-                {key: 'will_call', label: 'Will Call', type: 'checkbox', value: false, col: 'xs3'},
-                {key: 'ship_via', label: 'Ship', type: 'checkbox', value: false, col: 'xs3'},
-                {key: 'ship_via_txt', label: 'Ship Via', type: 'text', col: 'xs6'},
-                {key: 'ship_by_date', label: 'Ship by date', type: 'text', col: 'xs6'},
-                {key: 'ship_to', label: 'Ship to', type: 'textarea', col: 'xs12', rows: 3}
-              ]
-            },
-            line_items: {
-              label: 'LINE ITEMS',
-              items: [
-                [
-                  {key: 'brand', label: 'BRAND', type: 'text', col: 'xs4 s2 m1'},
-                  {key: 'style', label: 'STYLE', type: 'text', col: 'xs4 s2 m1'},
-                  {key: 'color', label: 'COLOR', type: 'text', col: 'xs4 s2 m1'},
-                  {key: 'xs', label: 'XS', type: 'number', col: 'xs2 s2 m1'},
-                  {key: 'sm', label: 'SM', type: 'number', col: 'xs2 s2 m1'},
-                  {key: 'md', label: 'MD', type: 'number', col: 'xs2 s2 m1'},
-                  {key: 'lg', label: 'LG', type: 'number', col: 'xs2 s2 m1'},
-                  {key: 'xl', label: 'XL', type: 'number', col: 'xs2 s2 m1'},
-                  {key: '2xl', label: '2XL', type: 'number', col: 'xs2 s2 m1'},
-                  {key: '3xl', label: '3XL', type: 'number', col: 'xs4 s2 m1'},
-                  {key: 'other', label: 'OTHER', type: 'number', col: 'xs4 s2 m1'},
-                  {key: 'line_total', label: 'TOTAL', type: 'number', col: 'xs4 s2 m1', readonly: true},
-                ]
-              ]
-            },
-            graphic: {
-              items: [{
-                top: [
-                  {key: 'graphic_name', label: 'Graphic', type: 'text', col: 'xs12'},
-                  {key: 'new_setup', label: 'New setup', type: 'text', col: 'xs6'},
-                  {key: 'resets', label: 'Resets', type: 'number', col: 'xs6'},
-                  {key: 'placement', label: 'Placement', type: 'text', col: 'xs6'},
-                  {key: 'line_items_total', label: 'Total', type: 'number', col: 'xs6', readonly: true},
-                  {key: 'color_changes', label: 'Color changes', type: 'number', col: 'xs12'},
-                  {key: 'pricing_group', label: 'Pricing group', type: 'text', col: 'xs6'},
-                  {key: 'flash', label: 'Flash', type: 'text', col: 'xs6'}
-                ],
-                color_mesh_print: [ 
-                  {key: 'graphic_color', label: 'COLOR', type:'text', col: 'xs4'},
-                  {key: 'mesh', label: 'MESH', type:'text', col: 'xs4'},
-                  {key: 'print_order', label: 'PRINT ORDER', type:'text', col: 'xs4'}
-                ],
-                bottom: [
-                  {key: 'setup_start', label: 'Setup start', type: 'text', col: 'xs12'},
-                  {key: 'setup_complete', label: 'Setup complete', type: 'text', col: 'xs12'},
-                  {key: 'approved_by', label: 'Approved by', type: 'text', col: 'xs12'},
-                  {key: 'print_start', label: 'Print start', type: 'text', col: 'xs12'},
-                  {key: 'breaks', label: 'Break/s', type: 'text', col: 'xs12'},
-                  {key: 'print_end', label: 'Print end', type: 'text', col: 'xs12'}
-                ]
-              }]
-            }
-          }
+        value: function() {
+          return orderModel;
         }
       },
       orderID: {
@@ -413,10 +455,6 @@
         }
       }
     },
-    _now: function(){
-      var date = new Date();
-      return ("0"+(date.getMonth() + 1)).slice(-2) + "/" + ("0"+date.getDate()).slice(-2) + "/" +  date.getFullYear();
-    },
     _isInput: function(type){
       return type == 'text' || type == 'number';
     },
@@ -426,11 +464,25 @@
     _isCheckbox: function(type){
       return type == 'checkbox';
     },
+    _addLineItemRow: function(e){
+      this.push('order.line_items.items',orderModel.line_items.items[0]);
+    },
+    _addColorMeshPrint: function(e){
+      //ugh, RTFM: https://www.polymer-project.org/1.0/docs/devguide/data-system#paths
+      //An index, for example, "myArray.1" indicates the array item at position 1.
+      //An opaque key, prefixed with the pound sign (#), for example, "myArray.#1" indicates the array item with the key "1".
+      this.push('order.graphic.items.'+e.model.index+'.color_mesh_print', orderModel.graphic.items[0].color_mesh_print[0]);
+    },
+    _addNewGraphic: function(e){
+      this.push('order.graphic.items', orderModel.graphic.items[0]);
+    },
     ready: function(){
 
-      console.log('orderID:',this.orderID);
+      console.log('orderModel:',orderModel);
 
       console.log('this.order',this.order);
+
+      console.log('this.order.line_items.items:',this.order.line_items.items);
 
       //file upload
       // var db = new PouchDB('http://localhost:5984/orders');
