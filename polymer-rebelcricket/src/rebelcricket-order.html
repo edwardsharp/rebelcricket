@@ -1,0 +1,304 @@
+<link rel="import" href="../bower_components/polymer/polymer.html">
+<!-- <link rel="import" href="rebelcricket-pouchdb.html"> -->
+<link rel="import" href="../bower_components/app-pouchdb/pouchdb.html">
+<link rel="import" href="../bower_components/app-pouchdb/app-pouchdb-database-behavior.html">
+<link rel="import" href="../bower_components/app-pouchdb/app-pouchdb-index.html">
+<link rel="import" href="../bower_components/app-pouchdb/app-pouchdb-query.html"> 
+<link rel="import" href="../bower_components/app-pouchdb/app-pouchdb-document.html">
+<!-- <link rel="import" href="../bower_components/app-pouchdb/app-pouchdb-conflict-resolution.html"> -->
+<link rel="import" href="../bower_components/paper-toggle-button/paper-toggle-button.html">
+<link rel="import" href="../bower_components/paper-item/paper-item.html">
+<link rel="import" href="../bower_components/paper-listbox/paper-listbox.html">
+<link rel="import" href="../bower_components/paper-dropdown-menu/paper-dropdown-menu.html">
+<link rel="import" href="../bower_components/paper-swatch-picker/paper-swatch-picker.html">
+<link rel="import" href="../bower_components/paper-button/paper-button.html">
+
+<script src="../bower_components/pouchdb/dist/pouchdb.js"></script>
+<script src="../bower_components/pouchdb-find/dist/pouchdb.find.js"></script>
+
+<dom-module id="rebelcricket-order">
+  <template>
+    <style is="custom-style" include="rebelcricket-common-styles">    
+
+      paper-button.custom {
+        background: white;
+        color: #333;
+      }
+
+      paper-button.custom:hover {
+        background: #333;
+        color: white;
+      }
+
+      paper-button[disabled] {
+        background: #333;
+        color: gray;
+      }
+
+ 
+
+      .center{
+        text-align: center;
+      }
+
+      .flex-wrap {
+        @apply(--layout-horizontal);
+        @apply(--layout-wrap);
+      }
+
+      .flex-wrap div {
+        min-width: 200px;
+      }
+
+     
+
+      @media (max-width: 767px) {
+
+
+      }
+
+    </style>
+ <!--    <app-route
+        route="[[route]]"
+        pattern="/:order_id"
+        data="{{routeData}}"></app-route> -->
+
+    <app-pouchdb-document
+      db-name="http://localhost:5984/orders"
+      doc-id="{{orderID}}"
+      data="{{order}}">
+    </app-pouchdb-document>
+
+ <!--      <app-pouchdb-document
+        db-name="http://localhost:5984/cats"
+        doc-id="mydoc"
+        data="{{mydoc}}">
+      </app-pouchdb-document> -->
+
+  
+
+    <div class="container">
+      <header class="center">
+        <h1 class="rebelcricket-header">Order</h1>
+      </header>
+
+      <div class="flex-wrap">
+        <div>
+         <!--  <paper-dropdown-menu label="Style" on-iron-select="_styleSelected">
+            <paper-listbox class="dropdown-content" selected="0">
+              <paper-item value="crew">Crew</paper-item>
+              <paper-item value="womens_crew">Women's Crew</paper-item>
+              <paper-item value="hoodie">Hoodie</paper-item>
+              <paper-item value="longsleeve">Long Sleeve</paper-item>
+            </paper-listbox>
+          </paper-dropdown-menu> -->
+        <!--   <paper-swatch-picker color="{{designElementColor}}" column-count=4 color-list='["#000000", "#65a5f2", "#83be54", "#f0d551", "#e5943c", "#a96ddb", "#B20000", "#ffffff"]'></paper-swatch-picker> -->
+         
+          <template is="dom-repeat" items="{{order.header_items}}">
+            <label for="{{item.key}}">
+              {{item.label}}
+              <input
+                id="{{item.key}}"
+                is="iron-input"
+                bind-value="{{item.value}}">
+              </input>
+            </label>
+          </template>
+
+          
+   
+ 
+
+
+
+          <!-- <template is="dom-repeat" items="{{designImages}}">
+            <template is="dom-repeat" items="{{_attachmentKeys(item._attachments)}}" as="attachment">
+              <img src="http://localhost:5984/cats/{{item._id}}/{{ attachment }}" height="50" width="50">
+            </template>
+          </template>
+          <br> -->
+
+          
+        </div>
+
+        <div>
+
+        </div>
+      </div>
+    </div>
+
+  </template>
+
+  <script>
+  generateGUID = (typeof(window.crypto) != 'undefined' && 
+                typeof(window.crypto.getRandomValues) != 'undefined') ?
+  function() {
+      // If we have a cryptographically secure PRNG, use that
+      // http://stackoverflow.com/questions/6906916/collisions-when-generating-uuids-in-javascript
+      var buf = new Uint16Array(8);
+      window.crypto.getRandomValues(buf);
+      var S4 = function(num) {
+          var ret = num.toString(16);
+          while(ret.length < 4){
+              ret = "0"+ret;
+          }
+          return ret;
+      };
+      return (S4(buf[0])+S4(buf[1])+"-"+S4(buf[2])+"-"+S4(buf[3])+"-"+S4(buf[4])+"-"+S4(buf[5])+S4(buf[6])+S4(buf[7]));
+  }
+  :
+  function() {
+      // Otherwise, just use Math.random
+      // http://stackoverflow.com/questions/105034/how-to-create-a-guid-uuid-in-javascript/2117523#2117523
+      return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function(c) {
+          var r = Math.random()*16|0, v = c == 'x' ? r : (r&0x3|0x8);
+          return v.toString(16);
+      });
+  };
+
+  Polymer({
+    is: 'rebelcricket-order',
+    behaviors: [
+      Polymer.AppPouchDBDatabaseBehavior
+    ],
+    properties: {
+      order: {
+        type: Object,
+        notify: true,
+        value: function(){
+          return {
+            header: {
+              label: 'WORK ORDER',
+              items: [
+                {key: 'estimate_number', label: 'estimate #', type: 'text'},
+                {key: 'invoice_number', label: 'invoice#', type: 'text'},
+                {key: 'todays_date', label: 'TODAY\'S DATE', value: this._now(), type: 'text'},
+                {key: 'purchase_order_number', label: 'PURCHASE ORDER #', type: 'text'},
+                {key: 'in_hands_date', label: 'IN-HANDS DATE', type: 'text'}
+              ]
+            },
+            job: {
+              label: 'JOB',
+              items: [
+                {key: 'job_name', label: 'JOB', type: 'text'},
+                {key: 'from_po', label: 'From P.O.#', type: 'text'},
+                {key: 'art_notes', label: 'ART NOTES', type: 'text'},
+                {key: 'printers_notes', label: 'Printer\'s Notes', type: 'text'}
+              ]
+            },
+            client_contact_information: {
+              label: 'CLIENT CONTACT INFORMATION',
+              items: [
+                {key: 'client_name', label: 'Name', type: 'text'},
+                {key: 'client_phone', label: 'Phone', type: 'text'},
+                {key: 'client_email', label: 'Email', type: 'text'}
+              ]
+            },
+            job_completion_and_shipping: {
+              label: 'JOB COMPLETION AND SHIPPING INSTRUCTIONS',  
+              items: [
+                {key: 'call_when_complete', label: 'Call when job is complete', type: 'checkbox'},
+                {key: 'will_call', label: 'Will Call', type: 'checkbox'},
+                {key: 'ship_via', label: 'Ship Via', type: 'checkbox'},
+                {key: 'ship_via_txt', label: '', type: 'text'},
+                {key: 'ship_by_date', label: 'Ship by date', type: 'text'},
+                {key: 'ship_to', label: 'Ship to', type: 'textarea'}
+              ]
+            },
+            line_items: {
+              label: 'LINE ITEMS',
+              items: [
+                [
+                  {key: 'brand', label: 'BRAND', type: 'text'},
+                  {key: 'style', label: 'STYLE', type: 'text'},
+                  {key: 'color', label: 'COLOR', type: 'text'},
+                  {key: 'xs', label: 'XS', type: 'number'},
+                  {key: 'sm', label: 'SM', type: 'number'},
+                  {key: 'md', label: 'MD', type: 'number'},
+                  {key: 'lg', label: 'LG', type: 'number'},
+                  {key: 'xl', label: 'XL', type: 'number'},
+                  {key: '2xl', label: '2XL', type: 'number'},
+                  {key: '3xl', label: '3XL', type: 'number'},
+                  {key: 'other', label: 'OTHER', type: 'number'},
+                  {key: 'line_total', label: 'TOTAL', type: 'number'},
+                ]
+              ]
+            },
+            graphic: {
+              items: [{
+                top: [
+                  {key: 'graphic_name', label: 'Graphic', type: 'text'},
+                  {key: 'new_setup', label: 'New setup', type: 'text'},
+                  {key: 'resets', label: 'Resets', type: 'number'},
+                  {key: 'placement', label: 'Placement', type: 'text'},
+                  {key: 'line_items_total', label: 'Total', type: 'number'},
+                  {key: 'color_changes', label: 'Color changes', type: 'number'},
+                  {key: 'pricing_group', label: 'Pricing group', type: 'text'},
+                  {key: 'flash', label: 'Flash', type: 'text'}
+                ],
+                color_mesh_print_items: [ 
+                  [
+                    {key: 'graphic_color', label: 'COLOR', type:'text'},
+                    {key: 'mesh', label: 'MESH', type:'text'},
+                    {key: 'print_order', label: 'PRINT ORDER', type:'text'}
+                  ]
+                ],
+                bottom: [
+                  {key: 'setup_start', label: 'Setup start', type: 'text'},
+                  {key: 'setup_complete', label: 'Setup complete', type: 'text'},
+                  {key: 'approved_by', label: 'Approved by', type: 'text'},
+                  {key: 'print_start', label: 'Print start', type: 'text'},
+                  {key: 'breaks', label: 'Break/s', type: 'text'},
+                  {key: 'print_end', label: 'Print end', type: 'text'},
+                ]
+              }]
+            }
+          }
+        }
+      },
+      orderID: {
+        type: String,
+        notify: false,
+        value: function() { 
+          if(window.location.hash === ''){
+            window.location.hash = generateGUID();
+          }
+          return window.location.hash.replace(/#/,'');
+        }
+      }
+    },
+    _now: function(){
+      var date = new Date();
+      return ("0"+(date.getMonth() + 1)).slice(-2) + "/" + ("0"+date.getDate()).slice(-2) + "/" +  date.getFullYear();
+    },
+    ready: function(){
+
+      console.log('orderID:',this.orderID);
+
+      console.log('this.order',this.order);
+
+      //file upload
+      // var db = new PouchDB('http://localhost:5984/orders');
+
+      // var input = this.$.catFile;
+      // var _this = this;
+      // input.addEventListener('change', function () {
+      //   var file = input.files[0]; // file is a Blob
+
+      //   db.putAttachment(this.orderID, file.name, file, file.type).then(function (result) {
+      //     // handle result
+      //     // _this._addImageToCanvas('http://localhost:5984/cats/'+file.name+'/'+file.name);
+      //   }).catch(function (err) {
+      //     console.log(err);
+      //   });
+
+      // });
+
+    }
+
+
+  });
+
+
+  </script>
+</dom-module>
