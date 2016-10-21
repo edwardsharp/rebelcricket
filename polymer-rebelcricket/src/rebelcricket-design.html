@@ -18,6 +18,7 @@
 <script src="../bower_components/fabric.js/dist/fabric.js"></script>
 <script src="../bower_components/blob-util/dist/blob-util.js"></script>
 <script src="fabric-filters.js"></script>
+<script src="util.js"></script>
 <dom-module id="rebelcricket-design">
   <template>
     <style is="custom-style" include="rebelcricket-common-styles">    
@@ -98,9 +99,6 @@
       .controls div{
         margin-top: 10px;
       }
-      #catInput{
-        display: none;
-      }
 
       @media (max-width: 767px) {
 
@@ -109,35 +107,35 @@
 
     </style>
 
-    <app-pouchdb-document
+<!--     <app-pouchdb-document
       db-name="http://localhost:5984/cats"
       doc-id="parsnip"
       data="{{cat}}">
-    </app-pouchdb-document>
+    </app-pouchdb-document> -->
 
- <!--      <app-pouchdb-document
-        db-name="http://localhost:5984/cats"
-        doc-id="mydoc"
-        data="{{mydoc}}">
-      </app-pouchdb-document> -->
+    <app-pouchdb-document
+        db-name="http://localhost:5984/order_designs"
+        doc-id="{{designID}}"
+        data="{{orderDesign}}">
+      </app-pouchdb-document>
 
     <app-pouchdb-index
-      db-name="http://localhost:5984/cats"
+      db-name="http://localhost:5984/design"
       fields='["name"]'>
     </app-pouchdb-index>
-    <app-pouchdb-query
+<!--     <app-pouchdb-query
       db-name="http://localhost:5984/cats"
       selector="name $exists true"
       fields='["_id","name"]'
       sort='["name"]'
       data="{{cats}}">
-    </app-pouchdb-query>
+    </app-pouchdb-query> -->
 
     <app-pouchdb-query
-      db-name="http://localhost:5984/cats"
+      db-name="http://localhost:5984/order_designs"
       selector="_attachments $exists true"
       fields='["_id","_attachments"]'
-      data="{{designImages}}">
+      data="{{orderDesignAttachments}}">
     </app-pouchdb-query>
 
     <div class="container">
@@ -147,7 +145,7 @@
     <div class="flex-wrap">
       <div id="design-controls">
         <paper-dropdown-menu label="Style" on-iron-select="_styleSelected">
-          <paper-listbox class="dropdown-content" selected="0">
+          <paper-listbox class="dropdown-content" selected="{{orderDesign.style}}">
             <paper-item value="crew">Crew</paper-item>
             <paper-item value="womens_crew">Women's Crew</paper-item>
             <paper-item value="hoodie">Hoodie</paper-item>
@@ -155,20 +153,20 @@
             <!-- <paper-item value="tank">Tank</paper-item> -->
           </paper-listbox>
         </paper-dropdown-menu>
-        <paper-swatch-picker color="{{designElementColor}}" column-count=4 color-list='["#000000", "#65a5f2", "#83be54", "#f0d551", "#e5943c", "#a96ddb", "#B20000", "#ffffff"]'></paper-swatch-picker>
+        <paper-swatch-picker color="[[orderDesign.designElementColor]]" column-count=4 color-list='["#000000", "#65a5f2", "#83be54", "#f0d551", "#e5943c", "#a96ddb", "#B20000", "#ffffff"]'></paper-swatch-picker>
         <br><br>
         <paper-toggle-button class="green" id="toggle-design-element-img" on-tap="_toggleDesignElementImg">Show Back</paper-toggle-button>
         <br>
-        <label for="catFile">Add Image</label>
-        <input id="catFile" type="file"></input>
+        <label for="orderDesignFile">Add Image</label>
+        <input id="orderDesignFile" type="file"></input>
         <br><br>
-        <input
+   <!--      <input
           id="catInput"
           is="iron-input"
           bind-value="{{cat.name}}">
-        </input>
+        </input> -->
 <!-- 
-        <template is="dom-repeat" items="{{designImages}}">
+        <template is="dom-repeat" items="{{orderDesign}}">
           <template is="dom-repeat" items="{{_attachmentKeys(item._attachments)}}" as="attachment">
             <img src="http://localhost:5984/cats/{{item._id}}/{{ attachment }}" height="50" width="50">
           </template>
@@ -179,7 +177,7 @@
       </div>
       <div id="design-element-container">
         <div id="design-element-img-container">
-          <img id="design-element-img" crossOrigin="Anonymous">
+          <img id="design-element-img" style$="background-color: [[orderDesign.designElementColor]]" crossOrigin="Anonymous">
         </div>
         <div id="design-element-canvas-container">
           <canvas id="c" width="200" height="400"></canvas>
@@ -285,6 +283,7 @@
   </template>
 
   <script>
+  var canvasNeedsInit = false;
 
   Polymer({
     is: 'rebelcricket-design',
@@ -297,23 +296,39 @@
         type: Object,
         notify: true
       },
-      designImages: {
+      orderDesign: {
         type: Object,
         notify: true
         // value: function() { return {}; }
       },
+      orderDesignAttachments: {
+        type: Object,
+        notify: true
+      },
       objectToolsHidden: {
         type: Boolean,
         notify: true,
-        value: true
+        value: true // this might need to be false? https://www.polymer-project.org/1.0/docs/devguide/properties#configure-values
+      },
+      designID: {
+        type: String,
+        notify: false,
+        value: function() { 
+          if(window.location.hash === ''){
+            window.location.hash = generateGUID();
+          }
+          return window.location.hash.replace(/#/,'');
+        }
       }
 
     },
     listeners: {
       'color-picker-selected': '_designElementColorChange',
-      'design-images-changed': '_designImagesChanged'
+      'order-design-changed': '_orderDesignChanged',
+      'order-design-attachments-changed': '_orderDesignAttachmentsChanged'
     },
     _designElementColorChange: function(e){
+      this.set('orderDesign.designElementColor', e.detail.color);
       this.$$('#design-element-img').setAttribute('style', 'background-color:'+e.detail.color);
     },
     _styleSelected: function(e){
@@ -330,15 +345,36 @@
         e.target.innerHTML = 'Show Back';
       }
     },
-    _designImagesChanged: function(e){
-      this.designImages = e.detail.value;
-      console.log('_designImagesChanged e.detail:',e.detail.value,' this.designImages',this.designImages);
-      for(var key in this.designImages){
-        var attachments = Object.keys(this.designImages[key]._attachments);
+    _orderDesignChanged: function(e){
+
+      console.log('DESIGN _orderDesignChanged, canvasNeedsInit:', canvasNeedsInit);
+      if(this.orderDesign.canvas && canvasNeedsInit){
+        canvasNeedsInit = false;
+        // this.set('canvasNeedsInit', false);
+        console.log('CANVAS tryin to load JSON:',this.orderDesign.canvas);
+        this._clearCanvas();
+        this.canvas.loadFromJSON(this.orderDesign.canvas);
+      }
+      
+    },
+    _orderDesignAttachmentsChanged: function(e){
+      this.set('orderDesignAttachments', e.detail.value);
+      console.log('_orderDesignAttachmentsChanged e.detail:',e.detail.value,' this.orderDesignAttachments',this.orderDesignAttachments);
+      this._clearCanvas();
+      for(var key in this.orderDesignAttachments){
+        var attachments = Object.keys(this.orderDesignAttachments[key]._attachments);
         for(var aKey in attachments){
-          console.log('src:','http://localhost:5984/cats/'+this.designImages[key]._id+'/'+attachments[aKey] )
-          e.target._addImageToCanvas('http://localhost:5984/cats/'+this.designImages[key]._id+'/'+attachments[aKey]);
+          if(this.orderDesignAttachments[key]._id === this.designID + '_attachments'){
+            console.log('src:','http://localhost:5984/order_designs/'+this.orderDesignAttachments[key]._id+'/'+attachments[aKey] )
+            e.target._addImageToCanvas('http://localhost:5984/order_designs/'+this.orderDesignAttachments[key]._id+'/'+attachments[aKey]);
+          }
+          
         }
+      }
+    },
+    _clearCanvas: function(e){
+      if(this.canvas){
+        this.canvas.clear();
       }
     },
     _addImageToCanvas: function(url){
@@ -368,20 +404,29 @@
     _onSelectionCleared: function(e){
       this.set('objectToolsHidden', true);
     },
+    _onObjectModified: function(e){
+      e.target.opacity = 1;
+      this.set('orderDesign.canvas', this.canvas);
+      // console.log('CANVAS JSON, should match:',JSON.stringify(this.canvas), this.orderDesign.canvas);
+    },
     ready: function(){
 
+      console.log('DESIGN this.orderDesign.canvas?', this.orderDesign.canvas);
       this.canvas = new fabric.Canvas(this.$.c);
 
       // draw something
-      var rect = new fabric.Rect({
-          top : 100,
-          left : 100,
-          width : 60,
-          height : 70,
-          fill : 'red'
-      });
-      this.canvas.add(rect);
+      // var rect = new fabric.Rect({
+      //     top : 100,
+      //     left : 100,
+      //     width : 60,
+      //     height : 70,
+      //     fill : 'red'
+      // });
+      // this.canvas.add(rect);
       
+      
+      canvasNeedsInit = true;
+
       initFabricFilters(this);
 
       this.canvas.on({
@@ -410,25 +455,23 @@
           }
 
         },
-        'object:modified': function(e) {        
-          e.target.opacity = 1;
-        },
-        //very important, need to bind to this scope...
+       //very important, need to bind to this scope...
+       'object:modified': this._onObjectModified.bind(this),
        'object:selected': this._onObjectSelected.bind(this),
        'selection:cleared': this._onSelectionCleared.bind(this)
       });
 
       //file upload
-      var db = new PouchDB('http://localhost:5984/cats');
+      var db = new PouchDB('http://localhost:5984/order_designs');
 
-      var input = this.$.catFile;
+      var input = this.$.orderDesignFile;
       var _this = this;
       input.addEventListener('change', function () {
         var file = input.files[0]; // file is a Blob
 
-        db.putAttachment(file.name, file.name, file, file.type).then(function (result) {
+        db.putAttachment(_this.designID+'_attachments', file.name, file, file.type).then(function (result) {
           // handle result
-          _this._addImageToCanvas('http://localhost:5984/cats/'+file.name+'/'+file.name);
+          _this._addImageToCanvas('http://localhost:5984/order_designs/'+_this.designID+'_attachments/'+file.name);
         }).catch(function (err) {
           console.log(err);
         });
