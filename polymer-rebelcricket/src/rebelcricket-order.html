@@ -6,12 +6,16 @@
 <link rel="import" href="../bower_components/app-pouchdb/app-pouchdb-query.html"> 
 <link rel="import" href="../bower_components/app-pouchdb/app-pouchdb-document.html">
 <!-- <link rel="import" href="../bower_components/app-pouchdb/app-pouchdb-conflict-resolution.html"> -->
+<link rel="import" href="../bower_components/iron-grid/iron-grid.html">
 <link rel="import" href="../bower_components/paper-toggle-button/paper-toggle-button.html">
 <link rel="import" href="../bower_components/paper-item/paper-item.html">
 <link rel="import" href="../bower_components/paper-listbox/paper-listbox.html">
 <link rel="import" href="../bower_components/paper-dropdown-menu/paper-dropdown-menu.html">
 <link rel="import" href="../bower_components/paper-swatch-picker/paper-swatch-picker.html">
 <link rel="import" href="../bower_components/paper-button/paper-button.html">
+<link rel="import" href="../bower_components/paper-input/paper-input.html">
+<link rel="import" href="../bower_components/paper-input/paper-textarea.html">
+<link rel="import" href="../bower_components/paper-checkbox/paper-checkbox.html">
 
 <script src="../bower_components/pouchdb/dist/pouchdb.js"></script>
 <script src="../bower_components/pouchdb-find/dist/pouchdb.find.js"></script>
@@ -35,7 +39,17 @@
         color: gray;
       }
 
- 
+      paper-input, paper-textarea {
+        width: 100%;
+      }
+
+      hr {
+        width: 97%;
+      }
+
+      .fit {
+        position: initial!important;
+      }
 
       .center{
         text-align: center;
@@ -78,12 +92,160 @@
   
 
     <div class="container">
-      <header class="center">
+   <!--    <header class="center">
         <h1 class="rebelcricket-header">Order</h1>
-      </header>
+      </header> -->
 
-      <div class="flex-wrap">
-        <div>
+      <iron-grid-container>
+          <iron-grid>
+            <div class="xs7">
+              <template is="dom-repeat" items="{{order.header.items0}}">
+                <div class$="[[item.col]]">
+                  <paper-input name="{{item.key}}" label="{{item.label}}" value="{{item.value}}"></paper-input>
+                </div>
+              </template>
+            </div>
+
+            <div class="xs5">
+              <template is="dom-repeat" items="{{order.header.items1}}">
+                <div class$="[[item.col]]">
+                  <paper-input name="{{item.key}}" label="{{item.label}}" value="{{item.value}}"></paper-input>
+                </div>
+              </template>
+            </div>
+          </iron-grid>
+          <iron-grid>
+
+            <div class="xs7">
+              <div class="xs8">[[order.header.label0]]</div>
+              <div class="xs4">[[order.header.label1]]</div>
+            </div>
+            <div class="xs5">
+              <template is="dom-repeat" items="{{order.header.items2}}">
+                <div class$="[[item.col]]">
+                  <paper-input name="{{item.key}}" label="{{item.label}}" value="{{item.value}}"></paper-input>
+                </div>
+              </template>
+            </div>
+          </iron-grid>
+          <iron-grid>
+            <div class="xs5 offset-xs7">
+              <template is="dom-repeat" items="{{order.header.items3}}">
+                <div class$="[[item.col]]">
+                  <paper-input name="{{item.key}}" label="{{item.label}}" value="{{item.value}}"></paper-input>
+                </div>
+              </template>
+            </div>
+
+          </iron-grid>
+          <iron-grid>
+            <div class="xs12">
+              <hr>
+            </div>
+          </iron-grid>
+          <iron-grid>
+            <div class="xs12 s6">
+              <div class="label s12">
+                [[order.job.label]]
+              </div>
+              <template is="dom-repeat" items="{{order.job.items}}">
+                <div class$="[[item.col]]">
+                  <template is="dom-if" if="{{_isInput(item.type)}}">
+                    <paper-input name="{{item.key}}" label="{{item.label}}" value="{{item.value}}"></paper-input>
+                  </template>
+                  <template is="dom-if" if="{{_isTextarea(item.type)}}">
+                    <paper-textarea rows="{{item.rows}}" name="{{item.key}}" label="{{item.label}}" value="{{item.value}}"></paper-textarea>
+                  </template>
+                </div>
+              </template>
+            </div>
+            <div class="xs12 m6">
+              <div class="label xs12">
+                [[order.client_contact_information.label]]
+              </div>
+              <template is="dom-repeat" items="{{order.client_contact_information.items}}">
+                <div class$="[[item.col]]">
+                  <paper-input name="{{item.key}}" label="{{item.label}}" value="{{item.value}}"></paper-input>
+                </div>
+              </template>
+            </div>
+
+            <div class="xs12 s6">
+              <div class="label xs12">
+                [[order.job_completion_and_shipping.label]]
+              </div>
+              <template is="dom-repeat" items="{{order.job_completion_and_shipping.items}}">
+                <div class$="[[item.col]]">
+                  <template is="dom-if" if="{{_isInput(item.type)}}">
+                    <paper-input name="{{item.key}}" label="{{item.label}}" value="{{item.value}}"></paper-input>
+                  </template>
+                  <template is="dom-if" if="{{_isTextarea(item.type)}}">
+                    <paper-textarea rows="{{item.rows}}" name="{{item.key}}" label="{{item.label}}" value="{{item.value}}"></paper-textarea>
+                  </template>
+                  <template is="dom-if" if="{{_isCheckbox(item.type)}}">
+                    <paper-checkbox checked="{{item.value}}"> {{item.label}}</paper-checkbox>
+                  </template>
+                </div>
+              </template>
+            </div>
+
+          </iron-grid>
+          <br>
+          <iron-grid>
+            <template is="dom-repeat" items="{{order.line_items.items}}">
+              <template is="dom-repeat" items="{{item}}">
+                <div class$="[[item.col]]">
+                  <template is="dom-if" if="{{_isInput(item.type)}}">
+                    <paper-input name="{{item.key}}" label="{{item.label}}" value="{{item.value}}" readonly$="{{item.readonly}}"></paper-input>
+                  </template>
+                </div>
+              </template>
+            </template>
+            <div class="xs12">
+              &plus;
+            </div>
+          </iron-grid>
+          <br>
+          <iron-grid>
+            <div class="xs12 s6 l4">
+              <template is="dom-repeat" items="{{order.graphic.items}}">
+                <template is="dom-repeat" items="{{item.top}}">
+                  <div class$="[[item.col]]">
+                    <template is="dom-if" if="{{_isInput(item.type)}}">
+                      <paper-input name="{{item.key}}" label="{{item.label}}" value="{{item.value}}" readonly$="{{item.readonly}}"></paper-input>
+                    </template>
+                  </div>
+                </template>
+
+                <template is="dom-repeat" items="{{item.color_mesh_print}}">
+                  <div class$="[[item.col]]">
+                    <template is="dom-if" if="{{_isInput(item.type)}}">
+                      <paper-input name="{{item.key}}" label="{{item.label}}" value="{{item.value}}"></paper-input>
+                    </template>
+                  </div>
+                </template>
+                <div class="xs12">
+                  &plus;
+                </div>
+                <template is="dom-repeat" items="{{item.bottom}}">
+                  <div class$="[[item.col]]">
+                    <template is="dom-if" if="{{_isInput(item.type)}}">
+                      <paper-input name="{{item.key}}" label="{{item.label}}" value="{{item.value}}"></paper-input>
+                    </template>
+                  </div>
+                </template>
+              </template>
+
+              <div class="xs12">
+                &plus;
+              </div>
+            </div>
+          </iron-grid>
+          
+      </iron-grid-container>
+
+
+
          <!--  <paper-dropdown-menu label="Style" on-iron-select="_styleSelected">
             <paper-listbox class="dropdown-content" selected="0">
               <paper-item value="crew">Crew</paper-item>
@@ -94,22 +256,6 @@
           </paper-dropdown-menu> -->
         <!--   <paper-swatch-picker color="{{designElementColor}}" column-count=4 color-list='["#000000", "#65a5f2", "#83be54", "#f0d551", "#e5943c", "#a96ddb", "#B20000", "#ffffff"]'></paper-swatch-picker> -->
          
-          <template is="dom-repeat" items="{{order.header_items}}">
-            <label for="{{item.key}}">
-              {{item.label}}
-              <input
-                id="{{item.key}}"
-                is="iron-input"
-                bind-value="{{item.value}}">
-              </input>
-            </label>
-          </template>
-
-          
-   
- 
-
-
 
           <!-- <template is="dom-repeat" items="{{designImages}}">
             <template is="dom-repeat" items="{{_attachmentKeys(item._attachments)}}" as="attachment">
@@ -119,12 +265,7 @@
           <br> -->
 
           
-        </div>
-
-        <div>
-
-        </div>
-      </div>
+   
     </div>
 
   </template>
@@ -168,88 +309,93 @@
         value: function(){
           return {
             header: {
-              label: 'WORK ORDER',
-              items: [
-                {key: 'estimate_number', label: 'estimate #', type: 'text'},
-                {key: 'invoice_number', label: 'invoice#', type: 'text'},
-                {key: 'todays_date', label: 'TODAY\'S DATE', value: this._now(), type: 'text'},
-                {key: 'purchase_order_number', label: 'PURCHASE ORDER #', type: 'text'},
-                {key: 'in_hands_date', label: 'IN-HANDS DATE', type: 'text'}
+              label0: 'REBEL CRICKET SCREEN PRINTS',
+              label1: 'WORK ORDER',
+              items0: [
+                {key: 'estimate_number', label: 'estimate #', type: 'text', col: 'xs12 s6'},
+                {key: 'invoice_number', label: 'invoice#', type: 'text', col: 'xs12 s6'}
+              ],
+              items1: [
+                {key: 'todays_date', label: 'TODAY\'S DATE', value: this._now(), type: 'text', col: 'xs12'},
+              ],
+              items2: [
+                {key: 'purchase_order_number', label: 'PURCHASE ORDER #', type: 'text', col: 'xs12'},
+              ],
+              items3: [
+                {key: 'in_hands_date', label: 'IN-HANDS DATE', type: 'text', col: 'xs12'}
               ]
             },
             job: {
               label: 'JOB',
               items: [
-                {key: 'job_name', label: 'JOB', type: 'text'},
-                {key: 'from_po', label: 'From P.O.#', type: 'text'},
-                {key: 'art_notes', label: 'ART NOTES', type: 'text'},
-                {key: 'printers_notes', label: 'Printer\'s Notes', type: 'text'}
+                {key: 'job_name', label: 'JOB', type: 'text', col: 'xs8'},
+                {key: 'from_po', label: 'From P.O.#', type: 'text', col: 'xs4'},
+                {key: 'art_notes', label: 'ART NOTES', type: 'textarea', col: 'xs12', rows: 4},
+                {key: 'printers_notes', label: 'Printer\'s Notes', type: 'textarea', col: 'xs12', rows: 2}
               ]
             },
             client_contact_information: {
               label: 'CLIENT CONTACT INFORMATION',
               items: [
-                {key: 'client_name', label: 'Name', type: 'text'},
-                {key: 'client_phone', label: 'Phone', type: 'text'},
-                {key: 'client_email', label: 'Email', type: 'text'}
+                {key: 'client_name', label: 'Name', type: 'text', col: 'xs12'},
+                {key: 'client_phone', label: 'Phone', type: 'text', col: 'xs12'},
+                {key: 'client_email', label: 'Email', type: 'text', col: 'xs12'}
               ]
             },
             job_completion_and_shipping: {
-              label: 'JOB COMPLETION AND SHIPPING INSTRUCTIONS',  
+              label: 'COMPLETION & SHIPPING INSTRUCTIONS',  
               items: [
-                {key: 'call_when_complete', label: 'Call when job is complete', type: 'checkbox'},
-                {key: 'will_call', label: 'Will Call', type: 'checkbox'},
-                {key: 'ship_via', label: 'Ship Via', type: 'checkbox'},
-                {key: 'ship_via_txt', label: '', type: 'text'},
-                {key: 'ship_by_date', label: 'Ship by date', type: 'text'},
-                {key: 'ship_to', label: 'Ship to', type: 'textarea'}
+                {key: 'call_when_complete', label: 'Call when complete', type: 'checkbox', value: false, col: 'xs6'},
+                {key: 'will_call', label: 'Will Call', type: 'checkbox', value: false, col: 'xs3'},
+                {key: 'ship_via', label: 'Ship', type: 'checkbox', value: false, col: 'xs3'},
+                {key: 'ship_via_txt', label: 'Ship Via', type: 'text', col: 'xs6'},
+                {key: 'ship_by_date', label: 'Ship by date', type: 'text', col: 'xs6'},
+                {key: 'ship_to', label: 'Ship to', type: 'textarea', col: 'xs12', rows: 3}
               ]
             },
             line_items: {
               label: 'LINE ITEMS',
               items: [
                 [
-                  {key: 'brand', label: 'BRAND', type: 'text'},
-                  {key: 'style', label: 'STYLE', type: 'text'},
-                  {key: 'color', label: 'COLOR', type: 'text'},
-                  {key: 'xs', label: 'XS', type: 'number'},
-                  {key: 'sm', label: 'SM', type: 'number'},
-                  {key: 'md', label: 'MD', type: 'number'},
-                  {key: 'lg', label: 'LG', type: 'number'},
-                  {key: 'xl', label: 'XL', type: 'number'},
-                  {key: '2xl', label: '2XL', type: 'number'},
-                  {key: '3xl', label: '3XL', type: 'number'},
-                  {key: 'other', label: 'OTHER', type: 'number'},
-                  {key: 'line_total', label: 'TOTAL', type: 'number'},
+                  {key: 'brand', label: 'BRAND', type: 'text', col: 'xs4 s2 m1'},
+                  {key: 'style', label: 'STYLE', type: 'text', col: 'xs4 s2 m1'},
+                  {key: 'color', label: 'COLOR', type: 'text', col: 'xs4 s2 m1'},
+                  {key: 'xs', label: 'XS', type: 'number', col: 'xs2 s2 m1'},
+                  {key: 'sm', label: 'SM', type: 'number', col: 'xs2 s2 m1'},
+                  {key: 'md', label: 'MD', type: 'number', col: 'xs2 s2 m1'},
+                  {key: 'lg', label: 'LG', type: 'number', col: 'xs2 s2 m1'},
+                  {key: 'xl', label: 'XL', type: 'number', col: 'xs2 s2 m1'},
+                  {key: '2xl', label: '2XL', type: 'number', col: 'xs2 s2 m1'},
+                  {key: '3xl', label: '3XL', type: 'number', col: 'xs4 s2 m1'},
+                  {key: 'other', label: 'OTHER', type: 'number', col: 'xs4 s2 m1'},
+                  {key: 'line_total', label: 'TOTAL', type: 'number', col: 'xs4 s2 m1', readonly: true},
                 ]
               ]
             },
             graphic: {
               items: [{
                 top: [
-                  {key: 'graphic_name', label: 'Graphic', type: 'text'},
-                  {key: 'new_setup', label: 'New setup', type: 'text'},
-                  {key: 'resets', label: 'Resets', type: 'number'},
-                  {key: 'placement', label: 'Placement', type: 'text'},
-                  {key: 'line_items_total', label: 'Total', type: 'number'},
-                  {key: 'color_changes', label: 'Color changes', type: 'number'},
-                  {key: 'pricing_group', label: 'Pricing group', type: 'text'},
-                  {key: 'flash', label: 'Flash', type: 'text'}
+                  {key: 'graphic_name', label: 'Graphic', type: 'text', col: 'xs12'},
+                  {key: 'new_setup', label: 'New setup', type: 'text', col: 'xs6'},
+                  {key: 'resets', label: 'Resets', type: 'number', col: 'xs6'},
+                  {key: 'placement', label: 'Placement', type: 'text', col: 'xs6'},
+                  {key: 'line_items_total', label: 'Total', type: 'number', col: 'xs6', readonly: true},
+                  {key: 'color_changes', label: 'Color changes', type: 'number', col: 'xs12'},
+                  {key: 'pricing_group', label: 'Pricing group', type: 'text', col: 'xs6'},
+                  {key: 'flash', label: 'Flash', type: 'text', col: 'xs6'}
                 ],
-                color_mesh_print_items: [ 
-                  [
-                    {key: 'graphic_color', label: 'COLOR', type:'text'},
-                    {key: 'mesh', label: 'MESH', type:'text'},
-                    {key: 'print_order', label: 'PRINT ORDER', type:'text'}
-                  ]
+                color_mesh_print: [ 
+                  {key: 'graphic_color', label: 'COLOR', type:'text', col: 'xs4'},
+                  {key: 'mesh', label: 'MESH', type:'text', col: 'xs4'},
+                  {key: 'print_order', label: 'PRINT ORDER', type:'text', col: 'xs4'}
                 ],
                 bottom: [
-                  {key: 'setup_start', label: 'Setup start', type: 'text'},
-                  {key: 'setup_complete', label: 'Setup complete', type: 'text'},
-                  {key: 'approved_by', label: 'Approved by', type: 'text'},
-                  {key: 'print_start', label: 'Print start', type: 'text'},
-                  {key: 'breaks', label: 'Break/s', type: 'text'},
-                  {key: 'print_end', label: 'Print end', type: 'text'},
+                  {key: 'setup_start', label: 'Setup start', type: 'text', col: 'xs12'},
+                  {key: 'setup_complete', label: 'Setup complete', type: 'text', col: 'xs12'},
+                  {key: 'approved_by', label: 'Approved by', type: 'text', col: 'xs12'},
+                  {key: 'print_start', label: 'Print start', type: 'text', col: 'xs12'},
+                  {key: 'breaks', label: 'Break/s', type: 'text', col: 'xs12'},
+                  {key: 'print_end', label: 'Print end', type: 'text', col: 'xs12'}
                 ]
               }]
             }
@@ -270,6 +416,15 @@
     _now: function(){
       var date = new Date();
       return ("0"+(date.getMonth() + 1)).slice(-2) + "/" + ("0"+date.getDate()).slice(-2) + "/" +  date.getFullYear();
+    },
+    _isInput: function(type){
+      return type == 'text' || type == 'number';
+    },
+    _isTextarea: function(type){
+      return type == 'textarea';
+    },
+    _isCheckbox: function(type){
+      return type == 'checkbox';
     },
     ready: function(){
 
