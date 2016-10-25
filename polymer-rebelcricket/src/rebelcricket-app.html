@@ -25,7 +25,7 @@
       :host {
         display: block;
         position: relative;
-        padding-top: 646px;
+        padding-top: 400px;
         padding-bottom: 64px;
         min-height: 100vh;
         --paper-button-ink-color: var(--app-secondary-color);
@@ -38,27 +38,91 @@
       app-header {
         @apply(--layout-fixed-top);
         z-index: 1;
-        background-color: rgba(0, 0, 0, 0.6);
-        --app-header-shadow: {
-          box-shadow: inset 0px 5px 6px -3px rgba(0, 0, 0, 0.2);
-          height: 10px;
-          bottom: -10px;
-        };
+        background-color: transparent;
+      }
+
+      app-header::after{
+        box-shadow: none;
       }
 
       app-toolbar{
         background: transparent;
-        height: 510px;
+        height: 230px;
       }
 
       paper-icon-button {
-        color: var(--app-primary-color);
+        color: black;
       }
 
-      .rebelcricket-logo-container {
+
+
+      .cross {
+  position: absolute;
+  top: -50px;
+  width: 45vw;
+  height: 45vw;
+  max-height: 500px;
+  max-width: 500px;
+  background: white;
+  z-index: 1;
+  -webkit-clip-path: polygon(0 48%, 48% 48%, 48% 0, 52% 0, 52% 48%, 100% 48%, 100% 52%, 52% 52%, 52% 100%, 48% 100%, 48% 52%, 0 52%);
+  clip-path: polygon(0 48%, 48% 48%, 48% 0, 52% 0, 52% 48%, 100% 48%, 100% 52%, 52% 52%, 52% 100%, 48% 100%, 48% 52%, 0 52%);
+}
+
+.rebelcricket-logo-container {
+  position: absolute;
+  top: 25px;
+  left: 165px;
+  display: -ms-flexbox;
+  display: -webkit-flex;
+  display: flex;
+  -ms-flex-direction: row;
+  -webkit-flex-direction: row;
+  flex-direction: row;
+  -ms-flex-pack: center;
+  -webkit-justify-content: center;
+  justify-content: center;
+  transform: rotateZ(-6deg);
+ 
+  height: 200px;
+
+  max-width: 400px;
+
+  color: black;
+  font-family: 'ObelixPro';
+  font-weight: 100;
+
+  transform: rotateZ(-3deg);
+
+  z-index: 1;
+}
+
+.rebelcricket-logo-circle{
+  box-shadow: 0 0 2px 15px white;
+  border-radius: 9999px;
+  -moz-border-radius: 9999px;
+  -webkit-border-radius: 9999px;
+}
+
+.rebelcricket-logo {
+  position: absolute;
+  z-index: 3;
+  font-size: 50px;
+  line-height: 45px;
+ 
+}
+.rebelcricket-logo-stroke {
+  position: absolute;
+  z-index: 2;
+  font-size: 50px;
+  line-height: 45px;
+  -webkit-text-fill-color: black;
+  -webkit-text-stroke-width: 20px;
+  -webkit-text-stroke-color: white;
+}
+/*      .rebelcricket-logo-container {
         @apply(--layout-horizontal);
         @apply(--layout-center-justified);
-        /*border: 45px solid white;*/
         box-shadow: 0 0 2px 4vw white;
         border-radius: 9999px;
         -moz-border-radius: 9999px;
@@ -67,18 +131,7 @@
         height: 40vw;
         max-height: 400px;
         max-width: 400px;
-      }
-
-      .rebelcricket-logo {
-        font-family: 'ObelixPro';
-        font-size: 8vw;
-        font-weight: 100;
-        line-height: 7vw;
-        margin-top: 5vw;
-        margin-left: 4vw;
-        transform: rotateZ(-3deg);
-       
-      }
+      }*/
 
       .logo {
         text-align: center;
@@ -124,7 +177,12 @@
 
       #tabContainer {
         position: relative;
-        height: 66px;
+        height: 122px;
+        padding-top: 30px;
+        padding-bottom:30px;
+        width: 110%;
+        left: -10px;
+        overflow-x:hidden;
       }
 
       rebelcricket-tabs, rebelcricket-tab {
@@ -135,31 +193,37 @@
 
       rebelcricket-tabs {
         height: 100%;
+        background-color: white;
+        color: black;
+        transform: rotateZ(-3deg);
       }
 
       rebelcricket-tab {
-        margin: 10px;
-        border: thin solid var(--text-primary-color);
+        margin: 0 10px;
+        /*border: thin solid var(--text-primary-color);*/
       }
       rebelcricket-tab:hover {
-        border-color: var(--paper-tabs-selection-bar-color);
+        /*border-color: var(--paper-tabs-selection-bar-color);*/
       }
       rebelcricket-tab.iron-selected {
-        border-bottom-color: var(--paper-tabs-selection-bar-color);
+        /*border-bottom-color: var(--paper-tabs-selection-bar-color);*/
       }
 
       rebelcricket-tab a {
         display: inline-block;
         outline: none;
         padding: 1em;
-        font-size: 16px;
-        font-weight: 500;
+        
+        font-family: 'ObelixPro';
+        font-size: 30px;
+        font-weight: 100;
+
         text-decoration: none;
-        color: var(--text-primary-color);
+        color: black;
 
       }
       rebelcricket-tab a:hover {
-        color: var(--paper-tabs-selection-bar-color);
+        color: red;
       }
 
       .cart-badge {
@@ -243,21 +307,21 @@
         .rebelcricket-logo-container {
        
           /*border: 45px solid white;*/
-          box-shadow: 0 0 1px 10px white;
+  /*        box-shadow: 0 0 1px 10px white;
           border-radius: 9999px;
           -moz-border-radius: 9999px;
           -webkit-border-radius: 9999px;
           width: 100px;
-          height: 100px;    
+          height: 100px;    */
         }
 
         .rebelcricket-logo {
-          font-size: 16px;
+        /*  font-size: 16px;
           line-height: 16px;
           margin-top: 17px;
           margin-left: 12px;
           transform: rotateZ(-3deg);
-          letter-spacing: 1px;
+          letter-spacing: 1px;*/
         }
 
         .menu-btn {
@@ -269,10 +333,10 @@
       @media (min-width: 1000px) {
 
         .rebelcricket-logo {
-          font-size: 80px;
-          line-height: 70px;
+      /*    font-size: 90px;
+          line-height: 75px;
           margin-top: 60px;
-          margin-left: 30px;
+          margin-left: 30px;*/
         }
       }
 
@@ -321,12 +385,20 @@
           <a href="/" aria-label="Rebel Cricket Home">
             <!-- <img src="/images/rebel_cricket_circle_logo.png"> -->
             <div class="rebelcricket-logo-container">
-              <div class="circle rebelcricket-logo">
+              
+              <div class="rebelcricket-logo-stroke">
                 REBEL <br>
-                CRICKET <br>
+                &nbsp;&nbsp;CRICKET <br>
                 SCREEN <br>
-                PRINTS
+                &nbsp;&nbsp;&nbsp;PRINTS
               </div>
+              <div class="rebelcricket-logo">
+                REBEL <br>
+                &nbsp;&nbsp;CRICKET <br>
+                SCREEN <br>
+                &nbsp;&nbsp;&nbsp;PRINTS
+              </div>
+              <!-- <div class="cross"></div> -->
             </div>
           </a>
         </div>
