@@ -1,12 +1,16 @@
 <link rel="import" href="../bower_components/polymer/polymer.html">
+<link rel="import" href="rebelcricket-button.html">
+<link rel="import" href="rebelcricket-image.html">
+
 <dom-module id="rebelcricket-home">
 
   <template>
 
-    <style include="rebelcricket-common-styles">
+    <style include="rebelcricket-button">
 
     :host {
-
+      font-size: 20px;
+      color: white;
     }
 
     #about-container {
@@ -15,6 +19,16 @@
     }
     #about-container h1, #about-container h2 {
       letter-spacing: 2px;
+    }
+
+    a{
+      color: var(--light-primary-color);
+    }
+    a:visited {
+      color: var(--light-primary-color);
+    }
+    a:hover {
+      color: var(--app-secondary-color);
     }
 
     #about-container p {

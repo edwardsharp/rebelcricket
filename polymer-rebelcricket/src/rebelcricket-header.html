@@ -1,0 +1,157 @@
+<link rel="import" href="../bower_components/polymer/polymer.html">
+<link rel="import" href="../bower_components/iron-grid/iron-grid.html">
+
+<dom-module id="rebelcricket-header">
+
+  <template>
+
+    <style include="rebelcricket-common-styles">
+
+    :host {
+      color: white;
+      font-size: 20px;
+    }
+
+    header {
+      font-family: 'Raleway';
+      font-weight: 700;
+      background: -moz-linear-gradient(top, rgba(0,0,0,1) 30%, rgba(0,0,0,1) 32%, rgba(0,0,0,0.24) 70%, rgba(0,0,0,0) 82%);
+      background: -webkit-linear-gradient(top, rgba(0,0,0,1) 30%,rgba(0,0,0,1) 32%,rgba(0,0,0,0.24) 70%,rgba(0,0,0,0) 82%);
+      background: linear-gradient(to bottom, rgba(0,0,0,1) 30%,rgba(0,0,0,1) 32%,rgba(0,0,0,0.24) 70%,rgba(0,0,0,0) 82%);
+      filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#000000', endColorstr='#00000000',GradientType=0 );
+    }
+
+
+    .logo {
+      height: 250px;
+    }
+    .info-container{
+     
+      text-transform: uppercase;
+      
+      
+    }
+
+    .info-container div {
+      margin: 1em;
+      text-align: right;
+    }
+
+    .info-container iron-icon{
+      height: 50px;
+      width: 50px;
+    }
+
+    .cross {
+      position: absolute;
+      z-index: 1;
+      -webkit-clip-path: polygon(0 48%, 48% 48%, 48% 0, 52% 0, 52% 48%, 100% 48%, 100% 52%, 52% 52%, 52% 100%, 48% 100%, 48% 52%, 0 52%);
+      clip-path: polygon(0 48%, 48% 48%, 48% 0, 52% 0, 52% 48%, 100% 48%, 100% 52%, 52% 52%, 52% 100%, 48% 100%, 48% 52%, 0 52%);
+    }
+
+    .rebelcricket-logo-container {
+      margin-top: 2em;
+      transform: rotateZ(-6deg);
+      color: black;
+      font-family: 'ObelixPro';
+      font-weight: 100;
+      z-index: 1;
+    }
+
+    .rebelcricket-logo-circle{
+      box-shadow: 0 0 2px 15px white;
+      border-radius: 9999px;
+      -moz-border-radius: 9999px;
+      -webkit-border-radius: 9999px;
+      z-index: 1;
+    }
+
+    .rebelcricket-logo {
+      position: absolute;
+      z-index: 3;
+      font-size: 50px;
+      line-height: 45px;
+     
+    }
+    .rebelcricket-logo-stroke {
+      position: absolute;
+      z-index: 2;
+      font-size: 50px;
+      line-height: 45px;
+      -webkit-text-fill-color: black;
+      -webkit-text-stroke-width: 20px;
+      -webkit-text-stroke-color: white;
+    }
+    
+      
+
+      
+
+
+    @media (max-width: 767px) {
+     
+    }
+    </style>
+
+    <header>
+      <iron-grid-container>
+          <iron-grid>
+            <div class=" xs12 s6 logo">
+              <a href="/" aria-label="Rebel Cricket Home">
+                <!-- <img src="/images/rebel_cricket_circle_logo.png"> -->
+                <div class="rebelcricket-logo-container">
+                  
+                  <div class="rebelcricket-logo-stroke">
+                    REBEL <br>
+                    &nbsp;&nbsp;CRICKET <br>
+                    SCREEN <br>
+                    &nbsp;&nbsp;&nbsp;PRINTS
+                  </div>
+                  <div class="rebelcricket-logo">
+                    REBEL <br>
+                    &nbsp;&nbsp;CRICKET <br>
+                    SCREEN <br>
+                    &nbsp;&nbsp;&nbsp;PRINTS
+                  </div>
+                  <!-- <div class="cross"></div> -->
+                </div>
+              </a>
+            </div>
+
+            <div class="xs12 s6 info-container">
+              <div class="xs12">
+                Custom Screen Printing <br>And Pre-press Services<br>
+                5040 SE Milwaukie Ave.<br>
+                Portland, OR 97202 <br>
+              </div>
+              <div class="xs12">
+                <a href="tel://1-503-545-2011">503&#x2011;545&#x2011;1450</a>
+              </div>
+              <div class="xs12">
+                <iron-icon icon="facebook"></iron-icon>
+                <iron-icon icon="twitter"></iron-icon>
+                <iron-icon icon="tumblr"></iron-icon>
+                <iron-icon icon="instagram"></iron-icon>
+              </div>
+              
+            </div>
+          </iron-grid>
+        </iron-grid-container>
+
+    </header>
+
+  </template>
+
+  <script>
+
+    Polymer({
+
+      is: 'rebelcricket-header'
+
+    });
+
+  </script>
+
+</dom-module>
+
+

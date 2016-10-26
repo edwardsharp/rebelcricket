@@ -1,47 +1,56 @@
 <link rel="import" href="../bower_components/polymer/polymer.html">
-<link rel="import" href="../bower_components/iron-flex-layout/iron-flex-layout.html">
 
 <dom-module id="rebelcricket-common-styles">
   <template>
-    <style>
+    <style is="custom-style">
+      @font-face {
+        font-family: 'ObelixPro';
+        src: url('/fonts/ObelixPro.eot'); /* IE9 Compat Modes */
+        src: url('/fonts/ObelixPro.eot?#iefix') format('embedded-opentype'), /* IE6-IE8 */
+             url('/fonts/ObelixPro.woff') format('woff'), /* Pretty Modern Browsers */
+             url('/fonts/ObelixPro.ttf') format('truetype'), /* Safari, Android, iOS */
+             url('/fonts/ObelixPro.svg#ObelixPro') format('svg'); /* Legacy iOS */
+      }
+      
+      :root {
+        font-family: 'Open Sans', sans-serif;
+        --app-rebel-green: #99cc00; 
+        --app-rebel-blue: #c6f0fc;
+      }
 
       [hidden] {
         display: none !important;
       }
 
-      header {
+      footer {
+    /*    position: absolute;
+        bottom: 0;
+        left: 0;
+        right: 0;*/
         text-align: center;
-      }
-
-      header > h1 {
-        margin: 0 0 4px 0;
- 
-        font-weight: 500;
-      }
-
-      .rebelcricket-header {
-        font-family: 'ObelixPro';
-        font-weight: 100;
-        font-size: 3em;
-        transform: rotateZ(-3deg);
-        color: black;
-        background-color: white;
-      }
-
-      header > span {
-        color: var(--app-secondary-color);
+        margin-top: 20px;
+        line-height: 24px;
         font-size: 12px;
       }
 
-      header > rebelcricket-button[responsive] {
-        margin-top: 20px;
+      a {
+        color: var(--app-rebel-green);
+        text-decoration: none;
+      }
+
+      a:visited {
+        color: var(--app-rebel-green);
+      }
+      a:hover {
+        color: var(--app-rebel-blue);
+      }
+
+      iron-pages {
+        max-width: 1440px;
+        margin: 0 auto;
       }
 
       @media (max-width: 767px) {
-
-        header > h1 {
-          font-size: 1.1em;
-        }
 
       }
 

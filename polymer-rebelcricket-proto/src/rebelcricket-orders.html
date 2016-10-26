@@ -1,0 +1,130 @@
+<link rel="import" href="../bower_components/polymer/polymer.html">
+<!-- <link rel="import" href="rebelcricket-pouchdb.html"> -->
+<link rel="import" href="../bower_components/app-pouchdb/pouchdb.html">
+<link rel="import" href="../bower_components/app-pouchdb/app-pouchdb-database-behavior.html">
+<link rel="import" href="../bower_components/app-pouchdb/app-pouchdb-index.html">
+<link rel="import" href="../bower_components/app-pouchdb/app-pouchdb-query.html"> 
+<link rel="import" href="../bower_components/app-pouchdb/app-pouchdb-document.html">
+<!-- <link rel="import" href="../bower_components/app-pouchdb/app-pouchdb-conflict-resolution.html"> -->
+<link rel="import" href="../bower_components/iron-grid/iron-grid.html">
+<link rel="import" href="../bower_components/paper-button/paper-button.html">
+<!-- <link rel="import" href="../bower_components/paper-toggle-button/paper-toggle-button.html">
+<link rel="import" href="../bower_components/paper-item/paper-item.html">
+<link rel="import" href="../bower_components/paper-listbox/paper-listbox.html">
+<link rel="import" href="../bower_components/paper-dropdown-menu/paper-dropdown-menu.html">
+<link rel="import" href="../bower_components/paper-swatch-picker/paper-swatch-picker.html">
+
+<link rel="import" href="../bower_components/paper-input/paper-input.html">
+<link rel="import" href="../bower_components/paper-input/paper-textarea.html">
+<link rel="import" href="../bower_components/paper-checkbox/paper-checkbox.html">
+ --><link rel="import" href="../bower_components/paper-fab/paper-fab.html">
+<link rel="import" href="rebelcricket-icons.html">
+
+
+<dom-module id="rebelcricket-orders">
+  <template>
+    <style is="custom-style" include="rebelcricket-common-styles">    
+
+      paper-button.custom, paper-fab.custom {
+        background: white;
+        color: #333;
+      }
+
+      paper-button.custom:hover, paper-fab.custom:hover {
+        background: #333;
+        color: white;
+      }
+
+      paper-button[disabled] {
+        background: #333;
+        color: gray;
+      }
+
+      paper-input, paper-textarea {
+        width: 100%;
+        --paper-input-container-color: white;
+        --paper-input-container-input-color: white;
+      }
+
+      a {
+        text-decoration: none;
+      }
+      .center{
+        text-align: center;
+        justify-content: center;
+      }
+     
+
+      @media (max-width: 600px) {
+        
+      }
+
+      @media (max-width: 875px) {
+       
+      }
+
+
+    </style>
+
+    <app-pouchdb-index
+      db-name="http://localhost:5984/design"
+      fields='["_id", "header.items1.0.value", "client_contact_information.items.0.value", "client_contact_information.items.2.value"]'>
+    </app-pouchdb-index>
+    <app-pouchdb-query
+      db-name="http://localhost:5984/orders"
+      selector="_id $ne '_design'"
+      fields='["_id", "header.items1.0.value", "client_contact_information.items.0.value", "client_contact_information.items.2.value"]'
+      sort='["_id"]'
+      data="{{orders}}">
+    </app-pouchdb-query>
+
+    <div class="container">
+      <!-- <header class="center">
+        <h1 class="rebelcricket-header">Orders</h1>
+      </header> -->
+
+      <iron-grid-container>
+          <iron-grid>
+            <div class="xs12 center">
+              <a href="/order" tabindex="-1">
+                <paper-button class="custom" raised>new order</paper-button>
+              </a>
+            </div>
+            <template is="dom-repeat" items="{{orders}}">
+              <div class="xs6 offset-xs3">
+                <a href="/order#[[item._id]]">[[item.header.items1.0.value]] [[item.client_contact_information.items.0.value]] [[item.client_contact_information.items.3.value]]</a>
+              </div>
+            </template>
+          </iron-grid>
+      </iron-grid-container>
+   
+    </div>
+
+  </template>
+
+  <script>
+  Polymer({
+    is: 'rebelcricket-orders',
+    behaviors: [
+      Polymer.AppPouchDBDatabaseBehavior
+    ],
+    properties: {
+      
+      orders: {
+        type: Object,
+        notify: true
+      }
+    },
+    
+    ready: function(){
+
+      console.log('orders:',this.orders);
+
+    }
+
+
+  });
+
+
+  </script>
+</dom-module>

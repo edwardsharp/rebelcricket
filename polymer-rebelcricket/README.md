@@ -1,68 +1,38 @@
-# REBELCRICKET
+# \<rebelcricket\>
 
-### Setup
+Rebel Cricket Screen Prints
 
-##### Prerequisites
+## Install the Polymer-CLI
 
-Install [polymer-cli](https://github.com/Polymer/polymer-cli):
-(Need at least npm v0.3.0)
+First, make sure you have the [Polymer CLI](https://www.npmjs.com/package/polymer-cli) installed. Then run `polymer serve` to serve your application locally.
 
-    npm install -g polymer-cli
+## Viewing Your Application
 
+```
+$ polymer serve
+```
 
-##### Setup
-    # Using CLI
-    mkdir shop
-    cd shop
-    polymer init shop
-    
-    # Or cloning direct from GitHub
-    git clone https://github.com/Polymer/shop.git
-    cd shop
-    bower install
+## Building Your Application
 
-### Start the development server
+```
+$ polymer build
+```
 
-    polymer serve
+This will create a `build/` folder with `bundled/` and `unbundled/` sub-folders
+containing a bundled (Vulcanized) and unbundled builds, both run through HTML,
+CSS, and JS optimizers.
 
-### Run web-component-tester tests
+You can serve the built versions by giving `polymer serve` a folder to serve
+from:
 
-    polymer test
+```
+$ polymer serve build/bundled
+```
 
-### Build
+## Running Tests
 
-    polymer build
+```
+$ polymer test
+```
 
-### CouchDB
-
-    #setup cors
-    npm install -g add-cors-to-couchdb
-    add-cors-to-couchdb http://localhost:5984 -u myusername -p mypassword
-
-then visit http://localhost:5984/_utils/config.html to see/edit cors config
-
-### Docker
-
-    docker build -f docker_util/rebelcricket/Dockerfile -t hub.sked.site:5000/rebelcricket .
-    docker push hub.sked.site:5000/rebelcricket
-    cd docker_util/rebelcricket && docker-compose up
-    
-    # sysadmin
-    bash -c "clear && docker exec -it rebelcricket_web_1 /bin/bash"
-
-### Test the build
-
-This command serves the minified version of the app in an unbundled state, as it would be served by a push-compatible server:
-
-    polymer serve build/unbundled
-    
-This command serves the minified version of the app generated using fragment bundling:
-
-    polymer serve build/bundled
-
-    # -or use python-
-
-    python -m SimpleHTTPServer 8000
-
-    python3 -m http.server
-
+Your application is already set up to be tested via [web-component-tester](https://github.com/Polymer/web-component-tester). Run `polymer test` to run your application's test suite locally.
