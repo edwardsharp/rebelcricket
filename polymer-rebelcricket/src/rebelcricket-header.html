@@ -8,46 +8,69 @@
     <style include="rebelcricket-common-styles">
 
     :host {
-      color: white;
       font-size: 25px;
-      line-height: 25px
+      line-height: 30px;
+      letter-spacing: 1px;
     }
 
     header {
       font-family: 'Raleway';
       font-weight: 700;
-      background: -moz-linear-gradient(top, rgba(0,0,0,1) 30%, rgba(0,0,0,1) 32%, rgba(0,0,0,0.24) 70%, rgba(0,0,0,0) 82%);
-      background: -webkit-linear-gradient(top, rgba(0,0,0,1) 30%,rgba(0,0,0,1) 32%,rgba(0,0,0,0.24) 70%,rgba(0,0,0,0) 82%);
-      background: linear-gradient(to bottom, rgba(0,0,0,1) 30%,rgba(0,0,0,1) 32%,rgba(0,0,0,0.24) 70%,rgba(0,0,0,0) 82%);
-      filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#000000', endColorstr='#00000000',GradientType=0 );
+      /*background-color: black;*/
+     /* background: -moz-linear-gradient(top, rgba(0,0,0,1) 30%, rgba(0,0,0,1) 35%, rgba(0,0,0,0.24) 90%, rgba(0,0,0,0) 100%);
+      background: -webkit-linear-gradient(top, rgba(0,0,0,1) 30%,rgba(0,0,0,1) 35%,rgba(0,0,0,0.24) 90%,rgba(0,0,0,0) 100%);
+      background: linear-gradient(to bottom, rgba(0,0,0,1) 30%,rgba(0,0,0,1) 35%,rgba(0,0,0,0.24) 90%,rgba(0,0,0,0) 100%);
+      filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#000000', endColorstr='#00000000',GradientType=0 );*/
     }
 
 
     .logo {
-      height: 250px;
+      height: 300px;
     }
     .info-container{
-     
       text-transform: uppercase;
       text-align: right;
       padding: 1em;
     }
 
     .info-container div {
-      -webkit-justify-content: flex-end;
-      justify-content: flex-end;
+      -webkit-justify-content: center;
+      justify-content: center;
+    }
+
+    .red-bg {
+      background: red;
+    }
+
+    .rebel-stripe-l {
+      transform: rotateZ(-3deg);
+      color: white;
+      padding: 0.5em;
+    }
+
+    .rebel-stripe-r {
+      transform: rotateZ(3deg);
+   
+      padding: 0.5em;
     }
 
     .info-container iron-icon{
       height: 50px;
       width: 50px;
+      margin-left: 0.5em;
+      right-right: 0.5em;
     }
+
     .rebelcricket-phone {
+      font-family: sans-serif;
+      font-weight: 900;
       text-align: center;
-      margin-top: 1em;
+      /*margin-top: 0.5em;*/
+      font-size: 2em;
+
     }
     .social-icons{
-      margin-top: 1em;
+      /*margin-top: 1em;*/
     }
     .cross {
       position: absolute;
@@ -63,44 +86,54 @@
       font-family: 'ObelixPro';
       font-weight: 100;
       z-index: 1;
+
     }
 
     .rebelcricket-logo-circle{
-      box-shadow: 0 0 2px 15px white;
+      box-shadow: 0 0 2px 20px black;
+      background-color: white;
       border-radius: 9999px;
       -moz-border-radius: 9999px;
       -webkit-border-radius: 9999px;
       z-index: 1;
+      height: 250px;
+      width: 250px;
     }
 
-    .rebelcricket-logo {
+    .rebelcricket-logo, .rebelcricket-logo-stroke{
       position: absolute;
-      z-index: 3;
-      font-size: 50px;
-      line-height: 45px;
-     
+      top: 13px;
+      left: 5px;
+      font-size: 55px;
+      line-height: 54px;
     }
+    
     .rebelcricket-logo-stroke {
-      position: absolute;
       z-index: 2;
-      font-size: 50px;
-      line-height: 45px;
       -webkit-text-fill-color: black;
-      -webkit-text-stroke-width: 20px;
+      -webkit-text-stroke-width: 16px;
       -webkit-text-stroke-color: white;
     }
     
-      
-
-      
+    .rebelcricket-logo {
+      z-index: 3;
+    }
+    
+    
 
 
     @media (max-width: 767px) {
+      :host {
+        font-size: 20px;
+      }
       .info-container div {
         text-align: center;
         align-items: center;
         -webkit-justify-content: center;
         justify-content: center;
+      }
+      .rebelcricket-phone {
+    
       }
     }
     </style>
@@ -111,19 +144,19 @@
             <div class=" xs12 s6 logo">
               <a href="/" aria-label="Rebel Cricket Home">
                 <!-- <img src="/images/rebel_cricket_circle_logo.png"> -->
-                <div class="rebelcricket-logo-container">
+                <div class="rebelcricket-logo-container rebelcricket-logo-circle">
                   
                   <div class="rebelcricket-logo-stroke">
-                    REBEL <br>
-                    &nbsp;&nbsp;CRICKET <br>
+                    &nbsp;REBEL <br>
+                    &nbsp;&nbsp;&nbsp;CRICKET <br>
                     SCREEN <br>
-                    &nbsp;&nbsp;&nbsp;PRINTS
+                    &nbsp;&nbsp;&nbsp;&nbsp;PRINTS
                   </div>
                   <div class="rebelcricket-logo">
-                    REBEL <br>
-                    &nbsp;&nbsp;CRICKET <br>
+                    &nbsp;REBEL <br>
+                    &nbsp;&nbsp;&nbsp;CRICKET <br>
                     SCREEN <br>
-                    &nbsp;&nbsp;&nbsp;PRINTS
+                    &nbsp;&nbsp;&nbsp;&nbsp;PRINTS
                   </div>
                   <!-- <div class="cross"></div> -->
                 </div>
@@ -131,16 +164,15 @@
             </div>
 
             <div class="xs12 s6 info-container">
-              <div class="xs12">
-                Custom Screen Printing <br>And Pre-press Services<br>
+              <div class="xs12 rebel-stripe-l red-bg">
+                Custom Screen Printing<br>And Pre-press Services<br>
                 5040 SE Milwaukie Ave.<br>
-                Portland, OR 97202 <br>
-                
+                Portland, OR 97202<br>
               </div>
-              <div class="xs12 rebelcricket-phone">
+              <div class="xs12 rebelcricket-phone rebel-stripe-l">
                 <a href="tel://1-503-545-2011">503&#x2011;545&#x2011;1450</a>
               </div>
-              <div class="xs12 social-icons">
+              <div class="xs12 social-icons rebel-stripe-r">
                 <iron-icon icon="facebook"></iron-icon>
                 <iron-icon icon="twitter"></iron-icon>
                 <iron-icon icon="tumblr"></iron-icon>
