@@ -1,0 +1,505 @@
+<link rel="import" href="../bower_components/polymer/polymer.html">
+
+<link rel="import" href="../bower_components/app-pouchdb/pouchdb.html">
+<link rel="import" href="../bower_components/app-pouchdb/app-pouchdb-conflict-resolution.html">
+<link rel="import" href="../bower_components/app-pouchdb/app-pouchdb-database-behavior.html">
+<link rel="import" href="../bower_components/app-pouchdb/app-pouchdb-index.html">
+<link rel="import" href="../bower_components/app-pouchdb/app-pouchdb-query.html"> 
+<link rel="import" href="../bower_components/app-pouchdb/app-pouchdb-document.html">
+<!-- <link rel="import" href="../bower_components/app-pouchdb/app-pouchdb-conflict-resolution.html"> -->
+
+<link rel="import" href="../bower_components/paper-toggle-button/paper-toggle-button.html">
+<link rel="import" href="../bower_components/paper-item/paper-item.html">
+<link rel="import" href="../bower_components/paper-listbox/paper-listbox.html">
+<link rel="import" href="../bower_components/paper-dropdown-menu/paper-dropdown-menu.html">
+<link rel="import" href="../bower_components/paper-swatch-picker/paper-swatch-picker.html">
+<link rel="import" href="../bower_components/paper-button/paper-button.html">
+<link rel="import" href="../bower_components/paper-input/paper-input.html">
+<link rel="import" href="../bower_components/paper-input/paper-textarea.html">
+<link rel="import" href="../bower_components/paper-checkbox/paper-checkbox.html">
+<link rel="import" href="../bower_components/paper-fab/paper-fab.html">
+
+<link rel="import" href="shared-styles.html">
+
+<link rel="import" href="rebelcricket-icons.html">
+<link rel="import" href="rebelcricket-design.html">
+
+<script src="util.js"></script>
+
+<dom-module id="rebelcricket-order">
+  <template>
+    <style is="custom-style" include="shared-styles">    
+      :host {
+        font-size: 16px;
+      }
+      paper-button.custom, paper-fab.custom {
+        background: white;
+        color: #333;
+        margin: 1em;
+      }
+
+      paper-button.custom:hover, paper-fab.custom:hover {
+        background: #333;
+        color: white;
+      }
+
+      paper-button[disabled] {
+        background: #333;
+        color: gray;
+      }
+
+      paper-input, paper-textarea {
+        width: 100%;
+        --paper-input-container-color: black;
+        --paper-input-container-input-color: black;
+      }
+
+      hr {
+        width: 97%;
+      }
+
+      .section-label {
+        justify-content: center;
+        font-size: 20px;
+        font-weight: 100;
+      }
+      .section-label span{
+        color: white;
+        background-color: #333;
+        border-radius: 5px;
+        width: 97%;
+        height: 1.5em;
+        text-align: center;
+      }
+   /*   .rebel-font{
+        font-family: 'ObelixPro';
+        font-weight: 100;
+        font-size: 25px;
+      }*/
+
+      .center{
+        text-align: center;
+        justify-content: center;
+      }
+
+      .group{
+        border: thin solid #666;
+        border-radius: 5px;
+        margin: 1em;
+      }
+      
+     
+
+      @media (max-width: 600px) {
+        .section-label span{
+          width: auto;
+          height: auto;
+          padding: 0 2px 0 2px;
+        }
+      }
+
+      @media (max-width: 875px) {
+        .section-label span{
+          height: auto;
+        }
+      }
+
+
+    </style>
+ <!--    <app-route
+        route="[[route]]"
+        pattern="/:order_id"
+        data="{{routeData}}"></app-route> -->
+
+<!--     <app-pouchdb-document
+      db-name="http://localhost:5984/models"
+      doc-id="order"
+      data="{{orderModel}}">
+    </app-pouchdb-document> -->
+
+    <app-pouchdb-conflict-resolution
+      strategy="lastWriteWins">
+    </app-pouchdb-conflict-resolution>
+
+    <app-pouchdb-document
+      db-name="http://localhost:5984/orders"
+      doc-id="{{orderID}}"
+      data="{{order}}">
+    </app-pouchdb-document>
+
+  
+
+    <div class="container">
+     <!--  <header class="center">
+        <h1 class="rebelcricket-header">Order</h1>
+      </header> -->
+
+      <div class="container">
+          <div class="row">
+            <div class="col s7">
+              <template is="dom-repeat" items="{{order.header.items0}}">
+                <div class$="col [[item.col]]">
+                  <paper-input name="[[item.key]]" label="[[item.label]]" value="{{item.value}}"></paper-input>
+                </div>
+              </template>
+            </div>
+
+            <div class="col s5">
+              <template is="dom-repeat" items="{{order.header.items1}}">
+                <div class$="col [[item.col]]">
+                  <paper-input name="[[item.key]]" label="[[item.label]]" value="{{item.value}}"></paper-input>
+                </div>
+              </template>
+            </div>
+          </div>
+          <div class="row">
+
+            <div class="col s7">
+              <div class="col s8 rebel-font">[[order.header.label0]]</div>
+              <div class="col s4 section-label"><span>[[order.header.label1]]</span></div>
+            </div>
+            <div class="col s5">
+              <template is="dom-repeat" items="{{order.header.items2}}">
+                <div class$="col [[item.col]]">
+                  <paper-input name="[[item.key]]" label="[[item.label]]" value="{{item.value}}"></paper-input>
+                </div>
+              </template>
+            </div>
+          </div>
+          <div class="row">
+            <div class="col s5 offset-s7">
+              <template is="dom-repeat" items="{{order.header.items3}}">
+                <div class$="col [[item.col]]">
+                  <paper-input name="[[item.key]]" label="[[item.label]]" value="{{item.value}}"></paper-input>
+                </div>
+              </template>
+            </div>
+
+          </div>
+          <div class="row">
+            <div class="col s12">
+              <hr>
+            </div>
+          </div>
+          <div class="row">
+            <div class="col s12 m6">
+              <div class="col s12 section-label">
+                <span>[[order.job.label]]</span>
+              </div>
+              <template is="dom-repeat" items="{{order.job.items}}">
+                <div class$="col [[item.col]]">
+                  <template is="dom-if" if="[[_isInput(item.type)]]">
+                    <paper-input name="[[item.key]]" label="[[item.label]]" value="{{item.value}}"></paper-input>
+                  </template>
+                  <template is="dom-if" if="[[_isTextarea(item.type)]]">
+                    <paper-textarea rows="[[item.rows]]" name="[[item.key]]" label="[[item.label]]" value="{{item.value}}"></paper-textarea>
+                  </template>
+                </div>
+              </template>
+            </div>
+            <div class="col s12 m6">
+              <div class="col s12 section-label">
+                <span>[[order.client_contact_information.label]]</span>
+              </div>
+              <template is="dom-repeat" items="{{order.client_contact_information.items}}">
+                <div class$="col [[item.col]]">
+                  <paper-input name="[[item.key]]" label="[[item.label]]" value="{{item.value}}"></paper-input>
+                </div>
+              </template>
+            </div>
+
+            <div class="col s12 m6">
+              <div class="col s12 section-label">
+                <span>[[order.job_completion_and_shipping.label]]</span>
+              </div>
+              <br>
+              <br>
+              <template is="dom-repeat" items="{{order.job_completion_and_shipping.items}}">
+                <div class$="col [[item.col]]">
+                  <template is="dom-if" if="[[_isInput(item.type)]]">
+                    <paper-input name="[[item.key]]" label="[[item.label]]" value="{{item.value}}"></paper-input>
+                  </template>
+                  <template is="dom-if" if="[[_isTextarea(item.type)]]">
+                    <paper-textarea rows="[[item.rows]]" name="[[item.key]]" label="[[item.label]]" value="{{item.value}}"></paper-textarea>
+                  </template>
+                  <template is="dom-if" if="[[_isCheckbox(item.type)]]">
+                    <paper-checkbox checked="{{item.value}}"> [[item.label]]</paper-checkbox>
+                  </template>
+                </div>
+              </template>
+            </div>
+
+          </div>
+          <br>
+          <div class="row">
+            <template is="dom-repeat" items="{{order.line_items.items}}">
+              <div class="col s12 group">
+              <template is="dom-repeat" items="{{item}}">
+                <div class$="col [[item.col]]">
+                  <template is="dom-if" if="[[_isInput(item.type)]]">
+                    <paper-input name="[[item.key]]" label="[[item.label]]" value="{{item.value}}" readonly$="[[item.readonly]]"></paper-input>
+                  </template>
+                </div>
+              </template>
+              </div>
+            </template>
+            <div class="col s12 center">
+<!--               <paper-button class="custom" on-tap="_addLineItemRow" raised>&plus;</paper-button> -->
+              <paper-fab mini on-tap="_addLineItemRow" icon="add" class="custom"></paper-fab>
+            </div>
+          </div>
+          <br>
+          <div class="row">
+            
+              <template is="dom-repeat" items="{{order.graphic.items}}">
+                <div class="col s12 m6 l4 graphic-group">
+              
+                  <template is="dom-repeat" items="{{item.top}}">
+                    <div class$="col [[item.col]]">
+                      <template is="dom-if" if="[[_isInput(item.type)]]">
+                        <paper-input name="[[item.key]]" label="[[item.label]]" value="{{item.value}}" readonly$="[[item.readonly]]"></paper-input>
+                      </template>
+                    </div>
+                  </template>
+      
+                  <template is="dom-repeat" items="{{item.color_mesh_print}}">
+                    <div class="col s12 group">
+                    <template is="dom-repeat" items="{{item}}">
+                      <div class$="col [[item.col]]">
+                        <paper-input name="[[item.key]]" label="[[item.label]]" value="{{item.value}}"></paper-input>
+             
+                      </div>
+                    </template>
+                    </div>
+                  </template>
+                  <div class="col s12 center">
+                    <!-- <paper-button class="custom" on-tap="_addColorMeshPrint" raised>&plus;</paper-button> -->
+                    <paper-fab mini on-tap="_addColorMeshPrint" icon="add" class="custom"></paper-fab>
+                  </div>
+                  <template is="dom-repeat" items="{{item.bottom}}">
+                    <div class$="col [[item.col]]">
+                      <template is="dom-if" if="[[_isInput(item.type)]]">
+                        <paper-input name="[[item.key]]" label="[[item.label]]" value="{{item.value}}"></paper-input>
+                      </template>
+                    </div>
+                  </template>
+             
+                </div>
+              </template>
+
+              <div class="col s12 m6 l4 center">
+              <!-- <paper-button class="custom" on-tap="_addNewGraphic" raised>&plus;</paper-button> -->
+              <paper-fab mini on-tap="_addNewGraphic" icon="add" class="custom"></paper-fab>
+            </div>
+          </div>
+       
+          
+      </div>
+
+
+
+         <!--  <paper-dropdown-menu label="Style" on-iron-select="_styleSelected">
+            <paper-listbox class="dropdown-content" selected="0">
+              <paper-item value="crew">Crew</paper-item>
+              <paper-item value="womens_crew">Women's Crew</paper-item>
+              <paper-item value="hoodie">Hoodie</paper-item>
+              <paper-item value="longsleeve">Long Sleeve</paper-item>
+            </paper-listbox>
+          </paper-dropdown-menu> -->
+        <!--   <paper-swatch-picker color="{{designElementColor}}" column-count=4 color-list='["#000000", "#65a5f2", "#83be54", "#f0d551", "#e5943c", "#a96ddb", "#B20000", "#ffffff"]'></paper-swatch-picker> -->
+         
+
+          <!-- <template is="dom-repeat" items="{{designImages}}">
+            <template is="dom-repeat" items="{{_attachmentKeys(item._attachments)}}" as="attachment">
+              <img src="http://localhost:5984/cats/{{item._id}}/{{ attachment }}" height="50" width="50">
+            </template>
+          </template>
+          <br> -->
+
+          
+   
+    </div>
+
+    <hr>
+    <br>
+    <rebelcricket-design></rebelcricket-design>
+
+  </template>
+
+  <script>
+  var orderModel = {
+    header: {
+      label0: 'REBEL CRICKET SCREEN PRINTS',
+      label1: 'WORK ORDER',
+      items0: [
+        {key: 'estimate_number', label: 'estimate #', type: 'text', col: 's12 m6'},
+        {key: 'invoice_number', label: 'invoice#', type: 'text', col: 's12 m6'}
+      ],
+      items1: [
+        {key: 'todays_date', label: 'TODAY\'S DATE', value: _now(), type: 'text', col: 's12'},
+      ],
+      items2: [
+        {key: 'purchase_order_number', label: 'PURCHASE ORDER #', type: 'text', col: 's12'},
+      ],
+      items3: [
+        {key: 'in_hands_date', label: 'IN-HANDS DATE', type: 'text', col: 's12'}
+      ]
+    },
+    job: {
+      label: 'JOB',
+      items: [
+        {key: 'job_name', label: 'JOB', type: 'text', col: 's8'},
+        {key: 'from_po', label: 'From P.O.#', type: 'text', col: 's4'},
+        {key: 'art_notes', label: 'ART NOTES', type: 'textarea', col: 's12', rows: 4},
+        {key: 'printers_notes', label: 'Printer\'s Notes', type: 'textarea', col: 's12', rows: 2}
+      ]
+    },
+    client_contact_information: {
+      label: 'CLIENT CONTACT INFORMATION',
+      items: [
+        {key: 'client_name', label: 'Name', type: 'text', col: 's12'},
+        {key: 'client_phone', label: 'Phone', type: 'text', col: 's12'},
+        {key: 'client_email', label: 'Email', type: 'text', col: 's12'}
+      ]
+    },
+    job_completion_and_shipping: {
+      label: 'COMPLETION & SHIPPING INSTRUCTIONS',  
+      items: [
+        {key: 'call_when_complete', label: 'Call when complete', type: 'checkbox', value: false, col: 's6'},
+        {key: 'will_call', label: 'Will Call', type: 'checkbox', value: false, col: 's3'},
+        {key: 'ship_via', label: 'Ship', type: 'checkbox', value: false, col: 's3'},
+        {key: 'ship_via_txt', label: 'Ship Via', type: 'text', col: 's6'},
+        {key: 'ship_by_date', label: 'Ship by date', type: 'text', col: 's6'},
+        {key: 'ship_to', label: 'Ship to', type: 'textarea', col: 's12', rows: 3}
+      ]
+    },
+    line_items: {
+      label: 'LINE ITEMS',
+      items: [
+        [
+          {key: 'brand', label: 'BRAND', type: 'text', col: 's4 m2 l1'},
+          {key: 'style', label: 'STYLE', type: 'text', col: 's4 m2 l1'},
+          {key: 'color', label: 'COLOR', type: 'text', col: 's4 m2 l1'},
+          {key: 'xs', label: 'XS', type: 'number', col: 's2 m2 l1'},
+          {key: 'sm', label: 'SM', type: 'number', col: 's2 m2 l1'},
+          {key: 'md', label: 'MD', type: 'number', col: 's2 m2 l1'},
+          {key: 'lg', label: 'LG', type: 'number', col: 's2 m2 l1'},
+          {key: 'xl', label: 'XL', type: 'number', col: 's2 m2 l1'},
+          {key: '2xl', label: '2XL', type: 'number', col: 's2 m2 l1'},
+          {key: '3xl', label: '3XL', type: 'number', col: 's4 m2 l1'},
+          {key: 'other', label: 'OTHER', type: 'number', col: 's4 m2 l1'},
+          {key: 'line_total', label: 'TOTAL', type: 'number', col: 's4 m2 l1', readonly: true},
+        ]
+      ]
+    },
+    graphic: {
+      items: [{
+        top: [
+          {key: 'graphic_name', label: 'Graphic', type: 'text', col: 's12'},
+          {key: 'new_setup', label: 'New setup', type: 'text', col: 's6'},
+          {key: 'resets', label: 'Resets', type: 'number', col: 's6'},
+          {key: 'placement', label: 'Placement', type: 'text', col: 's6'},
+          {key: 'line_items_total', label: 'Total', type: 'number', col: 's6', readonly: true},
+          {key: 'color_changes', label: 'Color changes', type: 'number', col: 's12'},
+          {key: 'pricing_group', label: 'Pricing group', type: 'text', col: 's6'},
+          {key: 'flash', label: 'Flash', type: 'text', col: 's6'}
+        ],
+        color_mesh_print: [ 
+          [
+            {key: 'graphic_color', label: 'COLOR', type:'text', col: 's4'},
+            {key: 'mesh', label: 'MESH', type:'text', col: 's4'},
+            {key: 'print_order', label: 'PRINT ORDER', type:'text', col: 's4'}
+          ]
+        ],
+        bottom: [
+          {key: 'setup_start', label: 'Setup start', type: 'text', col: 's12'},
+          {key: 'setup_complete', label: 'Setup complete', type: 'text', col: 's12'},
+          {key: 'approved_by', label: 'Approved by', type: 'text', col: 's12'},
+          {key: 'print_start', label: 'Print start', type: 'text', col: 's12'},
+          {key: 'breaks', label: 'Break/s', type: 'text', col: 's12'},
+          {key: 'print_end', label: 'Print end', type: 'text', col: 's12'}
+        ]
+      }]
+    }
+  };
+
+
+  Polymer({
+    is: 'rebelcricket-order',
+    behaviors: [
+      Polymer.AppPouchDBDatabaseBehavior
+    ],
+    properties: {
+      
+      order: {
+        type: Object,
+        notify: true,
+        value: function() {
+          return orderModel;
+        }
+      },
+      orderID: {
+        type: String,
+        notify: false,
+        value: function() { 
+          if(window.location.hash === ''){
+            window.location.hash = generateGUID();
+          }
+          return window.location.hash.replace(/#/,'');
+        }
+      }
+    },
+    _isInput: function(type){
+      return type == 'text' || type == 'number';
+    },
+    _isTextarea: function(type){
+      return type == 'textarea';
+    },
+    _isCheckbox: function(type){
+      return type == 'checkbox';
+    },
+    _addLineItemRow: function(e){
+      this.push('order.line_items.items',orderModel.line_items.items[0]);
+    },
+    _addColorMeshPrint: function(e){
+      //ugh, RTFM: https://www.polymer-project.org/1.0/docs/devguide/data-system#paths
+      //An index, for example, "myArray.1" indicates the array item at position 1.
+      //An opaque key, prefixed with the pound sign (#), for example, "myArray.#1" indicates the array item with the key "1".
+      this.push('order.graphic.items.'+e.model.index+'.color_mesh_print', orderModel.graphic.items[0].color_mesh_print[0]);
+    },
+    _addNewGraphic: function(e){
+      this.push('order.graphic.items', orderModel.graphic.items[0]);
+    },
+    ready: function(){
+
+      console.log('orderModel:',orderModel);
+
+      console.log('this.order',this.order);
+
+      console.log('this.order.line_items.items:',this.order.line_items.items);
+
+      //file upload
+      // var db = new PouchDB('http://localhost:5984/orders');
+
+      // var input = this.$.catFile;
+      // var _this = this;
+      // input.addEventListener('change', function () {
+      //   var file = input.files[0]; // file is a Blob
+
+      //   db.putAttachment(this.orderID, file.name, file, file.type).then(function (result) {
+      //     // handle result
+      //     // _this._addImageToCanvas('http://localhost:5984/cats/'+file.name+'/'+file.name);
+      //   }).catch(function (err) {
+      //     console.log(err);
+      //   });
+
+      // });
+
+    }
+
+
+  });
+
+
+  </script>
+</dom-module>

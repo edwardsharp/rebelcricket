@@ -1,0 +1,25 @@
+{
+  "entrypoint": "index.html",
+  "shell": "src/rebelcricket-app.html",
+  "fragments": [
+    "src/rebelcricket-about.html",
+    "src/rebelcricket-contact.html",
+    "src/rebelcricket-design.html",
+    "src/rebelcricket-detail.html",
+    "src/rebelcricket-home.html",
+    "src/rebelcricket-order.html",
+    "src/rebelcricket-orders.html",
+    "src/rebelcricket-services.html",
+    "src/rebelcricket-view404.html"
+  ],
+  "sourceGlobs": [
+   "src/**/*",
+   "images/**/*",
+   "fonts/**/*",
+   "bower.json"
+  ],
+  "includeDependencies": [
+    "manifest.json",
+    "bower_components/webcomponentsjs/webcomponents-lite.min.js"
+  ]
+}

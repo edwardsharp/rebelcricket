@@ -1,0 +1,98 @@
+<link rel="import" href="../bower_components/polymer/polymer.html">
+<link rel="import" href="../bower_components/app-pouchdb/pouchdb.html">
+<link rel="import" href="../bower_components/app-pouchdb/app-pouchdb-database-behavior.html">
+<!-- <link rel="import" href="../bower_components/app-pouchdb/app-pouchdb-conflict-resolution.html">
+<link rel="import" href="../bower_components/app-pouchdb/app-pouchdb-index.html">
+<link rel="import" href="../bower_components/app-pouchdb/app-pouchdb-query.html">  -->
+<link rel="import" href="../bower_components/app-pouchdb/app-pouchdb-document.html">
+
+<link rel="import" href="../bower_components/l2t-paper-slider/l2t-paper-slider.html">
+<link rel="import" href="../bower_components/paper-button/paper-button.html">
+
+<link rel="import" href="shared-styles.html">
+
+<dom-module id="rebelcricket-home">
+
+  <template>
+
+    <style is="custom-style" include="shared-styles">
+
+    :root {
+      --paper-slide-dot-styles: {
+        background-color: rgba(0,0,0,0.3);
+      }
+      --paper-slide-dot-selected: #333;
+     
+    }
+    
+    /* aaarg! */
+    ::content .slider__slides{
+      background: none!important;
+    }
+
+    .container {
+      padding-top: 1em;
+    }
+
+    
+
+    @media (max-width: 767px) {
+      
+    }
+    </style>
+
+    <app-pouchdb-document
+      db-name="http://localhost:5984/pages"
+      doc-id="home"
+      data="{{home}}">
+    </app-pouchdb-document>
+    
+    <template is="dom-if" if="{{home._attachments}}">
+    <div class="container">
+      <l2t-paper-slider class="moveControl" total-slides="[[_getTotalSlides(home)]]" position="0" auto-progress slide-duration="3">
+        <template is="dom-repeat" items="{{_toArray(home._attachments)}}">
+          <paper-slide style$="background-image: url('http://localhost:5984/pages/home/{{item.name}}');background-repeat:no-repeat;background-position:center center;background-size:contain;"></paper-slide>
+        </template>
+      </l2t-paper-slider>
+      <!-- <paper-button class="proceed" onclick="document.querySelector('.moveControl').movePrev();">Previous</paper-button>
+      <paper-button class="proceed" onclick="document.querySelector('.moveControl').moveNext();">Next</paper-button> -->
+    </div>
+    </template>
+  </template>
+
+  <script>
+
+    Polymer({
+
+      is: 'rebelcricket-home',
+      behaviors: [
+        Polymer.AppPouchDBDatabaseBehavior
+      ],
+      _getTotalSlides: function(doc){
+        try{
+          console.log('doc:',doc);
+          console.log('_getTotalSlides:',Object.keys(doc._attachments).length);
+          return Object.keys(doc._attachments).length;
+        }catch(err){
+          return 0;
+        }
+      },
+      _toArray: function(doc) {
+          try{
+            return Object.keys(doc).map(function(key) {
+              return {
+                  name: key,
+                  value: doc[key]
+              };
+            });
+          }catch(err){
+            return [];
+          }
+          
+      },
+
+    });
+
+  </script>
+
+</dom-module>

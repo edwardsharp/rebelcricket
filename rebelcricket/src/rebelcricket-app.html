@@ -1,0 +1,93 @@
+<link rel="import" href="../bower_components/polymer/polymer.html">
+<!-- <link rel="import" href="../bower_components/app-layout/app-drawer/app-drawer.html">
+<link rel="import" href="../bower_components/app-layout/app-drawer-layout/app-drawer-layout.html">
+<link rel="import" href="../bower_components/app-layout/app-header/app-header.html">
+<link rel="import" href="../bower_components/app-layout/app-header-layout/app-header-layout.html">
+<link rel="import" href="../bower_components/app-layout/app-scroll-effects/app-scroll-effects.html">
+<link rel="import" href="../bower_components/app-layout/app-toolbar/app-toolbar.html"> -->
+<link rel="import" href="../bower_components/app-route/app-location.html">
+<link rel="import" href="../bower_components/app-route/app-route.html">
+<link rel="import" href="../bower_components/iron-pages/iron-pages.html">
+<link rel="import" href="../bower_components/iron-selector/iron-selector.html">
+<link rel="import" href="../bower_components/paper-icon-button/paper-icon-button.html">
+
+<link rel="import" href="rebelcricket-header.html">
+<link rel="import" href="rebelcricket-footer.html">
+<link rel="import" href="rebelcricket-icons.html">
+
+<dom-module id="rebelcricket-app">
+  <template>
+    <style is="custom-style">
+      :host {
+        --app-primary-color: #333333;
+        --app-secondary-color: black;
+
+        display: block;
+      }
+
+      
+    </style>
+
+    <app-location route="{{route}}"></app-location>
+    <app-route
+        route="{{route}}"
+        pattern="/:page"
+        data="{{routeData}}"
+        tail="{{subroute}}"></app-route>
+
+    <rebelcricket-header></rebelcricket-header>
+
+    <iron-pages
+        selected="[[page]]"
+        attr-for-selected="name"
+        fallback-selection="view404"
+        role="main">
+
+      <rebelcricket-home name="home"></rebelcricket-home>
+      <rebelcricket-about name="about"></rebelcricket-about>
+      <rebelcricket-services name="services"></rebelcricket-services>
+      <rebelcricket-detail name="detail" route="[[subroute]]"></rebelcricket-detail>
+      <rebelcricket-contact name="contact"></rebelcricket-contact>
+      <rebelcricket-design name="design"></rebelcricket-design>
+      <rebelcricket-order name="order" route="[[subroute]]"></rebelcricket-order>
+      <rebelcricket-orders name="orders"></rebelcricket-orders>
+
+      <rebelcricket-view404 name="view404"></rebelcricket-view404>
+    </iron-pages>
+
+    <rebelcricket-footer></rebelcricket-footer>
+
+  </template>
+
+  <script>
+    Polymer({
+      is: 'rebelcricket-app',
+
+      properties: {
+        page: {
+          type: String,
+          reflectToAttribute: true,
+          observer: '_pageChanged'
+        }
+      },
+
+      observers: [
+        '_routePageChanged(routeData.page)'
+      ],
+
+      _routePageChanged: function(page) {
+        this.page = page || 'home';
+      },
+
+      _pageChanged: function(page) {
+        // Load page import on demand. Show 404 page if fails
+        var resolvedPageUrl = this.resolveUrl('rebelcricket-' + page + '.html');
+        this.importHref(resolvedPageUrl, null, this._showPage404, true);
+      },
+
+      _showPage404: function() {
+        this.page = 'view404';
+      }
+    });
+  </script>
+</dom-module>

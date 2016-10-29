@@ -1,0 +1,97 @@
+<link rel="import" href="../bower_components/polymer/polymer.html">
+<link rel="import" href="../bower_components/paper-button/paper-button.html">
+
+<link rel="import" href="shared-styles.html">
+
+<dom-module id="rebelcricket-footer">
+
+  <template>
+
+    <style include="shared-styles">
+
+    :host {
+    
+    }
+
+    footer {
+      position: fixed;
+      bottom: -1em;
+      width: 100%;
+      background-color: rgba(255,255,255,0.5);
+      transform: rotateZ(1deg);
+      box-shadow: 0 0 2px 5px transparent;
+      margin-top: 20px;
+      line-height: 24px;
+      font-size: 24px;
+    }
+    footer .rotateZ {
+      padding: 1em 0 1em 0;
+      width: 100%;
+
+    }
+    a {
+      /*transform: rotateZ(-1deg);*/
+    }
+    .center{
+      text-align: center;
+      justify-content: center;
+    }
+
+    @media (max-width: 767px) {
+      :host {
+        
+      }
+      footer {
+        font-size: 18px;
+      }
+    }
+    </style>
+
+
+    <footer>
+      <div class="rotateZ">
+        <div class="container">
+          <div class="row">
+
+
+            <div class="col s4 center">
+               <a href="/about">
+                <paper-button class="custom">
+                  ABOUT
+                </paper-button>
+              </a>
+            </div>
+            <div class="col s4 center">
+             <a href="/services">
+                <paper-button class="custom">
+                  SERVICES
+                </paper-button>
+              </a>
+            </div>
+            <div class="col s4 center">
+              <a href="/contact">
+                <paper-button class="custom">
+                  CONTACT
+                </paper-button>
+              </a>
+            </div>
+          </div>
+        </div>
+      </div>
+    </footer>
+
+  </template>
+
+  <script>
+
+    Polymer({
+
+      is: 'rebelcricket-footer'
+
+    });
+
+  </script>
+
+</dom-module>
+
+
