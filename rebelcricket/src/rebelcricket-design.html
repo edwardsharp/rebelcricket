@@ -315,6 +315,11 @@
           }
           return window.location.hash.replace(/#/,'');
         }
+      },
+      designSide: {
+        type: String,
+        notify: false,
+        value: 'back'
       }
 
     },
@@ -332,23 +337,26 @@
       this.$$('#toggle-design-element-img').checked = false;
     },
     _toggleDesignElementImg: function(e){
-      console.log('_toggleDesignElementImg e.target.checked:',e.target.checked);
+      // console.log('_toggleDesignElementImg e.target.checked:',e.target.checked);
       if(e.target.checked){
         this.$$('#design-element-img').src = this.$$('#design-element-img').src.replace(/front/, 'back');
+        this.designSide = 'back';
         e.target.innerHTML = 'Show Front';
       }else{
         this.$$('#design-element-img').src = this.$$('#design-element-img').src.replace(/back/, 'front');
+        this.designSide = 'front';
         e.target.innerHTML = 'Show Back';
       }
+
     },
     _orderDesignChanged: function(e){
 
-      console.log('DESIGN _orderDesignChanged, canvasNeedsInit:', canvasNeedsInit);
+      // console.log('DESIGN _orderDesignChanged, canvasNeedsInit:', canvasNeedsInit);
       if(this.orderDesign.canvas && canvasNeedsInit){
         canvasNeedsInit = false;
         // this.set('canvasNeedsInit', false);
         console.log('CANVAS tryin to load JSON:',this.orderDesign.canvas);
-        this._clearCanvas();
+        // this._clearCanvas();
         this.canvas.loadFromJSON(this.orderDesign.canvas);
       }
       
@@ -356,13 +364,13 @@
     _orderDesignAttachmentsChanged: function(e){
       this.set('orderDesignAttachments', e.detail.value);
       console.log('_orderDesignAttachmentsChanged e.detail:',e.detail.value,' this.orderDesignAttachments',this.orderDesignAttachments);
-      this._clearCanvas();
+      // this._clearCanvas();
       for(var key in this.orderDesignAttachments){
         var attachments = Object.keys(this.orderDesignAttachments[key]._attachments);
         for(var aKey in attachments){
-          if(this.orderDesignAttachments[key]._id === this.designID + '_attachments'){
-            console.log('src:','http://localhost:5984/order_designs/'+this.orderDesignAttachments[key]._id+'/'+attachments[aKey] )
-            e.target._addImageToCanvas('http://localhost:5984/order_designs/'+this.orderDesignAttachments[key]._id+'/'+attachments[aKey]);
+          if(this.orderDesignAttachments[key]._id === this.designID+'_'+this.designSide){
+            // console.log('_addImageToCanvas src:','http://localhost:5984/order_designs/'+this.orderDesignAttachments[key]._id+'/'+attachments[aKey] )
+            // e.target._addImageToCanvas('http://localhost:5984/order_designs/'+this.orderDesignAttachments[key]._id+'/'+attachments[aKey]);
           }
           
         }
@@ -386,9 +394,6 @@
       this.canvas.getActiveObject().remove();
       // this.canvas.remove(obj);
     },
-    _log: function(wut){
-      console.log('wut:',wut);
-    },
     _attachmentKeys: function(attachments){
       if(attachments != undefined){
         return Object.keys(attachments);
@@ -406,8 +411,8 @@
       // console.log('CANVAS JSON, should match:',JSON.stringify(this.canvas), this.orderDesign.canvas);
     },
     ready: function(){
-
-      console.log('DESIGN this.orderDesign.canvas?', this.orderDesign.canvas);
+      console.log('designside:',this.designSide);
+      // console.log('DESIGN this.orderDesign.canvas?', this.orderDesign.canvas);
       this.canvas = new fabric.Canvas(this.$.c);
 
       // draw something
@@ -465,9 +470,9 @@
       input.addEventListener('change', function () {
         var file = input.files[0]; // file is a Blob
 
-        db.putAttachment(_this.designID+'_attachments', file.name, file, file.type).then(function (result) {
+        db.putAttachment(_this.designID+'_'+_this.designSide, file.name, file, file.type).then(function (result) {
           // handle result
-          _this._addImageToCanvas('http://localhost:5984/order_designs/'+_this.designID+'_attachments/'+file.name);
+          _this._addImageToCanvas('http://localhost:5984/order_designs/'+_this.designID+'_'+_this.designSide+'/'+file.name);
         }).catch(function (err) {
           console.log(err);
         });
