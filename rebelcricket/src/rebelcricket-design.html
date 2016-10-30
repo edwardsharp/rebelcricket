@@ -7,6 +7,7 @@
 <link rel="import" href="../bower_components/paper-toggle-button/paper-toggle-button.html">
 <link rel="import" href="../bower_components/paper-item/paper-item.html">
 <link rel="import" href="../bower_components/paper-listbox/paper-listbox.html">
+<link rel="import" href="../bower_components/paper-tabs/paper-tabs.html">
 <link rel="import" href="../bower_components/paper-dropdown-menu/paper-dropdown-menu.html">
 <link rel="import" href="../bower_components/paper-swatch-picker/paper-swatch-picker.html">
 <link rel="import" href="../bower_components/paper-button/paper-button.html">
@@ -37,14 +38,7 @@
         color: gray;
       }
 
-      paper-toggle-button.green {
-        --paper-toggle-button-checked-bar-color:  var(--paper-green-500);
-        --paper-toggle-button-checked-button-color:  var(--paper-green-500);
-        --paper-toggle-button-checked-ink-color: var(--paper-green-500);
-        --paper-toggle-button-unchecked-bar-color:  var(--paper-teal-500);
-        --paper-toggle-button-unchecked-button-color:  var(--paper-teal-500);
-        --paper-toggle-button-unchecked-ink-color: var(--paper-teal-500);
-      }
+ 
 
       .center{
         text-align: center;
@@ -64,8 +58,8 @@
       }
 
       #design-element-container{
-        width: 530px;
-        height: 630px;
+        width: 500px;
+        height: 400px;
         position: relative;
       }
 
@@ -73,14 +67,14 @@
         position: absolute;
         top: 0;
         left: 0;
-        z-index: 1;
+        z-index: 0;
       }
       #design-element-canvas-container {
 
         position: absolute;
         top:115px;
         left: 165px;
-        z-index: 2;
+        z-index: 1;
       }
 
       canvas:hover{
@@ -137,12 +131,15 @@
       data="{{orderDesignAttachments}}">
     </app-pouchdb-query>
 
-    <div class="container">
+ 
    <!--  <header class="center">
       <h1 class="rebelcricket-header">Design</h1>
     </header> -->
     <div class="flex-wrap">
       <div id="design-controls">
+
+      
+
         <paper-dropdown-menu label="Style" on-iron-select="_styleSelected">
           <paper-listbox class="dropdown-content" selected="{{orderDesign.style}}">
             <paper-item value="crew">Crew</paper-item>
@@ -154,7 +151,7 @@
         </paper-dropdown-menu>
         <paper-swatch-picker color="[[orderDesign.designElementColor]]" column-count=4 color-list='["#000000", "#65a5f2", "#83be54", "#f0d551", "#e5943c", "#a96ddb", "#B20000", "#ffffff"]'></paper-swatch-picker>
         <br><br>
-        <paper-toggle-button class="green" id="toggle-design-element-img" on-tap="_toggleDesignElementImg">Show Back</paper-toggle-button>
+        <paper-toggle-button class="gray" id="toggle-design-element-img" on-tap="_toggleDesignElementImg">Show Back</paper-toggle-button>
         <br>
         <label for="orderDesignFile">Add Image</label>
         <input id="orderDesignFile" type="file"></input>
@@ -277,7 +274,7 @@
 
       </div>
     </div>
-    </div>
+
 
   </template>
 

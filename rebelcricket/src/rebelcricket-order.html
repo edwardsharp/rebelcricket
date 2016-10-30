@@ -25,6 +25,7 @@
 <link rel="import" href="rebelcricket-design.html">
 
 <script src="util.js"></script>
+<script src="underscore-min.js"></script>
 
 <dom-module id="rebelcricket-order">
   <template>
@@ -33,14 +34,14 @@
         font-size: 16px;
       }
       paper-button.custom, paper-fab.custom {
-        background: white;
-        color: #333;
+        background: rgba(255,0,0,0.8);
+        
         margin: 1em;
       }
 
       paper-button.custom:hover, paper-fab.custom:hover {
-        background: #333;
-        color: white;
+        background: red;
+       
       }
 
       paper-button[disabled] {
@@ -70,12 +71,15 @@
         width: 97%;
         height: 1.5em;
         text-align: center;
+        padding-left: 0.5em;
+        padding-right: 0.5em;
       }
-   /*   .rebel-font{
+      .rebel-font{
         font-family: 'ObelixPro';
         font-weight: 100;
-        font-size: 25px;
-      }*/
+        font-size: 2em;
+        line-height: 1em;
+      }
 
       .center{
         text-align: center;
@@ -126,15 +130,14 @@
       doc-id="{{orderID}}"
       data="{{order}}">
     </app-pouchdb-document>
-
   
 
-    <div class="container">
+    <div class="">
      <!--  <header class="center">
         <h1 class="rebelcricket-header">Order</h1>
       </header> -->
 
-      <div class="container">
+      <div class="">
           <div class="row">
             <div class="col s7">
               <template is="dom-repeat" items="{{order.header.items0}}">
@@ -166,21 +169,7 @@
               </template>
             </div>
           </div>
-          <div class="row">
-            <div class="col s5 offset-s7">
-              <template is="dom-repeat" items="{{order.header.items3}}">
-                <div class$="col [[item.col]]">
-                  <paper-input name="[[item.key]]" label="[[item.label]]" value="{{item.value}}"></paper-input>
-                </div>
-              </template>
-            </div>
-
-          </div>
-          <div class="row">
-            <div class="col s12">
-              <hr>
-            </div>
-          </div>
+     
           <div class="row">
             <div class="col s12 m6">
               <div class="col s12 section-label">
@@ -332,16 +321,14 @@
       label0: 'REBEL CRICKET SCREEN PRINTS',
       label1: 'WORK ORDER',
       items0: [
-        {key: 'estimate_number', label: 'estimate #', type: 'text', col: 's12 m6'},
-        {key: 'invoice_number', label: 'invoice#', type: 'text', col: 's12 m6'}
+        {key: 'estimate_number', label: 'estimate #', type: 'text', col: 's4 m2'},
+        {key: 'invoice_number', label: 'invoice#', type: 'text', col: 's4 m6'},
+        {key: 'purchase_order_number', label: 'PURCHASE ORDER #', type: 'text', col: 's6 m4'},
       ],
       items1: [
-        {key: 'todays_date', label: 'TODAY\'S DATE', value: _now(), type: 'text', col: 's12'},
+        {key: 'todays_date', label: 'TODAY\'S DATE', value: _now(), type: 'text', col: 's12'}
       ],
       items2: [
-        {key: 'purchase_order_number', label: 'PURCHASE ORDER #', type: 'text', col: 's12'},
-      ],
-      items3: [
         {key: 'in_hands_date', label: 'IN-HANDS DATE', type: 'text', col: 's12'}
       ]
     },
@@ -380,14 +367,14 @@
           {key: 'brand', label: 'BRAND', type: 'text', col: 's4 m2 l1'},
           {key: 'style', label: 'STYLE', type: 'text', col: 's4 m2 l1'},
           {key: 'color', label: 'COLOR', type: 'text', col: 's4 m2 l1'},
-          {key: 'xs', label: 'XS', type: 'number', col: 's2 m2 l1'},
-          {key: 'sm', label: 'SM', type: 'number', col: 's2 m2 l1'},
-          {key: 'md', label: 'MD', type: 'number', col: 's2 m2 l1'},
-          {key: 'lg', label: 'LG', type: 'number', col: 's2 m2 l1'},
-          {key: 'xl', label: 'XL', type: 'number', col: 's2 m2 l1'},
-          {key: '2xl', label: '2XL', type: 'number', col: 's2 m2 l1'},
-          {key: '3xl', label: '3XL', type: 'number', col: 's4 m2 l1'},
-          {key: 'other', label: 'OTHER', type: 'number', col: 's4 m2 l1'},
+          {key: 'xs', label: 'XS', type: 'number', col: 's2 m2 l1', sum: true},
+          {key: 'sm', label: 'SM', type: 'number', col: 's2 m2 l1', sum: true},
+          {key: 'md', label: 'MD', type: 'number', col: 's2 m2 l1', sum: true},
+          {key: 'lg', label: 'LG', type: 'number', col: 's2 m2 l1', sum: true},
+          {key: 'xl', label: 'XL', type: 'number', col: 's2 m2 l1', sum: true},
+          {key: '2xl', label: '2XL', type: 'number', col: 's2 m2 l1', sum: true},
+          {key: '3xl', label: '3XL', type: 'number', col: 's4 m2 l1', sum: true},
+          {key: 'other', label: 'OTHER', type: 'number', col: 's4 m2 l1', sum: true},
           {key: 'line_total', label: 'TOTAL', type: 'number', col: 's4 m2 l1', readonly: true},
         ]
       ]
@@ -434,6 +421,7 @@
       order: {
         type: Object,
         notify: true,
+        observer: '_orderObserver',
         value: function() {
           return orderModel;
         }
@@ -448,6 +436,17 @@
           return window.location.hash.replace(/#/,'');
         }
       }
+    },
+    _orderObserver: function(_order){
+      try{
+        _.each(_order.line_items.items, function(item){
+          _.where(item, {key: 'line_total'})[0].value = _.reduce(_.where(item, {sum: true}), function(memo, v){ return memo + (v.value != undefined && v.value != '' ? parseInt(v.value) : 0); }, 0);
+        });
+      }catch(err){
+        //o noz!
+        console.log('o noz! _orderObserver caught err:',err);
+      }
+
     },
     _isInput: function(type){
       return type == 'text' || type == 'number';

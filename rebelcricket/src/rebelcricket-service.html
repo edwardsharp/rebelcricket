@@ -30,6 +30,11 @@
       background: none!important;
     }
 
+    img { 
+      width: 100%; 
+      margin-top: 1em;
+    }
+
     @media (max-width: 767px) {
       
     }
@@ -50,7 +55,7 @@
     <div class="container">
       <div class="row">
         <div class="col s12 m6">
-          <template is="dom-if" if="{{service.detail_images}}">
+          <template is="dom-if" if="{{_hasMoreThanOne(service.detail_images)}}">
             <l2t-paper-slider class="moveControl" total-slides="[[_getTotalSlides(service)]]" position="0" auto-progress slide-duration="3">
               <template is="dom-repeat" items="{{_toArray(service.detail_images)}}">
                 <paper-slide style$="background-image: url('http://localhost:5984/pages/services/{{item.value}}');background-repeat:no-repeat;background-position:center center;background-size:contain;"></paper-slide>
@@ -59,10 +64,16 @@
             <!-- <paper-button class="proceed" onclick="document.querySelector('.moveControl').movePrev();">Previous</paper-button>
             <paper-button class="proceed" onclick="document.querySelector('.moveControl').moveNext();">Next</paper-button> -->
           </template>
+          <template is="dom-if" if="{{!_hasMoreThanOne(service.detail_images)}}">
+            <img src$="http://localhost:5984/pages/services/[[service.detail_images.0]]">
+          </template>
         </div>  
         <div class="col s12 m6">
           <h1>[[service.name]]</h1>
           <p>[[service.description]]</p>
+          <template is="dom-repeat" items="{{service.detail_items}}">
+            <p><h5>[[item.name]]:</h5> [[item.description]]</p>
+          </template>
         </div> 
       </div>
 
@@ -160,6 +171,9 @@
             return [];
           }
           
+      },
+      _hasMoreThanOne: function(arr){
+        return arr.length > 1 ? true : false;
       },
       created: function(){
         // console.log('DETAIL CREATED! ');
