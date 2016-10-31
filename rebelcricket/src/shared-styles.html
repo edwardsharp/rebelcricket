@@ -86,24 +86,30 @@
       .rebel-heading {
         font-family: 'ObelixPro';
         font-weight: 100;
-        font-size: 2.5em;
+        font-size: 3em;
         letter-spacing: 3px;
-        width: 55%;
-        margin-left: 25%;
-        margin-right: 25%;
+        transform: rotateZ(-3deg);
+        /*-webkit-clip-path: polygon(0 3%, 100% 0%, 100% 97%, 0% 100%);
+        clip-path: polygon(0 3%, 100% 0%, 100% 97%, 0% 100%);*/
         padding-top: 0.25em;
-        background-color: #333;
+        /*background-color: #333;
         background: url('/images/halftone.svg');
         background-size:9px 9px, 100%;
-        background-repeat: repeat;
-        
-        -webkit-text-fill-color: white;
-        -webkit-text-stroke-width: 2px;
-        -webkit-text-stroke-color: black;
+        background-repeat: repeat;*/
+        /*background-image: radial-gradient(ellipse farthest-corner, transparent 0%, transparent 35%, #fff 30%, #fff 40%, transparent 90%), radial-gradient(ellipse farthest-corner at 0px 0px, transparent 0%, transparent 20%, #fff 15%, #fff 20%, transparent 50%), radial-gradient(ellipse farthest-corner at 8px 8px, transparent 0%, transparent 20%, #fff 15%, #fff 20%, transparent 50%), radial-gradient(ellipse farthest-corner at 0px 8px, transparent 0%, transparent 20%, #fff 15%, #fff 20%, transparent 40%), radial-gradient(ellipse farthest-corner at 8px 0px, transparent 0%, transparent 20%, #fff 15%, #fff 20%, transparent 50%),  linear-gradient(40deg, red 0, red 30%, red 50%, red 70%, red 100%);
+        background-size: 8px 8px, 8px 8px, 8px 8px, 8px 8px, 8px 8px, 100% 100%;*/
+
+        /*background-color: red;*/
+
+        /*border: 5px solid #333;*/
+        /*-webkit-text-fill-color: white;
+        -webkit-text-stroke-width: 4px;
+        -webkit-text-stroke-color: black;*/
+
         color: white;
         text-shadow:
          3px 3px 0 black,
-        -3px -3px 0 black,  
+        
          3px -3px 0 black,
         -3px 3px 0 black,
          3px 3px 0 black;
@@ -140,6 +146,7 @@
         .rebel-heading {
           font-size: 2.2em;
           padding: 0.5em;
+          width: 90%;
         }
       }
 

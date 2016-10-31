@@ -1,5 +1,7 @@
 <link rel="import" href="../bower_components/polymer/polymer.html">
 <link rel="import" href="../bower_components/paper-button/paper-button.html">
+<link rel="import" href="../bower_components/app-route/app-location.html">
+<link rel="import" href="../bower_components/app-route/app-route.html">
 
 <link rel="import" href="shared-styles.html">
 
@@ -37,6 +39,10 @@
       justify-content: center;
     }
 
+    .selected{
+      text-decoration: underline!important;
+    }
+
     @media (max-width: 767px) {
       :host {
         
@@ -47,6 +53,12 @@
     }
     </style>
 
+    <app-location route="{{route}}"></app-location>
+    <app-route
+        route="{{route}}"
+        pattern="/:page"
+        data="{{routeData}}"
+        tail="{{subroute}}"></app-route>
 
     <footer>
       <div class="rotateZ">
@@ -56,21 +68,21 @@
 
             <div class="col s4 center">
                <a href="/about">
-                <paper-button class="custom">
+                <paper-button id="about" class="custom">
                   ABOUT
                 </paper-button>
               </a>
             </div>
             <div class="col s4 center">
              <a href="/services">
-                <paper-button class="custom">
+                <paper-button id="services" class="custom">
                   SERVICES
                 </paper-button>
               </a>
             </div>
             <div class="col s4 center">
               <a href="/contact">
-                <paper-button class="custom">
+                <paper-button id="contact" class="custom">
                   CONTACT
                 </paper-button>
               </a>
@@ -86,7 +98,24 @@
 
     Polymer({
 
-      is: 'rebelcricket-footer'
+      is: 'rebelcricket-footer',
+      properties: {
+        page: String
+      },
+
+      observers: [
+        '_routePageChanged(routeData.page)'
+      ],
+
+      _routePageChanged: function(page) {
+        console.log('FOOTER _routePageChanged:',page);
+        this.toggleClass('selected', page == 'about', this.$.about);
+        this.toggleClass('selected', page.match(/service/), this.$.services);
+        this.toggleClass('selected', page == 'contact', this.$.contact);
+      },
+      ready: function(){
+        console.log("FOOTER aaar this.$.about:",this.$.about);
+      }
 
     });
 
