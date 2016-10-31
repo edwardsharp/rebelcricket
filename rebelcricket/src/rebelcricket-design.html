@@ -4,6 +4,7 @@
 <link rel="import" href="../bower_components/app-pouchdb/app-pouchdb-index.html">
 <link rel="import" href="../bower_components/app-pouchdb/app-pouchdb-query.html"> 
 <link rel="import" href="../bower_components/app-pouchdb/app-pouchdb-document.html">
+<link rel="import" href="../bower_components/app-pouchdb/app-pouchdb-conflict-resolution.html">
 <link rel="import" href="../bower_components/paper-toggle-button/paper-toggle-button.html">
 <link rel="import" href="../bower_components/paper-item/paper-item.html">
 <link rel="import" href="../bower_components/paper-listbox/paper-listbox.html">
@@ -105,6 +106,10 @@
       doc-id="parsnip"
       data="{{cat}}">
     </app-pouchdb-document> -->
+
+    <app-pouchdb-conflict-resolution
+      strategy="lastWriteWins">
+    </app-pouchdb-conflict-resolution>
 
     <app-pouchdb-document
         db-name="http://localhost:5984/order_designs"
@@ -275,7 +280,6 @@
       </div>
     </div>
 
-
   </template>
 
   <script>
@@ -319,7 +323,7 @@
       designSide: {
         type: String,
         notify: false,
-        value: 'back'
+        value: 'front'
       }
 
     },
@@ -340,26 +344,44 @@
       // console.log('_toggleDesignElementImg e.target.checked:',e.target.checked);
       if(e.target.checked){
         this.$$('#design-element-img').src = this.$$('#design-element-img').src.replace(/front/, 'back');
-        this.designSide = 'back';
+        this.set('designSide', 'back');
         e.target.innerHTML = 'Show Front';
       }else{
         this.$$('#design-element-img').src = this.$$('#design-element-img').src.replace(/back/, 'front');
-        this.designSide = 'front';
+        this.set('designSide', 'front');
         e.target.innerHTML = 'Show Back';
       }
+      this._clearCanvas();
+      this._loadCanvas();
 
     },
-    _orderDesignChanged: function(e){
-
+    _loadCanvas: function(){
+      try{
+        if(this.orderDesign && this.orderDesign.canvas == undefined){
+          this.set('orderDesign.canvas', {});
+        }
+        if(this.orderDesign.canvas[this.designSide] == undefined){
+          console.log('canvas persistant store for: '+this.designSide+' was blank, willnot load canvas, but saved.')
+          // this.orderDesign.canvas[this.designSide] = {};
+          this.set('orderDesign.canvas.'+this.designSide, this.canvas);
+        }else{
+          console.log('CANVAS tryin to load side: ',this.designSide,' JSON:',this.orderDesign.canvas[this.designSide]);
+          this.canvas.loadFromJSON(this.orderDesign.canvas[this.designSide]);
+        }
+        
+      }catch(err){
+        //o noz!
+        console.log('_loadCanvas caught err:',err);
+      }
+      
+    },
+    _orderDesignChanged: function(e){     
+      // console.log('_orderDesignChanged e:',e); 
       // console.log('DESIGN _orderDesignChanged, canvasNeedsInit:', canvasNeedsInit);
       if(this.orderDesign.canvas && canvasNeedsInit){
         canvasNeedsInit = false;
-        // this.set('canvasNeedsInit', false);
-        console.log('CANVAS tryin to load JSON:',this.orderDesign.canvas);
-        // this._clearCanvas();
-        this.canvas.loadFromJSON(this.orderDesign.canvas);
+        this._loadCanvas();
       }
-      
     },
     _orderDesignAttachmentsChanged: function(e){
       this.set('orderDesignAttachments', e.detail.value);
@@ -369,8 +391,9 @@
         var attachments = Object.keys(this.orderDesignAttachments[key]._attachments);
         for(var aKey in attachments){
           if(this.orderDesignAttachments[key]._id === this.designID+'_'+this.designSide){
-            // console.log('_addImageToCanvas src:','http://localhost:5984/order_designs/'+this.orderDesignAttachments[key]._id+'/'+attachments[aKey] )
-            // e.target._addImageToCanvas('http://localhost:5984/order_designs/'+this.orderDesignAttachments[key]._id+'/'+attachments[aKey]);
+            console.log('_addImageToCanvas ?? src:','http://localhost:5984/order_designs/'+this.orderDesignAttachments[key]._id+'/'+attachments[aKey] )
+              // e.target._addImageToCanvas('http://localhost:5984/order_designs/'+this.orderDesignAttachments[key]._id+'/'+attachments[aKey]);
+              this._loadCanvas();
           }
           
         }
@@ -387,12 +410,19 @@
         oImg.scaleToWidth(200);
         _thisCanvas.add(oImg);
       },{ crossOrigin: 'Anonymous' });
+      this._asyncSaveCanvas();
+    },
+    _asyncSaveCanvas: function(){
+      this.async(function(){
+        this.set('orderDesign.canvas.'+this.designSide, this.canvas);
+      }, 666);
     },
     _removeImageFromCanvas: function(e){
       console.log('_removeImageFromCanvas idx:',this.canvas.getActiveObject());
       // this.canvas.item(this.$.removeImage.getAttribute('idx')).remove();
       this.canvas.getActiveObject().remove();
       // this.canvas.remove(obj);
+      this._asyncSaveCanvas();
     },
     _attachmentKeys: function(attachments){
       if(attachments != undefined){
@@ -404,10 +434,11 @@
     },
     _onSelectionCleared: function(e){
       this.set('objectToolsHidden', true);
+      this._asyncSaveCanvas();
     },
     _onObjectModified: function(e){
       e.target.opacity = 1;
-      this.set('orderDesign.canvas', this.canvas);
+      this._asyncSaveCanvas();
       // console.log('CANVAS JSON, should match:',JSON.stringify(this.canvas), this.orderDesign.canvas);
     },
     ready: function(){
@@ -427,6 +458,7 @@
       
       
       canvasNeedsInit = true;
+      this._loadCanvas();
 
       initFabricFilters(this);
 

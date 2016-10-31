@@ -18,6 +18,9 @@
 <link rel="import" href="../bower_components/paper-input/paper-textarea.html">
 <link rel="import" href="../bower_components/paper-checkbox/paper-checkbox.html">
 <link rel="import" href="../bower_components/paper-fab/paper-fab.html">
+<link rel="import" href="../bower_components/paper-dialog/paper-dialog.html">
+<link rel="import" href="../bower_components/paper-dialog-scrollable/paper-dialog-scrollable.html">
+<link rel="import" href="../bower_components/paper-tooltip/paper-tooltip.html">
 
 <link rel="import" href="shared-styles.html">
 
@@ -37,6 +40,7 @@
         background: rgba(255,0,0,0.8);
         
         margin: 1em;
+        display: inline-block;
       }
 
       paper-button.custom:hover, paper-fab.custom:hover {
@@ -84,6 +88,7 @@
       .center{
         text-align: center;
         justify-content: center;
+        width: 100%;
       }
 
       .group{
@@ -131,6 +136,33 @@
       data="{{order}}">
     </app-pouchdb-document>
   
+    
+
+<paper-dialog id="scrolling">
+  <h2>Brand, Style, Color...</h2>
+  <paper-dialog-scrollable>
+    <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute
+      irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.</p>
+    <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute
+      irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.</p>
+    <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute
+      irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.</p>
+    <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute
+      irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.</p>
+    <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute
+      irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.</p>
+    <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute
+      irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.</p>
+    <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute
+      irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.</p>
+    <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute
+      irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.</p>
+  </paper-dialog-scrollable>
+  <div class="buttons">
+    <paper-button class="custom" dialog-dismiss>Cancel</paper-button>
+    <paper-button class="custom" dialog-confirm autofocus>OK</paper-button>
+  </div>
+</paper-dialog>
 
     <div class="">
      <!--  <header class="center">
@@ -225,16 +257,23 @@
               <div class="col s12 group">
               <template is="dom-repeat" items="{{item}}">
                 <div class$="col [[item.col]]">
-                  <template is="dom-if" if="[[_isInput(item.type)]]">
-                    <paper-input name="[[item.key]]" label="[[item.label]]" value="{{item.value}}" readonly$="[[item.readonly]]"></paper-input>
+                  <template is="dom-if" if="[[item.on_tap]]">
+                    <paper-input name="[[item.key]]" label="[[item.label]]" value="{{item.value}}" readonly$="[[item.readonly]]" on-tap="_openDialog"></paper-input>
                   </template>
+                  <template is="dom-if" if="[[!item.on_tap]]">
+                  <paper-input name="[[item.key]]" label="[[item.label]]" value="{{item.value}}" readonly$="[[item.readonly]]"></paper-input>
+                  </template>
+
                 </div>
               </template>
               </div>
             </template>
             <div class="col s12 center">
 <!--               <paper-button class="custom" on-tap="_addLineItemRow" raised>&plus;</paper-button> -->
-              <paper-fab mini on-tap="_addLineItemRow" icon="add" class="custom"></paper-fab>
+             
+                <paper-fab mini on-tap="_addLineItemRow" icon="add" class="custom"></paper-fab>
+                <paper-tooltip>Add new line item row</paper-tooltip>
+              
             </div>
           </div>
           <br>
@@ -263,7 +302,10 @@
                   </template>
                   <div class="col s12 center">
                     <!-- <paper-button class="custom" on-tap="_addColorMeshPrint" raised>&plus;</paper-button> -->
-                    <paper-fab mini on-tap="_addColorMeshPrint" icon="add" class="custom"></paper-fab>
+                  
+                      <paper-fab mini on-tap="_addColorMeshPrint" icon="add" class="custom"></paper-fab>
+                      <paper-tooltip>Add new Color/Mesh/Print Order</paper-tooltip>
+                 
                   </div>
                   <template is="dom-repeat" items="{{item.bottom}}">
                     <div class$="col [[item.col]]">
@@ -278,7 +320,10 @@
 
               <div class="col s12 m6 l4 center">
               <!-- <paper-button class="custom" on-tap="_addNewGraphic" raised>&plus;</paper-button> -->
-              <paper-fab mini on-tap="_addNewGraphic" icon="add" class="custom"></paper-fab>
+              
+                <paper-fab mini on-tap="_addNewGraphic" icon="add" class="custom"></paper-fab>
+                <paper-tooltip>Add new Graphic</paper-tooltip>
+          
             </div>
           </div>
        
@@ -364,9 +409,9 @@
       label: 'LINE ITEMS',
       items: [
         [
-          {key: 'brand', label: 'BRAND', type: 'text', col: 's4 m2 l1'},
-          {key: 'style', label: 'STYLE', type: 'text', col: 's4 m2 l1'},
-          {key: 'color', label: 'COLOR', type: 'text', col: 's4 m2 l1'},
+          {key: 'brand', label: 'BRAND', type: 'text', col: 's4 m2 l1', on_tap: true, readonly: true},
+          {key: 'style', label: 'STYLE', type: 'text', col: 's4 m2 l1', on_tap: true, readonly: true},
+          {key: 'color', label: 'COLOR', type: 'text', col: 's4 m2 l1', on_tap: true, readonly: true},
           {key: 'xs', label: 'XS', type: 'number', col: 's2 m2 l1', sum: true},
           {key: 'sm', label: 'SM', type: 'number', col: 's2 m2 l1', sum: true},
           {key: 'md', label: 'MD', type: 'number', col: 's2 m2 l1', sum: true},
@@ -468,6 +513,10 @@
     },
     _addNewGraphic: function(e){
       this.push('order.graphic.items', orderModel.graphic.items[0]);
+    },
+    _openDialog: function(e){
+      console.log('_openDialog e:',e);
+      this.$.scrolling.open();
     },
     ready: function(){
 
