@@ -102,7 +102,7 @@
     </style>
 
 <!--     <app-pouchdb-document
-      db-name="http://localhost:5984/cats"
+      db-name="http://rebelcricket.lacuna.club:5984/cats"
       doc-id="parsnip"
       data="{{cat}}">
     </app-pouchdb-document> -->
@@ -112,17 +112,17 @@
     </app-pouchdb-conflict-resolution>
 
     <app-pouchdb-document
-        db-name="http://localhost:5984/order_designs"
+        db-name="http://rebelcricket.lacuna.club:5984/order_designs"
         doc-id="{{designID}}"
         data="{{orderDesign}}">
       </app-pouchdb-document>
 
     <app-pouchdb-index
-      db-name="http://localhost:5984/design"
+      db-name="http://rebelcricket.lacuna.club:5984/design"
       fields='["name"]'>
     </app-pouchdb-index>
 <!--     <app-pouchdb-query
-      db-name="http://localhost:5984/cats"
+      db-name="http://rebelcricket.lacuna.club:5984/cats"
       selector="name $exists true"
       fields='["_id","name"]'
       sort='["name"]'
@@ -130,7 +130,7 @@
     </app-pouchdb-query> -->
 
     <app-pouchdb-query
-      db-name="http://localhost:5984/order_designs"
+      db-name="http://rebelcricket.lacuna.club:5984/order_designs"
       selector="_attachments $exists true"
       fields='["_id","_attachments"]'
       data="{{orderDesignAttachments}}">
@@ -169,7 +169,7 @@
 <!-- 
         <template is="dom-repeat" items="{{orderDesign}}">
           <template is="dom-repeat" items="{{_attachmentKeys(item._attachments)}}" as="attachment">
-            <img src="http://localhost:5984/cats/{{item._id}}/{{ attachment }}" height="50" width="50">
+            <img src="http://rebelcricket.lacuna.club:5984/cats/{{item._id}}/{{ attachment }}" height="50" width="50">
           </template>
         </template>
         <br> -->
@@ -391,8 +391,8 @@
         var attachments = Object.keys(this.orderDesignAttachments[key]._attachments);
         for(var aKey in attachments){
           if(this.orderDesignAttachments[key]._id === this.designID+'_'+this.designSide){
-            console.log('_addImageToCanvas ?? src:','http://localhost:5984/order_designs/'+this.orderDesignAttachments[key]._id+'/'+attachments[aKey] )
-              // e.target._addImageToCanvas('http://localhost:5984/order_designs/'+this.orderDesignAttachments[key]._id+'/'+attachments[aKey]);
+            console.log('_addImageToCanvas ?? src:','http://rebelcricket.lacuna.club:5984/order_designs/'+this.orderDesignAttachments[key]._id+'/'+attachments[aKey] )
+              // e.target._addImageToCanvas('http://rebelcricket.lacuna.club:5984/order_designs/'+this.orderDesignAttachments[key]._id+'/'+attachments[aKey]);
               this._loadCanvas();
           }
           
@@ -495,7 +495,7 @@
       });
 
       //file upload
-      var db = new PouchDB('http://localhost:5984/order_designs');
+      var db = new PouchDB('http://rebelcricket.lacuna.club:5984/order_designs');
 
       var input = this.$.orderDesignFile;
       var _this = this;
@@ -504,7 +504,7 @@
 
         db.putAttachment(_this.designID+'_'+_this.designSide, file.name, file, file.type).then(function (result) {
           // handle result
-          _this._addImageToCanvas('http://localhost:5984/order_designs/'+_this.designID+'_'+_this.designSide+'/'+file.name);
+          _this._addImageToCanvas('http://rebelcricket.lacuna.club:5984/order_designs/'+_this.designID+'_'+_this.designSide+'/'+file.name);
         }).catch(function (err) {
           console.log(err);
         });

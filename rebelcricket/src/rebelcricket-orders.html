@@ -54,11 +54,11 @@
     </style>
 
     <app-pouchdb-index
-      db-name="http://localhost:5984/design"
+      db-name="http://rebelcricket.lacuna.club:5984/design"
       fields='["_id", "header.items1.0.value", "client_contact_information.items.0.value", "client_contact_information.items.2.value"]'>
     </app-pouchdb-index>
     <app-pouchdb-query
-      db-name="http://localhost:5984/orders"
+      db-name="http://rebelcricket.lacuna.club:5984/orders"
       selector="_id $ne '_design'"
       fields='["_id", "header.items1.0.value", "client_contact_information.items.0.value", "client_contact_information.items.2.value"]'
       sort='["_id"]'

@@ -121,7 +121,7 @@
         data="{{routeData}}"></app-route> -->
 
 <!--     <app-pouchdb-document
-      db-name="http://localhost:5984/models"
+      db-name="http://rebelcricket.lacuna.club:5984/models"
       doc-id="order"
       data="{{orderModel}}">
     </app-pouchdb-document> -->
@@ -131,7 +131,7 @@
     </app-pouchdb-conflict-resolution>
 
     <app-pouchdb-document
-      db-name="http://localhost:5984/orders"
+      db-name="http://rebelcricket.lacuna.club:5984/orders"
       doc-id="{{orderID}}"
       data="{{order}}">
     </app-pouchdb-document>
@@ -345,7 +345,7 @@
 
           <!-- <template is="dom-repeat" items="{{designImages}}">
             <template is="dom-repeat" items="{{_attachmentKeys(item._attachments)}}" as="attachment">
-              <img src="http://localhost:5984/cats/{{item._id}}/{{ attachment }}" height="50" width="50">
+              <img src="http://rebelcricket.lacuna.club:5984/cats/{{item._id}}/{{ attachment }}" height="50" width="50">
             </template>
           </template>
           <br> -->
@@ -527,7 +527,7 @@
       console.log('this.order.line_items.items:',this.order.line_items.items);
 
       //file upload
-      // var db = new PouchDB('http://localhost:5984/orders');
+      // var db = new PouchDB('http://rebelcricket.lacuna.club:5984/orders');
 
       // var input = this.$.catFile;
       // var _this = this;
@@ -536,7 +536,7 @@
 
       //   db.putAttachment(this.orderID, file.name, file, file.type).then(function (result) {
       //     // handle result
-      //     // _this._addImageToCanvas('http://localhost:5984/cats/'+file.name+'/'+file.name);
+      //     // _this._addImageToCanvas('http://rebelcricket.lacuna.club:5984/cats/'+file.name+'/'+file.name);
       //   }).catch(function (err) {
       //     console.log(err);
       //   });

@@ -69,7 +69,7 @@
         tail="{{subroute}}"></app-route> -->
 
     <app-pouchdb-document
-      db-name="http://localhost:5984/pages"
+      db-name="http://rebelcricket.lacuna.club:5984/pages"
       doc-id="services"
       data="{{services}}">
     </app-pouchdb-document>
@@ -83,7 +83,7 @@
       <div class="row">
         <template is="dom-repeat" items="{{services.items}}">
           <div class="col s12 m6 l4">
-            <div class="service_item" style$="background-image: url('http://localhost:5984/pages/services/[[item.image]]');background-repeat:no-repeat;background-position:center center;background-size:contain;">
+            <div class="service_item" style$="background-image: url('http://rebelcricket.lacuna.club:5984/pages/services/[[item.image]]');background-repeat:no-repeat;background-position:center center;background-size:contain;">
              
               <paper-button raised on-tap="_detailLink" class="custom item_name" fuck="dood" data-slug$="[[item.slug]]">
                   [[item.name]]
