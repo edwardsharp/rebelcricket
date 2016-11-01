@@ -15,10 +15,19 @@ services:
     links:
       - pg:pg
     restart: always
-    network_mode: "bridge"
+    network_mode: bridge
   pg:
     restart: always
     image: postgres:9.6
-    network_mode: "bridge"
+    network_mode: bridge
     volumes:
       - ./init-user-db.sh:/docker-entrypoint-initdb.d/init-user-db.sh
+  couchdb: 
+    restart: always
+    image: klaemo/couchdb:2.0-single
+    network_mode: bridge
+    ports:
+      - 5984:5984
+    volumes: 
+      - /home/core/rebelcricket/data:/opt/couchdb/data
+    admin: admin:rebelcricket
