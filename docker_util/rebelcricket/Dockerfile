@@ -20,7 +20,7 @@ RUN mkdir /rebelcricket
 WORKDIR /rebelcricket
 
 COPY sinatra-rebelcricket /rebelcricket
-COPY polymer-rebelcricket/build/unbundled /rebelcricket/public
+COPY rebelcricket/build/unbundled /rebelcricket/public
 COPY docker_util/rebelcricket/start.sh /rebelcricket
 
 RUN bundle --without development test
