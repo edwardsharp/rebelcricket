@@ -70,8 +70,8 @@
       ],
       _getTotalSlides: function(doc){
         try{
-          console.log('doc:',doc);
-          console.log('_getTotalSlides:',Object.keys(doc._attachments).length);
+          // console.log('doc:',doc);
+          // console.log('_getTotalSlides:',Object.keys(doc._attachments).length);
           return Object.keys(doc._attachments).length;
         }catch(err){
           return 0;
@@ -89,7 +89,7 @@
             return [];
           }
           
-      },
+      }
 
     });
 

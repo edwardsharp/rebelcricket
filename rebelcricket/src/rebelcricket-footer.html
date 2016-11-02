@@ -112,13 +112,10 @@
       ],
 
       _routePageChanged: function(page) {
-        console.log('FOOTER _routePageChanged:',page);
+        // console.log('FOOTER _routePageChanged:',page);
         this.toggleClass('selected', page == 'about', this.$.about);
         this.toggleClass('selected', page.match(/service/), this.$.services);
         this.toggleClass('selected', page == 'contact', this.$.contact);
-      },
-      ready: function(){
-        console.log("FOOTER aaar this.$.about:",this.$.about);
       }
 
     });

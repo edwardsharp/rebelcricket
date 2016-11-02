@@ -10,6 +10,8 @@
     "src/rebelcricket-order.html",
     "src/rebelcricket-orders.html",
     "src/rebelcricket-services.html",
+    "src/rebelcricket-quote.html",
+    "src/rebelcricket-vendor.html",
     "src/rebelcricket-view404.html"
   ],
   "sourceGlobs": [

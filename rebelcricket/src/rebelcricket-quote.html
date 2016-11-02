@@ -1,0 +1,102 @@
+<link rel="import" href="../bower_components/polymer/polymer.html">
+<link rel="import" href="../bower_components/app-pouchdb/pouchdb.html">
+<link rel="import" href="../bower_components/app-pouchdb/app-pouchdb-database-behavior.html">
+<!-- <link rel="import" href="../bower_components/app-pouchdb/app-pouchdb-conflict-resolution.html">
+<link rel="import" href="../bower_components/app-pouchdb/app-pouchdb-index.html">
+<link rel="import" href="../bower_components/app-pouchdb/app-pouchdb-query.html">  -->
+<link rel="import" href="../bower_components/app-pouchdb/app-pouchdb-document.html">
+
+<link rel="import" href="../bower_components/paper-item/paper-item.html">
+<link rel="import" href="../bower_components/paper-listbox/paper-listbox.html">
+<link rel="import" href="../bower_components/paper-dropdown-menu/paper-dropdown-menu.html">
+
+<link rel="import" href="../bower_components/paper-button/paper-button.html">
+
+<link rel="import" href="shared-styles.html">
+
+<dom-module id="rebelcricket-quote">
+
+  <template>
+
+    <style is="custom-style" include="shared-styles">
+
+    :root {
+      
+     min-height: 25vh;
+    }
+
+
+    @media (max-width: 767px) {
+      
+    }
+    </style>
+
+    <!-- <app-pouchdb-document
+      db-name="http://rebelcricket.lacuna.club:5984/quote"
+      doc-id="quote"
+      data="{{quote}}">
+    </app-pouchdb-document> -->
+    
+    <div class="row">
+      <div class="col s12 center">
+        <h1 class="rebel-heading">Quote</h1>
+      </div>
+    </div>
+      
+    <div class="container flex-center-justified">
+
+      <div class="center">
+
+        <paper-dropdown-menu label="Service" on-iron-select="_serviceSelected">
+          <paper-listbox class="dropdown-content">
+            <template is="dom-repeat" items="{{services}}">
+              <paper-item value="[[item.value]]">[[item.name]]</paper-item>
+            </template>
+          </paper-listbox>
+        </paper-dropdown-menu>
+
+      </div>
+    </div>
+    
+  </template>
+
+  <script>
+
+    Polymer({
+
+      is: 'rebelcricket-quote',
+      // behaviors: [
+      //   Polymer.AppPouchDBDatabaseBehavior
+      // ],
+      properties: {
+        service: {
+          type: String,
+          notify: false
+        },
+        services: {
+          type: Array,
+          notify: false,
+          value: function(){
+            return [ 
+              { name: "Apparel", value: "apparel"}, 
+              { name: "Parts Printing", value: "parts-printing"}, 
+              { name: "Flatstock", value: "flatstock"}, 
+              { name: "Buttons", value: "buttons"}, 
+              { name: "Vinyl Lettering", value: "vinyl-lettering"}, 
+              { name: "Other Stuff", value: "other"}
+            ];
+          }
+
+        }
+      },
+      _serviceSelected: function(e){
+        this.set('service', this.services[e.target.selected].name);
+        console.log('_serviceSelected:',this.service);
+      }
+      
+
+    });
+
+  </script>
+
+</dom-module>
