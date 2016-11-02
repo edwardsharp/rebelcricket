@@ -3,13 +3,14 @@ var Xray = require('x-ray');
 var x = Xray({
   filters: {
     trim: function (value) {
-      return typeof value === 'string' ? value.replace(/\n/,'').replace(/\t/, '').trim() : value
+      return typeof value === 'string' ? value.replace(/\s+/g, ' ').trim() : value
     }
   }
 });
 
 var fs = require('fs'); 
 var outfile;
+var outfileData; 
 
 var products = [];
 
@@ -21,7 +22,7 @@ var init = function(){
   fs.readdir('.', function(err, items) {
     for (var i=0; i<items.length; i++) {
       // console.log(items[i]);
-      if(items[i].split('_')[1] != undefined){
+      if(items[i].split('_')[1] != undefined && items[i].split('_')[2] == undefined){
         if( !isNaN(parseInt( items[i].split('_')[1].split('.')[0] )) ){
           console.log('found:',items[i],items[i].split('_')[1].split('.')[0]);
           if((new Date).getTime() - parseInt( items[i].split('_')[1].split('.')[0] ) > 6.048e+8 ){
@@ -32,7 +33,7 @@ var init = function(){
             outfile = items[i];
           }
         }
-      }9
+      }
     }
     if(outfile == undefined){
       outfile = 'companycasuals_'+now+'.json';
@@ -43,7 +44,6 @@ var init = function(){
     
   });
 }
-
 
 var needsNewData = function(){
 
@@ -80,38 +80,46 @@ var readData = function(){
     }
 
     console.log('reading outfile!: ',outfile);
+    outfileData = data;
 
-    _.each(JSON.parse(data).companycasuals, function(item){
-      var _itemCategory = item.category;
-      _.each(item.sub_items, function(subitem){
-        var _subitemTitle = subitem.title;
-        x(subitem.href, {
-          items: x('.cat-list-item-container', [{
-            img_href: 'img@src',
-            a: '.cat-list-item-text a | trim'
-          }])
-        })(function(err, obj) {
-          if(err){
-            return console.log(err);
-          }
-          console.log('obj:',JSON.stringify({category: _itemCategory, sub_item: _subitemTitle, items: obj.items }, null, 2));
+    scrapeProducts();
+  });
+}
 
-          fs.writeFile('companycasuals_'+now+'_products.json', JSON.stringify({category: _itemCategory, sub_item: _subitemTitle, items: obj.items }, null, 2),  {'flag':'a'},  function(err) {
-            if (err) {
-                return console.error(err);
-            }
-            console.log('wrote to', 'companycasuals_'+now+'_products.json');
-            // readData();
-          });
+var scrapeProducts = function(){
+  _.each(JSON.parse(outfileData).companycasuals, function(item){
+    var _itemCategory = item.category;
+    _.each(item.sub_items, function(subitem){
+      var _subitemTitle = subitem.title;
+      x(subitem.href, {
+        items: x('.cat-list-item-container', [{
+          img_href: 'img@src',
+          a: '.cat-list-item-text a | trim',
+          href: '.cat-list-item-text a@href'
+        }])
+      })(function(err, obj) {
+        if(err){
+          return console.log(err);
+        }
 
-          
+        writeProductsFile({category: _itemCategory, sub_item: _subitemTitle, items: obj.items });
 
-        });
       });
     });
+  });
 
-    console.log('products:',JSON.stringify(products, null, 2));
+}
 
+var writeProductsFile = function(obj){
+
+  products.push(obj);
+
+  fs.writeFile('companycasuals_'+now+'_products.json', JSON.stringify(products, null, 2),  function(err) {
+    if (err) {
+      return console.error(err);
+    }
+    console.log('wrote to', 'companycasuals_'+now+'_products.json');
+    // readData();
   });
 }
 
