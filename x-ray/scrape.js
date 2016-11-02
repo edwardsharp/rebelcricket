@@ -1,9 +1,21 @@
 var Xray = require('x-ray');
-var x = Xray();
+
+var x = Xray({
+  filters: {
+    trim: function (value) {
+      return typeof value === 'string' ? value.replace(/\n/,'').replace(/\t/, '').trim() : value
+    }
+  }
+});
+
 var fs = require('fs'); 
 var outfile;
 
+var products = [];
+
 var _ = require('underscore');
+
+var now = new Date().getTime();
 
 var init = function(){
   fs.readdir('.', function(err, items) {
@@ -23,7 +35,7 @@ var init = function(){
       }9
     }
     if(outfile == undefined){
-      outfile = 'companycasuals_'+ new Date().getTime() +'.json';
+      outfile = 'companycasuals_'+now+'.json';
       needsNewData();
     }else{
       readData();
@@ -36,16 +48,17 @@ var init = function(){
 var needsNewData = function(){
 
   x('http://www.companycasuals.com/rebelcricket/start.jsp', {
-    items: x('.main_nav_container ul li', [{
-      category: 'a@title',
-      sub_items: x('ul li', [{title: 'li a', href: 'li a@href'}])
+    categories: x('.main_nav_container ul li', [{
+      title: 'a@title | trim',
+      sub_items: x('ul li', [{title: 'li a | trim', href: 'li a@href'}])
     }])
   })(function(err, obj) {
 
-    var companycasuals = { companycasuals: _.filter(obj.items, function(item){
+    var companycasuals = { companycasuals: _.filter(obj.categories, function(item){
         return item.category;
       }) 
     }
+
     // console.log('obj:', JSON.stringify(companycasuals, null, 2));
     fs.writeFile(outfile,  JSON.stringify(companycasuals, null, 2), function(err) {
       if(err) {
@@ -66,7 +79,39 @@ var readData = function(){
       return console.log(err);
     }
 
-    console.log('read outfile: ',data);
+    console.log('reading outfile!: ',outfile);
+
+    _.each(JSON.parse(data).companycasuals, function(item){
+      var _itemCategory = item.category;
+      _.each(item.sub_items, function(subitem){
+        var _subitemTitle = subitem.title;
+        x(subitem.href, {
+          items: x('.cat-list-item-container', [{
+            img_href: 'img@src',
+            a: '.cat-list-item-text a | trim'
+          }])
+        })(function(err, obj) {
+          if(err){
+            return console.log(err);
+          }
+          console.log('obj:',JSON.stringify({category: _itemCategory, sub_item: _subitemTitle, items: obj.items }, null, 2));
+
+          fs.writeFile('companycasuals_'+now+'_products.json', JSON.stringify({category: _itemCategory, sub_item: _subitemTitle, items: obj.items }, null, 2),  {'flag':'a'},  function(err) {
+            if (err) {
+                return console.error(err);
+            }
+            console.log('wrote to', 'companycasuals_'+now+'_products.json');
+            // readData();
+          });
+
+          
+
+        });
+      });
+    });
+
+    console.log('products:',JSON.stringify(products, null, 2));
+
   });
 }
 

@@ -11,6 +11,7 @@
 <link rel="import" href="../bower_components/paper-dropdown-menu/paper-dropdown-menu.html">
 
 <link rel="import" href="../bower_components/paper-button/paper-button.html">
+<link rel="import" href="../bower_components/iron-collapse/iron-collapse.html">
 
 <link rel="import" href="shared-styles.html">
 
@@ -20,26 +21,93 @@
 
     <style is="custom-style" include="shared-styles">
 
-    :root {
+    .container {
+      min-height: 100vh;
+    }
+
+    .left{
+      width: 350px;
+      border-right: thin solid #333;
+      max-height: 100vh;
+      overflow-x: hidden;
+      overflow-y: scroll;
     }
 
 
+    .heading {
+      padding: 10px 15px;
+      margin-top: 20px;
+      background-color: #f3f3f3;
+      border: 1px solid #dedede;
+      border-top-left-radius: 5px;
+      border-top-right-radius: 5px;
+      font-size: 18px;
+      cursor: pointer;
+      -webkit-tap-highlight-color: rgba(0,0,0,0);
+      width: 100%;
+      text-align: left;
+    }
+    .content {
+      padding: 15px;
+      border: 1px solid #dedede;
+      border-top: none;
+      border-bottom-left-radius: 5px;
+      border-bottom-right-radius: 5px;
+      @apply(--shadow-elevation-2dp);
+    }
+    .item {
+      margin-bottom: 1em;
+      clear: both;
+      min-height: 160px;
+    }
+
+    img {
+      float: left;
+      max-height: 200px;
+      max-width: 200px;
+    }
     @media (max-width: 767px) {
       
     }
     </style>
 
-    <!-- <app-pouchdb-document
-      db-name="http://rebelcricket.lacuna.club:5984/quote"
-      doc-id="quote"
-      data="{{quote}}">
-    </app-pouchdb-document> -->
+    <app-pouchdb-document
+      db-name="http://localhost:5984/products"
+      doc-id="companycasual.com"
+      data="{{companycasual}}">
+    </app-pouchdb-document>
       
     <div class="container flex-center-justified">
 
-      <div class="center">
+      <div class="left center">
+      ITEMS:
+      <template is="dom-repeat" items="[[companycasual.products_by_sub_item]]">
+
+        <button class="heading" aria-controls="collapse1" on-tap="toggle">[[item.category]] [[item.sub_item]]</button>
+
+        <iron-collapse id="[[_strip(item.category)]][[_strip(item.sub_item)]]" tabindex="0">
+          <div class="content">
+
+            <template is="dom-repeat" items="[[item.items]]">
+              <div class="item">
+                <img src$="[[item.img_href]]">
+                [[item.a]]
+                <hr>
+              </div>
+            </template>
+
+          </div>
+        </iron-collapse>
+
+
+
+      </template>
 
         
+
+      </div>
+
+      <div class="right center">
 
       </div>
     </div>
@@ -54,6 +122,23 @@
       // behaviors: [
       //   Polymer.AppPouchDBDatabaseBehavior
       // ],
+      properties: {
+        companycasual: {
+          type: Object,
+          notify: true
+        }
+      },
+      _strip: function(str){
+        return str.replace(/[^a-zA-Z0-9]/g, '');
+      },
+      toggle: function(e){
+        console.log('e.model.item.sub_item strip:',this._strip(e.model.item.category+e.model.item.sub_item));
+        try{
+          this.$$('#'+this._strip(e.model.item.category+e.model.item.sub_item)).toggle();
+        }catch(err){
+          console.log('o noz, fuckng selector!');
+        }
+      }
 
       
 
