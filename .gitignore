@@ -38,3 +38,4 @@ config/secrets.yml
 /docker_util/couchdb/data
 
 .DS_Store
+/x-ray/node_modules

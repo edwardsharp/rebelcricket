@@ -1,0 +1,24 @@
+{
+  "name": "rebelcricket-x-ray",
+  "version": "1.0.0",
+  "description": "rebelcricket product scraper",
+  "main": "scrape.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+ssh://git@github.com/edwardsharp/rebelcricket.git"
+  },
+  "author": "3dwardsharp",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/edwardsharp/rebelcricket/issues"
+  },
+  "homepage": "https://github.com/edwardsharp/rebelcricket#readme",
+  "dependencies": {
+    "bluebird": "^3.4.6",
+    "underscore": "^1.8.3",
+    "x-ray": "^2.3.1"
+  }
+}
