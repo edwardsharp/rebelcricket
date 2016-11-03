@@ -3,6 +3,7 @@ var outfile
   , products_by_category = []
   , products_by_category_outfile
   , products = []
+  , products_by_price = []
   , fs = require('fs')
   , _ = require('underscore')
   , now = new Date().getTime()
@@ -11,15 +12,24 @@ var outfile
   , promises = []
   ;
 
+process.on('SIGINT', function() {
+    console.log("Caught interrupt signal");
+    console.log('products:',JSON.stringify(products, null, 2));
+    console.log('\n\n\n\n\n\n\n');
+    console.log('products_by_price:',JSON.stringify(products_by_price, null, 2));
+    process.exit();
+});
+
 var x = Xray({
   filters: {
     trim: function (value) {
       return typeof value === 'string' ? value.replace(/\s+/g, ' ').trim() : value
     }
   }
-}).throttle(1,100);
+}).throttle(2,200);
 
 var init = function(){
+  console.log('now:',now);
   fs.readdir('.', function(err, items) {
     for (var i=0; i<items.length; i++) {
       if(items[i].split('_')[1] != undefined && items[i].split('_')[2] == undefined){
@@ -63,7 +73,8 @@ var needsNewDataPromise = function(){
       // console.log('obj:', JSON.stringify(companycasuals, null, 2));
       fs.writeFile(outfile,  JSON.stringify(companycasuals, null, 2), function(err) {
         if(err) {
-            return console.log(err);
+          resolve();
+          return console.log(err);
         }
         console.log(outfile+' saved');
         resolve();
@@ -76,11 +87,12 @@ var needsNewDataPromise = function(){
 
 
 var needsNewData = function(){
+  promises = [];
 
   promises.push(needsNewDataPromise()); 
 
   Promise.all(promises).then(function(){
-      console.log('needsNewData completed!');
+      // console.log('needsNewData completed!');
       readData();
   });
 
@@ -111,11 +123,12 @@ var scrapeProductCategoriesPromise = function(item,subitem){
       }])
     })(function(err, obj) {
       if(err){
+        resolve();
         return console.log(err);
       }
 
       products_by_category.push({category: item.category, sub_item: subitem.title, items: obj.items })
-
+      // console.log('scrapeProductCategoriesPromise complete!');
       resolve();
 
     });
@@ -126,6 +139,7 @@ var scrapeProductCategoriesPromise = function(item,subitem){
 
 
 var scrapeProductCategories = function(){
+  promises = [];
   _.each(JSON.parse(outfileData).companycasuals, function(item){
     // var _itemCategory = item.category;
     _.each(item.sub_items, function(subitem){
@@ -160,6 +174,7 @@ var scrapeProductDetailsPromise = function(item, subitem){
       }])
     })(function(err, obj) {
       if(err){
+        resolve();
         return console.log(err);
       }
 
@@ -169,6 +184,8 @@ var scrapeProductDetailsPromise = function(item, subitem){
         title: subitem.a,
         items: obj
       });
+
+      // console.log('scrapeProductDetailsPromise complete!');
 
       resolve();
       // console.log(JSON.stringify(products, null, 2))
@@ -181,6 +198,7 @@ var scrapeProductDetailsPromise = function(item, subitem){
 
 
 var scrapeProductDetails = function(){
+  promises = [];
   _.each(products_by_category, function(item){
     _.each(item.items, function(subitem){
 
@@ -195,8 +213,70 @@ var scrapeProductDetails = function(){
       if (err) {
         return console.error(err);
       }
-      console.log('wrote to', 'companycasuals_'+now+'_products_details.json');
-      console.log('done!');
+      console.log('wrote to', 'companycasuals_'+now+'_products_details.json gonna scrapeProductPrices!');
+      scrapeProductPrices();
+    });
+  });
+
+}
+
+var scrapeProductPricesPromise = function(product, _product_href){
+  return new Promise(function(resolve){
+    x(_product_href, {
+      colors: x('.shoptable tr', [{
+        img_href: '.swatch img@src',
+        name: '.description | trim',
+        prices: ['td | trim']
+      }])
+    })(function(err, obj) {
+      if(err){
+        resolve();
+        return console.log(err);
+      }
+
+      product.items["prices"] = _.reject(obj.colors, function(color){
+        return _.every(color.prices, function(price){ 
+          return price == '' 
+        }) || color.name == undefined || color.prices == undefined || color.prices[0] != '';
+      });
+
+      //console.log('scrapeProductPricesPromise product',JSON.stringify(product, null, 2));
+      products_by_price.push(product);
+
+      resolve();
+
+    });
+  });
+}
+
+var scrapeProductPrices = function(){
+  promises = [];
+
+  _.each(products, function(product){
+    var _product_href = false;
+    if(product.items.price_href[1] == undefined){
+      if(product.items.price_href[0] != undefined){
+        _product_href = product.items.price_href[0];
+      }
+    }else{
+      _product_href = product.items.price_href[1];
+    }
+
+    if(_product_href != undefined){
+      promises.push(scrapeProductPricesPromise(product, _product_href));
+    }
+
+  });
+
+  Promise.all(promises).then(function(){
+
+    fs.writeFile('companycasuals_'+now+'_product_prices.json', JSON.stringify(products_by_price, null, 2),  function(err) {
+      if (err) {
+        return console.error(err);
+      }
+      console.log('wrote to', 'companycasuals_'+now+'_product_prices.json');
+      console.log('done! time:', new Date().getTime() - now);
+      return;
     });
   });
 
