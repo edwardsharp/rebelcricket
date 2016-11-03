@@ -1,5 +1,7 @@
 var outfile
   , outfileData
+  , products_by_category = []
+  , products_by_category_outfile
   , products = []
   , fs = require('fs')
   , _ = require('underscore')
@@ -15,7 +17,7 @@ var x = Xray({
       return typeof value === 'string' ? value.replace(/\s+/g, ' ').trim() : value
     }
   }
-});
+}).throttle(1,100);
 
 var init = function(){
   fs.readdir('.', function(err, items) {
@@ -94,11 +96,11 @@ var readData = function(){
     console.log('reading outfile!: ',outfile);
     outfileData = data;
 
-    scrapeProducts();
+    scrapeProductCategories();
   });
 }
 
-var scrapeProductsPromise = function(item,subitem){
+var scrapeProductCategoriesPromise = function(item,subitem){
   return new Promise(function(resolve){
     
     x(subitem.href, {
@@ -112,8 +114,7 @@ var scrapeProductsPromise = function(item,subitem){
         return console.log(err);
       }
 
-      products.push({category: item.category, sub_item: subitem.title, items: obj.items })
-      // writeProductsFile({category: _itemCategory, sub_item: _subitemTitle, items: obj.items });
+      products_by_category.push({category: item.category, sub_item: subitem.title, items: obj.items })
 
       resolve();
 
@@ -121,29 +122,85 @@ var scrapeProductsPromise = function(item,subitem){
 
 
   });
-};
+}
 
 
-var scrapeProducts = function(){
+var scrapeProductCategories = function(){
   _.each(JSON.parse(outfileData).companycasuals, function(item){
     // var _itemCategory = item.category;
     _.each(item.sub_items, function(subitem){
       // var _subitemTitle = subitem.title;
-      promises.push(scrapeProductsPromise(item, subitem)); 
+      promises.push(scrapeProductCategoriesPromise(item, subitem)); 
     });
   });
 
   Promise.all(promises).then(function(){
-    fs.writeFile('companycasuals_'+now+'_products.json', JSON.stringify(products, null, 2),  function(err) {
+    products_by_category_outfile = 'companycasuals_'+now+'_products_by_category.json';
+    fs.writeFile(products_by_category_outfile, JSON.stringify(products_by_category, null, 2),  function(err) {
       if (err) {
         return console.error(err);
       }
-      console.log('wrote to', 'companycasuals_'+now+'_products.json');
-      // readData();
+      console.log('scrapeProductCategories complete, wrote to', products_by_category_outfile, ' gonna scrapeProductDetails!');
+      scrapeProductDetails();
     });
   });
 }
 
+var scrapeProductDetailsPromise = function(item, subitem){
+  return new Promise(function(resolve){
+    
+    x(subitem.href, {
+      prod_id: 'input[name="productId"]@value',
+      prod_desc_text: '.prod_desc_text | trim',
+      prod_desc_items: x('.prod_desc_text ul', ['li | trim']),
+      price_href: x('.prod_add_to_cart', ['a@href']),
+      colors: x('#color_swatch_list li', [{
+        href: 'img@src',
+        name: 'img@title | trim'
+      }])
+    })(function(err, obj) {
+      if(err){
+        return console.log(err);
+      }
+
+      products.push({
+        category: item.category,
+        sub_item: item.sub_item,
+        title: subitem.a,
+        items: obj
+      });
+
+      resolve();
+      // console.log(JSON.stringify(products, null, 2))
+
+    });
+
+
+  });
+}
+
+
+var scrapeProductDetails = function(){
+  _.each(products_by_category, function(item){
+    _.each(item.items, function(subitem){
+
+      promises.push(scrapeProductDetailsPromise(item, subitem)); 
+
+    });
+  });
+
+  Promise.all(promises).then(function(){
+
+    fs.writeFile('companycasuals_'+now+'_product_details.json', JSON.stringify(products, null, 2),  function(err) {
+      if (err) {
+        return console.error(err);
+      }
+      console.log('wrote to', 'companycasuals_'+now+'_products_details.json');
+      console.log('done!');
+    });
+  });
+
+}
 
 init();
 
