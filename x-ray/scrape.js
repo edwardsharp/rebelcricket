@@ -9,7 +9,10 @@ var outfile
   , now = new Date().getTime()
   , Xray = require('x-ray')
   , Promise = require("bluebird")
-  , promises = []
+  , scrape_promises = []
+  , scrape_categories_promises = []
+  , scrape_details_promises = []
+  , scrape_prices_promises = []
   ;
 
 process.on('SIGINT', function() {
@@ -73,12 +76,12 @@ var needsNewDataPromise = function(){
       // console.log('obj:', JSON.stringify(companycasuals, null, 2));
       fs.writeFile(outfile,  JSON.stringify(companycasuals, null, 2), function(err) {
         if(err) {
-          resolve();
           return console.log(err);
         }
         console.log(outfile+' saved');
-        resolve();
       });
+
+      resolve();
 
     });
 
@@ -87,11 +90,10 @@ var needsNewDataPromise = function(){
 
 
 var needsNewData = function(){
-  promises = [];
 
-  promises.push(needsNewDataPromise()); 
+  scrape_promises.push(needsNewDataPromise()); 
 
-  Promise.all(promises).then(function(){
+  Promise.all(scrape_promises).then(function(){
       // console.log('needsNewData completed!');
       readData();
   });
@@ -139,16 +141,15 @@ var scrapeProductCategoriesPromise = function(item,subitem){
 
 
 var scrapeProductCategories = function(){
-  promises = [];
   _.each(JSON.parse(outfileData).companycasuals, function(item){
     // var _itemCategory = item.category;
     _.each(item.sub_items, function(subitem){
       // var _subitemTitle = subitem.title;
-      promises.push(scrapeProductCategoriesPromise(item, subitem)); 
+      scrape_categories_promises.push(scrapeProductCategoriesPromise(item, subitem)); 
     });
   });
 
-  Promise.all(promises).then(function(){
+  Promise.all(scrape_categories_promises).then(function(){
     products_by_category_outfile = 'companycasuals_'+now+'_products_by_category.json';
     fs.writeFile(products_by_category_outfile, JSON.stringify(products_by_category, null, 2),  function(err) {
       if (err) {
@@ -198,20 +199,19 @@ var scrapeProductDetailsPromise = function(item, subitem){
 
 
 var scrapeProductDetails = function(){
-  promises = [];
   _.each(products_by_category, function(item){
     _.each(item.items, function(subitem){
 
-      promises.push(scrapeProductDetailsPromise(item, subitem)); 
+      scrape_details_promises.push(scrapeProductDetailsPromise(item, subitem)); 
 
     });
   });
 
-  Promise.all(promises).then(function(){
+  Promise.all(scrape_details_promises).then(function(){
 
     fs.writeFile('companycasuals_'+now+'_product_details.json', JSON.stringify(products, null, 2),  function(err) {
       if (err) {
-        return console.error(err);
+        return console.error('scrapeProductDetails fs.writeFile err:',err);
       }
       console.log('wrote to', 'companycasuals_'+now+'_products_details.json gonna scrapeProductPrices!');
       scrapeProductPrices();
@@ -250,7 +250,6 @@ var scrapeProductPricesPromise = function(product, _product_href){
 }
 
 var scrapeProductPrices = function(){
-  promises = [];
 
   _.each(products, function(product){
     var _product_href = false;
@@ -263,12 +262,12 @@ var scrapeProductPrices = function(){
     }
 
     if(_product_href != undefined){
-      promises.push(scrapeProductPricesPromise(product, _product_href));
+      scrape_prices_promises.push(scrapeProductPricesPromise(product, _product_href));
     }
 
   });
 
-  Promise.all(promises).then(function(){
+  Promise.all(scrape_prices_promises).then(function(){
 
     fs.writeFile('companycasuals_'+now+'_product_prices.json', JSON.stringify(products_by_price, null, 2),  function(err) {
       if (err) {
