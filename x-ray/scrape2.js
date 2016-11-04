@@ -59,7 +59,7 @@ x(werid_pantz_size_href, {
   }
   var size_idx = [];
   var low_idx = [];
-  var price_idx = [];
+  var prices = [];
 
   _.each(obj.colors, function(color){
     var pricearr = color.prices;
@@ -67,16 +67,13 @@ x(werid_pantz_size_href, {
       if(pricearr[0].match(/Shop/i)){
         console.log('SIZE IDX!');
         size_idx = pricearr;
-      }else if(_.contains(pricearr,function(elem){ return elem != undefined && elem.match(/red/i);})){
+      }else if(_.filter(pricearr, function(elem){ return elem.match(/red/i);}).length > 0){
         console.log('LOW IDX!');
         low_idx = pricearr;
       }else if(pricearr.length > 1){
         console.log('PRICE IDX!');
         pricearr.splice(0, 1);
-        price_idx = pricearr;
-        console.log('-------------------------------');
-        console.log('ZIP: ', _.zip(size_idx, price_idx, low_idx));
-        console.log('-------------------------------');
+        prices.push(pricearr);
       }else{
         console.log('dunno, pricearr',pricearr);
       }
@@ -86,14 +83,19 @@ x(werid_pantz_size_href, {
     
   });
 
-  if(equalLength(price_idx, size_idx, low_idx)){
-    console.log('equalLength!');
-    
-  }else{
-    console.log('NOT equalLength!');
-    console.log('_idx:',size_idx.length, price_idx.length, low_idx.length);
+  _.each(prices, function(pricearr){
+    if(pricearr.length == size_idx.length){
+      console.log('-------------------------------');
+      console.log('ZIP: ', _.zip(size_idx, pricearr));
+      console.log('-------------------------------');
+    }else{
+      console.log('NOT equalLength!');
+      console.log('_idx:',size_idx.length,pricearr.length);
 
-  }
+    }
+    
+  });
+  
   
 
   // console.log(JSON.stringify({
