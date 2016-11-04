@@ -69,7 +69,9 @@ x(werid_pantz_size_href, {
         size_idx = pricearr;
       }else if(_.filter(pricearr, function(elem){ return elem.match(/red/i);}).length > 0){
         console.log('LOW IDX!');
-        low_idx = pricearr;
+        var z = prices.pop();
+        pricearr.splice(0, 1);
+        prices.push(_.zip(z, _.map(pricearr, function(elem){ if(elem.match(/red/i)){return '*'}else{return ''} })));
       }else if(pricearr.length > 1){
         console.log('PRICE IDX!');
         pricearr.splice(0, 1);
@@ -86,12 +88,11 @@ x(werid_pantz_size_href, {
   _.each(prices, function(pricearr){
     if(pricearr.length == size_idx.length){
       console.log('-------------------------------');
-      console.log('ZIP: ', _.zip(size_idx, pricearr));
+      console.log('ZIP: ', _.zip(size_idx, _.unzip(pricearr)[0], _.unzip(pricearr)[1]));
       console.log('-------------------------------');
     }else{
       console.log('NOT equalLength!');
       console.log('_idx:',size_idx.length,pricearr.length);
-
     }
     
   });
