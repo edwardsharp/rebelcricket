@@ -46,8 +46,9 @@ var x = Xray({
 
 var basic_shirt_href = 'https://www.companycasuals.com/rebelcricket/b.jsp?productId=2000&parentId=624&prodimage=2000.jpg&cart=Y&swatch=&httpsecure=Y';
 var werid_pantz_size_href = 'http://www.companycasuals.com/rebelcricket/b.jsp?productId=PT20&parentId=7794697&prodimage=PT20.jpg&cart=Y&swatch=&httpsecure=Y';
+var thneed_href = 'http://www.companycasuals.com/rebelcricket/b.jsp?productId=DT5000&parentId=625&prodimage=DT5000.jpg&cart=Y&swatch=&httpsecure=Y'
 
-x(werid_pantz_size_href, {
+x(thneed_href, {
   colors: x('.shoptable tr', [{
     img_href: '.swatch img@src',
     name: '.description | trim',
@@ -63,6 +64,7 @@ x(werid_pantz_size_href, {
 
   _.each(obj.colors, function(color){
     var pricearr = color.prices;
+    // console.log('pricearr:',pricearr);
     if(pricearr != undefined && pricearr[0] != undefined && !pricearr[0].match(/cart/i)){
       if(pricearr[0].match(/Shop/i)){
         console.log('SIZE IDX!');
@@ -70,11 +72,11 @@ x(werid_pantz_size_href, {
       }else if(_.filter(pricearr, function(elem){ return elem.match(/red/i);}).length > 0){
         console.log('LOW IDX!');
         var z = prices.pop();
-        pricearr.splice(0, 1);
-        prices.push(_.zip(z, _.map(pricearr, function(elem){ if(elem.match(/red/i)){return '*'}else{return ''} })));
-      }else if(pricearr.length > 1){
+        pricearr.shift();
+        prices.push(_.zip(z, _.map(pricearr, function(elem){ if(elem.match(/red/i)){return 'low inventory'}else{return ''} })));
+      }else if(pricearr.length > 1 && !_.every(pricearr, function(e){ return e == '' }) ){
         console.log('PRICE IDX!');
-        pricearr.splice(0, 1);
+        pricearr.shift();
         prices.push(pricearr);
       }else{
         console.log('dunno, pricearr',pricearr);
@@ -85,11 +87,23 @@ x(werid_pantz_size_href, {
     
   });
 
+  // console.log(JSON.stringify(prices, null, 2));
+
   _.each(prices, function(pricearr){
+    // console.log('pricearr:',pricearr);
     if(pricearr.length == size_idx.length){
-      console.log('-------------------------------');
-      console.log('ZIP: ', _.zip(size_idx, _.unzip(pricearr)[0], _.unzip(pricearr)[1]));
-      console.log('-------------------------------');
+      
+      if(pricearr[0].constructor === Array){
+        console.log('ZIP WITH LOWZ -------------------------------');
+        // console.log('pricearr:',pricearr);
+        console.log('ZIP WITH LOWZ: ', _.zip(size_idx, _.unzip(pricearr)[0], _.unzip(pricearr)[1]));
+        console.log('-------------------------------');
+      }else{
+        console.log('-------------------------------');
+        console.log('ZIP: ', _.zip(size_idx, pricearr));
+        console.log('-------------------------------');
+      }
+      
     }else{
       console.log('NOT equalLength!');
       console.log('_idx:',size_idx.length,pricearr.length);

@@ -17,8 +17,8 @@ var outfile
 
 process.on('SIGINT', function() {
     console.log("Caught interrupt signal");
-    console.log('products:',JSON.stringify(products, null, 2));
-    console.log('\n\n\n\n\n\n\n');
+    // console.log('products:',JSON.stringify(products, null, 2));
+    console.log('\n\n\n\n\n\n');
     console.log('products_by_price:',JSON.stringify(products_by_price, null, 2));
     process.exit();
 });
@@ -29,7 +29,7 @@ var x = Xray({
       return typeof value === 'string' ? value.replace(/\s+/g, ' ').trim() : value
     }
   }
-}).throttle(2,200);
+}).throttle(2,200).timeout(30000);
 
 var init = function(){
   console.log('now:',now);
@@ -73,9 +73,9 @@ var needsNewDataPromise = function(){
         }) 
       }
 
-      // console.log('obj:', JSON.stringify(companycasuals, null, 2));
       fs.writeFile(outfile,  JSON.stringify(companycasuals, null, 2), function(err) {
         if(err) {
+          resolve();
           return console.log(err);
         }
         console.log(outfile+' saved');
@@ -94,7 +94,6 @@ var needsNewData = function(){
   scrape_promises.push(needsNewDataPromise()); 
 
   Promise.all(scrape_promises).then(function(){
-      // console.log('needsNewData completed!');
       readData();
   });
 
@@ -111,6 +110,7 @@ var readData = function(){
     outfileData = data;
 
     scrapeProductCategories();
+
   });
 }
 
@@ -130,7 +130,7 @@ var scrapeProductCategoriesPromise = function(item,subitem){
       }
 
       products_by_category.push({category: item.category, sub_item: subitem.title, items: obj.items })
-      // console.log('scrapeProductCategoriesPromise complete!');
+
       resolve();
 
     });
@@ -139,12 +139,9 @@ var scrapeProductCategoriesPromise = function(item,subitem){
   });
 }
 
-
 var scrapeProductCategories = function(){
   _.each(JSON.parse(outfileData).companycasuals, function(item){
-    // var _itemCategory = item.category;
     _.each(item.sub_items, function(subitem){
-      // var _subitemTitle = subitem.title;
       scrape_categories_promises.push(scrapeProductCategoriesPromise(item, subitem)); 
     });
   });
@@ -186,10 +183,7 @@ var scrapeProductDetailsPromise = function(item, subitem){
         items: obj
       });
 
-      // console.log('scrapeProductDetailsPromise complete!');
-
       resolve();
-      // console.log(JSON.stringify(products, null, 2))
 
     });
 
@@ -201,9 +195,7 @@ var scrapeProductDetailsPromise = function(item, subitem){
 var scrapeProductDetails = function(){
   _.each(products_by_category, function(item){
     _.each(item.items, function(subitem){
-
       scrape_details_promises.push(scrapeProductDetailsPromise(item, subitem)); 
-
     });
   });
 
@@ -234,13 +226,38 @@ var scrapeProductPricesPromise = function(product, _product_href){
         return console.log(err);
       }
 
-      product.items["prices"] = _.reject(obj.colors, function(color){
-        return _.every(color.prices, function(price){ 
-          return price == '' 
-        }) || color.name == undefined || color.prices == undefined || color.prices[0] != '';
+      var size_idx = [];
+      var low_idx = [];
+      var prices = [];
+
+      _.each(obj.colors, function(color){
+        var pricearr = color.prices;
+        if(pricearr != undefined && pricearr[0] != undefined && !pricearr[0].match(/cart/i)){
+          if(pricearr[0].match(/Shop/i)){
+            size_idx = pricearr;
+          }else if(_.filter(pricearr, function(elem){ return elem.match(/red/i);}).length > 0){
+            var z = prices.pop();
+            pricearr.shift();
+            prices.push(_.zip(z, _.map(pricearr, function(elem){ if(elem.match(/red/i)){return 'low inventory'}else{return ''} })));
+          }else if(pricearr.length > 1 && !_.every(pricearr, function(e){ return e == '' }) ){
+            pricearr.shift();
+            prices.push(pricearr);
+          }
+        }
       });
 
-      //console.log('scrapeProductPricesPromise product',JSON.stringify(product, null, 2));
+      product.items["color_prices"] = [];
+
+      _.each(prices, function(pricearr){
+        if(pricearr.length == size_idx.length){
+          if(pricearr[0].constructor === Array){
+            product.items["color_prices"].push( _.zip(size_idx, _.unzip(pricearr)[0], _.unzip(pricearr)[1]) );
+          }else{
+            product.items["color_prices"].push( _.zip(size_idx, pricearr) );
+          }
+        }
+      });
+
       products_by_price.push(product);
 
       resolve();
@@ -275,24 +292,12 @@ var scrapeProductPrices = function(){
       }
       console.log('wrote to', 'companycasuals_'+now+'_product_prices.json');
       console.log('done! time:', new Date().getTime() - now);
-      return;
+      process.exit();
     });
   });
 
 }
 
+// B L A S T O F F !
 init();
-
-
-
-// x('http://www.companycasuals.com/rebelcricket/start.jsp', {
-//   categories: x('.main_nav_container ul li', [{
-//     title: 'a@title | trim',
-//     sub_items: x('ul li', [{title: 'li a | trim', href: 'li a@href'}])
-//   }])
-// }).write(outfile).on('finish', function(){
-//   console.log('needsNewDataPromise completed ');
-//   resolve();
-// });
-
 
