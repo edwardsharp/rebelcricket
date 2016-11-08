@@ -1,4 +1,4 @@
-generateGUID = (typeof(window.crypto) != 'undefined' && 
+var generateGUID = (typeof(window.crypto) != 'undefined' && 
                 typeof(window.crypto.getRandomValues) != 'undefined') ?
   function() {
       // If we have a cryptographically secure PRNG, use that
@@ -24,7 +24,8 @@ generateGUID = (typeof(window.crypto) != 'undefined' &&
       });
   };
 
-  var _now = function(){
-    var date = new Date();
-    return ("0"+(date.getMonth() + 1)).slice(-2) + "/" + ("0"+date.getDate()).slice(-2) + "/" +  date.getFullYear();
-  }
+
+var _now = function(){
+  var date = new Date();
+  return ("0"+(date.getMonth() + 1)).slice(-2) + "/" + ("0"+date.getDate()).slice(-2) + "/" +  date.getFullYear();
+}

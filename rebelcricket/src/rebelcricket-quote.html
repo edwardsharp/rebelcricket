@@ -1,102 +1,469 @@
 <link rel="import" href="../bower_components/polymer/polymer.html">
-<link rel="import" href="../bower_components/app-pouchdb/pouchdb.html">
-<link rel="import" href="../bower_components/app-pouchdb/app-pouchdb-database-behavior.html">
-<!-- <link rel="import" href="../bower_components/app-pouchdb/app-pouchdb-conflict-resolution.html">
-<link rel="import" href="../bower_components/app-pouchdb/app-pouchdb-index.html">
-<link rel="import" href="../bower_components/app-pouchdb/app-pouchdb-query.html">  -->
-<link rel="import" href="../bower_components/app-pouchdb/app-pouchdb-document.html">
 
+<link rel="import" href="../bower_components/app-pouchdb/pouchdb.html">
+<link rel="import" href="../bower_components/app-pouchdb/app-pouchdb-conflict-resolution.html">
+<link rel="import" href="../bower_components/app-pouchdb/app-pouchdb-database-behavior.html">
+<link rel="import" href="../bower_components/app-pouchdb/app-pouchdb-index.html">
+<link rel="import" href="../bower_components/app-pouchdb/app-pouchdb-query.html"> 
+<link rel="import" href="../bower_components/app-pouchdb/app-pouchdb-document.html">
+<!-- <link rel="import" href="../bower_components/app-pouchdb/app-pouchdb-conflict-resolution.html"> -->
+
+<link rel="import" href="../bower_components/paper-toggle-button/paper-toggle-button.html">
 <link rel="import" href="../bower_components/paper-item/paper-item.html">
 <link rel="import" href="../bower_components/paper-listbox/paper-listbox.html">
 <link rel="import" href="../bower_components/paper-dropdown-menu/paper-dropdown-menu.html">
-
+<link rel="import" href="../bower_components/paper-swatch-picker/paper-swatch-picker.html">
 <link rel="import" href="../bower_components/paper-button/paper-button.html">
+<link rel="import" href="../bower_components/paper-input/paper-input.html">
+<link rel="import" href="../bower_components/paper-input/paper-textarea.html">
+<link rel="import" href="../bower_components/paper-checkbox/paper-checkbox.html">
+<link rel="import" href="../bower_components/paper-fab/paper-fab.html">
+<link rel="import" href="../bower_components/paper-dialog/paper-dialog.html">
+<link rel="import" href="../bower_components/paper-dialog-scrollable/paper-dialog-scrollable.html">
+<link rel="import" href="../bower_components/paper-tooltip/paper-tooltip.html">
+<link rel="import" href="../bower_components/paper-item/paper-item.html">
+<link rel="import" href="../bower_components/paper-listbox/paper-listbox.html">
+<link rel="import" href="../bower_components/paper-dropdown-menu/paper-dropdown-menu.html">
+<link rel="import" href="../bower_components/paper-date-picker/paper-date-picker.html">
+
 
 <link rel="import" href="shared-styles.html">
 
+<link rel="import" href="rebelcricket-icons.html">
+<link rel="import" href="rebelcricket-design.html">
+
+<script src="models.js"></script>
+<script src="util.js"></script>
+<script src="underscore-min.js"></script>
+
 <dom-module id="rebelcricket-quote">
-
   <template>
+    <style is="custom-style" include="shared-styles">    
+      :host {
+        font-size: 16px;
+      }
+      paper-button.custom, paper-fab.custom {
+        background: rgba(255,0,0,0.8);
+        
+        margin: 1em;
+        display: inline-block;
+      }
 
-    <style is="custom-style" include="shared-styles">
+      paper-button.custom:hover, paper-fab.custom:hover {
+        background: red;
+        color: black;
+      }
 
-    :root {
+      paper-button[disabled] {
+        background: #333;
+        color: gray;
+      }
+
+      paper-input, paper-textarea {
+        width: 100%;
+        --paper-input-container-color: black;
+        --paper-input-container-input-color: black;
+      }
+
+      hr {
+        width: 97%;
+      }
+
+      .section-label {
+        justify-content: center;
+        font-size: 20px;
+        font-weight: 100;
+        text-transform: uppercase;
+      }
+      .section-label span{
+        color: white;
+        background-color: #333;
+        border-radius: 5px;
+        width: 97%;
+        height: 1.5em;
+        text-align: center;
+        padding-left: 0.5em;
+        padding-right: 0.5em;
+      }
+      .rebel-font{
+        font-family: 'ObelixPro';
+        font-weight: 100;
+        font-size: 2em;
+        line-height: 1em;
+      }
+
+      .center{
+        text-align: center;
+        justify-content: center;
+        width: 100%;
+      }
+
+      .group{
+        border: thin solid #666;
+        border-radius: 5px;
+        margin: 1em;
+      }
       
-     min-height: 25vh;
-    }
+     
+
+      @media (max-width: 600px) {
+        .section-label span{
+          width: auto;
+          height: auto;
+          padding: 0 2px 0 2px;
+        }
+      }
+
+      @media (max-width: 875px) {
+        .section-label span{
+          height: auto;
+        }
+      }
 
 
-    @media (max-width: 767px) {
-      
-    }
     </style>
+ <!--    <app-route
+        route="[[route]]"
+        pattern="/:order_id"
+        data="{{routeData}}"></app-route> -->
 
-    <!-- <app-pouchdb-document
-      db-name="http://rebelcricket.lacuna.club:5984/quote"
-      doc-id="quote"
-      data="{{quote}}">
+<!--     <app-pouchdb-document
+      db-name="http://rebelcricket.lacuna.club:5984/models"
+      doc-id="order"
+      data="{{orderModel}}">
     </app-pouchdb-document> -->
+
+    <app-pouchdb-conflict-resolution
+      strategy="lastWriteWins">
+    </app-pouchdb-conflict-resolution>
+
+    <app-pouchdb-document
+      db-name="http://rebelcricket.lacuna.club:5984/orders"
+      doc-id="{{orderID}}"
+      data="{{order}}">
+    </app-pouchdb-document>
+  
     
-    <div class="row">
-      <div class="col s12 center">
-        <h1 class="rebel-heading">Quote</h1>
+
+<paper-dialog id="scrolling">
+  <h2>Brand, Style, Color...</h2>
+  <paper-dialog-scrollable>
+    <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute
+      irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.</p>
+    <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute
+      irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.</p>
+    <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute
+      irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.</p>
+    <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute
+      irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.</p>
+    <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute
+      irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.</p>
+    <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute
+      irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.</p>
+    <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute
+      irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.</p>
+    <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute
+      irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.</p>
+  </paper-dialog-scrollable>
+  <div class="buttons">
+    <paper-button class="custom" dialog-dismiss>Cancel</paper-button>
+    <paper-button class="custom" dialog-confirm autofocus>OK</paper-button>
+  </div>
+</paper-dialog>
+
+    <div class="">
+     <!--  <header class="center">
+        <h1 class="rebelcricket-header">Order</h1>
+      </header> -->
+
+      <div class="row">
+        <div class="col s12 center">
+          <h1 class="rebel-heading">Quote</h1>
+        </div>
       </div>
-    </div>
-      
-    <div class="container flex-center-justified">
+        
+      <div class="container flex-center-justified">
 
-      <div class="center">
+        <div class="center">
 
-        <paper-dropdown-menu label="Service" on-iron-select="_serviceSelected">
-          <paper-listbox class="dropdown-content">
-            <template is="dom-repeat" items="{{services}}">
-              <paper-item value="[[item.value]]">[[item.name]]</paper-item>
+          
+
+        </div>
+      </div>
+
+
+      <div class="">
+          <div class="row">
+
+            <div class="col s12 m6">
+              <div class="col s12 section-label">
+                <span>[[order.client_contact_information.label]]</span>
+              </div>
+              <template is="dom-repeat" items="{{order.client_contact_information.items}}">
+                <div class$="col [[item.col]]">
+                  <paper-input name="[[item.key]]" label="[[item.label]]" value="{{item.value}}"></paper-input>
+                </div>
+              </template>
+            </div>
+            <div class="col s12 m6">
+              <div class="col s12">
+                &nbsp;
+              </div>
+
+              <div class="col s12">
+                <paper-dialog id="needByDatePicker" class="paper-date-picker-dialog" modal>
+                  <paper-date-picker id="picker" date="{{needByDate}}"></paper-date-picker>
+                  <div class="buttons">
+                    <paper-button class="custom" dialog-confirm>Done</paper-button>
+                  </div>
+                </paper-dialog>
+                
+
+                
+
+                <div>
+                  [[order.need_by_date]]
+                  <paper-fab mini on-tap="_openDatePicker" icon="calendar" class="custom"></paper-fab>
+                  <paper-tooltip>Pick Date</paper-tooltip>
+                </div>
+                <small>Do you need this by a certain date?</small>
+              </div>
+
+              <div class="col s12">
+                <paper-textarea rows="4" label="Notes" value="{{order.notes}}"></paper-textarea>
+                <small>Please add any additional information or questions.</small>
+              </div>
+
+            </div>
+            
+
+          </div>
+          
+          <div class="row">
+
+            <div class="col s12">
+              <div class="col s12 section-label">
+                <span>Services</span>
+              </div>
+              
+              
+              <template is="dom-repeat" items="{{order.services}}" as="orderService">
+                <div class="col s12 center">
+                  <paper-dropdown-menu label="Service" on-iron-select="_serviceSelected">
+                    <paper-listbox class="dropdown-content" selected="[[orderService.value]]">
+                      <template is="dom-repeat" items="{{services}}">
+                        <paper-item value="[[item.value]]">[[item.name]]</paper-item>
+                      </template>
+                    </paper-listbox>
+                  </paper-dropdown-menu>
+                </div>
+
+                <div class="serviceItems col s12 center">
+
+                </div>
+     
+              </template>
+             
+
+              <div class="col s12 center">
+                <paper-fab mini on-tap="_addAnotherService" icon="add" class="custom"></paper-fab>
+                <paper-tooltip>Add another service</paper-tooltip>
+              </div>
+
+            </div>
+
+          </div>
+     
+     
+          <div class="row hidden">
+            <template is="dom-repeat" items="{{order.line_items.items}}">
+              <div class="col s12 group">
+              <template is="dom-repeat" items="{{item}}">
+                <div class$="col [[item.col]]">
+                  <template is="dom-if" if="[[item.on_tap]]">
+                    <paper-input name="[[item.key]]" label="[[item.label]]" value="{{item.value}}" readonly$="[[item.readonly]]" on-tap="_openDialog"></paper-input>
+                  </template>
+                  <template is="dom-if" if="[[!item.on_tap]]">
+                  <paper-input name="[[item.key]]" label="[[item.label]]" value="{{item.value}}" readonly$="[[item.readonly]]"></paper-input>
+                  </template>
+
+                </div>
+              </template>
+              </div>
             </template>
-          </paper-listbox>
-        </paper-dropdown-menu>
-
+            <div class="col s12 center">
+<!--               <paper-button class="custom" on-tap="_addLineItemRow" raised>&plus;</paper-button> -->
+             
+                <paper-fab mini on-tap="_addLineItemRow" icon="add" class="custom"></paper-fab>
+                <paper-tooltip>Add new line item row</paper-tooltip>
+              
+            </div>
+          </div>
+          
       </div>
+
+
+
+         <!--  <paper-dropdown-menu label="Style" on-iron-select="_styleSelected">
+            <paper-listbox class="dropdown-content" selected="0">
+              <paper-item value="crew">Crew</paper-item>
+              <paper-item value="womens_crew">Women's Crew</paper-item>
+              <paper-item value="hoodie">Hoodie</paper-item>
+              <paper-item value="longsleeve">Long Sleeve</paper-item>
+            </paper-listbox>
+          </paper-dropdown-menu> -->
+        <!--   <paper-swatch-picker color="{{designElementColor}}" column-count=4 color-list='["#000000", "#65a5f2", "#83be54", "#f0d551", "#e5943c", "#a96ddb", "#B20000", "#ffffff"]'></paper-swatch-picker> -->
+         
+
+          <!-- <template is="dom-repeat" items="{{designImages}}">
+            <template is="dom-repeat" items="{{_attachmentKeys(item._attachments)}}" as="attachment">
+              <img src="http://rebelcricket.lacuna.club:5984/cats/{{item._id}}/{{ attachment }}" height="50" width="50">
+            </template>
+          </template>
+          <br> -->
+
+          
+   
     </div>
-    
+
+ <!--    <hr>
+    <br> -->
+    <!-- <rebelcricket-design></rebelcricket-design> -->
+
   </template>
 
   <script>
 
-    Polymer({
+  Polymer({
+    is: 'rebelcricket-quote',
+    behaviors: [
+      Polymer.AppPouchDBDatabaseBehavior
+    ],
+    properties: {
+      services: {
+        type: Array,
+        notify: false,
+        value: function(){
+          return [ 
+            { name: "Apparel", value: "apparel"}, 
+            { name: "Parts Printing", value: "parts-printing"}, 
+            { name: "Flatstock", value: "flatstock"}, 
+            { name: "Buttons", value: "buttons"}, 
+            { name: "Vinyl Lettering", value: "vinyl-lettering"}, 
+            { name: "Other Stuff", value: "other"}
+          ];
+        }
 
-      is: 'rebelcricket-quote',
-      // behaviors: [
-      //   Polymer.AppPouchDBDatabaseBehavior
-      // ],
-      properties: {
-        service: {
-          type: String,
-          notify: false
-        },
-        services: {
-          type: Array,
-          notify: false,
-          value: function(){
-            return [ 
-              { name: "Apparel", value: "apparel"}, 
-              { name: "Parts Printing", value: "parts-printing"}, 
-              { name: "Flatstock", value: "flatstock"}, 
-              { name: "Buttons", value: "buttons"}, 
-              { name: "Vinyl Lettering", value: "vinyl-lettering"}, 
-              { name: "Other Stuff", value: "other"}
-            ];
-          }
-
+      },
+      order: {
+        type: Object,
+        notify: true,
+        observer: '_orderObserver',
+        value: function() {
+          return orderModel;
         }
       },
-      _serviceSelected: function(e){
-        this.set('service', this.services[e.target.selected].name);
-        console.log('_serviceSelected:',this.service);
+      orderID: {
+        type: String,
+        notify: false,
+        value: function() { 
+          if(window.location.hash === ''){
+            window.location.hash = generateGUID();
+          }
+          return window.location.hash.replace(/#/,'');
+        }
+      },
+      needByDate: {
+        type: Date,
+        notify: true,
+        observer: '_orderNeedByDateObserver'
       }
-      
+    },
+    _orderNeedByDateObserver: function(e){
+      this.set('order.need_by_date', this._formatDate(this.needByDate));
+    },
+    _formatDate: function(date){
+      return date.getFullYear() + "-" + ("0"+(date.getMonth() + 1)).slice(-2) + "-" + ("0"+date.getDate()).slice(-2);
+    },
+    _serviceSelected: function(e){
+      // this.push('order.services', {name: this.services[e.target.selected].name, value: e.target.selected });
+      console.log('e.model.orderService',e.model.orderService);
+      e.model.set('orderService', {name: this.services[e.target.selected].name, value:  e.target.selected});
+    },
+    _openDatePicker: function(e){
+      console.log('_openDatePicker');
+      this.$.needByDatePicker.open();
+    },
+    _addAnotherService: function(e){
+      console.log('ADD ANOTHER SERVICE!');
+      this.push('order.services', {name: '', value: undefined });
+    },
+    _orderObserver: function(_order){
+      try{
+        _.each(_order.line_items.items, function(item){
+          _.where(item, {key: 'line_total'})[0].value = _.reduce(_.where(item, {sum: true}), function(memo, v){ return memo + (v.value != undefined && v.value != '' ? parseInt(v.value) : 0); }, 0);
+        });
+      }catch(err){
+        //o noz!
+        console.log('o noz! _orderObserver caught err:',err);
+      }
 
-    });
+    },
+    _isInput: function(type){
+      return type == 'text' || type == 'number';
+    },
+    _isTextarea: function(type){
+      return type == 'textarea';
+    },
+    _isCheckbox: function(type){
+      return type == 'checkbox';
+    },
+    _addLineItemRow: function(e){
+      this.push('order.line_items.items',orderModel.line_items.items[0]);
+    },
+    _addColorMeshPrint: function(e){
+      //ugh, RTFM: https://www.polymer-project.org/1.0/docs/devguide/data-system#paths
+      //An index, for example, "myArray.1" indicates the array item at position 1.
+      //An opaque key, prefixed with the pound sign (#), for example, "myArray.#1" indicates the array item with the key "1".
+      this.push('order.graphic.items.'+e.model.index+'.color_mesh_print', orderModel.graphic.items[0].color_mesh_print[0]);
+    },
+    _addNewGraphic: function(e){
+      this.push('order.graphic.items', orderModel.graphic.items[0]);
+    },
+    _openDialog: function(e){
+      console.log('_openDialog e:',e);
+      this.$.scrolling.open();
+    },
+    ready: function(){
+
+      console.log('orderModel:',orderModel);
+
+      console.log('this.order',this.order);
+
+      console.log('this.order.line_items.items:',this.order.line_items.items);
+
+      //file upload
+      // var db = new PouchDB('http://rebelcricket.lacuna.club:5984/orders');
+
+      // var input = this.$.catFile;
+      // var _this = this;
+      // input.addEventListener('change', function () {
+      //   var file = input.files[0]; // file is a Blob
+
+      //   db.putAttachment(this.orderID, file.name, file, file.type).then(function (result) {
+      //     // handle result
+      //     // _this._addImageToCanvas('http://rebelcricket.lacuna.club:5984/cats/'+file.name+'/'+file.name);
+      //   }).catch(function (err) {
+      //     console.log(err);
+      //   });
+
+      // });
+
+    }
+
+
+  });
+
 
   </script>
-
 </dom-module>

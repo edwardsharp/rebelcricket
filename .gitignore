@@ -39,3 +39,4 @@ config/secrets.yml
 
 .DS_Store
 /x-ray/node_modules
+/inboxsdk/examples
