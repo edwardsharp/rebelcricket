@@ -1,0 +1,33 @@
+{
+  "name": "Rebelcricket for Gmail",
+  "description": "Show Rebelcricket information in Gmail",
+  "version": "0.1",
+  "icons": {
+    "128": "images/rebelcricket.png"
+  },
+  "content_scripts": [
+    {
+      "matches": [
+        "https://mail.google.com/*",
+        "https://inbox.google.com/*"
+      ],
+      "js": ["js/jquery.js", "js/underscore.js", "js/inboxsdk.js", "js/app.js"],
+      "css": ["styles.css"],
+      "run_at": "document_end"
+    }
+  ],
+  "permissions": [
+    "https://mail.google.com/",
+    "https://inbox.google.com/",
+    "https://*.rebelcricket.com/",
+    "https://localhost:8080/"
+  ],
+  "web_accessible_resources": [
+    "images/rebelcricket.png",
+    "images/paid.png",
+    "images/unpaid.png",
+    "images/cards/*",
+    "configTemplate.html"
+  ],
+  "manifest_version": 2
+}
