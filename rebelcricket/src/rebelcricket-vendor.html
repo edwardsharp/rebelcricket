@@ -15,20 +15,23 @@
 
 <link rel="import" href="shared-styles.html">
 
+<script src="underscore-min.js"></script>
+
 <dom-module id="rebelcricket-vendor">
 
   <template>
 
     <style is="custom-style" include="shared-styles">
 
+
     .container {
-      min-height: 100vh;
+      width: 100%;
     }
 
     .left{
       width: 350px;
-      border-right: thin solid #333;
-      max-height: 100vh;
+     
+      
       overflow-x: hidden;
       overflow-y: scroll;
       padding: 1em;
@@ -48,19 +51,31 @@
       width: 100%;
       text-align: left;
     }
-    .content {
-      padding: 15px;
+    .item-content {
+      min-height: 80vh;
+      width: 80vw;
+   /*   padding: 15px;
       border: 1px solid #eeddee;
       border-top: none;
       border-bottom-left-radius: 5px;
       border-bottom-right-radius: 5px;
-      @apply(--shadow-elevation-2dp);
+      @apply(--shadow-elevation-2dp);*/
     }
     .item {
       margin-bottom: 1em;
-      clear: both;
-      min-height: 160px;
+      font-size: 15px;
+      line-height: 16px;
+      word-break: break-all;
+      height: 160px;
       border-bottom: thin solid #eeddee;
+    }
+    .item:hover{
+      color: red;
+      border-color: red;
+    }
+
+    select {
+      display: inline-block;
     }
 
     img {
@@ -68,10 +83,13 @@
       max-height: 200px;
       max-width: 200px;
     }
+
+
     @media (max-width: 767px) {
       
     }
     </style>
+
 
     <app-pouchdb-document
       db-name="http://localhost:5984/products"
@@ -79,42 +97,47 @@
       data="{{companycasual}}">
     </app-pouchdb-document>
       
-    <div class="container flex-center-justified">
 
-      <div class="left center">
-      <template is="dom-if" if="[[!companycasual.products_by_sub_item]]">
-      Loading items...
-      </template>
+    <div class="container">
+      <div class="row">
 
-      <template is="dom-repeat" items="[[companycasual.products_by_sub_item]]">
+        <template is="dom-if" if="[[!companycasual.products_by_sub_item]]">
+          Loading items...
+        </template>
 
-        <button class="heading" aria-controls="collapse1" on-tap="toggle">[[item.category]] [[item.sub_item]]</button>
-
-        <iron-collapse id="[[_strip(item.category)]][[_strip(item.sub_item)]]" tabindex="0">
-          <div class="content">
-
-            <template is="dom-repeat" items="[[item.items]]">
-              <div class="item">
-                <img src$="[[item.img_href]]">
-                [[item.a]]
-              </div>
+        <div class="col s6">
+          <select value="{{selectValue::change}}">
+            <option selected>Select by Category</option>
+            <template is="dom-repeat" items="[[_productCategories(companycasual)]]" as="category">
+              <optgroup label="[[category]]">
+                <option>See All [[category]]</option>
+                <template is="dom-repeat" items="[[_productSubCategories(companycasual, category)]]" as="sub_category">
+                  <option>[[sub_category]]</option>
+                </template>
+              </optgroup> 
             </template>
+          </select>    
 
-          </div>
-        </iron-collapse>
-
-
-
-      </template>
-
-        
-
+        </div>
+        <div class="col s6">
+        </div>
       </div>
 
-      <div class="right center">
+
+      <div class="item-content row center">
+  
+        <template is="dom-repeat" items="[[filteredProducts]]">
+          <template is="dom-repeat" items="[[item.items]]">
+            <div class="col s12 m6 l4 item">
+              <img src$="[[item.img_href]]">
+              <div>[[item.a]]</div>
+            </div>
+          </template>
+        </template>
 
       </div>
     </div>
+    
     
   </template>
 
@@ -130,7 +153,43 @@
         companycasual: {
           type: Object,
           notify: true
+        },
+        filteredProducts: {
+          type: Object,
+          notify: true
+        },
+        selectValue: {
+          type: String,
+          observer: '_selectObserver'
         }
+      },
+      _noFilteredProducts: function(){
+        console.log('Object.keys(filteredProducts):',Object.keys(filteredProducts));
+        return Object.keys(filteredProducts).length == 0;
+      },
+      _selectObserver: function(val){
+        if(val && val != ''){
+          console.log('_selectObserver val:',val);
+          this._filterProducts(val.replace(/See All /, ''));
+        }
+      },
+      _filterProducts: function(by_str){
+        console.log('_filterProducts by_str:',by_str);
+        this.set('filteredProducts', _.filter(this.companycasual.products_by_sub_item, function(item){
+          return item.category == by_str || item.sub_item == by_str;
+        }));
+      },
+      _productCategories(obj){
+        return _.uniq(_.map(obj.products_by_sub_item, function(item){
+          return item.category;
+        }));
+      },
+      _productSubCategories(obj, category){
+        return _.map(_.filter(obj.products_by_sub_item, function(item){
+          return item.category == category;
+        }), function(item){
+          return item.sub_item;
+        });
       },
       _strip: function(str){
         return str.replace(/[^a-zA-Z0-9]/g, '');
@@ -142,6 +201,9 @@
         }catch(err){
           console.log('o noz, fuckng selector!');
         }
+      },
+      ready: function(){
+
       }
 
       
