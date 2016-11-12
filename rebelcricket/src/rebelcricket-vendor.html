@@ -65,7 +65,10 @@
       margin-bottom: 1em;
       font-size: 15px;
       line-height: 16px;
-      word-break: break-all;
+      text-align: justify;
+      text-justify: inter-word;
+      overflow: hidden;
+      text-overflow: ellipsis;
       height: 160px;
       border-bottom: thin solid #eeddee;
     }
@@ -74,8 +77,17 @@
       border-color: red;
     }
 
-    select {
-      display: inline-block;
+    .exit-detail{
+      float:left;
+      margin-top: 1em;
+    }
+
+    .prod-desc-items {
+      float: left;
+    }
+
+    .colors {
+      float: right;
     }
 
     img {
@@ -99,43 +111,89 @@
       
 
     <div class="container">
+      
+      <template is="dom-if" if="[[!companycasual.products_by_sub_item]]">
+        Loading items...
+      </template>
+
+      <template is="dom-if" if="[[isDetailView]]">
+        <div class="exit-detail">
+          <paper-button class="custom" on-tap="_exitDetailViewWithSelection">back</paper-button>
+        </div>
+      </template>
+
+      <template is="dom-if" if="[[!isDetailView]]">
       <div class="row">
 
-        <template is="dom-if" if="[[!companycasual.products_by_sub_item]]">
-          Loading items...
-        </template>
+          <div class="col s6">
 
-        <div class="col s6">
-          <select value="{{selectValue::change}}">
-            <option selected>Select by Category</option>
-            <template is="dom-repeat" items="[[_productCategories(companycasual)]]" as="category">
-              <optgroup label="[[category]]">
-                <option>See All [[category]]</option>
-                <template is="dom-repeat" items="[[_productSubCategories(companycasual, category)]]" as="sub_category">
-                  <option>[[sub_category]]</option>
+            <label>Filter by style</label>
+            <select value="{{selectValue::change}}">
+              <option selected>Select by Category</option>
+              <template is="dom-repeat" items="[[_productCategories(companycasual)]]" as="category">
+                <optgroup label="[[category]]">
+                  <option>See All [[category]]</option>
+                  <template is="dom-repeat" items="[[_productSubCategories(companycasual, category)]]" as="sub_category">
+                    <option>[[sub_category]]</option>
+                  </template>
+                </optgroup> 
+              </template>
+            </select>    
+
+          </div>
+          <div class="col s6">
+            <!-- search -->
+          </div>
+        
+        </div> <!-- row -->
+
+
+        <div class="item-content row center">
+    
+          <template is="dom-repeat" items="[[filteredProducts]]" as="product">
+            
+              <div class="col s12 m6 l4 item" on-tap="_itemSelected">
+                <template is="dom-if" if="[[product.items.prod_id]]">
+                  <img src$="http://cdn.companycasuals.com/cache/cc/[[product.items.prod_id]].jpg">
                 </template>
-              </optgroup> 
-            </template>
-          </select>    
-
-        </div>
-        <div class="col s6">
-        </div>
-      </div>
-
-
-      <div class="item-content row center">
-  
-        <template is="dom-repeat" items="[[filteredProducts]]">
-          <template is="dom-repeat" items="[[item.items]]">
-            <div class="col s12 m6 l4 item">
-              <img src$="[[item.img_href]]">
-              <div>[[item.a]]</div>
-            </div>
+                <div>[[product.title]]</div>
+              </div>
+            
           </template>
-        </template>
 
-      </div>
+        </div>
+      </template>
+
+      <template is="dom-if" if="[[isDetailView]]">
+        <div class="detail-content row center">
+          
+          <h5>[[selectedItem.title]]</h5>
+          <h6>[[selectedItem.items.prod_id]] [[selectedItem.category]] [[selectedItem.sub_item]]</h6>
+
+          <p>[[selectedItem.items.prod_desc_text]]</p>
+
+          <ul class="prod-desc-items">
+            <template is="dom-repeat" items="[[selectedItem.items.prod_desc_items]]">
+              <li>[[item]]</li>
+            </template>
+          </ul>
+
+          <div class="colors">
+            <template is="dom-repeat" items="[[selectedItem.items.colors]]">
+              <div class="color-img">
+                <img src$="[[item.href]]">
+                <small>[[item.name]]</small>
+              </div>
+            </template>
+          </div>
+
+        </div>
+
+        <div class="row center">
+
+          <paper-button class="custom" on-tap="_exitDetailViewWithSelection">Use this</paper-button>
+        </div>
+      </template>
     </div>
     
     
@@ -161,6 +219,17 @@
         selectValue: {
           type: String,
           observer: '_selectObserver'
+        },
+        selectedItem: {
+          type: Object,
+          notify: true
+        },
+        isDetailView: {
+          type: Boolean,
+          notify: true,
+          value: function(){
+            return false;
+          }
         }
       },
       _noFilteredProducts: function(){
@@ -185,11 +254,11 @@
         }));
       },
       _productSubCategories(obj, category){
-        return _.map(_.filter(obj.products_by_sub_item, function(item){
+        return _.uniq(_.map(_.filter(obj.products_by_sub_item, function(item){
           return item.category == category;
         }), function(item){
           return item.sub_item;
-        });
+        }));
       },
       _strip: function(str){
         return str.replace(/[^a-zA-Z0-9]/g, '');
@@ -202,10 +271,16 @@
           console.log('o noz, fuckng selector!');
         }
       },
-      ready: function(){
-
+      _itemSelected: function(e){
+        console.log('e.model.product', e.model.product);
+        this.set('selectedItem', e.model.product);
+        this.set('isDetailView', true);
+      }, 
+      _exitDetailViewWithSelection: function(e){
+        this.set('selectedItem', undefined);
+        this.set('isDetailView', false);
+        console.log('_exitDetailViewWithSelection e:',e);
       }
-
       
 
     });

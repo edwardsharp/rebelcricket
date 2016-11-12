@@ -25,7 +25,8 @@ var orderModel = {
   },
   services: [],
   notes: '',
-  need_by_date: '',
+  need_by_date: false,
+  date_needed: '',
   client_contact_information: {
     label: 'CONTACT INFORMATION',
     items: [
@@ -46,22 +47,16 @@ var orderModel = {
       {key: 'ship_to', label: 'Ship to', type: 'textarea', col: 's12', rows: 3}
     ]
   },
+  line_item_proto: {key: 'xs', label: 'XS', type: 'number', col: 's3 m2 l1', sum: true},
+  line_item_sizes: ['xs', 'sm', 'md', 'l', 'xl', '2xl', '3xl', '4xl'],
   line_items: {
     label: 'LINE ITEMS',
     items: [
       [
-        {key: 'brand', label: 'BRAND', type: 'text', col: 's4 m2 l1', on_tap: true, readonly: true},
-        {key: 'style', label: 'STYLE', type: 'text', col: 's4 m2 l1', on_tap: true, readonly: true},
-        {key: 'color', label: 'COLOR', type: 'text', col: 's4 m2 l1', on_tap: true, readonly: true},
-        {key: 'xs', label: 'XS', type: 'number', col: 's2 m2 l1', sum: true},
-        {key: 'sm', label: 'SM', type: 'number', col: 's2 m2 l1', sum: true},
-        {key: 'md', label: 'MD', type: 'number', col: 's2 m2 l1', sum: true},
-        {key: 'lg', label: 'LG', type: 'number', col: 's2 m2 l1', sum: true},
-        {key: 'xl', label: 'XL', type: 'number', col: 's2 m2 l1', sum: true},
-        {key: '2xl', label: '2XL', type: 'number', col: 's2 m2 l1', sum: true},
-        {key: '3xl', label: '3XL', type: 'number', col: 's4 m2 l1', sum: true},
-        {key: 'other', label: 'OTHER', type: 'number', col: 's4 m2 l1', sum: true},
-        {key: 'line_total', label: 'TOTAL', type: 'number', col: 's4 m2 l1', readonly: true},
+        {key: 'brand', label: 'BRAND', type: 'text', col: 's4 m3 l2', on_tap: true, readonly: true},
+        {key: 'style', label: 'STYLE', type: 'text', col: 's4 m3 l2', on_tap: true, readonly: true},
+        {key: 'color', label: 'COLOR', type: 'text', col: 's4 m3 l2', on_tap: true, readonly: true},
+        {key: 'line_total', label: 'TOTAL', type: 'number', col: 's4 m3 l2', readonly: true},
       ]
     ]
   },

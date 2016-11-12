@@ -25,12 +25,15 @@
 <link rel="import" href="../bower_components/paper-listbox/paper-listbox.html">
 <link rel="import" href="../bower_components/paper-dropdown-menu/paper-dropdown-menu.html">
 <link rel="import" href="../bower_components/paper-date-picker/paper-date-picker.html">
-
+<link rel="import" href="../bower_components/paper-menu/paper-menu.html">
+<link rel="import" href="../bower_components/paper-menu-button/paper-menu-button.html">
+<link rel="import" href="../bower_components/paper-icon-button/paper-icon-button.html">
 
 <link rel="import" href="shared-styles.html">
 
 <link rel="import" href="rebelcricket-icons.html">
 <link rel="import" href="rebelcricket-design.html">
+<link rel="import" href="rebelcricket-vendor.html">
 
 <script src="models.js"></script>
 <script src="util.js"></script>
@@ -41,7 +44,10 @@
     <style is="custom-style" include="shared-styles">    
       :host {
         font-size: 16px;
+        --primary-color: red;
+        --default-primary-color: red;
       }
+
       paper-button.custom, paper-fab.custom {
         background: rgba(255,0,0,0.8);
         
@@ -65,6 +71,12 @@
         --paper-input-container-input-color: black;
       }
 
+      paper-menu {
+        --paper-menu-selected-item: {
+          color: red;
+        }
+      }
+
       hr {
         width: 97%;
       }
@@ -74,12 +86,13 @@
         font-size: 20px;
         font-weight: 100;
         text-transform: uppercase;
+        width: 100%;
+        background-color: #333;
+        border-radius: 5px;
+        margin-bottom: 1em;
       }
       .section-label span{
         color: white;
-        background-color: #333;
-        border-radius: 5px;
-        width: 97%;
         height: 1.5em;
         text-align: center;
         padding-left: 0.5em;
@@ -108,7 +121,7 @@
 
       @media (max-width: 600px) {
         .section-label span{
-          width: auto;
+       
           height: auto;
           padding: 0 2px 0 2px;
         }
@@ -146,28 +159,13 @@
     
 
 <paper-dialog id="scrolling">
-  <h2>Brand, Style, Color...</h2>
   <paper-dialog-scrollable>
-    <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute
-      irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.</p>
-    <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute
-      irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.</p>
-    <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute
-      irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.</p>
-    <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute
-      irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.</p>
-    <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute
-      irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.</p>
-    <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute
-      irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.</p>
-    <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute
-      irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.</p>
-    <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute
-      irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.</p>
+    <rebelcricket-vendor></rebelcricket-vendor>
   </paper-dialog-scrollable>
   <div class="buttons">
-    <paper-button class="custom" dialog-dismiss>Cancel</paper-button>
-    <paper-button class="custom" dialog-confirm autofocus>OK</paper-button>
+    <paper-button class="custom">I don't know</paper-button>
+    <paper-button class="custom">I don't care</paper-button>
+    <paper-button class="custom">Something else</paper-button>
   </div>
 </paper-dialog>
 
@@ -195,8 +193,8 @@
       <div class="">
           <div class="row">
 
-            <div class="col s12 m6">
-              <div class="col s12 section-label">
+            <div class="col s12 m6 offset-m3">
+              <div class="col s12 section-label center">
                 <span>[[order.client_contact_information.label]]</span>
               </div>
               <template is="dom-repeat" items="{{order.client_contact_information.items}}">
@@ -205,50 +203,18 @@
                 </div>
               </template>
             </div>
-            <div class="col s12 m6">
-              <div class="col s12">
-                &nbsp;
-              </div>
-
-              <div class="col s12">
-                <paper-dialog id="needByDatePicker" class="paper-date-picker-dialog" modal>
-                  <paper-date-picker id="picker" date="{{needByDate}}"></paper-date-picker>
-                  <div class="buttons">
-                    <paper-button class="custom" dialog-confirm>Done</paper-button>
-                  </div>
-                </paper-dialog>
-                
-
-                
-
-                <div>
-                  [[order.need_by_date]]
-                  <paper-fab mini on-tap="_openDatePicker" icon="calendar" class="custom"></paper-fab>
-                  <paper-tooltip>Pick Date</paper-tooltip>
-                </div>
-                <small>Do you need this by a certain date?</small>
-              </div>
-
-              <div class="col s12">
-                <paper-textarea rows="4" label="Notes" value="{{order.notes}}"></paper-textarea>
-                <small>Please add any additional information or questions.</small>
-              </div>
-
-            </div>
-            
-
           </div>
           
           <div class="row">
 
-            <div class="col s12">
-              <div class="col s12 section-label">
+            <div class="col s12 m6 offset-m3">
+              <div class="col s12 section-label center">
                 <span>Services</span>
               </div>
               
               
               <template is="dom-repeat" items="{{order.services}}" as="orderService">
-                <div class="col s12 center">
+                <div class="col s10 center">
                   <paper-dropdown-menu label="Service" on-iron-select="_serviceSelected">
                     <paper-listbox class="dropdown-content" selected="[[orderService.value]]">
                       <template is="dom-repeat" items="{{services}}">
@@ -257,46 +223,136 @@
                     </paper-listbox>
                   </paper-dropdown-menu>
                 </div>
+                <div class="col s2">
+                  <paper-fab mini on-tap="_removeService" icon="remove" class="custom"></paper-fab>
+                  <paper-tooltip>Remove Service</paper-tooltip>
+                </div>
+              
 
                 <div class="serviceItems col s12 center">
+                  <template is="dom-if" if="[[_isApparelService(orderService)]]">
+                    <template is="dom-repeat" items="{{order.line_items.items}}">
+                      <div class="col s12 group">
+                        <div class="col s4 m3 l2">
+      
+                          <paper-menu-button ignore-select>
+                            <paper-icon-button icon="add" class="dropdown-trigger"></paper-icon-button>
+                            <paper-menu class="dropdown-content" multi>
+                              <paper-item>XS</paper-item>
+                              <paper-item>S</paper-item>
+                              <paper-item>M</paper-item>
+                              <paper-item>L</paper-item>
+                              <paper-item>XL</paper-item>
+                              <paper-item>2XL</paper-item>
+                              <paper-item>3XL</paper-item>
+                              <paper-item>4XL</paper-item>
+                              <paper-item>Other</paper-item>
+                            </paper-menu>
+                          </paper-menu-button>
+                          <small>sizes</small>
 
+                        </div>
+
+                          <div class$="col [[item.col]]">
+                            <template is="dom-if" if="[[item.on_tap]]">
+                              <paper-input name="[[item.key]]" label="[[item.label]]" value="{{item.value}}" readonly$="[[item.readonly]]" on-tap="_openDialog"></paper-input>
+                            </template>
+                            <template is="dom-if" if="[[!item.on_tap]]">
+                              <paper-input name="[[item.key]]" label="[[item.label]]" value="{{item.value}}" readonly$="[[item.readonly]]"></paper-input>
+                            </template>
+
+                          </div>
+                        <div class="col s2">
+                          <paper-fab mini on-tap="_removeLineItemRow" icon="remove" class="custom"></paper-fab>
+                          <paper-tooltip>Remove Textile</paper-tooltip>
+                        </div>
+                      </div>
+                    </template>
+                    <div class="col s12 center">
+        <!--               <paper-button class="custom" on-tap="_addLineItemRow" raised>&plus;</paper-button> -->
+                     
+    
+                        <paper-button class="custom" on-tap="_addLineItemRow">Add another textile</paper-button>
+                    </div>
+
+                  </template>
                 </div>
-     
+                
+
               </template>
              
 
               <div class="col s12 center">
-                <paper-fab mini on-tap="_addAnotherService" icon="add" class="custom"></paper-fab>
-                <paper-tooltip>Add another service</paper-tooltip>
+                <paper-button class="custom" on-tap="_addAnotherService">[[addServiceButtonText]]</paper-button>
               </div>
 
             </div>
 
           </div>
-     
-     
-          <div class="row hidden">
-            <template is="dom-repeat" items="{{order.line_items.items}}">
-              <div class="col s12 group">
-              <template is="dom-repeat" items="{{item}}">
-                <div class$="col [[item.col]]">
-                  <template is="dom-if" if="[[item.on_tap]]">
-                    <paper-input name="[[item.key]]" label="[[item.label]]" value="{{item.value}}" readonly$="[[item.readonly]]" on-tap="_openDialog"></paper-input>
-                  </template>
-                  <template is="dom-if" if="[[!item.on_tap]]">
-                  <paper-input name="[[item.key]]" label="[[item.label]]" value="{{item.value}}" readonly$="[[item.readonly]]"></paper-input>
-                  </template>
+          
 
-                </div>
-              </template>
-              </div>
-            </template>
-            <div class="col s12 center">
-<!--               <paper-button class="custom" on-tap="_addLineItemRow" raised>&plus;</paper-button> -->
+          <div class="row">
+            <div class="col s12 m6 offset-m3">
+              <div class="col s12 section-label center">
+                <span>Graphics</span>
+              </div>  
+            </div>
+            
+
+
+            <div class="col s4">
              
-                <paper-fab mini on-tap="_addLineItemRow" icon="add" class="custom"></paper-fab>
-                <paper-tooltip>Add new line item row</paper-tooltip>
+              <template is="dom-repeat" items="{{_attachmentKeys(order._attachments)}}" as="attachment">
+              <!-- rebelcricket.lacuna.club -->
+                <img src="http://localhost:5984/cats/{{item._id}}/{{ attachment }}" height="50" width="50">
+              </template>
+          
+              <br>
+            </div>
+
+            <div class="col s8">
+
+              <label for="orderDesignFile">Add Image</label>
+              <input id="orderDesignFile" type="file"></input>
+            </div>
+
+
+
+          </div>
+
+          <div class="row">
+            <div class="col s12 m6 offset-m3">
+              <div class="col s12 section-label center">
+                <span>Other</span>
+              </div>
+
+              <div class="col s8">
+                <paper-dialog id="dateNeededPicker" class="paper-date-picker-dialog" modal>
+                  <paper-date-picker id="picker" date="{{dateNeeded}}" min-date="[[now]]"></paper-date-picker>
+                  <div class="buttons">
+                    <paper-button class="custom" dialog-confirm>Done</paper-button>
+                  </div>
+                </paper-dialog>
+                
+                <paper-toggle-button class="red" on-tap="_toggleNeedDate" checked="{{order.need_by_date}}">Do you need this by a certain date?</paper-toggle-button>
               
+              </div>
+
+              <div class="col s4">
+                <template is="dom-if" if="[[order.need_by_date]]">
+                <span id="needsDateContainer">
+                  [[order.date_needed]]
+                  <paper-fab mini on-tap="_openDatePicker" icon="calendar" class="custom"></paper-fab>
+                  <paper-tooltip>Pick Date</paper-tooltip>
+                </span>
+                </template>
+              </div>
+
+              <div class="col s12">
+                <paper-textarea rows="4" label="Notes" value="{{order.notes}}"></paper-textarea>
+                <small>Please add any additional information or questions.</small>
+              </div>
+
             </div>
           </div>
           
@@ -373,14 +429,26 @@
           return window.location.hash.replace(/#/,'');
         }
       },
-      needByDate: {
+      dateNeeded: {
         type: Date,
         notify: true,
         observer: '_orderNeedByDateObserver'
+      },
+      now: {
+        type: Date,
+        notify: true,
+        value: function(){
+          return new Date;
+        }
+      }, 
+      addServiceButtonText: {
+        type: String,
+        notify: true,
+        computed: '_addServiceButtonText(order.services)'
       }
     },
     _orderNeedByDateObserver: function(e){
-      this.set('order.need_by_date', this._formatDate(this.needByDate));
+      this.set('order.date_needed', this._formatDate(this.dateNeeded));
     },
     _formatDate: function(date){
       return date.getFullYear() + "-" + ("0"+(date.getMonth() + 1)).slice(-2) + "-" + ("0"+date.getDate()).slice(-2);
@@ -390,13 +458,26 @@
       console.log('e.model.orderService',e.model.orderService);
       e.model.set('orderService', {name: this.services[e.target.selected].name, value:  e.target.selected});
     },
+    _isApparelService: function(orderService){
+      return orderService.name.match(/apparel/i); 
+    },
     _openDatePicker: function(e){
       console.log('_openDatePicker');
-      this.$.needByDatePicker.open();
+      this.$.dateNeededPicker.open();
     },
     _addAnotherService: function(e){
       console.log('ADD ANOTHER SERVICE!');
       this.push('order.services', {name: '', value: undefined });
+    },
+    _removeService: function(e){
+      this.splice('order.services', this.order.services.indexOf(e.model.orderService), 1);
+    },
+    _addServiceButtonText: function(_order_services){
+      if(_order_services && _order_services.length > 0){
+        return 'Add another service';
+      }else{
+        return 'Add a service';
+      }
     },
     _orderObserver: function(_order){
       try{
@@ -419,7 +500,12 @@
       return type == 'checkbox';
     },
     _addLineItemRow: function(e){
-      this.push('order.line_items.items',orderModel.line_items.items[0]);
+      //orderModel.line_items.items[0]
+      this.push('order.line_items.items',orderModel.line_item_proto); 
+    },
+    _removeLineItemRow: function(e){
+      // this.splice(path, index, removeCount, [item1, ..., itemN])
+      this.splice('order.line_items.items', this.order.line_items.items.indexOf(e.model.item), 1);
     },
     _addColorMeshPrint: function(e){
       //ugh, RTFM: https://www.polymer-project.org/1.0/docs/devguide/data-system#paths
@@ -431,8 +517,17 @@
       this.push('order.graphic.items', orderModel.graphic.items[0]);
     },
     _openDialog: function(e){
-      console.log('_openDialog e:',e);
       this.$.scrolling.open();
+    },
+    _toggleNeedDate: function(e){ 
+      if(e.target.checked){
+        this._openDatePicker();
+      }
+    },
+    _attachmentKeys: function(attachments){
+      if(attachments != undefined){
+        return Object.keys(attachments);
+      }
     },
     ready: function(){
 
@@ -443,21 +538,22 @@
       console.log('this.order.line_items.items:',this.order.line_items.items);
 
       //file upload
-      // var db = new PouchDB('http://rebelcricket.lacuna.club:5984/orders');
+      //rebelcricket.lacuna.club
+      var db = new PouchDB('http://rebelcricket.lacuna.club:5984/orders');
 
-      // var input = this.$.catFile;
-      // var _this = this;
-      // input.addEventListener('change', function () {
-      //   var file = input.files[0]; // file is a Blob
+      var input = this.$.orderDesignFile;
+      var _this = this;
+      input.addEventListener('change', function () {
+        var file = input.files[0]; // file is a Blob
 
-      //   db.putAttachment(this.orderID, file.name, file, file.type).then(function (result) {
-      //     // handle result
-      //     // _this._addImageToCanvas('http://rebelcricket.lacuna.club:5984/cats/'+file.name+'/'+file.name);
-      //   }).catch(function (err) {
-      //     console.log(err);
-      //   });
+        db.putAttachment(_this.orderID, file.name, file, file.type).then(function (result) {
+          // handle result
+          
+        }).catch(function (err) {
+          console.log(err);
+        });
 
-      // });
+      });
 
     }
 
