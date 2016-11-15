@@ -60,6 +60,10 @@
         color: black;
       }
 
+      paper-icon-button:hover {
+        color: red;
+      }
+
       paper-button[disabled] {
         background: #333;
         color: gray;
@@ -75,6 +79,10 @@
         --paper-menu-selected-item: {
           color: red;
         }
+      }
+
+      paper-menu-button {
+        padding: 0;
       }
 
       hr {
@@ -114,10 +122,16 @@
       .group{
         border: thin solid #666;
         border-radius: 5px;
-        margin: 1em;
+
       }
-      
-     
+
+      .serviceItems paper-icon-button {
+        margin-top: 10px;
+      }
+
+      .apparelRow {
+        border-bottom: thin dotted #ccc;
+      }
 
       @media (max-width: 600px) {
         .section-label span{
@@ -164,7 +178,6 @@
   </paper-dialog-scrollable>
   <div class="buttons">
     <paper-button class="custom">I don't know</paper-button>
-    <paper-button class="custom">I don't care</paper-button>
     <paper-button class="custom">Something else</paper-button>
   </div>
 </paper-dialog>
@@ -177,15 +190,6 @@
       <div class="row">
         <div class="col s12 center">
           <h1 class="rebel-heading">Quote</h1>
-        </div>
-      </div>
-        
-      <div class="container flex-center-justified">
-
-        <div class="center">
-
-          
-
         </div>
       </div>
 
@@ -214,6 +218,7 @@
               
               
               <template is="dom-repeat" items="{{order.services}}" as="orderService">
+                <div class="row group">
                 <div class="col s10 center">
                   <paper-dropdown-menu label="Service" on-iron-select="_serviceSelected">
                     <paper-listbox class="dropdown-content" selected="[[orderService.value]]">
@@ -224,46 +229,59 @@
                   </paper-dropdown-menu>
                 </div>
                 <div class="col s2">
-                  <paper-fab mini on-tap="_removeService" icon="remove" class="custom"></paper-fab>
+                  <paper-icon-button icon="remove" on-tap="_removeService"></paper-icon-button>
+                  <small>remove</small>
                   <paper-tooltip>Remove Service</paper-tooltip>
+
                 </div>
               
 
                 <div class="serviceItems col s12 center">
                   <template is="dom-if" if="[[_isApparelService(orderService)]]">
-                    <template is="dom-repeat" items="{{order.line_items.items}}">
-                      <div class="col s12 group">
-                        <div class="col s4 m3 l2">
+                    <template is="dom-repeat" items="{{order.line_items.items}}" as="lineItem">
+                      <div class="col s12 apparelRow">
+     
+                        <div class="col s2">
       
-                          <paper-menu-button ignore-select>
-                            <paper-icon-button icon="add" class="dropdown-trigger"></paper-icon-button>
-                            <paper-menu class="dropdown-content" multi>
-                              <paper-item>XS</paper-item>
-                              <paper-item>S</paper-item>
-                              <paper-item>M</paper-item>
-                              <paper-item>L</paper-item>
-                              <paper-item>XL</paper-item>
-                              <paper-item>2XL</paper-item>
-                              <paper-item>3XL</paper-item>
-                              <paper-item>4XL</paper-item>
-                              <paper-item>Other</paper-item>
-                            </paper-menu>
-                          </paper-menu-button>
-                          <small>sizes</small>
+                          <paper-icon-button icon="shopping-basket" on-tap="_openDialog"></paper-icon-button>
+                          <small>browse</small>
 
                         </div>
 
+                        
+                        <template is="dom-repeat" items="{{lineItem.brand_style_color}}">
                           <div class$="col [[item.col]]">
-                            <template is="dom-if" if="[[item.on_tap]]">
-                              <paper-input name="[[item.key]]" label="[[item.label]]" value="{{item.value}}" readonly$="[[item.readonly]]" on-tap="_openDialog"></paper-input>
-                            </template>
-                            <template is="dom-if" if="[[!item.on_tap]]">
-                              <paper-input name="[[item.key]]" label="[[item.label]]" value="{{item.value}}" readonly$="[[item.readonly]]"></paper-input>
-                            </template>
+                           
+                            <paper-input name="[[item.key]]" label="[[item.label]]" value="{{item.value}}"></paper-input>
+                     
+                    
 
                           </div>
+                        </template>
                         <div class="col s2">
-                          <paper-fab mini on-tap="_removeLineItemRow" icon="remove" class="custom"></paper-fab>
+      
+                          <paper-menu-button ignore-select>
+                            <paper-icon-button icon="add" class="dropdown-trigger"></paper-icon-button>
+                            <paper-menu class="dropdown-content" selected-values="{{lineItem.selected_sizes}}" multi>
+                              <template is="dom-repeat" items="[[lineItem.apparel_sizes]]">
+                                <paper-item>[[item]]</paper-item>
+                              </template>
+                              
+                            </paper-menu>
+                          </paper-menu-button>
+                          <small>select sizes</small>
+
+                        </div>
+
+                        <template is="dom-if" if="[[lineItem.line_total]]">
+                          <div class$="col [[lineItem.line_total.col]]">
+                            <paper-input name="[[lineItem.line_total.key]]" label="[[lineItem.line_total.label]]" value="{{lineItem.line_total.value}}" readonly="true"></paper-input>
+                          </div>
+                        </template>
+
+                        <div class="col s2">
+                          <paper-icon-button icon="remove" on-tap="_removeLineItemRow"></paper-icon-button>
+                          <small>remove</small>
                           <paper-tooltip>Remove Textile</paper-tooltip>
                         </div>
                       </div>
@@ -278,7 +296,7 @@
                   </template>
                 </div>
                 
-
+              </div>
               </template>
              
 
@@ -416,7 +434,7 @@
         notify: true,
         observer: '_orderObserver',
         value: function() {
-          return orderModel;
+          return quoteModel;
         }
       },
       orderID: {
@@ -428,6 +446,18 @@
           }
           return window.location.hash.replace(/#/,'');
         }
+      },
+      orderService: {
+        type: Object,
+        notify: true,
+        value: function(){
+          return {name: '', value: -1};
+        }
+      },
+      sizeItems: {
+        type: Array,
+        notify: true,
+        observer: '_sizeItemsChanged'
       },
       dateNeeded: {
         type: Date,
@@ -455,11 +485,17 @@
     },
     _serviceSelected: function(e){
       // this.push('order.services', {name: this.services[e.target.selected].name, value: e.target.selected });
-      console.log('e.model.orderService',e.model.orderService);
+      console.log('e.target.selected:',e.target.selected);
       e.model.set('orderService', {name: this.services[e.target.selected].name, value:  e.target.selected});
+      if(e.target.selected == 0 && this.order.line_items.items.length == 0){
+        this._addLineItemRow();
+      }
     },
     _isApparelService: function(orderService){
       return orderService.name.match(/apparel/i); 
+    },
+    _sizeItemsChanged: function(){
+      console.log('_sizeItemsChanged this.sizeItems:',this.sizeItems);
     },
     _openDatePicker: function(e){
       console.log('_openDatePicker');
@@ -470,6 +506,7 @@
       this.push('order.services', {name: '', value: undefined });
     },
     _removeService: function(e){
+      console.log('removeService idx: ',this.order.services.indexOf(e.model.orderService));
       this.splice('order.services', this.order.services.indexOf(e.model.orderService), 1);
     },
     _addServiceButtonText: function(_order_services){
@@ -481,9 +518,22 @@
     },
     _orderObserver: function(_order){
       try{
-        _.each(_order.line_items.items, function(item){
-          _.where(item, {key: 'line_total'})[0].value = _.reduce(_.where(item, {sum: true}), function(memo, v){ return memo + (v.value != undefined && v.value != '' ? parseInt(v.value) : 0); }, 0);
-        });
+        console.log('_order:',_order);
+        // if(_order.line_items.selected_sizes.length == 0){
+        //   this.set('order.line_items.size_quantity', []);
+        //   this.set('order.line_total', undefined);
+        // }else{
+        //   // this.set('order.line_items.sizes', []);
+        //   // quoteModel.apparel_size_proto
+        //   this.set('order.line_total', quoteModel.line_item_apparel_total_proto);
+        // }
+
+        // var size_proto = quoteModel.apparel_size_quantity_proto;
+        //this.push('order.sizes', size_proto)
+
+        // _.each(_order.line_items.sizes, function(item){
+        //   _.where(item, {key: 'line_total'})[0].value = _.reduce(_.where(item, {sum: true}), function(memo, v){ return memo + (v.value != undefined && v.value != '' ? parseInt(v.value) : 0); }, 0);
+        // });
       }catch(err){
         //o noz!
         console.log('o noz! _orderObserver caught err:',err);
@@ -499,22 +549,25 @@
     _isCheckbox: function(type){
       return type == 'checkbox';
     },
-    _addLineItemRow: function(e){
-      //orderModel.line_items.items[0]
-      this.push('order.line_items.items',orderModel.line_item_proto); 
+    _addLineItemRow: function(){
+      var _li_proto = quoteModel.line_item_apparel_proto;
+      _li_proto.service = this.orderService;
+      this.push('order.line_items.items',_li_proto); 
+      //this.push('order.line_items.items',quoteModel.line_item_apparel_total_proto);
     },
     _removeLineItemRow: function(e){
       // this.splice(path, index, removeCount, [item1, ..., itemN])
-      this.splice('order.line_items.items', this.order.line_items.items.indexOf(e.model.item), 1);
+      console.log('removeService idx: ',this.order.line_items.items.indexOf(e.model.lineItem) );
+      this.splice('order.line_items.items', this.order.line_items.items.indexOf(e.model.lineItem), 1);
     },
     _addColorMeshPrint: function(e){
       //ugh, RTFM: https://www.polymer-project.org/1.0/docs/devguide/data-system#paths
       //An index, for example, "myArray.1" indicates the array item at position 1.
       //An opaque key, prefixed with the pound sign (#), for example, "myArray.#1" indicates the array item with the key "1".
-      this.push('order.graphic.items.'+e.model.index+'.color_mesh_print', orderModel.graphic.items[0].color_mesh_print[0]);
+      this.push('order.graphic.items.'+e.model.index+'.color_mesh_print', quoteModel.graphic.items[0].color_mesh_print[0]);
     },
     _addNewGraphic: function(e){
-      this.push('order.graphic.items', orderModel.graphic.items[0]);
+      this.push('order.graphic.items', quoteModel.graphic.items[0]);
     },
     _openDialog: function(e){
       this.$.scrolling.open();
@@ -531,7 +584,7 @@
     },
     ready: function(){
 
-      console.log('orderModel:',orderModel);
+      console.log('quoteModel:',quoteModel);
 
       console.log('this.order',this.order);
 

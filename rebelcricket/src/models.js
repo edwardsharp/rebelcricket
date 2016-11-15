@@ -1,3 +1,74 @@
+var quoteModel = {
+  internal: {
+    label: 'INTERNAL',
+    items: [
+      {key: 'estimate_number', label: 'estimate #', type: 'text', col: 's4 m2'},
+      {key: 'invoice_number', label: 'invoice#', type: 'text', col: 's4 m6'},
+      {key: 'purchase_order_number', label: 'PURCHASE ORDER #', type: 'text', col: 's6 m4'},
+      {key: 'todays_date', label: 'TODAY\'S DATE', value: _now(), type: 'text', col: 's12'},
+      {key: 'in_hands_date', label: 'IN-HANDS DATE', type: 'text', col: 's12'}
+    ]
+  },
+  job: {
+    label: 'JOB',
+    items: [
+      {key: 'job_name', label: 'JOB', type: 'text', col: 's8'},
+      {key: 'from_po', label: 'From P.O.#', type: 'text', col: 's4'},
+      {key: 'art_notes', label: 'ART NOTES', type: 'textarea', col: 's12', rows: 4},
+      {key: 'printers_notes', label: 'Printer\'s Notes', type: 'textarea', col: 's12', rows: 2}
+    ]
+  },
+  services: [],
+  notes: '',
+  need_by_date: false,
+  date_needed: '',
+  client_contact_information: {
+    label: 'CONTACT INFORMATION',
+    items: [
+      {key: 'client_name', label: 'Name', type: 'text', col: 's12'},
+      {key: 'client_phone', label: 'Phone', type: 'text', col: 's12'},
+      {key: 'client_email', label: 'Email', type: 'text', col: 's12'},
+      {key: 'client_org', label: 'Company / Org / Band', type: 'text', col: 's12'}
+    ]
+  },
+  job_completion_and_shipping: {
+    label: 'COMPLETION & SHIPPING INSTRUCTIONS',  
+    items: [
+      {key: 'call_when_complete', label: 'Call when complete', type: 'checkbox', value: false, col: 's6'},
+      {key: 'will_call', label: 'Will Call', type: 'checkbox', value: false, col: 's3'},
+      {key: 'ship_via', label: 'Ship', type: 'checkbox', value: false, col: 's3'},
+      {key: 'ship_via_txt', label: 'Ship Via', type: 'text', col: 's6'},
+      {key: 'ship_by_date', label: 'Ship by date', type: 'text', col: 's6'},
+      {key: 'ship_to', label: 'Ship to', type: 'textarea', col: 's12', rows: 3}
+    ]
+  },
+  line_item_apparel_proto: {
+    service_type: undefined,
+    brand_style_color: [
+      {key: 'brand', label: 'BRAND', type: 'text', col: 's4 m3 l2'},
+      {key: 'style', label: 'STYLE', type: 'text', col: 's4 m3 l2'},
+      {key: 'color', label: 'COLOR', type: 'text', col: 's4 m3 l2'},
+    ],
+    selected_sizes: [],
+    size_quantity: [],
+    apparel_sizes: ['xs', 'sm', 'md', 'l', 'xl', '2xl', '3xl', '4xl']
+  },
+  line_item_apparel_total_proto: {
+    line_total: {key: 'line_total', label: 'TOTAL', type: 'number', col: 's4 m3 l2'}
+  },
+  apparel_size_quantity_proto: {key: '', label: '', type: 'number', col: 's3 m2 l1', sum: true},
+  
+  line_items: {
+    label: 'LINE ITEMS',
+    items: []
+  },
+  graphic: {
+    label: 'GRAPHICS',
+    items: []
+  }
+}
+
+
 var orderModel = {
   header: {
     label0: 'REBEL CRICKET SCREEN PRINTS',
