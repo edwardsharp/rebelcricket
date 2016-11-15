@@ -248,49 +248,52 @@
 
                         </div>
 
-                        
                         <template is="dom-repeat" items="{{lineItem.brand_style_color}}">
                           <div class$="col [[item.col]]">
-                           
                             <paper-input name="[[item.key]]" label="[[item.label]]" value="{{item.value}}"></paper-input>
-                     
-                    
-
                           </div>
                         </template>
+
                         <div class="col s2">
-      
                           <paper-menu-button ignore-select>
                             <paper-icon-button icon="add" class="dropdown-trigger"></paper-icon-button>
                             <paper-menu class="dropdown-content" selected-values="{{lineItem.selected_sizes}}" multi>
                               <template is="dom-repeat" items="[[lineItem.apparel_sizes]]">
                                 <paper-item>[[item]]</paper-item>
                               </template>
-                              
                             </paper-menu>
                           </paper-menu-button>
                           <small>select sizes</small>
-
                         </div>
-
-                        <template is="dom-if" if="[[lineItem.line_total]]">
-                          <div class$="col [[lineItem.line_total.col]]">
-                            <paper-input name="[[lineItem.line_total.key]]" label="[[lineItem.line_total.label]]" value="{{lineItem.line_total.value}}" readonly="true"></paper-input>
-                          </div>
-                        </template>
-
+                        
                         <div class="col s2">
                           <paper-icon-button icon="remove" on-tap="_removeLineItemRow"></paper-icon-button>
                           <small>remove</small>
                           <paper-tooltip>Remove Textile</paper-tooltip>
                         </div>
+
+                        <div class="col s12">
+                          <template is="dom-repeat" items="{{lineItem.size_quantity}}">
+                            <div class$="col [[item.col]]">
+                              <paper-input name="[[item.key]]" label="[[item.label]]" value="{{item.value}}"></paper-input>
+                            </div>
+                          </template>
+
+                          <template is="dom-if" if="[[lineItem.line_total]]">
+                            <div class$="col [[lineItem.line_total.col]]">
+                              <paper-input name="[[lineItem.line_total.key]]" label="[[lineItem.line_total.label]]" value="{{lineItem.line_total.value}}" readonly="true"></paper-input>
+                            </div>
+                          </template>
+
+                        </div>
                       </div>
+
                     </template>
                     <div class="col s12 center">
-        <!--               <paper-button class="custom" on-tap="_addLineItemRow" raised>&plus;</paper-button> -->
+        <!--               <paper-button class="custom" on-tap="_addApparelLineItemRow" raised>&plus;</paper-button> -->
                      
     
-                        <paper-button class="custom" on-tap="_addLineItemRow">Add another textile</paper-button>
+                        <paper-button class="custom" on-tap="_addApparelLineItemRow">Add another textile</paper-button>
                     </div>
 
                   </template>
@@ -488,7 +491,7 @@
       console.log('e.target.selected:',e.target.selected);
       e.model.set('orderService', {name: this.services[e.target.selected].name, value:  e.target.selected});
       if(e.target.selected == 0 && this.order.line_items.items.length == 0){
-        this._addLineItemRow();
+        this._addApparelLineItemRow();
       }
     },
     _isApparelService: function(orderService){
@@ -518,7 +521,38 @@
     },
     _orderObserver: function(_order){
       try{
-        console.log('_order:',_order);
+        console.log('_orderObserver, _order:',_order);
+
+        _.each(_order.line_items.items, function(item){
+          if(item.service_type == 'Apparel' && item.selected_sizes.length != item.size_quantity.length){
+            console.log('different sizes selected, need to adjust .apparel_sizes!');
+            var _sizes = _.map(item.selected_sizes, function(size){return item.apparel_sizes[size]; });
+            console.log('have sizes:', _sizes );
+
+            _size_quantity = [];
+            _.each(_sizes, function(size){
+              if(_.where(item.size_quantity, {key: size}).length > 0){
+                console.log('oh, have it, pushing: ',_.where(item.size_quantity, {key: size}));
+                _size_quantity.push(_.where(item.size_quantity, {key: size})[0]);
+              }else{
+                var _size_proto = quoteModel.apparel_size_quantity_proto;
+                _size_proto.key = size;
+                _size_proto.label = size;
+                _size_quantity.push(_size_proto);
+              }
+            });
+            console.log('setting item.size_quantity to _size_quantity:',_size_quantity);
+            if(_size_quantity.length > 0){
+              item.line_total = quoteModel.line_item_apparel_total_proto.line_total;
+            }else{
+              item.line_total = undefined;
+            }
+            item.size_quantity = _size_quantity;
+            //  apparel_size_quantity_proto: {key: '', label: '', type: 'number', col: 's3 m2 l1', sum: true},
+
+            //quoteModel.apparel_size_quantity_proto
+          }
+        });
         // if(_order.line_items.selected_sizes.length == 0){
         //   this.set('order.line_items.size_quantity', []);
         //   this.set('order.line_total', undefined);
@@ -549,9 +583,8 @@
     _isCheckbox: function(type){
       return type == 'checkbox';
     },
-    _addLineItemRow: function(){
+    _addApparelLineItemRow: function(){
       var _li_proto = quoteModel.line_item_apparel_proto;
-      _li_proto.service = this.orderService;
       this.push('order.line_items.items',_li_proto); 
       //this.push('order.line_items.items',quoteModel.line_item_apparel_total_proto);
     },

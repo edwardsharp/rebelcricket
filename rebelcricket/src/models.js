@@ -43,7 +43,7 @@ var quoteModel = {
     ]
   },
   line_item_apparel_proto: {
-    service_type: undefined,
+    service_type: 'Apparel',
     brand_style_color: [
       {key: 'brand', label: 'BRAND', type: 'text', col: 's4 m3 l2'},
       {key: 'style', label: 'STYLE', type: 'text', col: 's4 m3 l2'},
@@ -51,12 +51,12 @@ var quoteModel = {
     ],
     selected_sizes: [],
     size_quantity: [],
-    apparel_sizes: ['xs', 'sm', 'md', 'l', 'xl', '2xl', '3xl', '4xl']
+    apparel_sizes: ['XS', 'SM', 'MD', 'L', 'XL', '2XL', '3XL', '4XL']
   },
   line_item_apparel_total_proto: {
-    line_total: {key: 'line_total', label: 'TOTAL', type: 'number', col: 's4 m3 l2'}
+    line_total: {key: 'line_total', label: 'TOTAL', type: 'number', col: 's3 m2'}
   },
-  apparel_size_quantity_proto: {key: '', label: '', type: 'number', col: 's3 m2 l1', sum: true},
+  apparel_size_quantity_proto: {key: '', label: '', type: 'number', col: 's3 m2', sum: true},
   
   line_items: {
     label: 'LINE ITEMS',
