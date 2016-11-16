@@ -269,13 +269,14 @@
                           <div class="col s12">
                             <template is="dom-repeat" items="{{lineItem.size_quantity}}">
                               <div class$="col [[item.col]]">
-                                <paper-input name="[[item.key]]" label="[[item.label]]" value="{{item.value}}"></paper-input>
+                                <paper-input name="[[item.key]]" label="[[item.label]]" value="{{item.value}}"></paper-input><small>[[item.total]]</small>
                               </div>
                             </template>
 
                             <template is="dom-if" if="[[lineItem.line_total]]">
                               <div class$="col [[lineItem.line_total.col]]">
                                 <paper-input name="[[lineItem.line_total.key]]" label="[[lineItem.line_total.label]]" value="{{lineItem.line_total.value}}" readonly="true"></paper-input>
+                                <small>$[[lineItem.line_total.total]]</small>
                               </div>
                             </template>
 
@@ -522,13 +523,15 @@
               // console.log('have sizes:', _sizes );
 
               _size_quantity = [];
-              _.each(_sizes, function(size){
+              _.each(_sizes, function(size,idx){
                 if(_.where(item.size_quantity, {key: size}).length > 0){
                   _size_quantity.push(_.where(item.size_quantity, {key: size})[0]);
                 }else{
                   var _size_proto = quoteModel.apparel_size_quantity_proto;
                   _size_proto.key = size;
                   _size_proto.label = size;
+                  console.log('!!!!!!!!!!!!! setting price total to:',item.prices[idx]);
+                  _size_proto.total = item.prices[idx];
                   _size_quantity.push(_size_proto);
                 }
               });
@@ -542,6 +545,15 @@
 
             if(item.line_total != undefined){
               item.line_total.value = _.reduce(_.where(item.size_quantity, {sum: true}), function(memo, v){ return memo + (v.value != undefined && v.value != '' ? parseInt(v.value) : 0); }, 0);
+              try{
+                item.line_total.total = _.reduce(_.where(item.size_quantity, {sum: true}), function(memo, v){ console.log('parseFloat(v.total.replace(/\$/)', v.total.replace(/\$/,'')); console.log('v.value:',v.value);return memo + (v.total != undefined && !isNaN(parseFloat(v.total.replace(/\$/,''))) ? (v.value == undefined ? 0 : v.value) * parseFloat(v.total.replace(/\$/,'')) : 0); }, 0).toFixed(2);
+
+                console.log('zomg, item.line_total.total:',item.line_total.total);
+
+              }catch(err){
+                //o noz!
+              }
+              
             }
             
 
