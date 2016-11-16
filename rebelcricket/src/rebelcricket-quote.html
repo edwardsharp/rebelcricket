@@ -231,6 +231,11 @@
                   </div>
 
                   <div class="serviceItems col s12 center">
+                    <template is="dom-if" if="[[_isOtherService(orderService)]]">
+                      <paper-textarea label="Notes" value="{{order.orderServiceNotes}}"></paper-textarea>
+                      <small>Please describe</small>
+                    </template>
+
                     <template is="dom-if" if="[[_isApparelService(orderService)]]">
                       <template is="dom-repeat" items="{{order.line_items.items}}" as="lineItem">
                         <div class="col s12 apparelRow">
@@ -481,6 +486,9 @@
     },
     _isApparelService: function(orderService){
       return orderService.name.match(/apparel/i); 
+    },
+    _isOtherService: function(orderService){
+      return orderService.name != undefined && orderService.name != '' && !orderService.name.match(/apparel/i);
     },
     _sizeItemsChanged: function(){
       console.log('_sizeItemsChanged this.sizeItems:',this.sizeItems);
