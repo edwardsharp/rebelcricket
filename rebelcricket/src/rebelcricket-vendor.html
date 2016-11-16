@@ -117,6 +117,12 @@
       margin-right: 1em;
     }
 
+    .buttonz {
+      position: fixed;
+      bottom: 20px;
+
+    }
+
     img {
       float: left;
       max-height: 200px;
@@ -196,7 +202,7 @@
         <div class="detail-content row">
           
           <div class="col s2 back-btn">
-            <paper-button class="custom" on-tap="_exitDetailViewWithSelection">back</paper-button>
+            <paper-button class="custom" on-tap="_exitDetailViewWithoutSelection">back</paper-button>
           </div>
 
           <div class="col s8 center">
@@ -250,8 +256,7 @@
 
         </div>
 
-        <div class="row center">
-
+        <div class="row center buttonz">
           <paper-button class="custom" on-tap="_exitDetailViewWithSelection">Add Selected Colors to Quote</paper-button>
         </div>
       </template>
@@ -363,16 +368,15 @@
           style: _style
         };
         this.notifyPath('vendorItem.product');
-      }, 
+      },
+      _exitDetailViewWithoutSelection: function(e){
+        this.set('selectedItem', undefined);
+        this.set('isDetailView', false);
+      },
       _exitDetailViewWithSelection: function(e){
         this.set('selectedItem', undefined);
         this.set('isDetailView', false);
-        console.log('_exitDetailViewWithSelection e:',e);
         this.set('vendorItem.exit', true);
-        //_.where(temp1.brand_style_color, {key: 'brand'})[0]['value']='foobar'
-        //_.where(temp1.brand_style_color, {key: 'style'})[0]['value']='foobar'
-        //_.where(temp1.brand_style_color, {key: 'color'})[0]['value']='foobar'
-
       },
       _colorPricesForName: function(_items, _name){
         var retArr = [];

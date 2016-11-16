@@ -169,10 +169,10 @@
       <paper-dialog-scrollable>
         <rebelcricket-vendor line-item="{{lineItemForVendor}}" order-id="{{orderID}}"></rebelcricket-vendor>
       </paper-dialog-scrollable>
-      <div class="buttons">
+      <!-- <div class="buttons">
         <paper-button class="custom">I don't know</paper-button>
         <paper-button class="custom">Something else</paper-button>
-      </div>
+      </div> -->
     </paper-dialog>
 
     <div class="">
@@ -540,7 +540,10 @@
               item.size_quantity = _size_quantity;
             } // if item.selected_sizes.length != item.size_quantity.length
 
-            item.line_total.value = _.reduce(_.where(item.size_quantity, {sum: true}), function(memo, v){ return memo + (v.value != undefined && v.value != '' ? parseInt(v.value) : 0); }, 0);
+            if(item.line_total != undefined){
+              item.line_total.value = _.reduce(_.where(item.size_quantity, {sum: true}), function(memo, v){ return memo + (v.value != undefined && v.value != '' ? parseInt(v.value) : 0); }, 0);
+            }
+            
 
           }// if item.service_type == 'Apparel'
         });
@@ -601,22 +604,38 @@
         console.log('QUOTE vendorItem exit!!! _vendorItem.exit:',_vendorItem.exit);
         this.$.scrolling.close();
 
-        var _lineItem = this.order.line_items.items[this.lineItemIdxForVendor]; 
+        if(Object.keys(_vendorItem.colorsSelected).length > 0 && this.order.line_items.items[this.lineItemIdxForVendor] != undefined){
+          
+          var _lineItems = this.order.line_items.items;
+          var _lineItem = this.order.line_items.items[this.lineItemIdxForVendor]; 
+          _lineItems.splice(this.lineItemIdxForVendor, 1);
 
-        console.log('quote lineItemIdxForVendor:',this.lineItemIdxForVendor,' _lineItem:',_lineItem);
-        _lineItem.brand_style_color[0].value = _vendorItem.product.brand;
-        _lineItem.brand_style_color[1].value = _vendorItem.product.style;
-        _lineItem.brand_style_color[2].value = Object.keys(_vendorItem.colorsSelected).join(", ");
+          var _this = this;
+          _.each(_vendorItem.colorsSelected, function(v,k){
+            var _li = JSON.parse(JSON.stringify(_lineItem)); //eek.
+            _li.brand_style_color[0].value = _vendorItem.product.brand;
+            _li.brand_style_color[1].value = _vendorItem.product.style;
+            _li.brand_style_color[2].value = k;
+            _li.apparel_sizes = v.sizes;
+            _li.prices = v.prices;
+            console.log('quote k:',k,', gonna push _li',_li);
+            _lineItems.push(_li);
+      
+          });
 
-        // this.set('lineItemForVendor.brand_style_color.0.value',  = _vendorItem.brand);
-        // this.set('lineItemForVendor.brand_style_color.1.value', _vendorItem.style);
-        // this.set('lineItemForVendor.brand_style_color.2.value', Object.keys(_vendorItem.colorsSelected).join(", "));
-
-        this.set('order.line_items.items.'+this.lineItemIdxForVendor, _lineItem);
+          this.set('order.line_items.items', _lineItems);
+          
+        }
+        
       }
     },
     _lineItemForVendorObserver: function(_lineItem){
       console.log('QUOTE _lineItemForVendorObserver _lineItem:',_lineItem);
+    },
+    _priceForSize: function(_liIdx, _sizeIdx){
+      console.log('_priceForSize _liIdx:',_liIdx, ' _sizeIdx:',_sizeIdx,' and do we have it?:',this.order.line_items.items[_liIdx].prices[_sizeIdx]);
+
+      return this.order.line_items.items[_liIdx].prices[_sizeIdx]; 
     },
     ready: function(){
 
