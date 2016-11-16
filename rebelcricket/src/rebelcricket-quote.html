@@ -129,7 +129,7 @@
         margin-top: 10px;
       }
 
-      .apparelRow {
+      .apparelRow, .serviceGroup {
         border-bottom: thin dotted #ccc;
       }
 
@@ -219,87 +219,86 @@
               
               <template is="dom-repeat" items="{{order.services}}" as="orderService">
                 <div class="row group">
-                <div class="col s10 center">
-                  <paper-dropdown-menu label="Service" on-iron-select="_serviceSelected">
-                    <paper-listbox class="dropdown-content" selected="[[orderService.value]]">
-                      <template is="dom-repeat" items="{{services}}">
-                        <paper-item value="[[item.value]]">[[item.name]]</paper-item>
-                      </template>
-                    </paper-listbox>
-                  </paper-dropdown-menu>
-                </div>
-                <div class="col s2">
-                  <paper-icon-button icon="remove" on-tap="_removeService"></paper-icon-button>
-                  <small>remove</small>
-                  <paper-tooltip>Remove Service</paper-tooltip>
+                  <div class="row serviceGroup">
+                    <div class="col s10 center">
+                      <paper-dropdown-menu label="Service" on-iron-select="_serviceSelected">
+                        <paper-listbox class="dropdown-content" selected="[[orderService.value]]">
+                          <template is="dom-repeat" items="{{services}}">
+                            <paper-item value="[[item.value]]" disabled$=[[_serviceNeedsDisabled(item.name)]]>[[item.name]]</paper-item>
+                          </template>
+                        </paper-listbox>
+                      </paper-dropdown-menu>
+                    </div>
+                    <div class="col s2">
+                      <paper-icon-button icon="remove" on-tap="_removeService"></paper-icon-button>
+                      <small>remove</small>
+                      <paper-tooltip>Remove Service</paper-tooltip>
 
-                </div>
-              
+                    </div>
+                  </div>
 
-                <div class="serviceItems col s12 center">
-                  <template is="dom-if" if="[[_isApparelService(orderService)]]">
-                    <template is="dom-repeat" items="{{order.line_items.items}}" as="lineItem">
-                      <div class="col s12 apparelRow">
-     
-                        <div class="col s2">
-      
-                          <paper-icon-button icon="shopping-basket" on-tap="_openDialog"></paper-icon-button>
-                          <small>browse</small>
+                  <div class="serviceItems col s12 center">
+                    <template is="dom-if" if="[[_isApparelService(orderService)]]">
+                      <template is="dom-repeat" items="{{order.line_items.items}}" as="lineItem">
+                        <div class="col s12 apparelRow">
+       
+                          <div class="col s2">
+        
+                            <paper-icon-button icon="shopping-basket" on-tap="_openDialog"></paper-icon-button>
+                            <small>browse</small>
 
-                        </div>
-
-                        <template is="dom-repeat" items="{{lineItem.brand_style_color}}">
-                          <div class$="col [[item.col]]">
-                            <paper-input name="[[item.key]]" label="[[item.label]]" value="{{item.value}}"></paper-input>
                           </div>
-                        </template>
 
-                        <div class="col s2">
-                          <paper-menu-button ignore-select>
-                            <paper-icon-button icon="add" class="dropdown-trigger"></paper-icon-button>
-                            <paper-menu class="dropdown-content" selected-values="{{lineItem.selected_sizes}}" multi>
-                              <template is="dom-repeat" items="[[lineItem.apparel_sizes]]">
-                                <paper-item>[[item]]</paper-item>
-                              </template>
-                            </paper-menu>
-                          </paper-menu-button>
-                          <small>select sizes</small>
-                        </div>
-                        
-                        <div class="col s2">
-                          <paper-icon-button icon="remove" on-tap="_removeLineItemRow"></paper-icon-button>
-                          <small>remove</small>
-                          <paper-tooltip>Remove Textile</paper-tooltip>
-                        </div>
-
-                        <div class="col s12">
-                          <template is="dom-repeat" items="{{lineItem.size_quantity}}">
+                          <template is="dom-repeat" items="{{lineItem.brand_style_color}}">
                             <div class$="col [[item.col]]">
                               <paper-input name="[[item.key]]" label="[[item.label]]" value="{{item.value}}"></paper-input>
                             </div>
                           </template>
 
-                          <template is="dom-if" if="[[lineItem.line_total]]">
-                            <div class$="col [[lineItem.line_total.col]]">
-                              <paper-input name="[[lineItem.line_total.key]]" label="[[lineItem.line_total.label]]" value="{{lineItem.line_total.value}}" readonly="true"></paper-input>
-                            </div>
-                          </template>
+                          <div class="col s2">
+                            <paper-menu-button ignore-select>
+                              <paper-icon-button icon="add" class="dropdown-trigger"></paper-icon-button>
+                              <paper-menu class="dropdown-content" selected-values="{{lineItem.selected_sizes}}" multi>
+                                <template is="dom-repeat" items="[[lineItem.apparel_sizes]]">
+                                  <paper-item>[[item]]</paper-item>
+                                </template>
+                              </paper-menu>
+                            </paper-menu-button>
+                            <small>select sizes</small>
+                          </div>
+                          
+                          <div class="col s2">
+                            <paper-icon-button icon="remove" on-tap="_removeLineItemRow"></paper-icon-button>
+                            <small>remove</small>
+                            <paper-tooltip>Remove Textile</paper-tooltip>
+                          </div>
 
+                          <div class="col s12">
+                            <template is="dom-repeat" items="{{lineItem.size_quantity}}">
+                              <div class$="col [[item.col]]">
+                                <paper-input name="[[item.key]]" label="[[item.label]]" value="{{item.value}}"></paper-input>
+                              </div>
+                            </template>
+
+                            <template is="dom-if" if="[[lineItem.line_total]]">
+                              <div class$="col [[lineItem.line_total.col]]">
+                                <paper-input name="[[lineItem.line_total.key]]" label="[[lineItem.line_total.label]]" value="{{lineItem.line_total.value}}" readonly="true"></paper-input>
+                              </div>
+                            </template>
+
+                          </div>
                         </div>
+
+                      </template>
+                      
+                      <div class="col s12 center">
+                        <paper-button class="custom" on-tap="_addApparelLineItemRow">Add another textile</paper-button>
                       </div>
 
                     </template>
-                    <div class="col s12 center">
-        <!--               <paper-button class="custom" on-tap="_addApparelLineItemRow" raised>&plus;</paper-button> -->
-                     
-    
-                        <paper-button class="custom" on-tap="_addApparelLineItemRow">Add another textile</paper-button>
-                    </div>
-
-                  </template>
+                  </div>
+                  
                 </div>
-                
-              </div>
               </template>
              
 
@@ -492,6 +491,14 @@
       e.model.set('orderService', {name: this.services[e.target.selected].name, value:  e.target.selected});
       if(e.target.selected == 0 && this.order.line_items.items.length == 0){
         this._addApparelLineItemRow();
+      }
+    },
+    _serviceNeedsDisabled: function(orderService){
+      console.log('_serviceNeedsDisabled orderService:',orderService);
+      if(_.where(this.order.services, {name: orderService}).length > 0){
+        return true;
+      }else{
+        return false;
       }
     },
     _isApparelService: function(orderService){
