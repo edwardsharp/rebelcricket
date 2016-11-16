@@ -403,7 +403,7 @@
           //   sizes: _.map(_clrPrices, function(item){ return item.size; })
           // });
         }else{
-          this.vendorItem.colorsSelected[e.model.item.name] = undefined;
+          delete this.vendorItem.colorsSelected[e.model.item.name];
           // this.set('vendorItem.colorsSelected.'+e.model.item.name, undefined);
         }
         console.log('vendor vendorItem:',this.vendorItem);
