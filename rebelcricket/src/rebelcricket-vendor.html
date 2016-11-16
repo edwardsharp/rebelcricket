@@ -9,9 +9,11 @@
 <link rel="import" href="../bower_components/paper-item/paper-item.html">
 <link rel="import" href="../bower_components/paper-listbox/paper-listbox.html">
 <link rel="import" href="../bower_components/paper-dropdown-menu/paper-dropdown-menu.html">
+<link rel="import" href="../bower_components/paper-checkbox/paper-checkbox.html">
 
 <link rel="import" href="../bower_components/paper-button/paper-button.html">
 <link rel="import" href="../bower_components/iron-collapse/iron-collapse.html">
+<link rel="import" href="../bower_components/paper-input/paper-input.html">
 
 <link rel="import" href="shared-styles.html">
 
@@ -23,9 +25,33 @@
 
     <style is="custom-style" include="shared-styles">
 
-
-    .container {
+    paper-checkbox.red {
+      --paper-checkbox-checked-color: var(--paper-red-500);
+      --paper-checkbox-checked-ink-color: var(--paper-red-500);
+      --paper-checkbox-unchecked-color: var(--paper-red-900);
+      --paper-checkbox-unchecked-ink-color: var(--paper-red-900);
+      --paper-checkbox-label-color: var(--paper-red-500);
+      
+      --paper-checkbox-label-spacing: 0;
+     
+      --paper-checkbox-vertical-align: middle;
+      word-wrap: break-word;
       width: 100%;
+      padding-top: 0.5em;
+      padding-bottom: 0.5em;
+
+    }
+
+    paper-checkbox .subtitle {
+      background-color: rgba(255,255,255,0.8);
+      color: black;
+      margin-left: 0.5em;
+      padding-left: 0.5em;
+      padding-right: 0.5em;
+    }
+
+    .back-btn {
+      margin-top: 10px;
     }
 
     .left{
@@ -36,6 +62,7 @@
       overflow-y: scroll;
       padding: 1em;
     }
+
 
 
     .heading {
@@ -77,17 +104,17 @@
       border-color: red;
     }
 
-    .exit-detail{
-      float:left;
-      margin-top: 1em;
+    .color-img{
+      margin-top: 8px;
+      margin-bottom: 1em;
+      word-wrap: break-word;
+      -webkit-clip-path: polygon(0% 0%, 95% 0, 100% 50%, 95% 100%, 0% 100%);
+      clip-path: polygon(0% 0%, 95% 0, 100% 50%, 95% 100%, 0% 100%);
     }
 
-    .prod-desc-items {
-      float: left;
-    }
-
-    .colors {
-      float: right;
+    .color-price{
+      display: inline-block;
+      margin-right: 1em;
     }
 
     img {
@@ -108,19 +135,20 @@
       doc-id="companycasual.com"
       data="{{companycasual}}">
     </app-pouchdb-document>
-      
+    
+    <app-pouchdb-document
+      db-name="vendorItem"
+      doc-id="{{orderId}}"
+      data="{{vendorItem}}">
+    </app-pouchdb-document>
 
-    <div class="container">
+    <div class="scrollContainer">
       
       <template is="dom-if" if="[[!companycasual.products_by_sub_item]]">
         Loading items...
       </template>
 
-      <template is="dom-if" if="[[isDetailView]]">
-        <div class="exit-detail">
-          <paper-button class="custom" on-tap="_exitDetailViewWithSelection">back</paper-button>
-        </div>
-      </template>
+      
 
       <template is="dom-if" if="[[!isDetailView]]">
       <div class="row">
@@ -165,33 +193,66 @@
       </template>
 
       <template is="dom-if" if="[[isDetailView]]">
-        <div class="detail-content row center">
+        <div class="detail-content row">
           
-          <h5>[[selectedItem.title]]</h5>
-          <h6>[[selectedItem.items.prod_id]] [[selectedItem.category]] [[selectedItem.sub_item]]</h6>
-
-          <p>[[selectedItem.items.prod_desc_text]]</p>
-
-          <ul class="prod-desc-items">
-            <template is="dom-repeat" items="[[selectedItem.items.prod_desc_items]]">
-              <li>[[item]]</li>
-            </template>
-          </ul>
-
-          <div class="colors">
-            <template is="dom-repeat" items="[[selectedItem.items.colors]]">
-              <div class="color-img">
-                <img src$="[[item.href]]">
-                <small>[[item.name]]</small>
-              </div>
-            </template>
+          <div class="col s2 back-btn">
+            <paper-button class="custom" on-tap="_exitDetailViewWithSelection">back</paper-button>
           </div>
+
+          <div class="col s8 center">
+            <h5>[[selectedItem.title]]</h5>
+            <h6>[[selectedItem.items.prod_id]] [[selectedItem.category]] [[selectedItem.sub_item]]</h6>
+          </div>
+
+          <div class="row">
+            <div class="col s12 m6 center">
+              <p>[[selectedItem.items.prod_desc_text]]</p>
+            </div>
+            <div class="col s12 m6">
+              <ul>
+                <template is="dom-repeat" items="[[selectedItem.items.prod_desc_items]]">
+                  <li>[[item]]</li>
+                </template>
+              </ul>
+            </div>
+
+          </div>
+
+          <div class="row">
+            <div class="col s4 m3 l2">
+             Select Color(s)
+            </div>
+            <div class="col s8 m9 l10">
+              Sizes &amp; Prices
+            </div>
+
+          </div>
+
+          <template is="dom-repeat" items="[[selectedItem.items.colors]]">
+            <div class="row">
+              <div class="col s4 m3 l2 color-img" style$="background-color: none;background: url([[item.href]]);">
+                <paper-checkbox class="red" on-tap="_colorChecked">
+                  <div class="subtitle">
+                    [[item.name]]
+                  </div>
+                </paper-checkbox>
+              </div>
+              <div class="col s8 m9 l10">
+                <template is="dom-repeat" items="[[_colorPricesForName(selectedItem.items, item.name)]]" as="colorPrices">
+                  
+                  <span class="color-price center">[[colorPrices.size]]<br>[[colorPrices.price]]</span>
+                  
+                </template>
+              </div>
+            </div>
+          </template>
+          
 
         </div>
 
         <div class="row center">
 
-          <paper-button class="custom" on-tap="_exitDetailViewWithSelection">Use this</paper-button>
+          <paper-button class="custom" on-tap="_exitDetailViewWithSelection">Add Selected Colors to Quote</paper-button>
         </div>
       </template>
     </div>
@@ -208,6 +269,15 @@
       //   Polymer.AppPouchDBDatabaseBehavior
       // ],
       properties: {
+        lineItem: {
+          type: Object,
+          notify: true,
+          observer: '_lineItemObserver'
+        },
+        orderId: {
+          type: String,
+          notify: true
+        },
         companycasual: {
           type: Object,
           notify: true
@@ -224,6 +294,14 @@
           type: Object,
           notify: true
         },
+        vendorItem: {
+          type: Object,
+          notify: true,
+          observer: '_vendorItemObserver',
+          value: function(){
+            return {};
+          }
+        },
         isDetailView: {
           type: Boolean,
           notify: true,
@@ -231,6 +309,9 @@
             return false;
           }
         }
+      },
+      _lineItemObserver: function(_lineItem){
+        console.log('VENDOR _lineItemObserver _lineItem:',_lineItem);
       },
       _noFilteredProducts: function(){
         console.log('Object.keys(filteredProducts):',Object.keys(filteredProducts));
@@ -275,14 +356,58 @@
         console.log('e.model.product', e.model.product);
         this.set('selectedItem', e.model.product);
         this.set('isDetailView', true);
+        var _style = e.model.product.category + ' ' + e.model.product.sub_item;
+        // this.set('vendorItem', { brand: e.model.product.items.title, style: _style, colorsSelected: {} });
+        this.vendorItem['product'] = { 
+          brand: e.model.product.title, 
+          style: _style
+        };
+        this.notifyPath('vendorItem.product');
       }, 
       _exitDetailViewWithSelection: function(e){
         this.set('selectedItem', undefined);
         this.set('isDetailView', false);
         console.log('_exitDetailViewWithSelection e:',e);
-      }
-      
+        //_.where(temp1.brand_style_color, {key: 'brand'})[0]['value']='foobar'
+        //_.where(temp1.brand_style_color, {key: 'style'})[0]['value']='foobar'
+        //_.where(temp1.brand_style_color, {key: 'color'})[0]['value']='foobar'
 
+      },
+      _colorPricesForName: function(_items, _name){
+        var retArr = [];
+        _.each(_items.color_prices, function(_color_prices){
+          if(_.any(_.flatten(_color_prices[0]), function(item){return item == _name})){
+            retArr = _.map(_color_prices, function(clr_price){ return {size: _.flatten(clr_price)[0], price: _.flatten(clr_price)[1]} });
+            retArr.shift();
+          }
+        });
+        return retArr;
+      },
+      _vendorItemObserver: function(_vendorItem){
+        console.log('VENDOR _vendorItemObserver _vendorItem:',_vendorItem);
+      },
+      _colorChecked: function(e){
+        console.log('_colorChecked e.model.item.name',e.model.item.name,' this.selectedItem:',this.selectedItem);
+        if(e.target.checked){
+          var _clrPrices = this._colorPricesForName(this.selectedItem.items, e.model.item.name);
+          if(this.vendorItem.colorsSelected == undefined){
+            this.vendorItem.colorsSelected = {};
+          }
+          this.vendorItem.colorsSelected[e.model.item.name] = {
+            prices: _.map(_clrPrices, function(item){ return item.price; }), 
+            sizes: _.map(_clrPrices, function(item){ return item.size; })
+          };
+          // this.set('vendorItem.colorsSelected.'+e.model.item.name, {
+          //   prices: _.map(_clrPrices, function(item){ return item.price; }), 
+          //   sizes: _.map(_clrPrices, function(item){ return item.size; })
+          // });
+        }else{
+          this.vendorItem.colorsSelected[e.model.item.name] = undefined;
+          // this.set('vendorItem.colorsSelected.'+e.model.item.name, undefined);
+        }
+        console.log('vendor vendorItem:',this.vendorItem);
+        this.notifyPath('vendorItem.colorsSelected.'+e.model.item.name);
+      }
     });
 
   </script>

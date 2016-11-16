@@ -6,7 +6,6 @@
 <link rel="import" href="../bower_components/app-pouchdb/app-pouchdb-index.html">
 <link rel="import" href="../bower_components/app-pouchdb/app-pouchdb-query.html"> 
 <link rel="import" href="../bower_components/app-pouchdb/app-pouchdb-document.html">
-<!-- <link rel="import" href="../bower_components/app-pouchdb/app-pouchdb-conflict-resolution.html"> -->
 
 <link rel="import" href="../bower_components/paper-toggle-button/paper-toggle-button.html">
 <link rel="import" href="../bower_components/paper-item/paper-item.html">
@@ -32,11 +31,10 @@
 <link rel="import" href="shared-styles.html">
 
 <link rel="import" href="rebelcricket-icons.html">
-<link rel="import" href="rebelcricket-design.html">
 <link rel="import" href="rebelcricket-vendor.html">
 
-<script src="models.js"></script>
 <script src="util.js"></script>
+<script src="models.js"></script>
 <script src="underscore-min.js"></script>
 
 <dom-module id="rebelcricket-quote">
@@ -149,16 +147,6 @@
 
 
     </style>
- <!--    <app-route
-        route="[[route]]"
-        pattern="/:order_id"
-        data="{{routeData}}"></app-route> -->
-
-<!--     <app-pouchdb-document
-      db-name="http://rebelcricket.lacuna.club:5984/models"
-      doc-id="order"
-      data="{{orderModel}}">
-    </app-pouchdb-document> -->
 
     <app-pouchdb-conflict-resolution
       strategy="lastWriteWins">
@@ -170,17 +158,22 @@
       data="{{order}}">
     </app-pouchdb-document>
   
+    <app-pouchdb-document
+      db-name="vendorItem"
+      doc-id="{{orderID}}"
+      data="{{vendorItem}}">
+    </app-pouchdb-document>
     
 
-<paper-dialog id="scrolling">
-  <paper-dialog-scrollable>
-    <rebelcricket-vendor></rebelcricket-vendor>
-  </paper-dialog-scrollable>
-  <div class="buttons">
-    <paper-button class="custom">I don't know</paper-button>
-    <paper-button class="custom">Something else</paper-button>
-  </div>
-</paper-dialog>
+    <paper-dialog id="scrolling">
+      <paper-dialog-scrollable>
+        <rebelcricket-vendor line-item="{{lineItemForVendor}}" order-id="{{orderID}}"></rebelcricket-vendor>
+      </paper-dialog-scrollable>
+      <div class="buttons">
+        <paper-button class="custom">I don't know</paper-button>
+        <paper-button class="custom">Something else</paper-button>
+      </div>
+    </paper-dialog>
 
     <div class="">
      <!--  <header class="center">
@@ -378,33 +371,9 @@
           
       </div>
 
-
-
-         <!--  <paper-dropdown-menu label="Style" on-iron-select="_styleSelected">
-            <paper-listbox class="dropdown-content" selected="0">
-              <paper-item value="crew">Crew</paper-item>
-              <paper-item value="womens_crew">Women's Crew</paper-item>
-              <paper-item value="hoodie">Hoodie</paper-item>
-              <paper-item value="longsleeve">Long Sleeve</paper-item>
-            </paper-listbox>
-          </paper-dropdown-menu> -->
-        <!--   <paper-swatch-picker color="{{designElementColor}}" column-count=4 color-list='["#000000", "#65a5f2", "#83be54", "#f0d551", "#e5943c", "#a96ddb", "#B20000", "#ffffff"]'></paper-swatch-picker> -->
-         
-
-          <!-- <template is="dom-repeat" items="{{designImages}}">
-            <template is="dom-repeat" items="{{_attachmentKeys(item._attachments)}}" as="attachment">
-              <img src="http://rebelcricket.lacuna.club:5984/cats/{{item._id}}/{{ attachment }}" height="50" width="50">
-            </template>
-          </template>
-          <br> -->
-
           
    
     </div>
-
- <!--    <hr>
-    <br> -->
-    <!-- <rebelcricket-design></rebelcricket-design> -->
 
   </template>
 
@@ -429,7 +398,6 @@
             { name: "Other Stuff", value: "other"}
           ];
         }
-
       },
       order: {
         type: Object,
@@ -466,6 +434,16 @@
         notify: true,
         observer: '_orderNeedByDateObserver'
       },
+      lineItemForVendor: {
+        type: Object,
+        notify: true,
+        observer: '_lineItemForVendorObserver'
+      },
+      vendorItem: {
+        type: Object,
+        notify: true,
+        observer: '_vendorItemObserver'
+      },
       now: {
         type: Date,
         notify: true,
@@ -487,19 +465,14 @@
     },
     _serviceSelected: function(e){
       // this.push('order.services', {name: this.services[e.target.selected].name, value: e.target.selected });
-      console.log('e.target.selected:',e.target.selected);
+      // console.log('e.target.selected:',e.target.selected);
       e.model.set('orderService', {name: this.services[e.target.selected].name, value:  e.target.selected});
       if(e.target.selected == 0 && this.order.line_items.items.length == 0){
         this._addApparelLineItemRow();
       }
     },
     _serviceNeedsDisabled: function(orderService){
-      console.log('_serviceNeedsDisabled orderService:',orderService);
-      if(_.where(this.order.services, {name: orderService}).length > 0){
-        return true;
-      }else{
-        return false;
-      }
+      return _.where(this.order.services, {name: orderService}).length > 0;
     },
     _isApparelService: function(orderService){
       return orderService.name.match(/apparel/i); 
@@ -516,8 +489,15 @@
       this.push('order.services', {name: '', value: undefined });
     },
     _removeService: function(e){
+      
+      if(this.order.services[e.model.index].name == 'Apparel'){
+        console.log('REMOVING APPAREL LINE ITEMS! _removeService e.model:',e.model.index);
+        this.set('order.line_items.items', []);
+      }
+
       console.log('removeService idx: ',this.order.services.indexOf(e.model.orderService));
-      this.splice('order.services', this.order.services.indexOf(e.model.orderService), 1);
+      this.splice('order.services', e.model.index, 1);
+
     },
     _addServiceButtonText: function(_order_services){
       if(_order_services && _order_services.length > 0){
@@ -528,7 +508,7 @@
     },
     _orderObserver: function(_order){
       try{
-        // console.log('_orderObserver, _order:',_order);
+        console.log('QUOTE _orderObserver, _order:',_order);
 
         _.each(_order.line_items.items, function(item){
           if(item.service_type == 'Apparel'){
@@ -581,8 +561,8 @@
     },
     _removeLineItemRow: function(e){
       // this.splice(path, index, removeCount, [item1, ..., itemN])
-      console.log('removeService idx: ',this.order.line_items.items.indexOf(e.model.lineItem) );
-      this.splice('order.line_items.items', this.order.line_items.items.indexOf(e.model.lineItem), 1);
+      console.log('removeService idx: ',e.model.index );
+      this.splice('order.line_items.items', e.model.index, 1);
     },
     _addColorMeshPrint: function(e){
       //ugh, RTFM: https://www.polymer-project.org/1.0/docs/devguide/data-system#paths
@@ -594,6 +574,8 @@
       this.push('order.graphic.items', quoteModel.graphic.items[0]);
     },
     _openDialog: function(e){
+      console.log('need to set li, do we have it? e.model.lineItem',e.model.lineItem);
+      this.set('lineItemForVendor', e.model.lineItem);
       this.$.scrolling.open();
     },
     _toggleNeedDate: function(e){ 
@@ -605,6 +587,12 @@
       if(attachments != undefined){
         return Object.keys(attachments);
       }
+    },
+    _vendorItemObserver: function(_vendorItem){
+      console.log('QUOTE _vendorItemObserver _vendorItem:',_vendorItem);
+    },
+    _lineItemForVendorObserver: function(_lineItem){
+      console.log('QUOTE _lineItemForVendorObserver _lineItem:',_lineItem);
     },
     ready: function(){
 
