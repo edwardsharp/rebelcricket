@@ -439,6 +439,10 @@
         notify: true,
         observer: '_lineItemForVendorObserver'
       },
+      lineItemIdxForVendor:{
+        type: Number,
+        notify: true
+      },
       vendorItem: {
         type: Object,
         notify: true,
@@ -576,6 +580,8 @@
     _openDialog: function(e){
       console.log('need to set li, do we have it? e.model.lineItem',e.model.lineItem);
       this.set('lineItemForVendor', e.model.lineItem);
+      this.set('lineItemIdxForVendor', e.model.index);
+      this.set('vendorItem.exit', false);
       this.$.scrolling.open();
     },
     _toggleNeedDate: function(e){ 
@@ -590,6 +596,23 @@
     },
     _vendorItemObserver: function(_vendorItem){
       console.log('QUOTE _vendorItemObserver _vendorItem:',_vendorItem);
+      if(_vendorItem.exit){
+        console.log('QUOTE vendorItem exit!!! _vendorItem.exit:',_vendorItem.exit);
+        this.$.scrolling.close();
+
+        var _lineItem = this.order.line_items.items[this.lineItemIdxForVendor]; 
+
+        console.log('quote lineItemIdxForVendor:',this.lineItemIdxForVendor,' _lineItem:',_lineItem);
+        _lineItem.brand_style_color[0].value = _vendorItem.product.brand;
+        _lineItem.brand_style_color[1].value = _vendorItem.product.style;
+        _lineItem.brand_style_color[2].value = Object.keys(_vendorItem.colorsSelected).join(", ");
+
+        // this.set('lineItemForVendor.brand_style_color.0.value',  = _vendorItem.brand);
+        // this.set('lineItemForVendor.brand_style_color.1.value', _vendorItem.style);
+        // this.set('lineItemForVendor.brand_style_color.2.value', Object.keys(_vendorItem.colorsSelected).join(", "));
+
+        this.set('order.line_items.items.'+this.lineItemIdxForVendor, _lineItem);
+      }
     },
     _lineItemForVendorObserver: function(_lineItem){
       console.log('QUOTE _lineItemForVendorObserver _lineItem:',_lineItem);
