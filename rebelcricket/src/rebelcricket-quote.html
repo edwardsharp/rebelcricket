@@ -521,58 +521,42 @@
     },
     _orderObserver: function(_order){
       try{
-        console.log('_orderObserver, _order:',_order);
+        // console.log('_orderObserver, _order:',_order);
 
         _.each(_order.line_items.items, function(item){
-          if(item.service_type == 'Apparel' && item.selected_sizes.length != item.size_quantity.length){
-            console.log('different sizes selected, need to adjust .apparel_sizes!');
-            var _sizes = _.map(item.selected_sizes, function(size){return item.apparel_sizes[size]; });
-            console.log('have sizes:', _sizes );
+          if(item.service_type == 'Apparel'){
+            if(item.selected_sizes.length != item.size_quantity.length){
+              // console.log('different sizes selected, need to adjust .apparel_sizes!');
+              var _sizes = _.map(item.selected_sizes, function(size){return item.apparel_sizes[size]; });
+              // console.log('have sizes:', _sizes );
 
-            _size_quantity = [];
-            _.each(_sizes, function(size){
-              if(_.where(item.size_quantity, {key: size}).length > 0){
-                console.log('oh, have it, pushing: ',_.where(item.size_quantity, {key: size}));
-                _size_quantity.push(_.where(item.size_quantity, {key: size})[0]);
+              _size_quantity = [];
+              _.each(_sizes, function(size){
+                if(_.where(item.size_quantity, {key: size}).length > 0){
+                  _size_quantity.push(_.where(item.size_quantity, {key: size})[0]);
+                }else{
+                  var _size_proto = quoteModel.apparel_size_quantity_proto;
+                  _size_proto.key = size;
+                  _size_proto.label = size;
+                  _size_quantity.push(_size_proto);
+                }
+              });
+              if(_size_quantity.length > 0){
+                item.line_total = quoteModel.line_item_apparel_total_proto.line_total;
               }else{
-                var _size_proto = quoteModel.apparel_size_quantity_proto;
-                _size_proto.key = size;
-                _size_proto.label = size;
-                _size_quantity.push(_size_proto);
+                item.line_total = undefined;
               }
-            });
-            console.log('setting item.size_quantity to _size_quantity:',_size_quantity);
-            if(_size_quantity.length > 0){
-              item.line_total = quoteModel.line_item_apparel_total_proto.line_total;
-            }else{
-              item.line_total = undefined;
-            }
-            item.size_quantity = _size_quantity;
-            //  apparel_size_quantity_proto: {key: '', label: '', type: 'number', col: 's3 m2 l1', sum: true},
+              item.size_quantity = _size_quantity;
+            } // if item.selected_sizes.length != item.size_quantity.length
 
-            //quoteModel.apparel_size_quantity_proto
-          }
+            item.line_total.value = _.reduce(_.where(item.size_quantity, {sum: true}), function(memo, v){ return memo + (v.value != undefined && v.value != '' ? parseInt(v.value) : 0); }, 0);
+
+          }// if item.service_type == 'Apparel'
         });
-        // if(_order.line_items.selected_sizes.length == 0){
-        //   this.set('order.line_items.size_quantity', []);
-        //   this.set('order.line_total', undefined);
-        // }else{
-        //   // this.set('order.line_items.sizes', []);
-        //   // quoteModel.apparel_size_proto
-        //   this.set('order.line_total', quoteModel.line_item_apparel_total_proto);
-        // }
-
-        // var size_proto = quoteModel.apparel_size_quantity_proto;
-        //this.push('order.sizes', size_proto)
-
-        // _.each(_order.line_items.sizes, function(item){
-        //   _.where(item, {key: 'line_total'})[0].value = _.reduce(_.where(item, {sum: true}), function(memo, v){ return memo + (v.value != undefined && v.value != '' ? parseInt(v.value) : 0); }, 0);
-        // });
       }catch(err){
         //o noz!
         console.log('o noz! _orderObserver caught err:',err);
       }
-
     },
     _isInput: function(type){
       return type == 'text' || type == 'number';
