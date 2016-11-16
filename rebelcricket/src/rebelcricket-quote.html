@@ -253,7 +253,7 @@
                               <paper-icon-button icon="add" class="dropdown-trigger"></paper-icon-button>
                               <paper-menu class="dropdown-content" selected-values="{{lineItem.selected_sizes}}" multi>
                                 <template is="dom-repeat" items="[[lineItem.apparel_sizes]]">
-                                  <paper-item>[[item]]</paper-item>
+                                  <paper-item>[[item]] [[_priceForSize(lineItem, item)]]</paper-item>
                                 </template>
                               </paper-menu>
                             </paper-menu-button>
@@ -632,10 +632,9 @@
     _lineItemForVendorObserver: function(_lineItem){
       console.log('QUOTE _lineItemForVendorObserver _lineItem:',_lineItem);
     },
-    _priceForSize: function(_liIdx, _sizeIdx){
-      console.log('_priceForSize _liIdx:',_liIdx, ' _sizeIdx:',_sizeIdx,' and do we have it?:',this.order.line_items.items[_liIdx].prices[_sizeIdx]);
-
-      return this.order.line_items.items[_liIdx].prices[_sizeIdx]; 
+    _priceForSize: function(_li, _item){
+      var _itemIdx = _li.apparel_sizes.indexOf(_item);
+      return _li.prices[_itemIdx]; 
     },
     ready: function(){
 
