@@ -137,6 +137,10 @@
         padding: 10px;
       }
 
+      .needsDateToggle {
+        margin-top: 25px;
+      }
+
       @media (max-width: 600px) {
         .section-label span{
        
@@ -428,7 +432,7 @@
                   </div>
                 </paper-dialog>
                 
-                <paper-toggle-button class="red" on-tap="_toggleNeedDate" checked="{{order.need_by_date}}">Do you need this by a certain date?</paper-toggle-button>
+                <paper-toggle-button class="red needsDateToggle" on-tap="_toggleNeedDate" checked="{{order.need_by_date}}">Do you need this by a certain date?</paper-toggle-button>
               
               </div>
 
