@@ -319,17 +319,17 @@
             
 
 
-            <div class="col s4">
+            <div class="col s12 m6 offset-m3">
              
               <template is="dom-repeat" items="{{_attachmentKeys(order._attachments)}}" as="attachment">
               <!-- rebelcricket.lacuna.club -->
-                <img src="http://localhost:5984/cats/{{item._id}}/{{ attachment }}" height="50" width="50">
+                <img src="http://localhost:5984/orders/[[orderID]]/[[attachment]]" height="50" width="50">
               </template>
           
               <br>
             </div>
 
-            <div class="col s8">
+            <div class="col s12 m6 offset-m3">
 
               <label for="orderDesignFile">Add Image</label>
               <input id="orderDesignFile" type="file"></input>
@@ -624,7 +624,7 @@
         console.log('QUOTE vendorItem exit!!! _vendorItem.exit:',_vendorItem.exit);
         this.$.scrolling.close();
 
-        if(Object.keys(_vendorItem.colorsSelected).length > 0 && this.order.line_items.items[this.lineItemIdxForVendor] != undefined){
+        if(Object.keys(_vendorItem.colorsSelected).length > 0 && this.order.line_items != undefined && this.order.line_items.items[this.lineItemIdxForVendor] != undefined){
           
           var _lineItems = this.order.line_items.items;
           var _lineItem = this.order.line_items.items[this.lineItemIdxForVendor]; 
@@ -656,6 +656,9 @@
       var _itemIdx = _li.apparel_sizes.indexOf(_item);
       return _li.prices[_itemIdx]; 
     },
+    _orderRev: function(){
+      return this.order._rev;
+    },
     ready: function(){
 
       console.log('quoteModel:',quoteModel);
@@ -673,12 +676,51 @@
       input.addEventListener('change', function () {
         var file = input.files[0]; // file is a Blob
 
-        db.putAttachment(_this.orderID, file.name, file, file.type).then(function (result) {
-          // handle result
+        // db.putAttachment(_this.orderID+'_attachments', file.name, file, file.type).then(function (result) {
+        //   // handle result
           
-        }).catch(function (err) {
-          console.log(err);
-        });
+        // }).catch(function (err) {
+        //   console.log(err);
+        // });
+
+
+        console.log('file.type:',file.type);
+
+        if(_this.order._attachments == undefined){
+
+          var attachment = {};
+        
+          attachment[file.name] = {
+            type: file.type,
+            content_type: file.type,
+            data: file
+          }
+          _this.set('order._attachments', attachment);
+        }else{
+
+          var attachments = _this.order._attachments;
+
+          attachments[file.name] = {
+            type: file.type,
+            content_type: file.type,
+            data: file
+          }
+
+          _this.set('order._attachments', attachments);
+        }
+
+
+        // console.log('this.order ...rev?',_this.order._rev, ' or _this._orderRev()',_this._orderRev());
+
+        // db.put({
+        //   _id: _this.orderID,
+        //   _rev: _this._orderRev(),
+        //   _attachments: attachment
+        // }).catch(function (err) {
+          
+        //   console.log(err);
+        // });
+
 
       });
 
