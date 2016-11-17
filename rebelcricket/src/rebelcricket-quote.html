@@ -131,6 +131,12 @@
         border-bottom: thin dotted #ccc;
       }
 
+      .graphicItems{
+        border: thin solid #666;
+        border-radius: 5px;
+        padding: 10px;
+      }
+
       @media (max-width: 600px) {
         .section-label span{
        
@@ -210,17 +216,23 @@
               </div>
               
               
-              <template is="dom-repeat" items="{{order.services}}" as="orderService">
+              <template is="dom-repeat" items="{{order.services}}" as="orderServiceItem">
                 <div class="row group">
                   <div class="row serviceGroup">
-                    <div class="col s10 center">
+                    <div class="col s6 center">
                       <paper-dropdown-menu label="Service" on-iron-select="_serviceSelected">
-                        <paper-listbox class="dropdown-content" selected="[[orderService.value]]">
+                        <paper-listbox class="dropdown-content" selected="{{orderServiceItem.value}}">
                           <template is="dom-repeat" items="{{services}}">
                             <paper-item value="[[item.value]]" disabled$=[[_serviceNeedsDisabled(item.name)]]>[[item.name]]</paper-item>
                           </template>
                         </paper-listbox>
                       </paper-dropdown-menu>
+                    </div>
+                    <div class="col s4 center">
+                      <template is="dom-if" if="[[_isApparelService(orderServiceItem)]]">
+                        <small>Items Total:</small>
+                        <h5>[[orderServiceItem.total]] $[[orderServiceItem.total_price]]</h5>
+                      </template>
                     </div>
                     <div class="col s2">
                       <paper-icon-button icon="remove" on-tap="_removeService"></paper-icon-button>
@@ -231,12 +243,8 @@
                   </div>
 
                   <div class="serviceItems col s12 center">
-                    <template is="dom-if" if="[[_isOtherService(orderService)]]">
-                      <paper-textarea label="Notes" value="{{order.orderServiceNotes}}"></paper-textarea>
-                      <small>Please describe</small>
-                    </template>
-
-                    <template is="dom-if" if="[[_isApparelService(orderService)]]">
+   
+                    <template is="dom-if" if="[[_isApparelService(orderServiceItem)]]">
                       <template is="dom-repeat" items="{{order.line_items.items}}" as="lineItem">
                         <div class="col s12 apparelRow">
        
@@ -295,6 +303,12 @@
                       </div>
 
                     </template>
+                    <div class="col s12 center">
+
+                      <paper-textarea label="Notes" value="{{orderServiceItem.serviceNotes}}"></paper-textarea>
+                      <small>Any additional information about this [[orderServiceItem.name]] item?</small>
+                    </div>
+
                   </div>
                   
                 </div>
@@ -321,9 +335,70 @@
 
             <div class="col s12 m6 offset-m3">
              
-              <template is="dom-repeat" items="{{_attachmentKeys(order._attachments)}}" as="attachment">
-              <!-- rebelcricket.lacuna.club -->
-                <img src="http://localhost:5984/orders/[[orderID]]/[[attachment]]" height="50" width="50">
+              <template is="dom-repeat" items="{{order.graphic.items}}">
+                <div class="row graphicItems">
+                  <div class="col s3">
+                    <!-- rebelcricket.lacuna.club -->
+                    <a href="http://localhost:5984/orders/[[orderID]]/[[item.attachment_id]]" target="_blank">
+                      <img src="http://localhost:5984/orders/[[orderID]]/[[item.attachment_id]]" class="responsive-img">
+                    </a>
+                  </div>
+
+                  <div class="col s4 m3">
+                    <paper-dropdown-menu label="Print This On..." ignore-select="true">
+                      <paper-listbox class="dropdown-content" selected-values="{{item.print_on_items}}" multi>
+                        <template is="dom-repeat" items="{{_printOnItems()}}">
+                          <paper-item value="[[item]]">[[item]]</paper-item>
+                        </template>
+                      </paper-listbox>
+                    </paper-dropdown-menu>
+                  </div>
+                  
+                  <div class="col s4 m3">
+                    <paper-dropdown-menu label="Position" ignore-select>
+                      <paper-listbox class="dropdown-content" selected-values="{{item.print_positions}}" multi>
+                        <template is="dom-repeat" items="{{positions}}">
+                          <paper-item value="[[item]]">[[item]]</paper-item>
+                        </template>
+                      </paper-listbox>
+                    </paper-dropdown-menu>
+                  </div>
+
+                  <div class="col s4 m3">
+
+                    <paper-dropdown-menu label="Number of Colors" on-iron-select="_numColorsChanged">
+                      <paper-listbox class="dropdown-content" selected="{{item.num_colors}}">
+                        <template is="dom-repeat" items="{{numColors}}">
+                          <paper-item value="[[item]]">&nbsp;&nbsp;[[item]]&nbsp;&nbsp;</paper-item>
+                        </template>
+                      </paper-listbox>
+                    </paper-dropdown-menu>
+
+                  </div>
+           
+                  <template is="dom-repeat" items="{{item.colors}}" as="color">
+                    <div class="col s4 m3">
+                      <paper-input name="color" label="Ink Color" value="{{color}}"></paper-input>
+                    </div>
+                  </template>
+               
+                  <div class="row">
+                    <div class="col s12">
+                      <paper-checkbox checked={{item.needs_white_base}}>
+                          &nbsp; Needs white base
+                      </paper-checkbox>
+                      <small>Note: to get vibrant colors printed on dark textiles, it's recommended to first apply a layer of white ink. </small>
+                    </div>
+                  </div>
+
+                  <div class="row">
+                    <div class="col s12">
+                      <paper-textarea rows="2" label="Graphic Notes" value="{{item.notes}}"></paper-textarea>
+                      <small>Please add any additional information about this graphic.</small>
+                    </div>
+                  </div>
+
+                </div>
               </template>
           
               <br>
@@ -331,7 +406,7 @@
 
             <div class="col s12 m6 offset-m3">
 
-              <label for="orderDesignFile">Add Image</label>
+              <label for="orderDesignFile">&nbsp;Upload Image file</label>
               <input id="orderDesignFile" type="file"></input>
             </div>
 
@@ -423,13 +498,6 @@
           return window.location.hash.replace(/#/,'');
         }
       },
-      orderService: {
-        type: Object,
-        notify: true,
-        value: function(){
-          return {name: '', value: -1};
-        }
-      },
       sizeItems: {
         type: Array,
         notify: true,
@@ -454,6 +522,30 @@
         notify: true,
         observer: '_vendorItemObserver'
       },
+      numColors: {
+        type: Array,
+        notify: false,
+        value: function(){
+          return Array.apply(null, {length: 20}).map(Number.call, Number);
+        }
+      },
+      positions: {
+        type: Array,
+        notify: false,
+        value: function(){
+          return [
+            "Front Center",
+            "Front Left",
+            "Front Right",
+            "Back Center",
+            "Back Lower",
+            "Left Sleeve",
+            "Right Sleeve",
+            "Not Sure",
+            "Other (please describe)"
+          ]
+        }
+      },
       now: {
         type: Date,
         notify: true,
@@ -476,8 +568,10 @@
     _serviceSelected: function(e){
       // this.push('order.services', {name: this.services[e.target.selected].name, value: e.target.selected });
       // console.log('e.target.selected:',e.target.selected);
-      e.model.set('orderService', {name: this.services[e.target.selected].name, value:  e.target.selected});
-      if(e.target.selected == 0 && this.order.line_items.items.length == 0){
+      console.log('_serviceSelected!');
+      e.model.set('orderServiceItem', {name: this.services[e.target.selected].name, value:  e.target.selected});
+      if(e.target.selected == 0 && this.order.line_items.items.length == 0){ //
+        console.log('!!! _serviceSelected, gonna _addApparelLineItemRow()');
         this._addApparelLineItemRow();
       }
     },
@@ -508,7 +602,7 @@
         this.set('order.line_items.items', []);
       }
 
-      console.log('removeService idx: ',this.order.services.indexOf(e.model.orderService));
+      console.log('removeService idx: ',this.order.services.indexOf(e.model.orderServiceItem));
       this.splice('order.services', e.model.index, 1);
 
     },
@@ -523,6 +617,8 @@
       try{
         console.log('QUOTE _orderObserver, _order:',_order);
 
+        var lineItemsTotalPrice = 0
+          , lineItemsTotal = 0
         _.each(_order.line_items.items, function(item){
           if(item.service_type == 'Apparel'){
             if(item.selected_sizes.length != item.size_quantity.length){
@@ -538,7 +634,7 @@
                   var _size_proto = quoteModel.apparel_size_quantity_proto;
                   _size_proto.key = size;
                   _size_proto.label = size;
-                  console.log('!!!!!!!!!!!!! setting price total to:',item.prices[idx]);
+                  // console.log('!!!!!!!!!!!!! setting price total to:',item.prices[idx]);
                   _size_proto.total = item.prices[idx];
                   _size_quantity.push(_size_proto);
                 }
@@ -553,10 +649,13 @@
 
             if(item.line_total != undefined){
               item.line_total.value = _.reduce(_.where(item.size_quantity, {sum: true}), function(memo, v){ return memo + (v.value != undefined && v.value != '' ? parseInt(v.value) : 0); }, 0);
+              lineItemsTotal += item.line_total.value;
               try{
-                item.line_total.total = _.reduce(_.where(item.size_quantity, {sum: true}), function(memo, v){ console.log('parseFloat(v.total.replace(/\$/)', v.total.replace(/\$/,'')); console.log('v.value:',v.value);return memo + (v.total != undefined && !isNaN(parseFloat(v.total.replace(/\$/,''))) ? (v.value == undefined ? 0 : v.value) * parseFloat(v.total.replace(/\$/,'')) : 0); }, 0).toFixed(2);
+                item.line_total.total = _.reduce(_.where(item.size_quantity, {sum: true}), function(memo, v){ return memo + (v.total != undefined && !isNaN(parseFloat(v.total.replace(/\$/,''))) ? (v.value == undefined ? 0 : v.value) * parseFloat(v.total.replace(/\$/,'')) : 0); }, 0).toFixed(2);
 
-                console.log('zomg, item.line_total.total:',item.line_total.total);
+                lineItemsTotalPrice += parseFloat(item.line_total.total);
+                //console.log('parseFloat(v.total.replace(/\$/)', v.total.replace(/\$/,'')); console.log('v.value:',v.value);
+                // console.log('zomg, item.line_total.total:',item.line_total.total);
 
               }catch(err){
                 //o noz!
@@ -567,6 +666,18 @@
 
           }// if item.service_type == 'Apparel'
         });
+
+        if(lineItemsTotalPrice > 0){
+          var _li = _.where(this.order.services, {name: "Apparel"})[0];
+          if(_li){
+            _li.total = lineItemsTotal;
+            _li.total_price = lineItemsTotalPrice.toFixed(2);
+          }
+          
+          // this.set('order.line_items.items_total', lineItemsTotal);
+          
+        }
+        // console.log('SUPA TOTAL:',lineItemsTotal,' lineItemsTotalPrice:',lineItemsTotalPrice);
       }catch(err){
         //o noz!
         console.log('o noz! _orderObserver caught err:',err);
@@ -654,10 +765,60 @@
     },
     _priceForSize: function(_li, _item){
       var _itemIdx = _li.apparel_sizes.indexOf(_item);
-      return _li.prices[_itemIdx]; 
+      if(_itemIdx && _li.prices){
+        return _li.prices[_itemIdx]; 
+      }else{
+        return '';
+      }
+      
     },
-    _orderRev: function(){
-      return this.order._rev;
+    _numColorsChanged: function(e){
+      // this.async(function(){
+        console.log('e.model.index:',e.model.index);
+
+        if(e.model.item.colors.length != e.target.selected){
+          //this.set('e.model.item.num_colors', e.target.selected);
+          
+          //e.model.item.colors.length = e.target.selected;
+          
+
+            // this.set('e.model.item.colors.length', e.target.selected);
+            console.log('e.target.selected',e.target.selected);
+            e.model.item.colors.length = e.target.selected;
+            e.model.item.colors = Array.apply(null, e.model.item.colors).map(String.prototype.valueOf,"")
+            // this.set('e.model.item.colors', Array.apply(null, e.model.item.colors).map(String.prototype.valueOf,""));
+
+          this.notifyPath('order.graphic.items.'+e.model.index+'.colors');
+   
+          console.log('set length to:', e.target.selected);
+          console.log('and apply, now e.model.item.colors:',e.model.item.colors);
+          // this.async(function(){
+            
+            
+            // console.log('_numColorsChanged done! e.model.item.colors:',e.model.item.colors);
+            // this.async(function(){
+            //   this.notifyPath('e.model.item.colors');
+            // }, 500);
+
+          // }, 200);
+        }
+      // }, 200);
+
+      
+      
+    //   // console.log('aaarg, this.order.graphic.items[e.model.index].colors: ',this.order.graphic.items[e.model.index].colors);
+      
+    },
+    _printOnItems: function(){
+      var _itemz = [];
+      try{
+        _itemz.push( _.map(this.order.line_items.items, function(item){return _.map(item.brand_style_color, function(i){return i.value;}).join(', ');}) );
+      }catch(err){
+        //o noz!
+      }
+      _itemz.push( _.map(this.order.services, function(serv){return 'All '+serv.name;}) );
+      console.log('_itemz:',_.flatten(_itemz));
+      return _.flatten(_itemz);
     },
     ready: function(){
 
@@ -675,16 +836,6 @@
       var _this = this;
       input.addEventListener('change', function () {
         var file = input.files[0]; // file is a Blob
-
-        // db.putAttachment(_this.orderID+'_attachments', file.name, file, file.type).then(function (result) {
-        //   // handle result
-          
-        // }).catch(function (err) {
-        //   console.log(err);
-        // });
-
-
-        console.log('file.type:',file.type);
 
         if(_this.order._attachments == undefined){
 
@@ -709,18 +860,11 @@
           _this.set('order._attachments', attachments);
         }
 
+        var graphic_item = quoteModel.graphic_item_proto;
+        graphic_item.attachment_id = file.name;
 
-        // console.log('this.order ...rev?',_this.order._rev, ' or _this._orderRev()',_this._orderRev());
-
-        // db.put({
-        //   _id: _this.orderID,
-        //   _rev: _this._orderRev(),
-        //   _attachments: attachment
-        // }).catch(function (err) {
-          
-        //   console.log(err);
-        // });
-
+        _this.async(function(){_this.push('order.graphic.items', graphic_item);}, 500);
+        
 
       });
 

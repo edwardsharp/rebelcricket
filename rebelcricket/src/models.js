@@ -62,6 +62,15 @@ var quoteModel = {
     label: 'LINE ITEMS',
     items: []
   },
+
+  graphic_item_proto: {
+    colors: [],
+    price: 0,
+    attachment_id: '',
+    position: '',
+    size_inches: ''
+  },
+
   graphic: {
     label: 'GRAPHICS',
     items: []
