@@ -121,7 +121,7 @@
     
     <app-pouchdb-document
       db-name="vendorItem"
-      doc-id="{{orderId}}"
+      doc-id="{{quoteId}}"
       data="{{vendorItem}}">
     </app-pouchdb-document>
 
@@ -256,7 +256,7 @@
           notify: true,
           observer: '_lineItemObserver'
         },
-        orderId: {
+        quoteId: {
           type: String,
           notify: true
         },
@@ -293,20 +293,20 @@
         }
       },
       _lineItemObserver: function(_lineItem){
-        console.log('VENDOR _lineItemObserver _lineItem:',_lineItem);
+        // console.log('VENDOR _lineItemObserver _lineItem:',_lineItem);
       },
       _noFilteredProducts: function(){
-        console.log('Object.keys(filteredProducts):',Object.keys(filteredProducts));
+        // console.log('Object.keys(filteredProducts):',Object.keys(filteredProducts));
         return Object.keys(filteredProducts).length == 0;
       },
       _selectObserver: function(val){
         if(val && val != ''){
-          console.log('_selectObserver val:',val);
+          // console.log('_selectObserver val:',val);
           this._filterProducts(val.replace(/See All /, ''));
         }
       },
       _filterProducts: function(by_str){
-        console.log('_filterProducts by_str:',by_str);
+        // console.log('_filterProducts by_str:',by_str);
         this.set('filteredProducts', _.filter(this.companycasual.products_by_sub_item, function(item){
           return item.category == by_str || item.sub_item == by_str;
         }));
@@ -327,15 +327,15 @@
         return str.replace(/[^a-zA-Z0-9]/g, '');
       },
       toggle: function(e){
-        console.log('e.model.item.sub_item strip:',this._strip(e.model.item.category+e.model.item.sub_item));
+        // console.log('e.model.item.sub_item strip:',this._strip(e.model.item.category+e.model.item.sub_item));
         try{
           this.$$('#'+this._strip(e.model.item.category+e.model.item.sub_item)).toggle();
         }catch(err){
-          console.log('o noz, fuckng selector!');
+          console.log('o noz, selector!');
         }
       },
       _itemSelected: function(e){
-        console.log('e.model.product', e.model.product);
+        // console.log('e.model.product', e.model.product);
         this.set('selectedItem', e.model.product);
         this.set('isDetailView', true);
         var _style = e.model.product.category + ' ' + e.model.product.sub_item;
@@ -366,10 +366,10 @@
         return retArr;
       },
       _vendorItemObserver: function(_vendorItem){
-        console.log('VENDOR _vendorItemObserver _vendorItem:',_vendorItem);
+        // console.log('VENDOR _vendorItemObserver _vendorItem:',_vendorItem);
       },
       _colorChecked: function(e){
-        console.log('_colorChecked e.model.item.name',e.model.item.name,' this.selectedItem:',this.selectedItem);
+        // console.log('_colorChecked e.model.item.name',e.model.item.name,' this.selectedItem:',this.selectedItem);
         if(e.target.checked){
           var _clrPrices = this._colorPricesForName(this.selectedItem.items, e.model.item.name);
           if(this.vendorItem.colorsSelected == undefined){
@@ -387,7 +387,7 @@
           delete this.vendorItem.colorsSelected[e.model.item.name];
           // this.set('vendorItem.colorsSelected.'+e.model.item.name, undefined);
         }
-        console.log('vendor vendorItem:',this.vendorItem);
+        // console.log('vendor vendorItem:',this.vendorItem);
         this.notifyPath('vendorItem.colorsSelected.'+e.model.item.name);
       }
     });

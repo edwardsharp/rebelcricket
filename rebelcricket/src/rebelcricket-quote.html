@@ -164,20 +164,20 @@
     </app-pouchdb-conflict-resolution>
 
     <app-pouchdb-document
-      db-name="http://rebelcricket.lacuna.club:5984/orders"
-      doc-id="{{orderID}}"
-      data="{{order}}">
+      db-name="http://rebelcricket.lacuna.club:5984/quotes"
+      doc-id="{{quoteID}}"
+      data="{{quote}}">
     </app-pouchdb-document>
   
     <app-pouchdb-document
       db-name="vendorItem"
-      doc-id="{{orderID}}"
+      doc-id="{{quoteID}}"
       data="{{vendorItem}}">
     </app-pouchdb-document>
 
     <paper-dialog id="scrolling">
       <paper-dialog-scrollable>
-        <rebelcricket-vendor line-item="{{lineItemForVendor}}" order-id="{{orderID}}"></rebelcricket-vendor>
+        <rebelcricket-vendor line-item="{{lineItemForVendor}}" quote-id="{{quoteID}}"></rebelcricket-vendor>
       </paper-dialog-scrollable>
       <!-- <div class="buttons">
         <paper-button class="custom">I don't know</paper-button>
@@ -185,10 +185,7 @@
       </div> -->
     </paper-dialog>
 
-    <div class="">
-     <!--  <header class="center">
-        <h1 class="rebelcricket-header">Order</h1>
-      </header> -->
+    <div>
 
       <div class="row">
         <div class="col s12 center">
@@ -202,9 +199,9 @@
 
             <div class="col s12 m6 offset-m3">
               <div class="col s12 section-label center">
-                <span>[[order.client_contact_information.label]]</span>
+                <span>[[quote.client_contact_information.label]]</span>
               </div>
-              <template is="dom-repeat" items="{{order.client_contact_information.items}}">
+              <template is="dom-repeat" items="{{quote.client_contact_information.items}}">
                 <div class$="col [[item.col]]">
                   <paper-input name="[[item.key]]" label="[[item.label]]" value="{{item.value}}"></paper-input>
                 </div>
@@ -220,12 +217,12 @@
               </div>
               
               
-              <template is="dom-repeat" items="{{order.services}}" as="orderServiceItem">
+              <template is="dom-repeat" items="{{quote.services}}" as="quoteServiceItem">
                 <div class="row group">
                   <div class="row serviceGroup">
                     <div class="col s6 center">
                       <paper-dropdown-menu label="Service" on-iron-select="_serviceSelected">
-                        <paper-listbox class="dropdown-content" selected="{{orderServiceItem.value}}">
+                        <paper-listbox class="dropdown-content" selected="{{quoteServiceItem.value}}">
                           <template is="dom-repeat" items="{{services}}">
                             <paper-item value="[[item.value]]" disabled$=[[_serviceNeedsDisabled(item.name)]]>[[item.name]]</paper-item>
                           </template>
@@ -233,9 +230,9 @@
                       </paper-dropdown-menu>
                     </div>
                     <div class="col s4 center">
-                      <template is="dom-if" if="[[_isApparelService(orderServiceItem)]]">
+                      <template is="dom-if" if="[[_isApparelService(quoteServiceItem)]]">
                         <small>Items Total:</small>
-                        <h5>[[orderServiceItem.total]] $[[orderServiceItem.total_price]]</h5>
+                        <h5>[[quoteServiceItem.total]] $[[quoteServiceItem.total_price]]</h5>
                       </template>
                     </div>
                     <div class="col s2">
@@ -248,8 +245,8 @@
 
                   <div class="serviceItems col s12 center">
    
-                    <template is="dom-if" if="[[_isApparelService(orderServiceItem)]]">
-                      <template is="dom-repeat" items="{{order.line_items.items}}" as="lineItem">
+                    <template is="dom-if" if="[[_isApparelService(quoteServiceItem)]]">
+                      <template is="dom-repeat" items="{{quote.line_items.items}}" as="lineItem">
                         <div class="col s12 apparelRow">
        
                           <div class="col s2">
@@ -309,8 +306,8 @@
                     </template>
                     <div class="col s12 center">
 
-                      <paper-textarea label="Notes" value="{{orderServiceItem.serviceNotes}}"></paper-textarea>
-                      <small>Any additional information about this [[orderServiceItem.name]] item?</small>
+                      <paper-textarea label="Notes" value="{{quoteServiceItem.serviceNotes}}"></paper-textarea>
+                      <small>Any additional information about this [[quoteServiceItem.name]] item?</small>
                     </div>
 
                   </div>
@@ -339,13 +336,13 @@
 
             <div class="col s12 m6 offset-m3">
              
-              <template is="dom-repeat" items="{{order.graphic.items}}">
+              <template is="dom-repeat" items="{{quote.graphic.items}}">
                 <div class="row graphicItems">
                   <div class="col s3">
                     <!-- localhost rebelcricket.lacuna.club -->
-                    <!-- http://localhost:5984/orders/[[orderID]]/[[item.attachment_id]] -->
+                    <!-- http://localhost:5984/quotes/[[quoteID]]/[[item.attachment_id]] -->
                     <a on-tap="_getPaletteInfo">
-                      <img src="http://rebelcricket.lacuna.club:5984/orders/[[orderID]]/[[item.attachment_id]]" class="responsive-img orderDesignImg" crossOrigin="Anonymous">
+                      <img src="http://rebelcricket.lacuna.club:5984/quotes/[[quoteID]]/[[item.attachment_id]]" class="responsive-img quoteDesignImg" crossOrigin="Anonymous">
                     </a>
                   </div>
 
@@ -411,8 +408,8 @@
 
             <div class="col s12 m6 offset-m3">
 
-              <label for="orderDesignFile">&nbsp;Upload Image file</label>
-              <input id="orderDesignFile" type="file"></input>
+              <label for="quoteDesignFile">&nbsp;Upload Image file</label>
+              <input id="quoteDesignFile" type="file"></input>
             </div>
 
 
@@ -433,14 +430,14 @@
                   </div>
                 </paper-dialog>
                 
-                <paper-toggle-button class="red needsDateToggle" on-tap="_toggleNeedDate" checked="{{order.need_by_date}}">Do you need this by a certain date?</paper-toggle-button>
+                <paper-toggle-button class="red needsDateToggle" on-tap="_toggleNeedDate" checked="{{quote.need_by_date}}">Do you need this by a certain date?</paper-toggle-button>
               
               </div>
 
               <div class="col s4">
-                <template is="dom-if" if="[[order.need_by_date]]">
+                <template is="dom-if" if="[[quote.need_by_date]]">
                 <span id="needsDateContainer">
-                  [[order.date_needed]]
+                  [[quote.date_needed]]
                   <paper-fab mini on-tap="_openDatePicker" icon="calendar" class="custom"></paper-fab>
                   <paper-tooltip>Pick Date</paper-tooltip>
                 </span>
@@ -448,7 +445,7 @@
               </div>
 
               <div class="col s12">
-                <paper-textarea rows="4" label="Notes" value="{{order.notes}}"></paper-textarea>
+                <paper-textarea rows="4" label="Notes" value="{{quote.notes}}"></paper-textarea>
                 <small>Please add any additional information or questions.</small>
               </div>
 
@@ -459,7 +456,7 @@
           <div class="row">
             <div class="col s12 m6 offset-m3 center">
 
-              <paper-button class="custom" on-tap"">Submit Quote</paper-button>
+              <paper-button class="custom" on-tap="_submitQuote">Submit Quote</paper-button>
 
             </div>
           </div>
@@ -494,15 +491,15 @@
           ];
         }
       },
-      order: {
+      quote: {
         type: Object,
         notify: true,
-        observer: '_orderObserver',
+        observer: '_quoteObserver',
         value: function() {
           return quoteModel;
         }
       },
-      orderID: {
+      quoteID: {
         type: String,
         notify: false,
         value: function() { 
@@ -520,7 +517,7 @@
       dateNeeded: {
         type: Date,
         notify: true,
-        observer: '_orderNeedByDateObserver'
+        observer: '_quoteNeedByDateObserver'
       },
       lineItemForVendor: {
         type: Object,
@@ -570,70 +567,70 @@
       addServiceButtonText: {
         type: String,
         notify: true,
-        computed: '_addServiceButtonText(order.services)'
+        computed: '_addServiceButtonText(quote.services)'
       }
     },
-    _orderNeedByDateObserver: function(e){
-      this.set('order.date_needed', this._formatDate(this.dateNeeded));
+    _quoteNeedByDateObserver: function(e){
+      this.set('quote.date_needed', this._formatDate(this.dateNeeded));
     },
     _formatDate: function(date){
       return date.getFullYear() + "-" + ("0"+(date.getMonth() + 1)).slice(-2) + "-" + ("0"+date.getDate()).slice(-2);
     },
     _serviceSelected: function(e){
-      // this.push('order.services', {name: this.services[e.target.selected].name, value: e.target.selected });
+      // this.push('quote.services', {name: this.services[e.target.selected].name, value: e.target.selected });
       // console.log('e.target.selected:',e.target.selected);
-      console.log('_serviceSelected!');
-      e.model.set('orderServiceItem', {name: this.services[e.target.selected].name, value:  e.target.selected});
-      if(e.target.selected == 0 && this.order.line_items.items.length == 0){ //
-        console.log('!!! _serviceSelected, gonna _addApparelLineItemRow()');
+      // console.log('_serviceSelected!');
+      e.model.set('quoteServiceItem', {name: this.services[e.target.selected].name, value:  e.target.selected});
+      if(e.target.selected == 0 && this.quote.line_items.items.length == 0){ //
+        // console.log('!!! _serviceSelected, gonna _addApparelLineItemRow()');
         this._addApparelLineItemRow();
       }
     },
-    _serviceNeedsDisabled: function(orderService){
-      return _.where(this.order.services, {name: orderService}).length > 0;
+    _serviceNeedsDisabled: function(quoteService){
+      return _.where(this.quote.services, {name: quoteService}).length > 0;
     },
-    _isApparelService: function(orderService){
-      return orderService.name.match(/apparel/i); 
+    _isApparelService: function(quoteService){
+      return quoteService.name.match(/apparel/i); 
     },
-    _isOtherService: function(orderService){
-      return orderService.name != undefined && orderService.name != '' && !orderService.name.match(/apparel/i);
+    _isOtherService: function(quoteService){
+      return quoteService.name != undefined && quoteService.name != '' && !quoteService.name.match(/apparel/i);
     },
     _sizeItemsChanged: function(){
-      console.log('_sizeItemsChanged this.sizeItems:',this.sizeItems);
+      // console.log('_sizeItemsChanged this.sizeItems:',this.sizeItems);
     },
     _openDatePicker: function(e){
-      console.log('_openDatePicker');
+      // console.log('_openDatePicker');
       this.$.dateNeededPicker.open();
     },
     _addAnotherService: function(e){
-      console.log('ADD ANOTHER SERVICE!');
-      this.push('order.services', {name: '', value: undefined });
+      // console.log('ADD ANOTHER SERVICE!');
+      this.push('quote.services', {name: '', value: undefined });
     },
     _removeService: function(e){
       
-      if(this.order.services[e.model.index].name == 'Apparel'){
-        console.log('REMOVING APPAREL LINE ITEMS! _removeService e.model:',e.model.index);
-        this.set('order.line_items.items', []);
+      if(this.quote.services[e.model.index].name == 'Apparel'){
+        // console.log('REMOVING APPAREL LINE ITEMS! _removeService e.model:',e.model.index);
+        this.set('quote.line_items.items', []);
       }
 
-      console.log('removeService idx: ',this.order.services.indexOf(e.model.orderServiceItem));
-      this.splice('order.services', e.model.index, 1);
+      // console.log('removeService idx: ',this.quote.services.indexOf(e.model.quoteServiceItem));
+      this.splice('quote.services', e.model.index, 1);
 
     },
-    _addServiceButtonText: function(_order_services){
-      if(_order_services && _order_services.length > 0){
+    _addServiceButtonText: function(_quote_services){
+      if(_quote_services && _quote_services.length > 0){
         return 'Add another service';
       }else{
         return 'Add a service';
       }
     },
-    _orderObserver: function(_order){
+    _quoteObserver: function(_quote){
       try{
-        console.log('QUOTE _orderObserver, _order:',_order);
+        // console.log('QUOTE _quoteObserver, _quote:',_quote);
 
         var lineItemsTotalPrice = 0
           , lineItemsTotal = 0
-        _.each(_order.line_items.items, function(item){
+        _.each(_quote.line_items.items, function(item){
           if(item.service_type == 'Apparel'){
             if(item.selected_sizes.length != item.size_quantity.length){
               // console.log('different sizes selected, need to adjust .apparel_sizes!');
@@ -682,19 +679,19 @@
         });
 
         if(lineItemsTotalPrice > 0){
-          var _li = _.where(this.order.services, {name: "Apparel"})[0];
+          var _li = _.where(this.quote.services, {name: "Apparel"})[0];
           if(_li){
             _li.total = lineItemsTotal;
             _li.total_price = lineItemsTotalPrice.toFixed(2);
           }
           
-          // this.set('order.line_items.items_total', lineItemsTotal);
+          // this.set('quote.line_items.items_total', lineItemsTotal);
           
         }
         // console.log('SUPA TOTAL:',lineItemsTotal,' lineItemsTotalPrice:',lineItemsTotalPrice);
       }catch(err){
         //o noz!
-        console.log('o noz! _orderObserver caught err:',err);
+        console.log('o noz! _quoteObserver caught err:',err);
       }
     },
     _isInput: function(type){
@@ -708,25 +705,25 @@
     },
     _addApparelLineItemRow: function(){
       var _li_proto = quoteModel.line_item_apparel_proto;
-      this.push('order.line_items.items',_li_proto); 
-      //this.push('order.line_items.items',quoteModel.line_item_apparel_total_proto);
+      this.push('quote.line_items.items',_li_proto); 
+      //this.push('quote.line_items.items',quoteModel.line_item_apparel_total_proto);
     },
     _removeLineItemRow: function(e){
       // this.splice(path, index, removeCount, [item1, ..., itemN])
-      console.log('removeService idx: ',e.model.index );
-      this.splice('order.line_items.items', e.model.index, 1);
+      // console.log('removeService idx: ',e.model.index );
+      this.splice('quote.line_items.items', e.model.index, 1);
     },
     _addColorMeshPrint: function(e){
       //ugh, RTFM: https://www.polymer-project.org/1.0/docs/devguide/data-system#paths
       //An index, for example, "myArray.1" indicates the array item at position 1.
       //An opaque key, prefixed with the pound sign (#), for example, "myArray.#1" indicates the array item with the key "1".
-      this.push('order.graphic.items.'+e.model.index+'.color_mesh_print', quoteModel.graphic.items[0].color_mesh_print[0]);
+      this.push('quote.graphic.items.'+e.model.index+'.color_mesh_print', quoteModel.graphic.items[0].color_mesh_print[0]);
     },
     _addNewGraphic: function(e){
-      this.push('order.graphic.items', quoteModel.graphic.items[0]);
+      this.push('quote.graphic.items', quoteModel.graphic.items[0]);
     },
     _openDialog: function(e){
-      console.log('need to set li, do we have it? e.model.lineItem',e.model.lineItem);
+      // console.log('need to set li, do we have it? e.model.lineItem',e.model.lineItem);
       this.set('lineItemForVendor', e.model.lineItem);
       this.set('lineItemIdxForVendor', e.model.index);
       this.set('vendorItem.exit', false);
@@ -744,15 +741,15 @@
       }
     },
     _vendorItemObserver: function(_vendorItem){
-      console.log('QUOTE _vendorItemObserver _vendorItem:',_vendorItem);
+      // console.log('QUOTE _vendorItemObserver _vendorItem:',_vendorItem);
       if(_vendorItem.exit){
-        console.log('QUOTE vendorItem exit!!! _vendorItem.exit:',_vendorItem.exit);
+        // console.log('QUOTE vendorItem exit!!! _vendorItem.exit:',_vendorItem.exit);
         this.$.scrolling.close();
 
-        if(Object.keys(_vendorItem.colorsSelected).length > 0 && this.order.line_items != undefined && this.order.line_items.items[this.lineItemIdxForVendor] != undefined){
+        if(Object.keys(_vendorItem.colorsSelected).length > 0 && this.quote.line_items != undefined && this.quote.line_items.items[this.lineItemIdxForVendor] != undefined){
           
-          var _lineItems = this.order.line_items.items;
-          var _lineItem = this.order.line_items.items[this.lineItemIdxForVendor]; 
+          var _lineItems = this.quote.line_items.items;
+          var _lineItem = this.quote.line_items.items[this.lineItemIdxForVendor]; 
           _lineItems.splice(this.lineItemIdxForVendor, 1);
 
           var _this = this;
@@ -763,19 +760,19 @@
             _li.brand_style_color[2].value = k;
             _li.apparel_sizes = v.sizes;
             _li.prices = v.prices;
-            console.log('quote k:',k,', gonna push _li',_li);
+            // console.log('quote k:',k,', gonna push _li',_li);
             _lineItems.push(_li);
       
           });
 
-          this.set('order.line_items.items', _lineItems);
+          this.set('quote.line_items.items', _lineItems);
           
         }
         
       }
     },
     _lineItemForVendorObserver: function(_lineItem){
-      console.log('QUOTE _lineItemForVendorObserver _lineItem:',_lineItem);
+      // console.log('QUOTE _lineItemForVendorObserver _lineItem:',_lineItem);
     },
     _priceForSize: function(_li, _item){
       var _itemIdx = _li.apparel_sizes.indexOf(_item);
@@ -788,7 +785,7 @@
     },
     _numColorsChanged: function(e){
       // this.async(function(){
-        console.log('e.model.index:',e.model.index);
+        // console.log('e.model.index:',e.model.index);
 
         if(e.model.item.colors.length != e.target.selected){
           //this.set('e.model.item.num_colors', e.target.selected);
@@ -797,15 +794,15 @@
           
 
             // this.set('e.model.item.colors.length', e.target.selected);
-            console.log('e.target.selected',e.target.selected);
+            // console.log('e.target.selected',e.target.selected);
             e.model.item.colors.length = e.target.selected;
             e.model.item.colors = Array.apply(null, e.model.item.colors).map(String.prototype.valueOf,"")
             // this.set('e.model.item.colors', Array.apply(null, e.model.item.colors).map(String.prototype.valueOf,""));
 
-          this.notifyPath('order.graphic.items.'+e.model.index+'.colors');
+          this.notifyPath('quote.graphic.items.'+e.model.index+'.colors');
    
-          console.log('set length to:', e.target.selected);
-          console.log('and apply, now e.model.item.colors:',e.model.item.colors);
+          // console.log('set length to:', e.target.selected);
+          // console.log('and apply, now e.model.item.colors:',e.model.item.colors);
           // this.async(function(){
             
             
@@ -820,18 +817,18 @@
 
       
       
-    //   // console.log('aaarg, this.order.graphic.items[e.model.index].colors: ',this.order.graphic.items[e.model.index].colors);
+    //   // console.log('aaarg, this.quote.graphic.items[e.model.index].colors: ',this.quote.graphic.items[e.model.index].colors);
       
     },
     _printOnItems: function(){
       var _itemz = [];
       try{
-        _itemz.push( _.map(this.order.line_items.items, function(item){return _.map(item.brand_style_color, function(i){return i.value;}).join(', ');}) );
+        _itemz.push( _.map(this.quote.line_items.items, function(item){return _.map(item.brand_style_color, function(i){return i.value;}).join(', ');}) );
       }catch(err){
         //o noz!
       }
-      _itemz.push( _.map(this.order.services, function(serv){return 'All '+serv.name;}) );
-      console.log('_itemz:',_.flatten(_itemz));
+      _itemz.push( _.map(this.quote.services, function(serv){return 'All '+serv.name;}) );
+      // console.log('_itemz:',_.flatten(_itemz));
       return _.flatten(_itemz);
     },
     _getPaletteInfo: function(e){
@@ -859,12 +856,12 @@
         var q = new RgbQuant(opts);
 
         // analyze histograms
-        console.log('_getPaletteInfo selector?',this.$$('.orderDesignImg'));
-        q.sample(this.$$('.orderDesignImg'));
+        // console.log('_getPaletteInfo selector?',this.$$('.quoteDesignImg'));
+        q.sample(this.$$('.quoteDesignImg'));
 
         // build palette
         var pal = q.palette();
-        console.log('!! _getPaletteInfo pal:',pal);
+        // console.log('!! _getPaletteInfo pal:',pal);
 
         var _colors = [];
         var _numColors = pal.length > 60 ? 60 : pal.length;
@@ -872,40 +869,35 @@
         for (var i = 0; i < _numColors; i=i+4) {
           _colors.push( pal[i] +', '+ pal[i+1] +', '+ pal[i+2] +', '+ pal[i+3] );
         }
-        this.set('order.graphic.items.0.colors', _colors);
-        this.async(function(){ this.set('order.graphic.items.0.num_colors', (_numColors / 4).toFixed(0) ); }, 200);
+        this.set('quote.graphic.items.0.colors', _colors);
+        this.async(function(){ this.set('quote.graphic.items.0.num_colors', (_numColors / 4).toFixed(0) ); }, 200);
         
         // reduce images
         // var outA = q.reduce(_file);
 
-        console.log('_getPaletteInfo _numColors:',_numColors,' _colors:',_colors);
+        // console.log('_getPaletteInfo _numColors:',_numColors,' _colors:',_colors);
 
       }catch(err){
         console.log('o noz! could not _getPaletteInfo!');
       }
       
     },
-    submitQuote: function(){
-      this.set('order.submitted', new Date);
+    _submitQuote: function(){
+      console.log('submit quote!',new Date);
+      this.set('quote.submitted', new Date);
     },
     ready: function(){
 
-      console.log('quoteModel:',quoteModel);
-
-      console.log('this.order',this.order);
-
-      console.log('this.order.line_items.items:',this.order.line_items.items);
+      //this initz the quote couch db doc
+      var db = new PouchDB('http://rebelcricket.lacuna.club:5984/quotes');
 
       //file upload
-      //http://rebelcricket.lacuna.club:5984/
-      var db = new PouchDB('http://rebelcricket.lacuna.club:5984/orders');
-
-      var input = this.$.orderDesignFile;
+      var input = this.$.quoteDesignFile;
       var _this = this;
       input.addEventListener('change', function () {
         var file = input.files[0]; // file is a Blob
 
-        if(_this.order._attachments == undefined){
+        if(_this.quote._attachments == undefined){
 
           var attachment = {};
         
@@ -914,23 +906,23 @@
             content_type: file.type,
             data: file
           }
-          _this.set('order._attachments', attachment);
+          _this.set('quote._attachments', attachment);
         }else{
 
-          var attachments = _this.order._attachments;
+          var attachments = _this.quote._attachments;
 
           attachments[file.name] = {
             type: file.type,
             content_type: file.type,
             data: file
           }
-          _this.set('order._attachments', attachments);
+          _this.set('quote._attachments', attachments);
         }
 
         var graphic_item = quoteModel.graphic_item_proto;
         graphic_item.attachment_id = file.name;
 
-        _this.async(function(){ _this.push('order.graphic.items', graphic_item); }, 500);
+        _this.async(function(){ _this.push('quote.graphic.items', graphic_item); }, 500);
 
       });
 

@@ -18,6 +18,7 @@ var quoteModel = {
       {key: 'printers_notes', label: 'Printer\'s Notes', type: 'textarea', col: 's12', rows: 2}
     ]
   },
+  submitted: false,
   services: [],
   notes: '',
   need_by_date: false,
