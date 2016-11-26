@@ -163,8 +163,10 @@
       strategy="lastWriteWins">
     </app-pouchdb-conflict-resolution>
 
+    
+
     <app-pouchdb-document
-      db-name="http://rebelcricket.lacuna.club:5984/orders"
+      db-name="orders"
       doc-id="{{orderID}}"
       data="{{order}}">
     </app-pouchdb-document>
@@ -175,6 +177,11 @@
       data="{{vendorItem}}">
     </app-pouchdb-document>
     
+    <app-pouchdb-document
+      db-name="http://rebelcricket.lacuna.club:5984/orders"
+      doc-id="{{orderID}}"
+      data="{{orderDS}}">
+    </app-pouchdb-document>
 
     <paper-dialog id="scrolling">
       <paper-dialog-scrollable>
@@ -456,6 +463,15 @@
             </div>
           </div>
           
+
+          <div class="row">
+            <div class="col s12 m6 offset-m3 center">
+
+              <paper-button class="custom" on-tap"">Submit Quote</paper-button>
+
+            </div>
+          </div>
+
       </div>
 
           
@@ -493,6 +509,11 @@
         value: function() {
           return quoteModel;
         }
+      },
+      orderDS: {
+        type: Object,
+        notify: true,
+        observer: '_orderDsObserver'
       },
       orderID: {
         type: String,
@@ -619,7 +640,20 @@
         return 'Add a service';
       }
     },
+    _updateOrderDs: function(){
+      console.log('gonna update orderDS!');
+      this.set('orderDS', this.order);
+    },
+    _orderDsObserver: function(_orderDS){
+      console.log('_orderDsObserver _orderDS:',_orderDS);
+    },
     _orderObserver: function(_order){
+      try{
+        this.debounce('orderDebounce', this._updateOrderDs, 500);
+      }catch(err){
+        console.log('o noz! could not update orderDS! err:',err);
+      }
+
       try{
         console.log('QUOTE _orderObserver, _order:',_order);
 
@@ -877,6 +911,9 @@
       }
       
     },
+    submitQuote: function(){
+      this.set('order.submitted', new Date);
+    },
     ready: function(){
 
       console.log('quoteModel:',quoteModel);
@@ -886,8 +923,8 @@
       console.log('this.order.line_items.items:',this.order.line_items.items);
 
       //file upload
-      //rebelcricket.lacuna.club
-      var db = new PouchDB('http://rebelcricket.lacuna.club:5984/orders');
+      //http://rebelcricket.lacuna.club:5984/
+      // var db = new PouchDB('orders');
 
       var input = this.$.orderDesignFile;
       var _this = this;
@@ -913,7 +950,6 @@
             content_type: file.type,
             data: file
           }
-
           _this.set('order._attachments', attachments);
         }
 
