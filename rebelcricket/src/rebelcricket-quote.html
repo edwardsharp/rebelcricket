@@ -163,10 +163,8 @@
       strategy="lastWriteWins">
     </app-pouchdb-conflict-resolution>
 
-    
-
     <app-pouchdb-document
-      db-name="orders"
+      db-name="http://rebelcricket.lacuna.club:5984/orders"
       doc-id="{{orderID}}"
       data="{{order}}">
     </app-pouchdb-document>
@@ -175,12 +173,6 @@
       db-name="vendorItem"
       doc-id="{{orderID}}"
       data="{{vendorItem}}">
-    </app-pouchdb-document>
-    
-    <app-pouchdb-document
-      db-name="http://rebelcricket.lacuna.club:5984/orders"
-      doc-id="{{orderID}}"
-      data="{{orderDS}}">
     </app-pouchdb-document>
 
     <paper-dialog id="scrolling">
@@ -510,11 +502,6 @@
           return quoteModel;
         }
       },
-      orderDS: {
-        type: Object,
-        notify: true,
-        observer: '_orderDsObserver'
-      },
       orderID: {
         type: String,
         notify: false,
@@ -640,20 +627,7 @@
         return 'Add a service';
       }
     },
-    _updateOrderDs: function(){
-      console.log('gonna update orderDS!');
-      this.set('orderDS', this.order);
-    },
-    _orderDsObserver: function(_orderDS){
-      console.log('_orderDsObserver _orderDS:',_orderDS);
-    },
     _orderObserver: function(_order){
-      try{
-        this.debounce('orderDebounce', this._updateOrderDs, 500);
-      }catch(err){
-        console.log('o noz! could not update orderDS! err:',err);
-      }
-
       try{
         console.log('QUOTE _orderObserver, _order:',_order);
 
