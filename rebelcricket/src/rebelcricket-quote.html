@@ -27,6 +27,7 @@
 <link rel="import" href="../bower_components/paper-menu/paper-menu.html">
 <link rel="import" href="../bower_components/paper-menu-button/paper-menu-button.html">
 <link rel="import" href="../bower_components/paper-icon-button/paper-icon-button.html">
+<link rel="import" href="../bower_components/iron-ajax/iron-ajax.html">
 
 <link rel="import" href="shared-styles.html">
 
@@ -174,6 +175,17 @@
       doc-id="{{quoteID}}"
       data="{{vendorItem}}">
     </app-pouchdb-document>
+
+    <iron-ajax
+      id="rebelquote"
+      url="http://localhost:3000/rebelquote"
+      method="POST"
+      content-type="application/json"
+      handle-as="json"
+      on-response="_handleAjaxPostResponse"
+      on-error="_handleAjaxPostError"
+      >
+    </iron-ajax>
 
     <paper-dialog id="scrolling">
       <paper-dialog-scrollable>
@@ -635,18 +647,21 @@
             if(item.selected_sizes.length != item.size_quantity.length){
               // console.log('different sizes selected, need to adjust .apparel_sizes!');
               var _sizes = _.map(item.selected_sizes, function(size){return item.apparel_sizes[size]; });
-              // console.log('have sizes:', _sizes );
-
+              console.log('have sizes:', _sizes );
+              console.log('wut about item.size_quantity? ',item.size_quantity);
               _size_quantity = [];
               _.each(_sizes, function(size,idx){
                 if(_.where(item.size_quantity, {key: size}).length > 0){
                   _size_quantity.push(_.where(item.size_quantity, {key: size})[0]);
                 }else{
+                  
                   var _size_proto = quoteModel.apparel_size_quantity_proto;
                   _size_proto.key = size;
                   _size_proto.label = size;
-                  // console.log('!!!!!!!!!!!!! setting price total to:',item.prices[idx]);
-                  _size_proto.total = item.prices[idx];
+                  if(item.prices != undefined && item.prices[idx] != undefined){
+                    console.log('!!!!!!!!!!!!! setting price total to:',item.prices[idx]);
+                    _size_proto.total = item.prices[idx];
+                  }
                   _size_quantity.push(_size_proto);
                 }
               });
@@ -678,16 +693,16 @@
           }// if item.service_type == 'Apparel'
         });
 
-        if(lineItemsTotalPrice > 0){
-          var _li = _.where(this.quote.services, {name: "Apparel"})[0];
-          if(_li){
-            _li.total = lineItemsTotal;
-            _li.total_price = lineItemsTotalPrice.toFixed(2);
-          }
-          
-          // this.set('quote.line_items.items_total', lineItemsTotal);
-          
+        // if(lineItemsTotalPrice > 0 || lineItemsTotal > 0){}
+        var _li = _.where(this.quote.services, {name: "Apparel"})[0];
+        if(_li){
+          _li.total = lineItemsTotal;
+          _li.total_price = lineItemsTotalPrice.toFixed(2);
         }
+        
+        // this.set('quote.line_items.items_total', lineItemsTotal);
+          
+        
         // console.log('SUPA TOTAL:',lineItemsTotal,' lineItemsTotalPrice:',lineItemsTotalPrice);
       }catch(err){
         //o noz!
@@ -883,8 +898,27 @@
       
     },
     _submitQuote: function(){
-      console.log('submit quote!',new Date);
+      console.log('submit quote!');
+      
+      var params = {};
+      params["name"] = this.quote.client_contact_information.items[0].value;
+      params["phone"] = this.quote.client_contact_information.items[1].value;
+      params["email"] = this.quote.client_contact_information.items[2].value;
+      params["org"] = this.quote.client_contact_information.items[3].value;
+
+      this.$.rebelquote.params = params;
+      this.$.rebelquote.body = JSON.stringify(this.quote);
+      
+      this.$.rebelquote.generateRequest();
+
+      console.log('sending params:',params);
       this.set('quote.submitted', new Date);
+    },
+    _handleAjaxPostResponse: function(e){
+      console.log('_handleAjaxPostResponse! e',e);
+    },
+    _handleAjaxPostError: function(e){
+      console.log('_handleAjaxPostError! e:',e);
     },
     ready: function(){
 

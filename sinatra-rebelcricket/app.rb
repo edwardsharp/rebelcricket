@@ -11,6 +11,8 @@ configure do
   enable :cross_origin
 end
 
+require 'dotenv'
+
 Dotenv.load unless ENV['RACK_ENV'] == 'production'
 
 # Setup DataMapper with a database URL. On Heroku, ENV['DATABASE_URL'] will be
@@ -79,6 +81,55 @@ class RebelContact
   end
 end
 
+class RebelQuote
+  include DataMapper::Resource
+
+  property :id, Serial, key: true
+  property :created_at, DateTime
+  property :name, String, length: 255
+  property :email, String, length: 255
+  property :phone, String, length: 255
+  property :org, String, length: 255
+  property :message_sent, Boolean
+  property :data, Json
+
+
+  after :save do
+    send_message
+  end
+
+  def send_message
+    return if self.message_sent
+    # First, instantiate the Mailgun Client with your API key
+    mg_client = Mailgun::Client.new ENV['MAILGUN_API_KEY']
+
+    message_text = "message text\n data:\n #{self.data}"
+    # Define your message parameters
+    message_params =  { from: 'Rebel Contact <noreply@mg.lacuna.club>',
+                        to:   ENV['MAIL_GOES_TO'],
+                        subject: "New Quote from: #{self.email} #{self.name} #{self.phone}",
+                        text:    message_text
+                      }
+
+    # Send your message through the client
+    begin
+      mg_client.send_message ENV['MAILGUN_DOMAIN'], message_params
+      self.message_sent = true
+      p "QUOTE MESSAGE SENT!"
+      save_self
+    rescue 
+      p "COULD NOT SEND QUOTE MESSAGE!"
+    end
+
+    # result = mg_client.send_message(ENV['MAILGUN_DOMAIN'], message_params).to_h!
+
+    # # message_id = result['id']
+    # # message = result['message']
+    # puts result['message']
+  end
+
+end
+
 # Finalize the DataMapper models.
 DataMapper.finalize
 
@@ -109,6 +160,29 @@ post '/rebelcontact' do
 
   if @rebel_contact.save
     @rebel_contact.to_json
+  else
+    halt 500
+  end
+end
+
+options '/rebelquote' do 
+  halt 200
+end
+
+post '/rebelquote' do
+  content_type :json
+
+  # params_json = JSON.parse(request.body.read)
+  p "rebelquote params: #{params}"
+
+  @rebel_quote = RebelQuote.new(params)
+  request.body.rewind
+  @rebel_quote.data = request.body.read #JSON.parse 
+  p "rebelquote body: #{@rebel_quote.data}"
+  @rebel_quote.created_at = Time.now
+
+  if @rebel_quote.save
+    @rebel_quote.to_json
   else
     halt 500
   end
