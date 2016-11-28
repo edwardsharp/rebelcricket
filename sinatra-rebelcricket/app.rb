@@ -84,8 +84,9 @@ end
 class RebelQuote
   include DataMapper::Resource
 
-  property :id, Serial, key: true
+  property :id, String, key: true, unique: true
   property :created_at, DateTime
+  property :updated_at, DateTime
   property :name, String, length: 255
   property :email, String, length: 255
   property :phone, String, length: 255
@@ -94,7 +95,7 @@ class RebelQuote
   property :data, Json
 
 
-  after :save do
+  after :create do
     send_message
   end
 
@@ -113,7 +114,9 @@ class RebelQuote
 
     # Send your message through the client
     begin
-      mg_client.send_message ENV['MAILGUN_DOMAIN'], message_params
+      # mg_client.send_message ENV['MAILGUN_DOMAIN'], message_params
+      p "message_text is:" 
+      p message_text
       self.message_sent = true
       p "QUOTE MESSAGE SENT!"
       save_self
@@ -175,17 +178,42 @@ post '/rebelquote' do
   # params_json = JSON.parse(request.body.read)
   p "rebelquote params: #{params}"
 
+  if RebelQuote.count(id: params["id"]) > 0
+    @rebel_quote = RebelQuote.first(params["id"])
+    created_at = @rebel_quote.created_at
+    @rebel_quote.destroy
+  end
+
   @rebel_quote = RebelQuote.new(params)
+  if created_at 
+    @rebel_quote.created_at = created_at
+    @rebel_quote.updated_at = Time.now
+  else 
+    @rebel_quote.created_at = Time.now
+  end
+
   request.body.rewind
   @rebel_quote.data = request.body.read #JSON.parse 
-  p "rebelquote body: #{@rebel_quote.data}"
-  @rebel_quote.created_at = Time.now
-
+  # p "rebelquote body: #{@rebel_quote.data}"
+  
   if @rebel_quote.save
     @rebel_quote.to_json
   else
     halt 500
   end
+end
+
+get '/tmpl' do
+
+
+  @rebel_quote = RebelQuote.get(params["id"])
+
+  halt 404 if @rebel_quote.nil?
+
+  @quote = @rebel_quote.data
+  
+  erb :tmpl
+
 end
 
 # get '/rebel_contacts/:id' do
