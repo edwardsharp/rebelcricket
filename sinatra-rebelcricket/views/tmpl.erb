@@ -126,6 +126,77 @@ img,legend{border:0}.clearfix,.row:after,.toast{clear:both}.backdrop,.parallax i
         line-height: 64px;
       }
 
+      hr {
+        width: 97%;
+      }
+
+      .section-label {
+        justify-content: center;
+        font-size: 20px;
+        font-weight: 100;
+        text-transform: uppercase;
+        width: 100%;
+        background-color: #333;
+        border-radius: 5px;
+        margin-bottom: 1em;
+      }
+      .section-label span{
+        color: white;
+        height: 1.5em;
+        text-align: center;
+        padding-left: 0.5em;
+        padding-right: 0.5em;
+      }
+      .rebel-font{
+        font-family: 'ObelixPro';
+        font-weight: 100;
+        font-size: 2em;
+        line-height: 1em;
+      }
+
+      .center{
+        text-align: center;
+        justify-content: center;
+        width: 100%;
+      }
+
+      .group{
+        border: thin solid #666;
+        border-radius: 5px;
+
+      }
+
+      .serviceItems paper-icon-button {
+        margin-top: 10px;
+      }
+
+      .apparelRow, .serviceGroup {
+        border-bottom: thin dotted #ccc;
+      }
+
+      .graphicItems{
+        border: thin solid #666;
+        border-radius: 5px;
+        padding: 10px;
+      }
+
+      .needsDateToggle {
+        margin-top: 25px;
+      }
+
+      @media (max-width: 600px) {
+        .section-label span{
+       
+          height: auto;
+          padding: 0 2px 0 2px;
+        }
+      }
+
+      @media (max-width: 875px) {
+        .section-label span{
+          height: auto;
+        }
+      }
       @media (max-width: 767px) {
         .rebel-heading {
           font-size: 2.2em;
@@ -139,13 +210,16 @@ img,legend{border:0}.clearfix,.row:after,.toast{clear:both}.backdrop,.parallax i
 </head>
 <body>
 
-hello <%= @rebel_quote.name %>,
-
-<%= @quote["_id"] %>
-
-
 <div class="container">
 
+  <div class="row">
+  <div class="col s12 m6 offset-m3 center">
+    <a class="grow" href="http://rebelcricketscreenprints.com" aria-label="Rebel Cricket Home">
+      <!-- <img width="200" src="http://rebelcricket.com/wp-content/uploads/2014/10/cirlcelogowht-e1419624365221.jpg"> -->
+      <h3>REBEL CRICKET SCREEN PRINTS</h3>
+
+    </a>
+  </div>
   <div class="row">
     <div class="col s12 center">
       <h1 class="rebel-heading">Quote</h1>
@@ -161,7 +235,7 @@ hello <%= @rebel_quote.name %>,
             <span><%= @quote["client_contact_information"]["label"] %> </span>
           </div>
           <% @quote["client_contact_information"]["items"].each do |item| %>
-            <div class$="col <%= item["col"] %>">
+            <div class="col <%= item["col"] %>">
               <b><%= item["label"] %>:</b>
               <%= item["value"] %>
             </div>
@@ -173,22 +247,24 @@ hello <%= @rebel_quote.name %>,
 
         <div class="col s12 m6 offset-m3">
           <div class="col s12 section-label center">
-            <b>Services:</b>
+            <span>Services</span>
           </div>
-          
+        </div>
+
+        <div class="col s12 m6 offset-m3">
           
           <% @quote["services"].each do |quoteServiceItem| %>
             <div class="row group">
-              <div class="row serviceGroup">
+              <div class="serviceGroup">
                 <div class="col s6 center">
+                  <b>Service:</b>
                   <%= quoteServiceItem["name"] %>
                 </div>
-                <div class="col s4 center">
-                  <template is="dom-if" if="[[_isApparelService(quoteServiceItem)]]">
-                    <small>Items Total:</small>
-                    <h5><%= quoteServiceItem["total"] %> $<%= quoteServiceItem["total_price"] %></h5>
-                  </template>
+                <div class="col s6 center">
+                    <b>Items Total:</b>
+                    <%= quoteServiceItem["total"] %> $<%= quoteServiceItem["total_price"] %>
                 </div>
+                <br>
               </div>
 
               <div class="serviceItems col s12 center">
@@ -198,30 +274,27 @@ hello <%= @rebel_quote.name %>,
                     <div class="col s12 apparelRow">
 
                       <% lineItem["brand_style_color"].each do |item| %>
-                        <div class$="col <%= item["col"] %>">
-                          <b><%= item["label"] %>:</b>
+                        <div class="col s4">
+                          <b><%= item["label"] %></b><br>
                           <%= item["value"] %>
                         </div>
                       <% end %>
 
-                      <div class="col s6">
-                        <b>selected sizes:</b> <%= lineItem["selected_sizes"] %>
-                      </div>
 
                       <div class="col s12">
                         <% lineItem["size_quantity"].each do |item| %>
-                          <div class$="col <%= item["col"] %>">
-                            <b><%= item["label"] %></b>
-                            <%= item["value"] %>
-                            <small><%= item["total"] %></small>
+                          <div class="col <%= item["col"] %>">
+                            <b><%= item["label"] %></b><br>
+                            <%= item["value"] %><br>
+                            <div><%= item["total"] %></div>
                           </div>
                         <% end %>
 
                         <% if lineItem["line_total"] %>
-                          <div class$="col <%= lineItem["line_total"]["col"] %>">
-                            <b><%= lineItem["line_total"]["label"] %>:</b>
+                          <div class="col <%= lineItem["line_total"]["col"] %>">
+                            <b><%= lineItem["line_total"]["label"] %></b>
                             <%= lineItem["line_total"]["value"] %>
-                            <small>$<%= lineItem["line_total"]["total"] %></small>
+                            <div>$<%= lineItem["line_total"]["total"] %></div>
                           </div>
                         <% end %>
 
@@ -264,12 +337,12 @@ hello <%= @rebel_quote.name %>,
                 <!-- localhost rebelcricket.lacuna.club -->
                 <!-- http://localhost:5984/quotes/[[quoteID]]/[[item.attachment_id]] -->
 
-                  <img src="http://rebelcricket.lacuna.club:5984/quotes/<%= @quote["_id"] %>/<%= item["attachment_id"] %>" class="responsive-img quoteDesignImg" crossOrigin="Anonymous">
+                  <a href="http://rebelcricket.lacuna.club:5984/quotes/<%= @quote["_id"] %>/<%= item["attachment_id"] %>" title="link to graphic"><img src="http://rebelcricket.lacuna.club:5984/quotes/<%= @quote["_id"] %>/<%= item["attachment_id"] %>" class="responsive-img quoteDesignImg" crossOrigin="Anonymous"></a>
 
               </div>
 
               <div class="col s4 m3">
-                <b>Print This On: </b>
+                <b>Print On: </b>
                 <%= item["print_on_items"] %>
               </div>
               
@@ -279,23 +352,27 @@ hello <%= @rebel_quote.name %>,
               </div>
 
               <div class="col s4 m3">
-                <b>Number of Colors:</b>
+                <b>Colors Qty:</b>
                 <%= item["num_colors"] %>
               </div>
-          
-              <% item["colors"].each do |color| %>
+              
+              <div class="col s8">
                 <div class="col s4 m3">
-                  
-                  <%= color %>
+                  <b>Colors:</b>
                 </div>
-              <% end %>
-           
-              <div class="row">
-                <div class="col s12">
-                  <b>Needs white base:</b>
-                  <%= item["needs_white_base"] %>
-                </div>
+                <% item["colors"].each do |color| %>
+                  <div class="col s4 m3">
+                    <%= color %>
+                  </div>
+                <% end %>
               </div>
+           
+   
+              <div class="col s6">
+                <b>Needs white base:</b>
+                <%= item["needs_white_base"] %>
+              </div>
+         
 
               <div class="row">
                 <div class="col s12">
@@ -328,6 +405,18 @@ hello <%= @rebel_quote.name %>,
           <div class="col s12">
             <b>Notes:</b>
             <%= @quote["notes"] %>
+          </div>
+
+          <div class="col s12">
+            <b>Created at:</b>
+
+            <%# DateTime.strptime(@quote["_id"].split('-')[0],'%s') %>
+            <%= @rebel_quote.created_at.strftime('%A %d %b %Y %l:%M %p') %>
+
+            <% unless @rebel_quote.updated_at.nil? %>
+              <b>Updated at:</b>
+              <%= @rebel_quote.updated_at.strftime('%A %d %b %Y %l:%M %p') %>
+            <% end %>
           </div>
 
         </div>

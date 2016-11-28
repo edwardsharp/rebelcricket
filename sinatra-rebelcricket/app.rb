@@ -1,4 +1,4 @@
-# Require the bundler gem and then call Bundler.require to load in all gems
+# require the bundler gem and then call Bundler.require to load in all gems
 # listed in Gemfile.
 require 'bundler'
 Bundler.require
@@ -35,7 +35,7 @@ set :expose_headers, ['Content-Type']
 
 enable :logging, :dump_errors, :raise_errors
 
-# Define a simple DataMapper model.
+# DataMapper model classes:
 class RebelContact
   include DataMapper::Resource
 
@@ -53,17 +53,15 @@ class RebelContact
 
   def send_message
     return if self.message_sent
-    # First, instantiate the Mailgun Client with your API key
+    # instantiate the Mailgun Client with an API key
     mg_client = Mailgun::Client.new ENV['MAILGUN_API_KEY']
 
-    # Define your message parameters
     message_params =  { from: 'Rebel Contact <noreply@mg.lacuna.club>',
                         to:   ENV['MAIL_GOES_TO'],
                         subject: "#{self.email} #{self.subject}",
                         text:    self.body
                       }
 
-    # Send your message through the client
     begin
       mg_client.send_message ENV['MAILGUN_DOMAIN'], message_params
       self.message_sent = true
@@ -95,28 +93,54 @@ class RebelQuote
   property :data, Json
 
 
-  after :create do
+  after :save do
     send_message
   end
 
   def send_message
     return if self.message_sent
-    # First, instantiate the Mailgun Client with your API key
+
+    @rebel_quote = self
+    @quote = self.data
+    @positions = [
+      "Front Center",
+      "Front Left",
+      "Front Right",
+      "Back Center",
+      "Back Lower",
+      "Left Sleeve",
+      "Right Sleeve",
+      "Not Sure",
+      "Other (please describe)"
+    ]
+    tmpl = File.open('./views/quote_email.erb').read
+    message_html = ERB.new(tmpl).result( binding )
+
     mg_client = Mailgun::Client.new ENV['MAILGUN_API_KEY']
+    mb_obj = Mailgun::MessageBuilder.new
 
-    message_text = "message text\n data:\n #{self.data}"
-    # Define your message parameters
-    message_params =  { from: 'Rebel Contact <noreply@mg.lacuna.club>',
-                        to:   ENV['MAIL_GOES_TO'],
-                        subject: "New Quote from: #{self.email} #{self.name} #{self.phone}",
-                        text:    message_text
-                      }
+    # Define the from address
+    mb_obj.from "Rebel Quote <noreply@mg.lacuna.club>"
+    # Define a to recipient
+    mb_obj.add_recipient :to, ENV['MAIL_GOES_TO']  
+    # Define a cc recipient
+    # mb_obj.add_recipient(:cc, "sally.doe@example.com", {"first" => "Sally", "last" => "Doe"});  
+    # Define the subject
+    mb_obj.subject "Quote from: #{self.email} #{self.name} #{self.phone}" 
+    # Define the body of the message
+    mb_obj.body_html message_html
 
-    # Send your message through the client
+    # mb_obj.add_recipient("h:reply-to", self.email)
+    mb_obj.message["h:Reply-To"] = self.email
+
+    # Attach a file and rename it
+    #mb_obj.add_attachment("/path/to/file/receipt_123491820.pdf", "Receipt.pdf");
+
+    # Schedule message in the future
+    # mb_obj.set_delivery_time("tomorrow 8:00AM", "PST");
+
     begin
-      # mg_client.send_message ENV['MAILGUN_DOMAIN'], message_params
-      p "message_text is:" 
-      p message_text
+      mg_client.send_message ENV['MAILGUN_DOMAIN'], mb_obj
       self.message_sent = true
       p "QUOTE MESSAGE SENT!"
       save_self
@@ -133,10 +157,10 @@ class RebelQuote
 
 end
 
-# Finalize the DataMapper models.
+# finalize the DataMapper models.
 DataMapper.finalize
 
-# Tell DataMapper to update the database according to the definitions above.
+# tell DataMapper to update the database according to the definitions above.
 DataMapper.auto_upgrade!
 
 if ENV['SERVE_TEST_INDEX'] == 'true'
@@ -145,7 +169,7 @@ if ENV['SERVE_TEST_INDEX'] == 'true'
   end
 end
 
-# # Route to show all RebelContacts, ordered like a blog
+# # show all RebelContacts, ordered by date
 # get '/' do
 #   content_type :json
 #   @rebel_contacts = RebelContact.all(order: :created_at.desc)
@@ -179,7 +203,8 @@ post '/rebelquote' do
   p "rebelquote params: #{params}"
 
   if RebelQuote.count(id: params["id"]) > 0
-    @rebel_quote = RebelQuote.first(params["id"])
+    p "RebelQuote exists! goona destroy!"
+    @rebel_quote = RebelQuote.get(params["id"])
     created_at = @rebel_quote.created_at
     @rebel_quote.destroy
   end
@@ -203,6 +228,18 @@ post '/rebelquote' do
   end
 end
 
+post '/rebelgfx' do 
+
+  # if params[:file]
+  #   filename = params[:file][:filename]
+  #   tempfile = params[:file][:tempfile]
+  #   target = "public/files/#{filename)
+
+  #   File.open(target, 'wb') {|f| f.write tempfile.read }
+  # end
+
+end
+
 get '/tmpl' do
 
 
@@ -211,7 +248,7 @@ get '/tmpl' do
   halt 404 if @rebel_quote.nil?
 
   @quote = @rebel_quote.data
-  
+
   erb :tmpl
 
 end

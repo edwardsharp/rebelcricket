@@ -85,6 +85,19 @@
         padding: 0;
       }
 
+      paper-listbox.custom {
+        max-height: 100px;
+        overflow: hidden;
+        overflow-y: scroll;
+        border: thin solid #ccc;
+        border-radius: 5px;
+        margin-bottom: 1em;
+      }
+
+      paper-item.custom {
+        border-bottom: thin solid #ccc;
+      }
+
       hr {
         width: 97%;
       }
@@ -344,8 +357,6 @@
               </div>  
             </div>
             
-
-
             <div class="col s12 m6 offset-m3">
              
               <template is="dom-repeat" items="{{quote.graphic.items}}">
@@ -358,24 +369,22 @@
                     </a>
                   </div>
 
-                  <div class="col s4 m3">
-                    <paper-dropdown-menu label="Print This On..." ignore-select="true">
-                      <paper-listbox class="dropdown-content" selected-values="{{item.print_on_items}}" multi>
-                        <template is="dom-repeat" items="{{_printOnItems()}}">
-                          <paper-item value="[[item]]">[[item]]</paper-item>
-                        </template>
-                      </paper-listbox>
-                    </paper-dropdown-menu>
+                  <div class="col s9">
+                    Print This On <small>select as many as needed.</small>
+                    <paper-listbox class="custom" selected-values="{{item.print_on_items}}" on-iron-activate="_printOnItemsChanged" multi>
+                      <template is="dom-repeat" items="{{_printOnItems()}}">
+                        <paper-item class="custom" value="[[item]]">[[item]]</paper-item>
+                      </template>
+                    </paper-listbox>
                   </div>
                   
-                  <div class="col s4 m3">
-                    <paper-dropdown-menu label="Position" ignore-select>
-                      <paper-listbox class="dropdown-content" selected-values="{{item.print_positions}}" multi>
-                        <template is="dom-repeat" items="{{positions}}">
-                          <paper-item value="[[item]]">[[item]]</paper-item>
-                        </template>
-                      </paper-listbox>
-                    </paper-dropdown-menu>
+                  <div class="col s6 m4">
+                    Position <br><small>select as many as needed.</small>
+                    <paper-listbox class="custom" selected-values="{{item.print_positions}}" multi>
+                      <template is="dom-repeat" items="{{positions}}">
+                        <paper-item class="custom" value="[[item]]">[[item]]</paper-item>
+                      </template>
+                    </paper-listbox>
                   </div>
 
                   <div class="col s4 m3">
@@ -516,7 +525,7 @@
         notify: false,
         value: function() { 
           if(window.location.hash === ''){
-            window.location.hash = generateGUID();
+            window.location.hash = generateID();
           }
           return window.location.hash.replace(/#/,'');
         }
@@ -638,7 +647,7 @@
     },
     _quoteObserver: function(_quote){
       try{
-        // console.log('QUOTE _quoteObserver, _quote:',_quote);
+        console.log('QUOTE _quoteObserver, _quote:',_quote);
 
         var lineItemsTotalPrice = 0
           , lineItemsTotal = 0
@@ -846,6 +855,22 @@
       // console.log('_itemz:',_.flatten(_itemz));
       return _.flatten(_itemz);
     },
+    _printOnItemsChanged: function(e){
+      var _idx = e.model.index;
+      var _item = e.model.item;
+      this.async(function(){
+        var __printOnItems = this._printOnItems();
+        var _print_on_item_names = [];
+        _.each(_item.print_on_items, function(poi){
+          if(__printOnItems[poi]){
+            _print_on_item_names.push(__printOnItems[poi]);
+          }
+        });
+        this.set('quote.graphic.items.'+_idx+'.print_on_item_names', _print_on_item_names);
+        console.log('quote.graphic.items.'+_idx+'.print_on_item_names set to:',_print_on_item_names);
+      }, 500);
+      
+    },
     _getPaletteInfo: function(e){
 
       // options with defaults (not required)
@@ -899,8 +924,10 @@
     },
     _submitQuote: function(){
       console.log('submit quote!');
-      
+      this.set('quote.submitted', new Date);
+
       var params = {};
+      params["id"] = this.quoteID;
       params["name"] = this.quote.client_contact_information.items[0].value;
       params["phone"] = this.quote.client_contact_information.items[1].value;
       params["email"] = this.quote.client_contact_information.items[2].value;
@@ -912,7 +939,7 @@
       this.$.rebelquote.generateRequest();
 
       console.log('sending params:',params);
-      this.set('quote.submitted', new Date);
+      
     },
     _handleAjaxPostResponse: function(e){
       console.log('_handleAjaxPostResponse! e',e);

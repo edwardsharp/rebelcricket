@@ -315,7 +315,7 @@
         notify: false,
         value: function() { 
           if(window.location.hash === ''){
-            window.location.hash = generateGUID();
+            window.location.hash = generateID();
           }
           return window.location.hash.replace(/#/,'');
         }
