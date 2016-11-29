@@ -172,6 +172,16 @@ class RebelGfx
 
 end
 
+class RebelPage
+  include DataMapper::Resource
+
+  property :id, String, key: true, unique: true
+  # property :rebel_quote_id, String
+  property :created_at, DateTime
+  property :data, Json
+
+end
+
 # finalize the DataMapper models.
 DataMapper.finalize
 
@@ -266,6 +276,14 @@ post '/rebelgfx' do
     halt 500
   end
 
+end
+
+get '/rebelpages' do 
+  RebelPage.get(params[:page]).data.to_json
+end
+
+get '/rebelvendor/companycasuals.json' do
+  send_file './public/companycasuals.json'
 end
 
 get '/tmpl' do

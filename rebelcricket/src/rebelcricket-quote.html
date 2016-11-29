@@ -28,6 +28,7 @@
 <link rel="import" href="../bower_components/paper-menu-button/paper-menu-button.html">
 <link rel="import" href="../bower_components/paper-icon-button/paper-icon-button.html">
 <link rel="import" href="../bower_components/iron-ajax/iron-ajax.html">
+<link rel="import" href="../bower_components/paper-spinner/paper-spinner.html">
 
 <link rel="import" href="shared-styles.html">
 
@@ -217,6 +218,17 @@
         <paper-button class="custom">I don't know</paper-button>
         <paper-button class="custom">Something else</paper-button>
       </div> -->
+    </paper-dialog>
+
+    <paper-dialog id="submitFeedback">
+      <h2>Quote Submission</h2>
+      <paper-dialog-scrollable>
+        <p id="submitFeedbackText">Thank you for submitting a quote request! <br><br> We'll get back to you shortly with an estimate and/or additional questions for the service(s) you requested.</p>
+      </paper-dialog-scrollable>
+
+      <div class="buttons">
+        <paper-button class="custom" dialog-confirm autofocus>Okay</paper-button>
+      </div>
     </paper-dialog>
 
     <div>
@@ -440,6 +452,9 @@
 
               <label for="quoteDesignFile">&nbsp;Upload Image file</label>
               <input id="quoteDesignFile" type="file"></input>
+
+              <paper-spinner id="quoteDesingUploadSpinner" alt="Uploading File..."></paper-spinner>
+              <span id="quoteDesignUploadFeedback"></span>
             </div>
 
 
@@ -958,9 +973,14 @@
     },
     _handleAjaxQuotePostResponse: function(e){
       console.log('_handleAjaxQuotePostResponse! e',e);
+      this.$.submitFeedbackText.innerHTML = "Thank you for submitting a quote request! <br><br> We'll get back to you shortly with an estimate and/or additional questions for the service(s) you requested.<br><br>";
+      //window.location.href ?
+      this.$.submitFeedback.open();
     },
     _handleAjaxQuotePostError: function(e){
       console.log('_handleAjaxQuotePostError! e:',e);
+      this.$.submitFeedback.open();
+      this.$.submitFeedbackText.innerHTML = 'ERROR! Could not submit your quote request. Sorry about that. :/ <br><br> If this form does not work for you please email your request to <a href="mailto: rebelcricket@gmail.com">rebelcricket@gmail.com</a>.';
     },
     _handleAjaxGfxPostResponse: function(e){
       // console.log('_handleAjaxGfxPostResponse! e.detail.response.id',e.detail.response.id);
@@ -969,10 +989,14 @@
       graphic_item.attachment_id = e.detail.response.id;
       graphic_item.attachment_url = e.detail.response.url;
       this.push('quote.graphic.items', graphic_item);
+      this.$.quoteDesingUploadSpinner.active = false;
+      this.$.quoteDesignUploadFeedback.innerHTML = '';
       // _this.async(function(){  }, 500);
     },
     _handleAjaxGfxPostError: function(e){
       console.log('_handleAjaxGfxPostError! e:',e);
+      this.$.quoteDesingUploadSpinner.active = false;
+      this.$.quoteDesignUploadFeedback.innerHTML = 'ERROR! Could not upload that file. Please try again or choose a different file. If this form does not work for you please email your graphics to <a href="mailto: rebelcricket@gmail.com">rebelcricket@gmail.com</a>.';
     },
     ready: function(){
 
@@ -985,27 +1009,29 @@
       input.addEventListener('change', function () {
         var file = input.files[0]; // file is a Blob
 
-        if(_this.quote._attachments == undefined){
+        // if(_this.quote._attachments == undefined){
 
-          var attachment = {};
+        //   var attachment = {};
         
-          attachment[file.name] = {
-            type: file.type,
-            content_type: file.type,
-            data: file
-          }
-          _this.set('quote._attachments', attachment);
-        }else{
+        //   attachment[file.name] = {
+        //     type: file.type,
+        //     content_type: file.type,
+        //     data: file
+        //   }
+        //   _this.set('quote._attachments', attachment);
+        // }else{
 
-          var attachments = _this.quote._attachments;
+        //   var attachments = _this.quote._attachments;
 
-          attachments[file.name] = {
-            type: file.type,
-            content_type: file.type,
-            data: file
-          }
-          _this.set('quote._attachments', attachments);
-        }
+        //   attachments[file.name] = {
+        //     type: file.type,
+        //     content_type: file.type,
+        //     data: file
+        //   }
+        //   _this.set('quote._attachments', attachments);
+        // }
+
+        _this.$.quoteDesingUploadSpinner.active = true;
 
         var params = {};
         params["id"] = _this.quoteID;

@@ -1,14 +1,7 @@
 <link rel="import" href="../bower_components/polymer/polymer.html">
-
-<link rel="import" href="../bower_components/app-pouchdb/pouchdb.html">
-<link rel="import" href="../bower_components/app-pouchdb/app-pouchdb-database-behavior.html">
-<!-- <link rel="import" href="../bower_components/app-pouchdb/app-pouchdb-conflict-resolution.html">
-<link rel="import" href="../bower_components/app-pouchdb/app-pouchdb-index.html">
-<link rel="import" href="../bower_components/app-pouchdb/app-pouchdb-query.html">  -->
-<link rel="import" href="../bower_components/app-pouchdb/app-pouchdb-document.html">
-
 <link rel="import" href="../bower_components/l2t-paper-slider/l2t-paper-slider.html">
 <link rel="import" href="../bower_components/paper-button/paper-button.html">
+<link rel="import" href="../bower_components/iron-ajax/iron-ajax.html">
 
 <link rel="import" href="shared-styles.html">
 
@@ -35,11 +28,14 @@
     }
     </style>
 
-    <app-pouchdb-document
-      db-name="http://rebelcricket.lacuna.club:5984/pages"
-      doc-id="about"
-      data="{{about}}">
-    </app-pouchdb-document>
+    <iron-ajax
+      auto
+      url="http://localhost:3000/rebelpages"
+      params='{"page":"about"}'
+      handle-as="json"
+      on-response="_handlePageResponse">
+    </iron-ajax>
+
     
     <div class="container">
       
@@ -80,9 +76,12 @@
     Polymer({
 
       is: 'rebelcricket-about',
-      behaviors: [
-        Polymer.AppPouchDBDatabaseBehavior
-      ],
+      properties: {
+        about: {
+          type: Object,
+          notify: true
+        }
+      },
       _getTotalSlides: function(doc){
         try{
           console.log('doc:',doc);
@@ -105,6 +104,9 @@
           }
           
       },
+      _handlePageResponse: function(e) {
+        this.set('about',e.detail.response);
+      }
 
     });
 

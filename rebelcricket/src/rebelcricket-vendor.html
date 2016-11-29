@@ -1,10 +1,8 @@
 <link rel="import" href="../bower_components/polymer/polymer.html">
 <link rel="import" href="../bower_components/app-pouchdb/pouchdb.html">
 <link rel="import" href="../bower_components/app-pouchdb/app-pouchdb-database-behavior.html">
-<!-- <link rel="import" href="../bower_components/app-pouchdb/app-pouchdb-conflict-resolution.html">
-<link rel="import" href="../bower_components/app-pouchdb/app-pouchdb-index.html">
-<link rel="import" href="../bower_components/app-pouchdb/app-pouchdb-query.html">  -->
 <link rel="import" href="../bower_components/app-pouchdb/app-pouchdb-document.html">
+<link rel="import" href="../bower_components/iron-ajax/iron-ajax.html">
 
 <link rel="import" href="../bower_components/paper-item/paper-item.html">
 <link rel="import" href="../bower_components/paper-listbox/paper-listbox.html">
@@ -39,14 +37,10 @@
 
     .left{
       width: 350px;
-     
-      
       overflow-x: hidden;
       overflow-y: scroll;
       padding: 1em;
     }
-
-
 
     .heading {
       padding: 10px 15px;
@@ -112,12 +106,13 @@
     }
     </style>
 
-
-    <app-pouchdb-document
-      db-name="http://rebelcricket.lacuna.club:5984/products"
-      doc-id="companycasual.com"
-      data="{{companycasual}}">
-    </app-pouchdb-document>
+    <iron-ajax
+      auto
+      url="http://localhost:3000/rebelvendor/companycasuals.json"
+      handle-as="json"
+      on-response="_handleProductsResponse"
+      debounce-duration="500">
+    </iron-ajax>
     
     <app-pouchdb-document
       db-name="vendorItem"
@@ -127,7 +122,7 @@
 
     <div class="scrollContainer">
       
-      <template is="dom-if" if="[[!companycasual.products_by_sub_item]]">
+      <template is="dom-if" if="[[!companycasual]]">
         Loading items...
       </template>
 
@@ -307,17 +302,17 @@
       },
       _filterProducts: function(by_str){
         // console.log('_filterProducts by_str:',by_str);
-        this.set('filteredProducts', _.filter(this.companycasual.products_by_sub_item, function(item){
+        this.set('filteredProducts', _.filter(this.companycasual, function(item){
           return item.category == by_str || item.sub_item == by_str;
         }));
       },
       _productCategories(obj){
-        return _.uniq(_.map(obj.products_by_sub_item, function(item){
+        return _.uniq(_.map(obj, function(item){
           return item.category;
         }));
       },
       _productSubCategories(obj, category){
-        return _.uniq(_.map(_.filter(obj.products_by_sub_item, function(item){
+        return _.uniq(_.map(_.filter(obj, function(item){
           return item.category == category;
         }), function(item){
           return item.sub_item;
@@ -389,7 +384,13 @@
         }
         // console.log('vendor vendorItem:',this.vendorItem);
         this.notifyPath('vendorItem.colorsSelected.'+e.model.item.name);
+      },
+      _handleProductsResponse: function(e){
+        console.log('_handleProductsResponse! e.detail.response.length:', e.detail.response.length);
+        this.set('companycasual', e.detail.response);
       }
+
+      
     });
 
   </script>

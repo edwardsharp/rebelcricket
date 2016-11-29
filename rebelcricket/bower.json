@@ -21,7 +21,7 @@
     "iron-form": "^1.1.4",
     "iron-ajax": "^1.4.3",
     "paper-input": "^1.1.20",
-    "paper-spinner": "^1.2.1",
+    "paper-spinner": "PolymerElements/paper-spinner#^1.2.1",
     "paper-toggle-button": "^1.2.1",
     "paper-item": "^1.2.1",
     "paper-listbox": "^1.1.2",
