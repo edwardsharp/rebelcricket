@@ -85,9 +85,9 @@
               </a>
             </div>
             <div class="col s4 center">
-              <a href="/contact">
-                <paper-button id="contact" class="custom">
-                  CONTACT
+              <a href="/quote">
+                <paper-button id="quote" class="custom">
+                  QUOTE
                 </paper-button>
               </a>
             </div>
@@ -115,7 +115,7 @@
         // console.log('FOOTER _routePageChanged:',page);
         this.toggleClass('selected', page == 'about', this.$.about);
         this.toggleClass('selected', page.match(/service/), this.$.services);
-        this.toggleClass('selected', page == 'contact', this.$.contact);
+        this.toggleClass('selected', page == 'quote', this.$.quote);
       }
 
     });
