@@ -418,8 +418,9 @@ ul.sidebar li a h1,ul.sidebar li a h2,ul.sidebar li a h3,ul.sidebar li a h4,ul.s
               <% @quote["graphic"]["items"].each do |item| %>
                   <tr>
                     <td align="left" colspan="12">
-                      <a href="http://rebelcricket.lacuna.club:5984/quotes/<%= @quote["_id"] %>/<%= item["attachment_id"] %>" title="link to graphic"><%= item["attachment_id"] %></a>
-                      <img src="http://rebelcricket.lacuna.club:5984/quotes/<%= @quote["_id"] %>/<%= item["attachment_id"] %>" class="responsive-img quoteDesignImg" crossOrigin="Anonymous">
+                     <!--  <img src="<%= item["attachment_url"] %>" class="responsive-img quoteDesignImg"> -->
+                      <a href="<%= item["attachment_url"] %>" title="link to graphic"><%= item["attachment_id"] %></a>
+                      
                     </td>
                   </tr>
                   <tr>
@@ -536,9 +537,10 @@ ul.sidebar li a h1,ul.sidebar li a h2,ul.sidebar li a h3,ul.sidebar li a h4,ul.s
                                       
                         <h5 class="white">Contact Info:</h5>                       
                         <p>
-                          Phone: <strong class="white">503‑545‑1450</strong><br/>
+                          Phone: <strong class="white"><a href="tel://1-503-545-2011">503‑545‑1450</a></strong><br/>
                           Email: <strong class="white">rebelcricket@gmail.com</strong><br/>
                           Web: <strong class="white"><a href="http://rebelcricket.com">http://rebelcricket.com</a></strong>
+                          Address: <strong class="white">5040 SE Milwaukie Ave. Portland, OR 97202 </strong>
                         </p>
                 
                       </td>

@@ -178,7 +178,7 @@
     </app-pouchdb-conflict-resolution>
 
     <app-pouchdb-document
-      db-name="http://rebelcricket.lacuna.club:5984/quotes"
+      db-name="quotes"
       doc-id="{{quoteID}}"
       data="{{quote}}">
     </app-pouchdb-document>
@@ -195,8 +195,17 @@
       method="POST"
       content-type="application/json"
       handle-as="json"
-      on-response="_handleAjaxPostResponse"
-      on-error="_handleAjaxPostError"
+      on-response="_handleAjaxQuotePostResponse"
+      on-error="_handleAjaxQuotePostError"
+      >
+    </iron-ajax>
+
+    <iron-ajax
+      id="rebelgfx"
+      url="http://localhost:3000/rebelgfx"
+      method="POST"
+      on-response="_handleAjaxGfxPostResponse"
+      on-error="_handleAjaxGfxPostError"
       >
     </iron-ajax>
 
@@ -364,15 +373,15 @@
                   <div class="col s3">
                     <!-- localhost rebelcricket.lacuna.club -->
                     <!-- http://localhost:5984/quotes/[[quoteID]]/[[item.attachment_id]] -->
-                    <a on-tap="_getPaletteInfo">
-                      <img src="http://rebelcricket.lacuna.club:5984/quotes/[[quoteID]]/[[item.attachment_id]]" class="responsive-img quoteDesignImg" crossOrigin="Anonymous">
-                    </a>
+                    <!-- <a on-tap="_getPaletteInfo"></a> -->
+                      <img src="[[item.attachment_url]]" class="responsive-img quoteDesignImg">
+                    
                   </div>
 
                   <div class="col s9">
                     Print This On <small>select as many as needed.</small>
                     <paper-listbox class="custom" selected-values="{{item.print_on_items}}" on-iron-activate="_printOnItemsChanged" multi>
-                      <template is="dom-repeat" items="{{_printOnItems()}}">
+                      <template is="dom-repeat" items="{{printOnItems}}">
                         <paper-item class="custom" value="[[item]]">[[item]]</paper-item>
                       </template>
                     </paper-listbox>
@@ -526,6 +535,7 @@
         value: function() { 
           if(window.location.hash === ''){
             window.location.hash = generateID();
+            //#TODO: ajax fetch json for this quote from sinatra and set this.quote
           }
           return window.location.hash.replace(/#/,'');
         }
@@ -534,6 +544,10 @@
         type: Array,
         notify: true,
         observer: '_sizeItemsChanged'
+      },
+      printOnItems: {
+        type: Array,
+        notify: true
       },
       dateNeeded: {
         type: Date,
@@ -647,7 +661,7 @@
     },
     _quoteObserver: function(_quote){
       try{
-        console.log('QUOTE _quoteObserver, _quote:',_quote);
+        // console.log('QUOTE _quoteObserver, _quote:',_quote);
 
         var lineItemsTotalPrice = 0
           , lineItemsTotal = 0
@@ -656,8 +670,8 @@
             if(item.selected_sizes.length != item.size_quantity.length){
               // console.log('different sizes selected, need to adjust .apparel_sizes!');
               var _sizes = _.map(item.selected_sizes, function(size){return item.apparel_sizes[size]; });
-              console.log('have sizes:', _sizes );
-              console.log('wut about item.size_quantity? ',item.size_quantity);
+              // console.log('have sizes:', _sizes );
+              // console.log('wut about item.size_quantity? ',item.size_quantity);
               _size_quantity = [];
               _.each(_sizes, function(size,idx){
                 if(_.where(item.size_quantity, {key: size}).length > 0){
@@ -668,7 +682,7 @@
                   _size_proto.key = size;
                   _size_proto.label = size;
                   if(item.prices != undefined && item.prices[idx] != undefined){
-                    console.log('!!!!!!!!!!!!! setting price total to:',item.prices[idx]);
+                    // console.log('!!!!!!!!!!!!! setting price total to:',item.prices[idx]);
                     _size_proto.total = item.prices[idx];
                   }
                   _size_quantity.push(_size_proto);
@@ -713,6 +727,9 @@
           
         
         // console.log('SUPA TOTAL:',lineItemsTotal,' lineItemsTotalPrice:',lineItemsTotalPrice);
+
+
+        this._updatePrintOnItems();
       }catch(err){
         //o noz!
         console.log('o noz! _quoteObserver caught err:',err);
@@ -844,7 +861,7 @@
     //   // console.log('aaarg, this.quote.graphic.items[e.model.index].colors: ',this.quote.graphic.items[e.model.index].colors);
       
     },
-    _printOnItems: function(){
+    _updatePrintOnItems: function(){
       var _itemz = [];
       try{
         _itemz.push( _.map(this.quote.line_items.items, function(item){return _.map(item.brand_style_color, function(i){return i.value;}).join(', ');}) );
@@ -852,14 +869,15 @@
         //o noz!
       }
       _itemz.push( _.map(this.quote.services, function(serv){return 'All '+serv.name;}) );
-      // console.log('_itemz:',_.flatten(_itemz));
-      return _.flatten(_itemz);
+      if( ! _.isEqual(this.printOnItems, _itemz) ){
+        this.set('printOnItems', _.flatten(_itemz));
+      }
     },
     _printOnItemsChanged: function(e){
       var _idx = e.model.index;
       var _item = e.model.item;
       this.async(function(){
-        var __printOnItems = this._printOnItems();
+        var __printOnItems = this.printOnItems;
         var _print_on_item_names = [];
         _.each(_item.print_on_items, function(poi){
           if(__printOnItems[poi]){
@@ -867,7 +885,7 @@
           }
         });
         this.set('quote.graphic.items.'+_idx+'.print_on_item_names', _print_on_item_names);
-        console.log('quote.graphic.items.'+_idx+'.print_on_item_names set to:',_print_on_item_names);
+        // console.log('quote.graphic.items.'+_idx+'.print_on_item_names set to:',_print_on_item_names);
       }, 500);
       
     },
@@ -923,7 +941,7 @@
       
     },
     _submitQuote: function(){
-      console.log('submit quote!');
+      // console.log('submit quote!');
       this.set('quote.submitted', new Date);
 
       var params = {};
@@ -937,20 +955,29 @@
       this.$.rebelquote.body = JSON.stringify(this.quote);
       
       this.$.rebelquote.generateRequest();
-
-      console.log('sending params:',params);
-      
     },
-    _handleAjaxPostResponse: function(e){
-      console.log('_handleAjaxPostResponse! e',e);
+    _handleAjaxQuotePostResponse: function(e){
+      console.log('_handleAjaxQuotePostResponse! e',e);
     },
-    _handleAjaxPostError: function(e){
-      console.log('_handleAjaxPostError! e:',e);
+    _handleAjaxQuotePostError: function(e){
+      console.log('_handleAjaxQuotePostError! e:',e);
+    },
+    _handleAjaxGfxPostResponse: function(e){
+      // console.log('_handleAjaxGfxPostResponse! e.detail.response.id',e.detail.response.id);
+       
+      var graphic_item = quoteModel.graphic_item_proto;
+      graphic_item.attachment_id = e.detail.response.id;
+      graphic_item.attachment_url = e.detail.response.url;
+      this.push('quote.graphic.items', graphic_item);
+      // _this.async(function(){  }, 500);
+    },
+    _handleAjaxGfxPostError: function(e){
+      console.log('_handleAjaxGfxPostError! e:',e);
     },
     ready: function(){
 
       //this initz the quote couch db doc
-      var db = new PouchDB('http://rebelcricket.lacuna.club:5984/quotes');
+      //var db = new PouchDB('http://rebelcricket.lacuna.club:5984/quotes');
 
       //file upload
       var input = this.$.quoteDesignFile;
@@ -980,10 +1007,16 @@
           _this.set('quote._attachments', attachments);
         }
 
-        var graphic_item = quoteModel.graphic_item_proto;
-        graphic_item.attachment_id = file.name;
+        var params = {};
+        params["id"] = _this.quoteID;
+        params["file"] = _this.quoteID+file.name;
+        _this.$.rebelgfx.params = params;
 
-        _this.async(function(){ _this.push('quote.graphic.items', graphic_item); }, 500);
+        var formData = new FormData();
+        formData.append(params["file"], file);
+
+        _this.$.rebelgfx.body = formData;
+        _this.$.rebelgfx.generateRequest();
 
       });
 

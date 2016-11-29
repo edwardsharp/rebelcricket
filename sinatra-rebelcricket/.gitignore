@@ -1,1 +1,3 @@
 .env
+public/rebelgfx/*
+!public/rebelgfx/.keep

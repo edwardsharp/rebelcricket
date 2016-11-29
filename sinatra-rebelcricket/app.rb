@@ -92,6 +92,7 @@ class RebelQuote
   property :message_sent, Boolean
   property :data, Json
 
+  has n, :rebel_gfx
 
   after :save do
     send_message
@@ -157,6 +158,20 @@ class RebelQuote
 
 end
 
+
+class RebelGfx
+  include DataMapper::Resource
+
+  property :id, String, key: true, unique: true
+  # property :rebel_quote_id, String
+  property :created_at, DateTime
+  property :url, String, length: 255
+  property :path, String, length: 255
+
+  belongs_to :rebel_quote
+
+end
+
 # finalize the DataMapper models.
 DataMapper.finalize
 
@@ -206,7 +221,7 @@ post '/rebelquote' do
     p "RebelQuote exists! goona destroy!"
     @rebel_quote = RebelQuote.get(params["id"])
     created_at = @rebel_quote.created_at
-    @rebel_quote.destroy
+    @rebel_quote.destroy!
   end
 
   @rebel_quote = RebelQuote.new(params)
@@ -230,13 +245,26 @@ end
 
 post '/rebelgfx' do 
 
-  # if params[:file]
-  #   filename = params[:file][:filename]
-  #   tempfile = params[:file][:tempfile]
-  #   target = "public/files/#{filename)
+  if params[:file] and params[:id]
 
-  #   File.open(target, 'wb') {|f| f.write tempfile.read }
-  # end
+    target = "public/rebelgfx/#{params[:file]}"
+
+    File.open(target, 'wb') {|f| f.write params[params[:file]][:tempfile].read }
+
+    rebel_gfx = RebelGfx.new(
+      id: params[:file], 
+      rebel_quote_id: params[:id],
+      created_at: Time.now, 
+      url: "http://localhost:3000/rebelgfx/#{params[:file]}",
+      path: target
+    )
+    rebel_gfx.save!
+    
+    p "file uploaded! #{params[:file]}"
+    rebel_gfx.to_json
+  else
+    halt 500
+  end
 
 end
 
