@@ -11,7 +11,7 @@ configure do
   enable :cross_origin
 end
 
-require 'dotenv'
+# require 'dotenv'
 
 Dotenv.load unless ENV['RACK_ENV'] == 'production'
 
