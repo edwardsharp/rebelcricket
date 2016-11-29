@@ -265,7 +265,7 @@ post '/rebelgfx' do
       id: params[:file], 
       rebel_quote_id: params[:id],
       created_at: Time.now, 
-      url: "http://localhost:3000/rebelgfx/#{params[:file]}",
+      url: "http://rebelcricket.lacuna.club/rebelgfx/#{params[:file]}",
       path: target
     )
     rebel_gfx.save!
@@ -286,18 +286,12 @@ get '/rebelvendor/companycasuals.json' do
   send_file './public/companycasuals.json'
 end
 
-get '/tmpl' do
-
-
-  @rebel_quote = RebelQuote.get(params["id"])
-
-  halt 404 if @rebel_quote.nil?
-
-  @quote = @rebel_quote.data
-
-  erb :tmpl
-
-end
+# get '/tmpl' do
+#   @rebel_quote = RebelQuote.get(params["id"])
+#   halt 404 if @rebel_quote.nil?
+#   @quote = @rebel_quote.data
+#   erb :tmpl
+# end
 
 # get '/rebel_contacts/:id' do
 #   content_type :json

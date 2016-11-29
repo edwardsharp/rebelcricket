@@ -192,7 +192,7 @@
 
     <iron-ajax
       id="rebelquote"
-      url="http://localhost:3000/rebelquote"
+      url="http://rebelcricket.lacuna.club/rebelquote"
       method="POST"
       content-type="application/json"
       handle-as="json"
@@ -203,7 +203,7 @@
 
     <iron-ajax
       id="rebelgfx"
-      url="http://localhost:3000/rebelgfx"
+      url="http://rebelcricket.lacuna.club/rebelgfx"
       method="POST"
       on-response="_handleAjaxGfxPostResponse"
       on-error="_handleAjaxGfxPostError"
@@ -383,8 +383,6 @@
               <template is="dom-repeat" items="{{quote.graphic.items}}">
                 <div class="row graphicItems">
                   <div class="col s3">
-                    <!-- localhost rebelcricket.lacuna.club -->
-                    <!-- http://localhost:5984/quotes/[[quoteID]]/[[item.attachment_id]] -->
                     <!-- <a on-tap="_getPaletteInfo"></a> -->
                       <img src="[[item.attachment_url]]" class="responsive-img quoteDesignImg">
                     
@@ -999,10 +997,7 @@
       this.$.quoteDesignUploadFeedback.innerHTML = 'ERROR! Could not upload that file. Please try again or choose a different file. If this form does not work for you please email your graphics to <a href="mailto: rebelcricket@gmail.com">rebelcricket@gmail.com</a>.';
     },
     ready: function(){
-
-      //this initz the quote couch db doc
-      //var db = new PouchDB('http://rebelcricket.lacuna.club:5984/quotes');
-
+      
       //file upload
       var input = this.$.quoteDesignFile;
       var _this = this;
