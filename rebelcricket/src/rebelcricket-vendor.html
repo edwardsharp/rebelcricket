@@ -108,7 +108,7 @@
 
     <iron-ajax
       auto
-      url="http://rebelcricket.lacuna.club/rebelvendor/companycasuals.json"
+      url="http://rebelcricket.lacuna.club:3000/api/rebelvendor/companycasuals.json"
       handle-as="json"
       on-response="_handleProductsResponse"
       debounce-duration="500">
@@ -288,7 +288,9 @@
         }
       },
       _lineItemObserver: function(_lineItem){
-        // console.log('VENDOR _lineItemObserver _lineItem:',_lineItem);
+
+        
+        console.log('VENDOR _lineItemObserver _lineItem:',_lineItem);
       },
       _noFilteredProducts: function(){
         // console.log('Object.keys(filteredProducts):',Object.keys(filteredProducts));
@@ -389,7 +391,6 @@
         console.log('_handleProductsResponse! e.detail.response.length:', e.detail.response.length);
         this.set('companycasual', e.detail.response);
       }
-
       
     });
 

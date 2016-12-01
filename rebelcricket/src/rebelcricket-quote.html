@@ -192,7 +192,7 @@
 
     <iron-ajax
       id="rebelquote"
-      url="http://rebelcricket.lacuna.club/rebelquote"
+      url="http://rebelcricket.lacuna.club:3000/api/rebelquote"
       method="POST"
       content-type="application/json"
       handle-as="json"
@@ -203,7 +203,7 @@
 
     <iron-ajax
       id="rebelgfx"
-      url="http://rebelcricket.lacuna.club/rebelgfx"
+      url="http://rebelcricket.lacuna.club:3000/api/rebelgfx"
       method="POST"
       on-response="_handleAjaxGfxPostResponse"
       on-error="_handleAjaxGfxPostError"
@@ -958,14 +958,14 @@
       this.set('quote.submitted', new Date);
 
       var params = {};
-      params["id"] = this.quoteID;
+      params["quote_number"] = this.quoteID;
       params["name"] = this.quote.client_contact_information.items[0].value;
       params["phone"] = this.quote.client_contact_information.items[1].value;
       params["email"] = this.quote.client_contact_information.items[2].value;
       params["org"] = this.quote.client_contact_information.items[3].value;
 
       this.$.rebelquote.params = params;
-      this.$.rebelquote.body = JSON.stringify(this.quote);
+      this.$.rebelquote.body = JSON.stringify({quote: {data: this.quote } });
       
       this.$.rebelquote.generateRequest();
     },
@@ -1029,12 +1029,12 @@
         _this.$.quoteDesingUploadSpinner.active = true;
 
         var params = {};
-        params["id"] = _this.quoteID;
-        params["file"] = _this.quoteID+file.name;
+        params["quote_number"] = _this.quoteID;
+        params["filename"] = _this.quoteID+'-'+file.name;
         _this.$.rebelgfx.params = params;
 
         var formData = new FormData();
-        formData.append(params["file"], file);
+        formData.append('file', file);
 
         _this.$.rebelgfx.body = formData;
         _this.$.rebelgfx.generateRequest();

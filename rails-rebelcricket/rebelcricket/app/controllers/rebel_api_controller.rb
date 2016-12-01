@@ -28,9 +28,9 @@ class RebelApiController < ApplicationController
   end
 
   # get '/rebelvendor/companycasuals.json' do
-  # def rebelvendor
-  #   send_file './public/companycasuals.json'
-  # end
+  def rebelvendor
+    send_file "#{::Rails.root}/public/companycasuals.json"
+  end
 
   # post '/rebelquote' do
   def rebelquote
@@ -46,7 +46,7 @@ class RebelApiController < ApplicationController
     end
 
     # request.body.rewind
-    @rebel_quote.data = quote_params[:data]
+    @rebel_quote.data = params[:quote][:data]
     # p "rebelquote body: #{@rebel_quote.data}"
     
     if @rebel_quote.save
@@ -66,15 +66,15 @@ class RebelApiController < ApplicationController
       File.open(path, 'wb') {|f| f.write gfx_params[:file].read }
 
       rebel_gfx = RebelGfx.new(
-        filename: gfx_params[:file], 
+        filename: gfx_params[:filename], 
         rebel_quote_number: gfx_params[:quote_number],
-        url: "http://rebelcricket.lacuna.club/rebelgfx/#{gfx_params[:file]}",
+        url: "http://rebelcricket.lacuna.club/rebelgfx/#{gfx_params[:filename]}",
         path: path
       )
 
       rebel_gfx.save!
       
-      Rails.logger.debug "file uploaded! #{gfx_params[:file]}"
+      Rails.logger.debug "file uploaded! #{gfx_params[:filename]}"
 
       render json: rebel_gfx.to_json
     else
@@ -86,7 +86,7 @@ class RebelApiController < ApplicationController
   protected
   def quote_params
     params.require(:quote).permit(
-      :number, :name, :phone, :email, :org, :data
+      :number, :name, :phone, :email, :org
     )
   end
 
