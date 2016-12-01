@@ -307,7 +307,6 @@ ul.sidebar li a h1,ul.sidebar li a h2,ul.sidebar li a h3,ul.sidebar li a h4,ul.s
             </table>
             <table>
               <% if @quote["client_contact_information"] and @quote["client_contact_information"]["items"] %>
-                <% Rails.logger.debug "\n\n EACH! \n\n" %>
                 <% @quote["client_contact_information"]["items"].each do |item| %>
                   <tr>
                     <td align="left">

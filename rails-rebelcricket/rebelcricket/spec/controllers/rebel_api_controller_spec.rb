@@ -25,8 +25,6 @@ RSpec.describe RebelApiController, type: :controller do
 
   describe "POST /rebelquote" do
     
-    let(:user_params) { {"email" => user.email, "password" => user.password} }
-
     let(:rebel_quote) { {
       number: '', 
       name: '', 
@@ -48,6 +46,32 @@ RSpec.describe RebelApiController, type: :controller do
       expect(response.body).to look_like_json
       expect(body_as_json[:data]).to match(rebel_quote[:data])
     end
+  end
+
+
+  describe "POST /rebelgfx" do 
+
+    before do
+      post :rebelgfx, params: {
+        quote_number: '12345-abcd', 
+        filename: '4ch.png',  
+        file: Rack::Test::UploadedFile.new("#{::Rails.root}/spec/fixtures/4ch.png", "image/png")
+      }
+    end
+
+    it "returns http success" do
+      expect(response).to have_http_status(:success)
+    end
+
+    it "should be able to upload a file" do
+      expect(response.body).to look_like_json
+      expect(File.file?("#{::Rails.root}/public/rebelgfx/4ch.png")).to be true
+    end
+
+    after(:all) do
+      File.delete("#{::Rails.root}/public/rebelgfx/4ch.png")
+    end
+
   end
 
 

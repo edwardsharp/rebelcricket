@@ -22,9 +22,9 @@ ActiveRecord::Schema.define(version: 20161130050409) do
   end
 
   create_table "rebel_gfxes", force: :cascade do |t|
-    t.datetime "created_at",     null: false
-    t.datetime "updated_at",     null: false
-    t.integer  "rebel_quote_id"
+    t.datetime "created_at",         null: false
+    t.datetime "updated_at",         null: false
+    t.string   "rebel_quote_number"
     t.string   "filename"
     t.string   "url"
     t.string   "path"

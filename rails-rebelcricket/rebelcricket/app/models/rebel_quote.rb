@@ -1,6 +1,6 @@
 class RebelQuote < ApplicationRecord
 
-  has_many :rebel_gfx
+  # has_many :rebel_gfx
 
   after_save :send_message
 
@@ -48,11 +48,10 @@ class RebelQuote < ApplicationRecord
     # mb_obj.set_delivery_time("tomorrow 8:00AM", "PST");
 
     begin
-      mg_client.send_message ENV['MAILGUN_DOMAIN'], mb_obj
+      mg_client.send_message ENV['MAILGUN_DOMAIN'], mb_obj unless Rails.env.test?
       self.update_attribute :message_sent, true
-      p "QUOTE MESSAGE SENT!"
     rescue Exception => err
-      p "COULD NOT SEND QUOTE MESSAGE! err: #{err.inspect}"
+      Rails.logger.debug "COULD NOT SEND QUOTE MESSAGE! err: #{err.inspect}"
     end
 
     # result = mg_client.send_message(ENV['MAILGUN_DOMAIN'], message_params).to_h!

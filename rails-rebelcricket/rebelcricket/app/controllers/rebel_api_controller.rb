@@ -59,18 +59,19 @@ class RebelApiController < ApplicationController
   # post '/rebelgfx' do 
   def rebelgfx
 
-    if gfx_params[:file] and gfx_params[:filename]
+    if gfx_params[:file] and gfx_params[:filename] and gfx_params[:quote_number]
 
-      target = "public/rebelgfx/#{gfx_params[:file]}"
+      path = "#{::Rails.root}/public/rebelgfx/#{gfx_params[:filename]}"
 
-      File.open(target, 'wb') {|f| f.write gfx_params[gfx_params[:file]][:tempfile].read }
+      File.open(path, 'wb') {|f| f.write gfx_params[:file].read }
 
       rebel_gfx = RebelGfx.new(
         filename: gfx_params[:file], 
-        rebel_quote_id: RebelQuote.find_by(number: gfx_params[:quote_number]),
+        rebel_quote_number: gfx_params[:quote_number],
         url: "http://rebelcricket.lacuna.club/rebelgfx/#{gfx_params[:file]}",
-        path: target
+        path: path
       )
+
       rebel_gfx.save!
       
       Rails.logger.debug "file uploaded! #{gfx_params[:file]}"
@@ -90,7 +91,7 @@ class RebelApiController < ApplicationController
   end
 
   def gfx_params
-    params.permit(:quote_number,:file)
+    params.permit(:quote_number,:file,:filename)
   end
 
   def page_params
