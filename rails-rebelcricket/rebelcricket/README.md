@@ -36,6 +36,10 @@ rails api app for handling data storage, email, & other stuff for a polymer weba
 
 * Misc:
 
+  docker build -f docker_util/rebelcricket/Dockerfile -t hub.sked.site:5000/rebelcricket .
+  
+  docker push hub.sked.site:5000/rebelcricket
+
   ApiKey.create!
 
   curl http://localhost:3000/api/pages -H 'Authorization: Token token="afbadb4ff8485c0adcba486b4ca90cc4"'

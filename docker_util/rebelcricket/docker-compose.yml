@@ -1,22 +1,24 @@
 web:
-  restart: always
+  # restart: always
   image: hub.sked.site:5000/rebelcricket
   environment:
-    - DATABASE_URL=postgres://rebelcricket@pg/rebelcricket
-    - MAILGUN_API_KEY=key
+    - SECRET_KEY_BASE=8679137f1e484425997950b38ca5e5c9771e7cfc2fceab970af89169fc4ee7fd8bcf86ba694e1c467a958855b238300cee85efb6a4d9edcb288251246e027824
+    - PG_DATABASE_NAME=rebelcricket_production
+    - PG_DATABASE_USER=rebelcricket
+    - PG_DATABASE_PASSWORD=zYB27Bzwu54yNVgWe
+    - MAILGUN_API_KEY=key-4102a9eaca2beb5a180e724f8f563bd1
     - MAILGUN_DOMAIN=mg.lacuna.club
     - MAIL_GOES_TO=edward@edwardsharp.net
-    - SERVE_TEST_INDEX=false
     - VIRTUAL_HOST=http://rebelcricket.lacuna.club
   ports:
-    - "80:8080"
+    - "8080:8080"
   links:
     - pg:pg
-  restart: always
-  volumes: 
-    - /home/core/rebelgfx:/rebelcricket/public/rebelgfx
+  # restart: always
+  # volumes: 
+  #   - /home/core/rebelgfx:/rebelcricket/public/rebelgfx
 pg:
-  restart: always
+  # restart: always
   image: postgres:9.6
   volumes:
     - ./init-user-db.sh:/docker-entrypoint-initdb.d/init-user-db.sh
