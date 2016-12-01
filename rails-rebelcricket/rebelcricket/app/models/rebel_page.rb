@@ -1,0 +1,2 @@
+class RebelPage < ApplicationRecord
+end
