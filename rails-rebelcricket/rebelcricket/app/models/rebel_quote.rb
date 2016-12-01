@@ -49,11 +49,10 @@ class RebelQuote < ApplicationRecord
 
     begin
       mg_client.send_message ENV['MAILGUN_DOMAIN'], mb_obj
-      self.message_sent = true
+      self.update_attribute :message_sent, true
       p "QUOTE MESSAGE SENT!"
-      save_self
-    rescue 
-      p "COULD NOT SEND QUOTE MESSAGE!"
+    rescue Exception => err
+      p "COULD NOT SEND QUOTE MESSAGE! err: #{err.inspect}"
     end
 
     # result = mg_client.send_message(ENV['MAILGUN_DOMAIN'], message_params).to_h!
