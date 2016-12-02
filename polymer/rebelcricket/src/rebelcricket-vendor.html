@@ -1,6 +1,6 @@
 <link rel="import" href="../bower_components/polymer/polymer.html">
 <link rel="import" href="../bower_components/app-pouchdb/pouchdb.html">
-<link rel="import" href="../bower_components/app-pouchdb/app-pouchdb-database-behavior.html">
+
 <link rel="import" href="../bower_components/app-pouchdb/app-pouchdb-document.html">
 <link rel="import" href="../bower_components/iron-ajax/iron-ajax.html">
 
@@ -108,7 +108,7 @@
 
     <iron-ajax
       auto
-      url="http://rebelcricket.lacuna.club:8080/api/rebelvendor/companycasuals.json"
+      url="http://rebelcricket.lacuna.club/api/rebelvendor/companycasuals.json"
       handle-as="json"
       on-response="_handleProductsResponse"
       debounce-duration="500">
@@ -242,9 +242,6 @@
     Polymer({
 
       is: 'rebelcricket-vendor',
-      // behaviors: [
-      //   Polymer.AppPouchDBDatabaseBehavior
-      // ],
       properties: {
         lineItem: {
           type: Object,
@@ -288,9 +285,7 @@
         }
       },
       _lineItemObserver: function(_lineItem){
-
-        
-        console.log('VENDOR _lineItemObserver _lineItem:',_lineItem);
+        // console.log('VENDOR _lineItemObserver _lineItem:',_lineItem);
       },
       _noFilteredProducts: function(){
         // console.log('Object.keys(filteredProducts):',Object.keys(filteredProducts));
@@ -388,7 +383,7 @@
         this.notifyPath('vendorItem.colorsSelected.'+e.model.item.name);
       },
       _handleProductsResponse: function(e){
-        console.log('_handleProductsResponse! e.detail.response.length:', e.detail.response.length);
+        // console.log('_handleProductsResponse! e.detail.response.length:', e.detail.response.length);
         this.set('companycasual', e.detail.response);
       }
       

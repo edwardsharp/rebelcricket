@@ -192,7 +192,7 @@
 
     <iron-ajax
       id="rebelquote"
-      url="http://rebelcricket.lacuna.club:8080/api/rebelquote"
+      url="http://rebelcricket.lacuna.club/api/rebelquote"
       method="POST"
       content-type="application/json"
       handle-as="json"
@@ -203,7 +203,7 @@
 
     <iron-ajax
       id="rebelgfx"
-      url="http://rebelcricket.lacuna.club:8080/api/rebelgfx"
+      url="http://rebelcricket.lacuna.club/api/rebelgfx"
       method="POST"
       on-response="_handleAjaxGfxPostResponse"
       on-error="_handleAjaxGfxPostError"
@@ -499,7 +499,7 @@
           <div class="row">
             <div class="col s12 m6 offset-m3 center">
 
-              <paper-button class="custom" on-tap="_submitQuote">Submit Quote</paper-button>
+              <paper-button class="custom" on-tap="_submitQuote"><h5>Submit Quote</h5></paper-button>
 
             </div>
           </div>
@@ -955,7 +955,7 @@
     },
     _submitQuote: function(){
       // console.log('submit quote!');
-      this.set('quote.submitted', new Date);
+      
 
       var params = {};
       params["quote_number"] = this.quoteID;
@@ -964,10 +964,26 @@
       params["email"] = this.quote.client_contact_information.items[2].value;
       params["org"] = this.quote.client_contact_information.items[3].value;
 
-      this.$.rebelquote.params = params;
-      this.$.rebelquote.body = JSON.stringify({quote: {data: this.quote } });
+      console.log('paramz:',params);
+
+      if(params["name"] !== '' && params["name"] != undefined && params["email"] !== '' && params["email"] != undefined && this.quote.services.length > 0){
+        this.set('quote.submitted', new Date);
+        this.$.rebelquote.params = params;
+        this.$.rebelquote.body = JSON.stringify({quote: {data: this.quote } });
+        
+        this.$.rebelquote.generateRequest();
+      }else{
+        if(this.quote.services.length == 0){
+         this.$.submitFeedbackText.innerHTML = "ERROR! Please select at least one service. (Note: click 'ADD A SERVICE' button, then select the service you need.)<br><br>";
+        }else{
+          this.$.submitFeedbackText.innerHTML = "ERROR! Please fill our your name and email!<br><br>";
+        }
+        //window.location.href ?
+        this.$.submitFeedback.open();
+      }
+
+
       
-      this.$.rebelquote.generateRequest();
     },
     _handleAjaxQuotePostResponse: function(e){
       console.log('_handleAjaxQuotePostResponse! e',e);
