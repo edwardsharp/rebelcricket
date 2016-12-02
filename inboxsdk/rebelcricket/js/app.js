@@ -196,7 +196,7 @@ var addRebelSidebar = function(threadView, customer) {
 
     threadView.addSidebarContentPanel({
       el: sidebarForThread.get(threadView),
-      title: "Rebel Customers",
+      title: "Rebel Quotes",
       iconUrl: chrome.runtime.getURL('images/rebelcricket.png')
     });
   }

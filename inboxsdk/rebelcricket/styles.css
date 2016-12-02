@@ -1,1 +1,6 @@
 /* rebelcricket styles */
+
+.sidebar {
+	border: thin solid #ccc;
+	padding: 5px;
+}

@@ -1,0 +1,74 @@
+<link rel="import" href="../bower_components/polymer/polymer.html">
+<link rel="import" href="../bower_components/paper-button/paper-button.html">
+<link rel="import" href="../bower_components/iron-ajax/iron-ajax.html">
+
+<link rel="import" href="shared-styles.html">
+
+<dom-module id="rebelcricket-admin">
+
+  <template>
+
+    <style is="custom-style" include="shared-styles">
+
+    @media (max-width: 767px) {
+      
+    }
+    </style>
+
+<!--     <iron-ajax
+      auto
+      url="http://rebelcricket.lacuna.club/api/"
+      params='{"page":"about"}'
+      handle-as="json"
+      on-response="_handlePageResponse">
+    </iron-ajax> -->
+
+    
+    <div class="container">
+      
+      <div class="row">
+        <div class="col s12 center">
+          <h1 class="rebel-heading">Admin</h1>
+        </div>
+      </div>
+
+      <div class="row">
+       
+        <!-- <template is="dom-repeat" items="{{about.items}}">
+          <div class="s6 offset-s3">
+            <h3>[[item.title]]</h3>
+            <p>[[item.description]]</p>
+          </div>
+        </template>
+ -->
+      </div>
+    </div>
+    
+
+   
+  </template>
+
+  <script>
+
+    Polymer({
+
+      is: 'rebelcricket-admin',
+      properties: {
+        apiKey: {
+          type: String,
+          notify: true
+        },
+        pages: {
+          type: Object,
+          notify: true
+        }
+      },
+      _handlePageResponse: function(e) {
+        this.set('pages',e.detail.response);
+      }
+
+    });
+
+  </script>
+
+</dom-module>
