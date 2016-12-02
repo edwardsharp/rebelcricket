@@ -28,6 +28,7 @@ group :development, :test do
   gem 'rspec-rails'
   gem 'rspec'
   gem 'dotenv-rails'
+  gem 'tunnels'
 end
 
 group :development do

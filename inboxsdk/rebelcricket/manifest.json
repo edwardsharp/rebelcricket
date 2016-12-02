@@ -27,7 +27,8 @@
     "images/paid.png",
     "images/unpaid.png",
     "images/cards/*",
-    "configTemplate.html"
+    "configTemplate.html",
+    "sidebarTemplate.html"
   ],
   "manifest_version": 2
 }
