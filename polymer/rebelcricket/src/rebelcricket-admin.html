@@ -1,6 +1,10 @@
 <link rel="import" href="../bower_components/polymer/polymer.html">
 <link rel="import" href="../bower_components/paper-button/paper-button.html">
 <link rel="import" href="../bower_components/iron-ajax/iron-ajax.html">
+<link rel="import" href="../bower_components/app-pouchdb/pouchdb.html">
+<link rel="import" href="../bower_components/app-pouchdb/app-pouchdb-document.html">
+<link rel="import" href="../bower_components/paper-input/paper-input.html">
+<link rel="import" href="../bower_components/paper-input/paper-textarea.html">
 
 <link rel="import" href="shared-styles.html">
 
@@ -14,6 +18,12 @@
       
     }
     </style>
+
+    <app-pouchdb-document
+      db-name="admin"
+      doc-id="admin"
+      data="{{admin}}">
+    </app-pouchdb-document>
 
 <!--     <iron-ajax
       auto
@@ -31,17 +41,16 @@
           <h1 class="rebel-heading">Admin</h1>
         </div>
       </div>
-
+      <template is="dom-if" if="[[needsApiKey]]">
       <div class="row">
-       
-        <!-- <template is="dom-repeat" items="{{about.items}}">
-          <div class="s6 offset-s3">
-            <h3>[[item.title]]</h3>
-            <p>[[item.description]]</p>
-          </div>
-        </template>
- -->
+        <div class="col s6 offset-s3">
+          <paper-input label="Api Key" value="{{admin.apiKey}}"></paper-input>
+        </div>
+
       </div>
+      </template>
+
+
     </div>
     
 
@@ -54,18 +63,43 @@
 
       is: 'rebelcricket-admin',
       properties: {
+        admin: {
+          type: Object,
+          notify: true,
+          observer: '_adminObserver'
+        },
         apiKey: {
           type: String,
-          notify: true
+          notify: true,
+          value: function(){
+            return '';
+          }
+        },
+        needsApiKey: {
+          type: Boolean,
+          notify: true,
+          computed: '_needsApiKey(apiKey)'
         },
         pages: {
           type: Object,
           notify: true
         }
       },
-      _handlePageResponse: function(e) {
-        this.set('pages',e.detail.response);
+      _adminObserver: function(admin){
+        if(this._needsApiKey(admin.apiKey) && admin.apiKey != undefined && admin.apiKey != ''){
+          console.log('api key from pouch:',admin.apiKey);
+          this.set('apiKey', admin.apiKey);
+          this.set('needsApiKey', false);
+        }
+      },
+      _needsApiKey: function(apiKey){
+        console.log('needsApiKey?',apiKey == undefined || apiKey == '');
+        return apiKey == undefined || apiKey == '';
       }
+      // ,
+      // _handlePageResponse: function(e) {
+      //   this.set('pages',e.detail.response);
+      // }
 
     });
 
