@@ -36,6 +36,8 @@ rails api app for handling data storage, email, & other stuff for a polymer weba
 
 * Misc:
 
+  local https, use tunnels!  `rvmsudo tunnels 443 3000`
+
   docker build -f docker_util/rebelcricket/Dockerfile -t hub.sked.site:5000/rebelcricket .
   
   docker push hub.sked.site:5000/rebelcricket
