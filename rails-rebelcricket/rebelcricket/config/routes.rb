@@ -9,4 +9,6 @@ Rails.application.routes.draw do
   get '/api/inboxinfo', to: 'inbox_api#info', as: :inboxinfo
   get '/api/inboxcustomer', to: 'inbox_api#customer', as: :inboxcustomer
 
+  get '/api/validate_api_key', to: 'rebel_api#validate_api_key', as: :rebel_validate_api_key
+
 end

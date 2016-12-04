@@ -1,5 +1,7 @@
 class RebelApiController < ApplicationController
 
+  include ActionController::HttpAuthentication::Token::ControllerMethods
+
   # post '/rebelcontact' do
   # def rebelcontact
     
@@ -21,6 +23,18 @@ class RebelApiController < ApplicationController
   # options '/rebelquote' do 
   #   halt 200
   # end
+
+  # get '/api/validate_api_key'
+  def validate_api_key 
+
+    Rails.logger.debug request.headers.inspect
+
+    if authenticate_token
+      render json: 'ok'
+    else
+      render json: 'Bad credentials', status: :unauthorized
+    end
+  end
 
   # get '/rebelpages' do 
   def rebelpages
@@ -98,5 +112,20 @@ class RebelApiController < ApplicationController
     params.permit(:page)
   end
 
+  # auth with token based authentication
+  def authenticate
+    authenticate_token || render_unauthorized
+  end
+
+  def authenticate_token
+    authenticate_with_http_token do |token, options|
+      return ApiKey.exists?(access_token: token)
+    end
+  end
+
+  def render_unauthorized(realm = "Application")
+    self.headers["WWW-Authenticate"] = %(Token realm="#{realm.gsub(/"/, "")}")
+    render json: 'Bad credentials', status: :unauthorized
+  end
 
 end

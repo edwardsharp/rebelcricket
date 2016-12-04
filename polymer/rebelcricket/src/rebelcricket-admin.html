@@ -36,6 +36,14 @@
       data="{{admin}}">
     </app-pouchdb-document>
 
+    <iron-ajax
+      id="ajaxValidateApiKey"
+      url="http://localhost:3000/api/validate_api_key"
+      headers='{{headers}}'
+      handle-as="json"
+      on-response="_handleValidateApiKeyResponse">
+    </iron-ajax>
+
 <!--     <iron-ajax
       auto
       url="http://rebelcricket.lacuna.club/api/"
@@ -111,10 +119,14 @@
             return '';
           }
         },
-        needsApiKey: {
+        headers: {
+          type: Object,
+          computed: '_header(apiKey)'
+        },
+        hasValidApiKey: {
           type: Boolean,
           notify: true,
-          computed: '_validApiKey(apiKey)'
+          computed: '_validateApiKey(apiKey)'
         },
         pages: {
           type: Object,
@@ -129,10 +141,16 @@
           }
         }
       },
+      _header: function(_apiKey) {
+        console.log('_header _apiKey:',_apiKey);
+        return {'Authorization': 'Token token="'+_apiKey+'"'};
+      },
       _adminObserver: function(admin){
-        if(this._validApiKey(admin.apiKey) && admin.apiKey != undefined && admin.apiKey != ''){
+        if(admin.apiKey != undefined && admin.apiKey != ''){
           console.log('api key from pouch:',admin.apiKey);
-          // this.set('apiKey', admin.apiKey);
+          if(this.apiKey != admin.apiKey){
+            this._validateApiKey(admin.apiKey);
+          }
         }
       },
       _currentPageChanged: function(_currentPage){
@@ -154,15 +172,26 @@
         console.log('_setCurrentPage e.target.getAttribute(page):',e.target.getAttribute('page'));
         this.set('currentPage', e.target.getAttribute('page'));
       },
-      _validApiKey: function(apiKey){
-        console.log('_validApiKey?',apiKey == undefined || apiKey == '');
-        return apiKey == undefined || apiKey == '';
+      _validateApiKey: function(apiKey){
+        console.log('_validateApiKey: ',apiKey == undefined || apiKey == '');
+        this.set('apiKey', apiKey);
+        //return apiKey == undefined || apiKey == '';
+        this.$.ajaxValidateApiKey.generateRequest();
       },
       _toggleDrawer: function(e){
         this.$.drawer.toggle();
       },
+      _handleValidateApiKeyResponse: function(e){
+        console.log('_handleValidateApiKeyResponse e.detail.xhr.statusText:',e.detail.xhr.statusText);
+        if(e.detail.xhr.statusText === 'OK'){
+          this.$.drawerButtonsContainer.hidden = false;
+          this.set('currentPage', 'Pages');
+        }
+      },
       ready: function(){
-        this.$.drawerButtonsContainer.hidden = false;
+        
+
+        // 
       }
       // ,
       // _handlePageResponse: function(e) {
