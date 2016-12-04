@@ -11,6 +11,7 @@
 <link rel="import" href="../bower_components/app-pouchdb/app-pouchdb-document.html">
 <link rel="import" href="../bower_components/paper-input/paper-input.html">
 <link rel="import" href="../bower_components/paper-input/paper-textarea.html">
+<link rel="import" href="../bower_components/paper-spinner/paper-spinner.html">
 
 <link rel="import" href="shared-styles.html">
 
@@ -35,6 +36,11 @@
 
       app-header {
         background-color: white;
+      }
+
+      .rebel-image{
+        max-height: 150px;
+        max-width: 150px;
       }
 
       @media (max-width: 767px) {
@@ -72,6 +78,23 @@
       on-response="_handleUpdatePageResponse">
     </iron-ajax>
 
+    <iron-ajax
+      id="ajaxGetImages"
+      url="http://localhost:3000/api/images"
+      headers='{{headers}}'
+      handle-as="json"
+      last-response="{{images}}">
+    </iron-ajax>
+
+    <iron-ajax
+      id="ajaxCreateImage"
+      url="http://localhost:3000/api/create_image"
+      method="POST"
+      headers='{{headers}}'
+      on-response="_handleAjaxCreateImagePostResponse"
+      on-error="_handleAjaxCreateImagePostError"
+      >
+    </iron-ajax>
 <!--     <iron-ajax
       auto
       url="http://rebelcricket.lacuna.club/api/"
@@ -166,7 +189,24 @@
       </div>
 
       <div id="imagesContainer" hidden>
-        <h1> Images</h1>
+        <div class="row">
+          <div class="col s12 m6 offset-m3">
+            <br><br><br>
+            <label for="rebelImages">&nbsp;Upload Image file</label>
+            <input id="rebelImages" type="file"></input>
+
+            <paper-spinner id="rebelImagesSpinner" alt="Uploading File..."></paper-spinner>
+            <span id="rebelImagesFeedback"></span>
+          </div>
+        </div>
+        <div class="row">
+          <div class="col s12">
+            <template is="dom-repeat" items="[[images]]">
+              <img class="rebel-image" src$="[[item.url]]">
+            </template>
+          </div>
+        </div>
+
       </div>
 
     </app-drawer-layout>
@@ -212,6 +252,10 @@
           value: function(){
             return 'Api Key';
           }
+        },
+        images: {
+          type: Array,
+          notify: true
         }
       },
       _header: function(_apiKey) {
@@ -240,6 +284,7 @@
           this.$.pagesContainer.hidden = false;
           this.$.imagesContainer.hidden = true;
         }else if(_currentPage === 'Images'){
+          this.$.ajaxGetImages.generateRequest();
           this.$.apiKeyContainer.hidden = true;
           this.$.pagesContainer.hidden = true;
           this.$.imagesContainer.hidden = false;
@@ -276,10 +321,37 @@
           return _page_data[_slug].detail_items;
         }
       },
+      _handleAjaxCreateImagePostResponse: function(e){
+        console.log('_handleAjaxCreateImagePostResponse e:',e);
+        this.$.rebelImagesSpinner.active = false;
+        this.$.ajaxGetImages.generateRequest();
+      },
+      _handleAjaxCreateImagePostError: function(e){
+        console.log('_handleAjaxCreateImagePostError e:',e);
+        this.$.rebelImagesSpinner.active = false;
+      },
       ready: function(){
-        
+        //file upload
+        var input = this.$.rebelImages;
+        var _this = this;
+        input.addEventListener('change', function () {
+          var file = input.files[0]; // file is a Blob
 
-        // 
+          _this.$.rebelImagesSpinner.active = true;
+
+          var params = {};
+          params["filename"] = file.name;
+          _this.$.ajaxCreateImage.params = params;
+
+          var formData = new FormData();
+          formData.append('file', file);
+
+          _this.$.ajaxCreateImage.body = formData;
+          _this.$.ajaxCreateImage.generateRequest();
+
+        });
+
+
       }
       // ,
       // _handlePageResponse: function(e) {

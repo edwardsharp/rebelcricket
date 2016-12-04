@@ -63,14 +63,33 @@ class RebelApiController < ApplicationController
     render json: 'ok', status: 200
   end
 
-  # post '/api/images'
-
+  # get '/api/images'
   def images
     unless has_valid_token
       render_unauthorized and return
     end
 
-    if gfx_params[:file] and gfx_params[:filename] and gfx_params[:quote_number]
+    render json: RebelGfx.where(rebel_quote_number: 'rebelimages')
+
+  end
+
+  # delete '/api/delete_image'
+  def delete_image
+    unless has_valid_token
+      render_unauthorized and return
+    end
+
+    RebelGfx.find_by(filename: gfx_params[:filename], rebel_quote_number: 'rebelimages').destroy
+
+  end
+
+  # post '/api/create_image'
+  def create_image
+    unless has_valid_token
+      render_unauthorized and return
+    end
+
+    if gfx_params[:file] and gfx_params[:filename]
 
       path = "#{::Rails.root}/public/rebelimages/#{gfx_params[:filename]}"
 
@@ -78,7 +97,7 @@ class RebelApiController < ApplicationController
 
       rebel_gfx = RebelGfx.new(
         filename: gfx_params[:filename], 
-        rebel_quote_number: gfx_params[:quote_number],
+        rebel_quote_number: 'rebelimages',
         url: "http://localhost:3000/rebelimages/#{gfx_params[:filename]}",
         path: path
       )
@@ -89,7 +108,7 @@ class RebelApiController < ApplicationController
 
       render json: rebel_gfx.to_json
     else
-      render status: 500
+      render json: 'error', status: 422
     end
 
   end
@@ -150,7 +169,7 @@ class RebelApiController < ApplicationController
 
       render json: rebel_gfx.to_json
     else
-      render status: 500
+      render status: 422
     end
 
   end
