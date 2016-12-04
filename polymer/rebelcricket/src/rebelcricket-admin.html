@@ -25,6 +25,18 @@
         margin: 1em;
       }
 
+      #headerToolbar {
+        padding-left: 1.5em;
+      }
+
+      app-toolbar {
+        padding: 0;
+      }
+
+      app-header {
+        background-color: white;
+      }
+
       @media (max-width: 767px) {
         
       }
@@ -44,6 +56,22 @@
       on-response="_handleValidateApiKeyResponse">
     </iron-ajax>
 
+    <iron-ajax
+      id="ajaxGetPages"
+      url="http://localhost:3000/api/all_pages"
+      headers='{{headers}}'
+      handle-as="json"
+      last-response="{{pages}}">
+    </iron-ajax>
+
+    <iron-ajax
+      id="ajaxUpdatePage"
+      url="http://localhost:3000/api/all_pages"
+      headers='{{headers}}'
+      handle-as="json"
+      on-response="_handleUpdatePageResponse">
+    </iron-ajax>
+
 <!--     <iron-ajax
       auto
       url="http://rebelcricket.lacuna.club/api/"
@@ -56,7 +84,7 @@
     <app-drawer-layout fullbleed>
 
       <app-drawer>
-          <app-toolbar>Admin</app-toolbar>
+          <app-toolbar><span id="headerToolbar">Admin</span></app-toolbar>
           <div id="drawerButtonsContainer" hidden>
             <div class="drawer-button"><paper-button class="custom" on-tap="_setCurrentPage" page="Api Key">Api Key</paper-button></div>
             <div class="drawer-button"><paper-button class="custom" on-tap="_setCurrentPage" page="Pages">Pages</paper-button></div>
@@ -64,40 +92,76 @@
           </div>
       </app-drawer>
 
-      <app-header-layout has-scrolling-region>
+      <app-header-layout>
 
-          <app-header condenses reveals effects="waterfall">
-              <app-toolbar>
-                  <paper-icon-button icon="menu" drawer-toggle></paper-icon-button>
-              </app-toolbar>
-              <app-toolbar>
-                  <div spacer title>[[currentPage]]</div>
-              </app-toolbar>
-          </app-header>
-
-          <div id="apiKeyContainer" hidden>
-            <div class="row">
-              <div class="col s6 offset-s3">
-                <paper-input label="Api Key" value="{{admin.apiKey}}"></paper-input>
-              </div>
-
-            </div>
-          </div>
-
-          <div id="pagesContainer" hidden>
-            <h1>Pages</h1>
-          </div>
-
-          <div id="catalogContainer" hidden>
-            <h1> Catalog</h1>
-          </div>
+        <app-header condenses reveals effects="waterfall">
+            <app-toolbar>
+                <paper-icon-button icon="menu" drawer-toggle></paper-icon-button>
+            </app-toolbar>
+            <app-toolbar>
+                <div title><h4>[[currentPage]]</h4></div>
+            </app-toolbar>
+        </app-header>
 
       </app-header-layout>
 
-  </app-drawer-layout>
+      <div id="apiKeyContainer" hidden>
+        <div class="row">
+          <div class="col s6 offset-s3">
+            <paper-input label="Api Key" value="{{admin.apiKey}}"></paper-input>
+          </div>
+
+        </div>
+      </div>
+
+      <div id="pagesContainer" hidden>
+
+        <template is="dom-repeat" items="[[pages]]" as="page">
+          <div>
+            <h5>[[page.name]]</h5>
+            <hr>
+
+            heading: [[page.data.heading]]
+
+            <b>items:</b>
+            <template is="dom-repeat" items="[[page.data.items]]">
+              <b>[[item.title]]</b>
+              <p>[[item.description]]</p>
 
 
+              <ul>
+              <li>image: [[item.image]]</li>
+              <li>name: [[item.name]]</li>
+              <li>slug: [[item.slug]]</li>
+              </ul>
 
+              <div>[[_getDescription(page.data, item.slug)]]</div>
+
+              <template is="dom-repeat" items="[[_getDescriptionItems(page.data, item.slug)]]" as="descriptionItem">
+                [[descriptionItem.description]]<br><br>
+              </template>
+
+            </template>
+
+            <div>
+              <b>attachments:</b>
+              <template is="dom-repeat" items="[[page.data.attachments]]">
+              <ul>
+              <li>caption: [[item.caption]]</li>
+              <li>name: [[item.name]]</li>
+              <li>url: [[item.url]]</li>
+              </ul>
+              </template>
+            </div>
+          </div>
+        </template>
+      </div>
+
+      <div id="catalogContainer" hidden>
+        <h1> Catalog</h1>
+      </div>
+
+    </app-drawer-layout>
    
   </template>
 
@@ -129,8 +193,9 @@
           computed: '_validateApiKey(apiKey)'
         },
         pages: {
-          type: Object,
-          notify: true
+          type: Array,
+          notify: true,
+          observer: '_pagesObserver'
         },
         currentPage: {
           type: String,
@@ -153,12 +218,16 @@
           }
         }
       },
+      _pagesObserver: function(_pages){
+        console.log('_pagesObserver _pages:',_pages);
+      },
       _currentPageChanged: function(_currentPage){
         if(_currentPage === 'Api Key'){
           this.$.apiKeyContainer.hidden = false;
           this.$.pagesContainer.hidden = true;
           this.$.catalogContainer.hidden = true;
         }else if(_currentPage === 'Pages'){
+          this.$.ajaxGetPages.generateRequest();
           this.$.apiKeyContainer.hidden = true;
           this.$.pagesContainer.hidden = false;
           this.$.catalogContainer.hidden = true;
@@ -186,6 +255,17 @@
         if(e.detail.xhr.statusText === 'OK'){
           this.$.drawerButtonsContainer.hidden = false;
           this.set('currentPage', 'Pages');
+        }
+      },
+      _handleUpdatePageResponse: function(e){
+         console.log('_handleUpdatePageResponse e.detail.xhr.statusText:',e.detail.xhr.statusText);
+      },
+      _getDescription: function(_page_data, _slug){
+        return _page_data[_slug].description;
+      },
+      _getDescriptionItems: function(_page_data, _slug){
+        if(_page_data[_slug].detail_items != undefined){
+          return _page_data[_slug].detail_items;
         }
       },
       ready: function(){

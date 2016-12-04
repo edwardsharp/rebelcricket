@@ -27,13 +27,38 @@ class RebelApiController < ApplicationController
   # get '/api/validate_api_key'
   def validate_api_key 
 
-    Rails.logger.debug request.headers.inspect
-
-    if authenticate_token
+    if has_valid_token
       render json: 'ok'
     else
-      render json: 'Bad credentials', status: :unauthorized
+      render_unauthorized and return
     end
+  end
+
+  # post /api/update_page
+  def update_page
+
+    unless has_valid_token
+      render_unauthorized and return
+    end
+
+    @rebel_page = RebelPage.find_by(name: params[:page])
+    
+    @rebel_page.data = params[:data]
+
+    if @rebel_page.save
+      render json: @rebel_page
+    else
+      render status: 500
+    end
+  end
+
+  def all_pages
+    unless has_valid_token
+      render_unauthorized and return
+    end
+
+    render json: RebelPage.all
+
   end
 
   # get '/rebelpages' do 
@@ -112,12 +137,7 @@ class RebelApiController < ApplicationController
     params.permit(:page)
   end
 
-  # auth with token based authentication
-  def authenticate
-    authenticate_token || render_unauthorized
-  end
-
-  def authenticate_token
+  def has_valid_token
     authenticate_with_http_token do |token, options|
       return ApiKey.exists?(access_token: token)
     end

@@ -10,5 +10,8 @@ Rails.application.routes.draw do
   get '/api/inboxcustomer', to: 'inbox_api#customer', as: :inboxcustomer
 
   get '/api/validate_api_key', to: 'rebel_api#validate_api_key', as: :rebel_validate_api_key
+  get '/api/all_pages', to: 'rebel_api#all_pages', as: :rebel_all_pages
+  post '/api/update_page', to: 'rebel_api#update_page', as: :rebel_update_page
+
 
 end
