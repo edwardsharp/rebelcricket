@@ -32,15 +32,20 @@
 
       app-toolbar {
         padding: 0;
+        
       }
-
+      
       app-header {
-        background-color: white;
+        background-color: rgba(255,255,255,0.9);
       }
 
       .rebel-image{
         max-height: 150px;
         max-width: 150px;
+      }
+
+      .description-item {
+        margin: 2em;
       }
 
       @media (max-width: 767px) {
@@ -118,12 +123,15 @@
       <app-header-layout>
 
         <app-header condenses reveals effects="waterfall">
-            <app-toolbar>
-                <paper-icon-button icon="menu" drawer-toggle></paper-icon-button>
-            </app-toolbar>
-            <app-toolbar>
-                <div title><h4>[[currentPage]]</h4></div>
-            </app-toolbar>
+          <app-toolbar>
+              <paper-icon-button icon="menu" drawer-toggle></paper-icon-button>
+          </app-toolbar>
+          <app-toolbar>
+            <div main-title><h4>[[currentPage]]</h4></div>
+            <template is="dom-if" if="[[isPages]]">
+              <paper-button class="custom" on-tap="_savePages">Save Pages</paper-button>
+            </template>
+          </app-toolbar>
         </app-header>
 
       </app-header-layout>
@@ -148,7 +156,7 @@
             </template>
 
             <template is="dom-if" if="[[page.data.items]]">
-              <div>
+              <div class="row">
                 <b>items:</b>
                 <template is="dom-repeat" items="[[page.data.items]]">
                   <b>[[item.title]]</b>
@@ -168,20 +176,41 @@
                     [[descriptionItem.description]]<br><br>
                   </template>
 
+                  <div class="row description-item">
+                    <div class="col s12">
+                      <paper-button class="custom" on-tap="_addDescriptionItem">Add Description Item</paper-button>
+                    </div>
+                  </div>
+
                 </template>
               </div>
+
+              <template is="dom-if" if="[[_isService(page.name)]]">
+                <div class="row">
+                  <div class="col s12 center">
+                    <paper-button class="custom" on-tap="_addService">Add Service</paper-button>
+                  </div>
+                </div>
+              </template>
             </template>
 
             <template is="dom-if" if="[[page.data.attachments]]">
-              <div>
-                <b>attachments:</b>
-                <template is="dom-repeat" items="[[page.data.attachments]]">
-                <ul>
-                <li>caption: [[item.caption]]</li>
-                <li>name: [[item.name]]</li>
-                <li>url: [[item.url]]</li>
-                </ul>
-                </template>
+              <div class="row">
+                <div class="col s12">
+                  <b>attachments:</b><br>
+                  <template is="dom-repeat" items="[[page.data.attachments]]">
+                  <ul>
+                  <li>caption: [[item.caption]]</li>
+                  <li>name: [[item.name]]</li>
+                  <li>url: [[item.url]]</li>
+                  </ul>
+                  </template>
+                </div>
+              </div>
+              <div class="row">
+                <div class="col s12 center">
+                  <paper-button class="custom" on-tap="_addAttachment">Add Attachment</paper-button>
+                </div>
               </div>
             </template>
           </div>
@@ -245,6 +274,10 @@
           notify: true,
           observer: '_pagesObserver'
         },
+        isPages: {
+          type: Boolean,
+          notify: true
+        },
         currentPage: {
           type: String,
           notify: true,
@@ -278,16 +311,19 @@
           this.$.apiKeyContainer.hidden = false;
           this.$.pagesContainer.hidden = true;
           this.$.imagesContainer.hidden = true;
+          this.set('isPages', false);
         }else if(_currentPage === 'Pages'){
           this.$.ajaxGetPages.generateRequest();
           this.$.apiKeyContainer.hidden = true;
           this.$.pagesContainer.hidden = false;
           this.$.imagesContainer.hidden = true;
+          this.set('isPages', true);
         }else if(_currentPage === 'Images'){
           this.$.ajaxGetImages.generateRequest();
           this.$.apiKeyContainer.hidden = true;
           this.$.pagesContainer.hidden = true;
           this.$.imagesContainer.hidden = false;
+          this.set('isPages', false);
         }
       },
       _setCurrentPage: function(e){
@@ -330,6 +366,21 @@
         console.log('_handleAjaxCreateImagePostError e:',e);
         this.$.rebelImagesSpinner.active = false;
       },
+      _savePages: function(e){
+        console.log('_savePages e:',e);
+      },
+      _addAttachment: function(e){
+        console.log('_addAttachment e:',e);
+      },
+      _addService: function(e){
+        console.log('_addService e:',e);
+      },
+      _addDescriptionItem: function(e){
+        console.log('_addDescriptionItem e:',e);
+      },
+      _isService: function(_pageName){
+        return _pageName == 'services';
+      },
       ready: function(){
         //file upload
         var input = this.$.rebelImages;
@@ -353,10 +404,6 @@
 
 
       }
-      // ,
-      // _handlePageResponse: function(e) {
-      //   this.set('pages',e.detail.response);
-      // }
 
 
     });
