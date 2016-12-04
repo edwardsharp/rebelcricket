@@ -1,24 +1,50 @@
 <div class="sidebar">
- 
-  <div class="column person">
-    <div class="name"><%- customer.name %></div>
-    <div><%- customer.email %></div>
-    <a class="gmail_simple_button" href="#" target="_blank">
-      <div role="button" class="J-J5-Ji T-I T-I-ax7 ayk-axZ-aup-I-UR ayk-axZ-aup-I ayk-axZ-aup-at2 T-I-JW T-I-Zf-aw2" style="visibility: visible; -webkit-user-select: none;">
-        <span class="Txql0d ayk-axZ-aup-I-Jm-UR">View on RebelCricket.com</span>
+  <div class="row">
+    <a href="#" target="_blank">
+      <div role="button" class="J-J5-Ji T-I T-I-ax7 ayk-axZ-aup-I-UR ayk-axZ-aup-I ayk-axZ-aup-at2 T-I-JW T-I-Zf-aw2" style="visibility: visible; -webkit-user-select: none;font-size:1.5em;padding:5px;margin:5px;">
+        <span class="Txql0d ayk-axZ-aup-I-Jm-UR">Edit Quote</span>
+      </div>
+    </a>
+  </div>
+  <div class="row">
+    <a href="#" target="_blank">
+      <div role="button" class="J-J5-Ji T-I T-I-ax7 ayk-axZ-aup-I-UR ayk-axZ-aup-I ayk-axZ-aup-at2 T-I-JW T-I-Zf-aw2" style="visibility: visible; -webkit-user-select: none;font-size:1.5em;padding:5px;margin:5px;">
+        <span class="Txql0d ayk-axZ-aup-I-Jm-UR">View on KB</span>
       </div>
     </a>
   </div>
 
   <div class="row">
     <div class="column">
-      <div class="num"><%- Object.keys(customer) %></div>
-      <div class="num_description">FUN</div>
+
+      <div>
+        <%
+          _.each(customer, function(v,k) {
+        %>
+
+          <%- k %>: <b><%- v %></b>
+        
+        <%
+          });
+        %>
+      </div>
     </div>
     <div class="spacer"></div>
     <div class="column">
-      <div class="num">FUN FUN STUFF</div>
-      <div class="num_description">Total</div>
+      <label>status</label>
+      <select>
+        <option>new quote</option>
+        <option>quote needs more info</option>
+        <option>quote submitted</option>
+        <option>quote approved</option>
+        <option>quote rejected</option>
+        <option>pending payment</option>
+        <option>art</option>
+        <option>press</option>
+        <option>ready for pickup</option>
+        <option>ready for delivery</option>
+        <option>complete</option>
+      </select>
     </div>
   </div>
 

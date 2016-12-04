@@ -32,3 +32,11 @@ var _now = function(){
 var generateID = function(){
   return Math.floor(Date.now() / 1000) + '-' + Math.random().toString(36).substr(2, 6);
 }
+
+
+var humanize = function(str) {
+  return str
+      .replace(/^[\s_]+|[\s_]+$/g, '')
+      .replace(/[_\s]+/g, ' ')
+      .replace(/^[a-z]/, function(m) { return m.toUpperCase(); });
+}

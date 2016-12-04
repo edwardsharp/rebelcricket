@@ -4,6 +4,28 @@ class RebelQuote < ApplicationRecord
 
   after_save :send_message
 
+  def update_kb
+
+    require 'faraday'
+
+    conn = Faraday.new(:url => 'https://kanboard.example.com') do |faraday|
+        faraday.response :logger
+        faraday.headers['X-API-Auth'] = 'XXX'      # base64_encode('jsonrpc:API_KEY')
+        # faraday.basic_auth(ENV['user'], ENV['pw']) # user/pass to get through basic auth
+        faraday.adapter Faraday.default_adapter    # make requests with Net::HTTP
+    end
+
+    response = conn.post do |req|
+        req.url '/jsonrpc.php'
+        req.headers['Content-Type'] = 'application/json'
+        req.body = '{ "jsonrpc": "2.0", "id": 1, "method": "getAllProjects" }'
+    end
+
+    puts response.body
+
+  end
+
+
   def send_message
     return if self.message_sent
 

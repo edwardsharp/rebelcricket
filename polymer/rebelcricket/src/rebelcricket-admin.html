@@ -1,5 +1,11 @@
 <link rel="import" href="../bower_components/polymer/polymer.html">
+<link rel="import" href="../bower_components/app-layout/app-layout.html">
+<link rel="import" href="../bower_components/app-layout/app-toolbar/app-toolbar.html">
+<link rel="import" href="../bower_components/app-layout/app-header/app-header.html">
+<link rel="import" href="../bower_components/app-layout/app-scroll-effects/effects/waterfall.html">
+<link rel="import" href="../bower_components/app-layout/app-drawer/app-drawer.html">
 <link rel="import" href="../bower_components/paper-button/paper-button.html">
+<link rel="import" href="../bower_components/paper-icon-button/paper-icon-button.html">
 <link rel="import" href="../bower_components/iron-ajax/iron-ajax.html">
 <link rel="import" href="../bower_components/app-pouchdb/pouchdb.html">
 <link rel="import" href="../bower_components/app-pouchdb/app-pouchdb-document.html">
@@ -8,15 +14,20 @@
 
 <link rel="import" href="shared-styles.html">
 
+
 <dom-module id="rebelcricket-admin">
 
   <template>
 
     <style is="custom-style" include="shared-styles">
 
-    @media (max-width: 767px) {
-      
-    }
+      .drawer-button {
+        margin: 1em;
+      }
+
+      @media (max-width: 767px) {
+        
+      }
     </style>
 
     <app-pouchdb-document
@@ -33,26 +44,51 @@
       on-response="_handlePageResponse">
     </iron-ajax> -->
 
-    
-    <div class="container">
-      
-      <div class="row">
-        <div class="col s12 center">
-          <h1 class="rebel-heading">Admin</h1>
-        </div>
-      </div>
-      <template is="dom-if" if="[[needsApiKey]]">
-      <div class="row">
-        <div class="col s6 offset-s3">
-          <paper-input label="Api Key" value="{{admin.apiKey}}"></paper-input>
-        </div>
 
-      </div>
-      </template>
+    <app-drawer-layout fullbleed>
+
+      <app-drawer>
+          <app-toolbar>Admin</app-toolbar>
+          <div id="drawerButtonsContainer" hidden>
+            <div class="drawer-button"><paper-button class="custom" on-tap="_setCurrentPage" page="Api Key">Api Key</paper-button></div>
+            <div class="drawer-button"><paper-button class="custom" on-tap="_setCurrentPage" page="Pages">Pages</paper-button></div>
+            <div class="drawer-button"><paper-button class="custom" on-tap="_setCurrentPage" page="Catalog">Catalog</paper-button></div>
+          </div>
+      </app-drawer>
+
+      <app-header-layout has-scrolling-region>
+
+          <app-header condenses reveals effects="waterfall">
+              <app-toolbar>
+                  <paper-icon-button icon="menu" drawer-toggle></paper-icon-button>
+              </app-toolbar>
+              <app-toolbar>
+                  <div spacer title>[[currentPage]]</div>
+              </app-toolbar>
+          </app-header>
+
+          <div id="apiKeyContainer" hidden>
+            <div class="row">
+              <div class="col s6 offset-s3">
+                <paper-input label="Api Key" value="{{admin.apiKey}}"></paper-input>
+              </div>
+
+            </div>
+          </div>
+
+          <div id="pagesContainer" hidden>
+            <h1>Pages</h1>
+          </div>
+
+          <div id="catalogContainer" hidden>
+            <h1> Catalog</h1>
+          </div>
+
+      </app-header-layout>
+
+  </app-drawer-layout>
 
 
-    </div>
-    
 
    
   </template>
@@ -78,28 +114,61 @@
         needsApiKey: {
           type: Boolean,
           notify: true,
-          computed: '_needsApiKey(apiKey)'
+          computed: '_validApiKey(apiKey)'
         },
         pages: {
           type: Object,
           notify: true
+        },
+        currentPage: {
+          type: String,
+          notify: true,
+          observer: '_currentPageChanged',
+          value: function(){
+            return 'Api Key';
+          }
         }
       },
       _adminObserver: function(admin){
-        if(this._needsApiKey(admin.apiKey) && admin.apiKey != undefined && admin.apiKey != ''){
+        if(this._validApiKey(admin.apiKey) && admin.apiKey != undefined && admin.apiKey != ''){
           console.log('api key from pouch:',admin.apiKey);
-          this.set('apiKey', admin.apiKey);
-          this.set('needsApiKey', false);
+          // this.set('apiKey', admin.apiKey);
         }
       },
-      _needsApiKey: function(apiKey){
-        console.log('needsApiKey?',apiKey == undefined || apiKey == '');
+      _currentPageChanged: function(_currentPage){
+        if(_currentPage === 'Api Key'){
+          this.$.apiKeyContainer.hidden = false;
+          this.$.pagesContainer.hidden = true;
+          this.$.catalogContainer.hidden = true;
+        }else if(_currentPage === 'Pages'){
+          this.$.apiKeyContainer.hidden = true;
+          this.$.pagesContainer.hidden = false;
+          this.$.catalogContainer.hidden = true;
+        }else if(_currentPage === 'Catalog'){
+          this.$.apiKeyContainer.hidden = true;
+          this.$.pagesContainer.hidden = true;
+          this.$.catalogContainer.hidden = false;
+        }
+      },
+      _setCurrentPage: function(e){
+        console.log('_setCurrentPage e.target.getAttribute(page):',e.target.getAttribute('page'));
+        this.set('currentPage', e.target.getAttribute('page'));
+      },
+      _validApiKey: function(apiKey){
+        console.log('_validApiKey?',apiKey == undefined || apiKey == '');
         return apiKey == undefined || apiKey == '';
+      },
+      _toggleDrawer: function(e){
+        this.$.drawer.toggle();
+      },
+      ready: function(){
+        this.$.drawerButtonsContainer.hidden = false;
       }
       // ,
       // _handlePageResponse: function(e) {
       //   this.set('pages',e.detail.response);
       // }
+
 
     });
 

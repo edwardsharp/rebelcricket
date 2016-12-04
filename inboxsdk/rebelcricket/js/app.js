@@ -37,17 +37,11 @@ InboxSDK.load(1, 'sdk_edward_55b5a0f748').then(function(sdk) {
 
   });
 
-  sdk.NavMenu.addNavItem({
-    name: 'Rebel Cricket Config',
-    routeID: baseRouteID,
-    routeParams: {item: 'config'}
-  });
-
-  sdk.NavMenu.addNavItem({
-    name: 'Rebel Cricket Orders',
-    routeID: baseRouteID,
-    routeParams: {item: 'quote'}
-  });
+  // sdk.NavMenu.addNavItem({
+  //   name: 'Rebel Cricket Config',
+  //   routeID: baseRouteID,
+  //   routeParams: {item: 'config'}
+  // });
 
   sdk.Lists.registerThreadRowViewHandler(function(threadRowView) {
     var contacts = threadRowView.getContacts();
