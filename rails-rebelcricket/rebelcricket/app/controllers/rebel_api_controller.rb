@@ -34,30 +34,63 @@ class RebelApiController < ApplicationController
     end
   end
 
-  # post /api/update_page
-  def update_page
-
-    unless has_valid_token
-      render_unauthorized and return
-    end
-
-    @rebel_page = RebelPage.find_by(name: params[:page])
-    
-    @rebel_page.data = params[:data]
-
-    if @rebel_page.save
-      render json: @rebel_page
-    else
-      render status: 500
-    end
-  end
-
   def all_pages
     unless has_valid_token
       render_unauthorized and return
     end
 
     render json: RebelPage.all
+
+  end
+
+  # post /api/update_pages
+  def update_pages
+
+    unless has_valid_token
+      render_unauthorized and return
+    end
+
+    Rails.logger.debug "\n\n update_pages params: #{params.inspect}\n\n"
+
+    params[:pages].each do |page|
+      @rebel_page = RebelPage.find_by(name: page[:name])
+      @rebel_page.data = page[:data]
+      unless @rebel_page.save
+        render(status: 500) and return
+      end
+    end
+    
+    render json: 'ok', status: 200
+  end
+
+  # post '/api/images'
+
+  def images
+    unless has_valid_token
+      render_unauthorized and return
+    end
+
+    if gfx_params[:file] and gfx_params[:filename] and gfx_params[:quote_number]
+
+      path = "#{::Rails.root}/public/rebelimages/#{gfx_params[:filename]}"
+
+      File.open(path, 'wb') {|f| f.write gfx_params[:file].read }
+
+      rebel_gfx = RebelGfx.new(
+        filename: gfx_params[:filename], 
+        rebel_quote_number: gfx_params[:quote_number],
+        url: "http://localhost:3000/rebelimages/#{gfx_params[:filename]}",
+        path: path
+      )
+
+      rebel_gfx.save!
+      
+      Rails.logger.debug "file uploaded! #{gfx_params[:filename]}"
+
+      render json: rebel_gfx.to_json
+    else
+      render status: 500
+    end
 
   end
 

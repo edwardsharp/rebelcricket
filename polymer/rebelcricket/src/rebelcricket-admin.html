@@ -88,7 +88,7 @@
           <div id="drawerButtonsContainer" hidden>
             <div class="drawer-button"><paper-button class="custom" on-tap="_setCurrentPage" page="Api Key">Api Key</paper-button></div>
             <div class="drawer-button"><paper-button class="custom" on-tap="_setCurrentPage" page="Pages">Pages</paper-button></div>
-            <div class="drawer-button"><paper-button class="custom" on-tap="_setCurrentPage" page="Catalog">Catalog</paper-button></div>
+            <div class="drawer-button"><paper-button class="custom" on-tap="_setCurrentPage" page="Images">Images</paper-button></div>
           </div>
       </app-drawer>
 
@@ -120,45 +120,53 @@
           <div>
             <h5>[[page.name]]</h5>
             <hr>
-
-            heading: [[page.data.heading]]
-
-            <b>items:</b>
-            <template is="dom-repeat" items="[[page.data.items]]">
-              <b>[[item.title]]</b>
-              <p>[[item.description]]</p>
-
-
-              <ul>
-              <li>image: [[item.image]]</li>
-              <li>name: [[item.name]]</li>
-              <li>slug: [[item.slug]]</li>
-              </ul>
-
-              <div>[[_getDescription(page.data, item.slug)]]</div>
-
-              <template is="dom-repeat" items="[[_getDescriptionItems(page.data, item.slug)]]" as="descriptionItem">
-                [[descriptionItem.description]]<br><br>
-              </template>
-
+            <template is="dom-if" if="[[page.data.heading]]">
+              heading: [[page.data.heading]]
             </template>
 
-            <div>
-              <b>attachments:</b>
-              <template is="dom-repeat" items="[[page.data.attachments]]">
-              <ul>
-              <li>caption: [[item.caption]]</li>
-              <li>name: [[item.name]]</li>
-              <li>url: [[item.url]]</li>
-              </ul>
-              </template>
-            </div>
+            <template is="dom-if" if="[[page.data.items]]">
+              <div>
+                <b>items:</b>
+                <template is="dom-repeat" items="[[page.data.items]]">
+                  <b>[[item.title]]</b>
+                  <p>[[item.description]]</p>
+
+                  <template is="dom-if" if="[[item.image]]">
+                    <ul>
+                    <li>image: [[item.image]]</li>
+                    <li>name: [[item.name]]</li>
+                    <li>slug: [[item.slug]]</li>
+                    </ul>
+                  </template>
+
+                  <div>[[_getDescription(page.data, item.slug)]]</div>
+
+                  <template is="dom-repeat" items="[[_getDescriptionItems(page.data, item.slug)]]" as="descriptionItem">
+                    [[descriptionItem.description]]<br><br>
+                  </template>
+
+                </template>
+              </div>
+            </template>
+
+            <template is="dom-if" if="[[page.data.attachments]]">
+              <div>
+                <b>attachments:</b>
+                <template is="dom-repeat" items="[[page.data.attachments]]">
+                <ul>
+                <li>caption: [[item.caption]]</li>
+                <li>name: [[item.name]]</li>
+                <li>url: [[item.url]]</li>
+                </ul>
+                </template>
+              </div>
+            </template>
           </div>
         </template>
       </div>
 
-      <div id="catalogContainer" hidden>
-        <h1> Catalog</h1>
+      <div id="imagesContainer" hidden>
+        <h1> Images</h1>
       </div>
 
     </app-drawer-layout>
@@ -225,16 +233,16 @@
         if(_currentPage === 'Api Key'){
           this.$.apiKeyContainer.hidden = false;
           this.$.pagesContainer.hidden = true;
-          this.$.catalogContainer.hidden = true;
+          this.$.imagesContainer.hidden = true;
         }else if(_currentPage === 'Pages'){
           this.$.ajaxGetPages.generateRequest();
           this.$.apiKeyContainer.hidden = true;
           this.$.pagesContainer.hidden = false;
-          this.$.catalogContainer.hidden = true;
-        }else if(_currentPage === 'Catalog'){
+          this.$.imagesContainer.hidden = true;
+        }else if(_currentPage === 'Images'){
           this.$.apiKeyContainer.hidden = true;
           this.$.pagesContainer.hidden = true;
-          this.$.catalogContainer.hidden = false;
+          this.$.imagesContainer.hidden = false;
         }
       },
       _setCurrentPage: function(e){
