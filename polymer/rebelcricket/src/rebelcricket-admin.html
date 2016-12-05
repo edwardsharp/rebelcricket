@@ -6,6 +6,7 @@
 <link rel="import" href="../bower_components/app-layout/app-drawer/app-drawer.html">
 <link rel="import" href="../bower_components/paper-button/paper-button.html">
 <link rel="import" href="../bower_components/paper-icon-button/paper-icon-button.html">
+<link rel="import" href="../bower_components/paper-fab/paper-fab.html">
 <link rel="import" href="../bower_components/iron-ajax/iron-ajax.html">
 <link rel="import" href="../bower_components/app-pouchdb/pouchdb.html">
 <link rel="import" href="../bower_components/app-pouchdb/app-pouchdb-document.html">
@@ -39,6 +40,22 @@
         background-color: rgba(255,255,255,0.9);
       }
 
+      paper-button.custom, paper-fab.custom {
+        background: rgba(255,0,0,0.8);
+        
+        margin: 1em;
+        display: inline-block;
+      }
+      paper-fab.custom {
+        font-size:1.5em;
+        line-height: 1em;
+      }
+
+      paper-button.custom:hover, paper-fab.custom:hover {
+        background: red;
+        color: black;
+      }
+
       .rebel-image{
         max-height: 150px;
         max-width: 150px;
@@ -48,6 +65,9 @@
         margin: 2em;
       }
 
+      ol, ul {
+        list-style: none;
+      }
       @media (max-width: 767px) {
         
       }
@@ -147,45 +167,73 @@
 
       <div id="pagesContainer" hidden>
 
-        <template is="dom-repeat" items="[[pages]]" as="page">
+        <template is="dom-repeat" items="{{pages}}" as="page">
           <div>
-            <h5>[[page.name]]</h5>
+            <h5>
+              [[page.name]]
+              <template is="dom-if" if="[[_isServices(page.name)]]">
+                ([[page.data.items.length]])
+              </template>
+            </h5>
             <hr>
             <template is="dom-if" if="[[page.data.heading]]">
-              heading: [[page.data.heading]]
+              <paper-input label="Heading" value="{{page.data.heading}}"></paper-input>
+              
             </template>
 
             <template is="dom-if" if="[[page.data.items]]">
               <div class="row">
                 <b>items:</b>
-                <template is="dom-repeat" items="[[page.data.items]]">
-                  <b>[[item.title]]</b>
-                  <p>[[item.description]]</p>
+                <template is="dom-repeat" items="{{page.data.items}}">
+                  <template is="dom-if" if="[[!_isServices(page.name)]]"> 
+                    <paper-input label="Title" value="{{item.title}}"></paper-input>
+                    <paper-textarea label="Description" value="{{item.description}}"></paper-textarea>
+                  </template>
 
                   <template is="dom-if" if="[[item.image]]">
+                    Main Image:
                     <ul>
-                    <li>image: [[item.image]]</li>
-                    <li>name: [[item.name]]</li>
-                    <li>slug: [[item.slug]]</li>
+                    <li><paper-input label="URL" value="{{item.image}}"></paper-input></li>
+                    <li><paper-input label="Name" value="{{item.name}}"></paper-input></li>
+                    <li><paper-input label="Slug" value="{{item.slug}}"></paper-input></li>
+                    </ul>
+                  </template>
+
+                  <template is="dom-if" if="[[_isServices(page.name)]]"> 
+                    Detail Images:
+                    <ul>
+                    <template is="dom-repeat" items="{{_getDetailImages(page.data, item.slug)}}" as="detailImage">
+                      <li>
+                        <paper-input label="URL" value="{{detailImage}}"></paper-input>
+                      </li>
+                    </template>
+                      <li><paper-button class="custom" on-tap="_addDetailImage">Add Detail Image</paper-button></li>
                     </ul>
                   </template>
 
                   <div>[[_getDescription(page.data, item.slug)]]</div>
 
-                  <template is="dom-repeat" items="[[_getDescriptionItems(page.data, item.slug)]]" as="descriptionItem">
-                    [[descriptionItem.description]]<br><br>
+                  <template is="dom-repeat" items="{{_getDescriptionItems(page.data, item.slug)}}" as="descriptionItem">
+                    <paper-input label="Heading" value="{{descriptionItem.name}}"></paper-input>
+
+                    <paper-textarea label="Description Item" value="{{descriptionItem.description}}"></paper-textarea>
+                    <br><br>
                   </template>
 
-                  <div class="row description-item">
-                    <div class="col s12">
-                      <paper-button class="custom" on-tap="_addDescriptionItem">Add Description Item</paper-button>
-                    </div>
-                  </div>
+                 
+                  <paper-fab mini on-tap="_removeDescriptionItem" class="custom" label="&nbsp;&times;"></paper-fab>
+                
 
                 </template>
+
+                <div class="row description-item">
+                  <div class="col s12">
+                    <paper-button class="custom" on-tap="_addDescriptionItem">Add Description Item</paper-button>
+                  </div>
+                </div>
               </div>
 
-              <template is="dom-if" if="[[_isService(page.name)]]">
+              <template is="dom-if" if="[[_isServices(page.name)]]">
                 <div class="row">
                   <div class="col s12 center">
                     <paper-button class="custom" on-tap="_addService">Add Service</paper-button>
@@ -198,11 +246,14 @@
               <div class="row">
                 <div class="col s12">
                   <b>attachments:</b><br>
-                  <template is="dom-repeat" items="[[page.data.attachments]]">
+                  <template is="dom-repeat" items="{{page.data.attachments}}">
                   <ul>
-                  <li>caption: [[item.caption]]</li>
-                  <li>name: [[item.name]]</li>
-                  <li>url: [[item.url]]</li>
+                  <li><paper-input label="Caption" value="{{item.caption}}"></paper-input></li>
+                  <li><paper-input label="Name" value="{{item.name}}"></paper-input></li>
+                  <li><paper-input label="URL" value="{{item.url}}"></paper-input></li>
+                  <li>
+                  <paper-fab mini on-tap="_removeAttachment" class="custom" label="&nbsp;&times;"></paper-fab>
+                  </li>
                   </ul>
                   </template>
                 </div>
@@ -230,7 +281,7 @@
         </div>
         <div class="row">
           <div class="col s12">
-            <template is="dom-repeat" items="[[images]]">
+            <template is="dom-repeat" items="{{images}}">
               <img class="rebel-image" src$="[[item.url]]">
             </template>
           </div>
@@ -357,6 +408,11 @@
           return _page_data[_slug].detail_items;
         }
       },
+      _getDetailImages: function(_page_data, _slug){
+        if(_page_data[_slug].detail_images != undefined){
+          return _page_data[_slug].detail_images;
+        }
+      },
       _handleAjaxCreateImagePostResponse: function(e){
         console.log('_handleAjaxCreateImagePostResponse e:',e);
         this.$.rebelImagesSpinner.active = false;
@@ -368,17 +424,41 @@
       },
       _savePages: function(e){
         console.log('_savePages e:',e);
+        console.log('this.pages:',this.pages);
       },
       _addAttachment: function(e){
-        console.log('_addAttachment e:',e);
+        e.model.page.data.attachments.push({caption: '', name: '', url: ''});
+        var _idx = this.pages.indexOf(e.model.page);
+        var _data = e.model.page.data;
+        this.set('pages.'+_idx+'.data', {});
+        this.set('pages.'+_idx+'.data', _data);
+      },
+      _removeAttachment: function(e){
+        //dunno why e.model.page is not accessiable here, but assuming constant position at index 0 for the 'about' page...
+        this.splice('pages.0.data.attachments', e.model.index, 1);
       },
       _addService: function(e){
         console.log('_addService e:',e);
       },
       _addDescriptionItem: function(e){
-        console.log('_addDescriptionItem e:',e);
+        console.log('_addDescriptionItem e.model.page:',e.model.page);
+        // e.model.page.data.attachments.push({caption: '', name: '', url: ''});
+        var _idx = this.pages.indexOf(e.model.page);
+        // var _data = e.model.page.data;
+        // this.set('pages.'+_idx+'.data', {});
+        // this.set('pages.'+_idx+'.data', _data);
+        this.push('pages.'+_idx+'.data.items', {description: '', title: ''});
       },
-      _isService: function(_pageName){
+      _removeDescriptionItem: function(e){
+        console.log('_addDescriptionItem e.model.page:',e.model.page);
+        // e.model.page.data.attachments.push({caption: '', name: '', url: ''});
+        var _idx = this.pages.indexOf(e.model.page);
+        this.splice('pages.'+_idx+'.data.items', e.model.index, 1);
+      },
+      _addDetailImage: function(e){
+        console.log('_addDetailImage e:',e);
+      },
+      _isServices: function(_pageName){
         return _pageName == 'services';
       },
       ready: function(){
