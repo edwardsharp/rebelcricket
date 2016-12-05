@@ -84,7 +84,7 @@
       }
 
       paper-listbox.custom {
-        max-height: 100px;
+        max-height: 160px;
         overflow: hidden;
         overflow-y: scroll;
         border: thin solid #ccc;
@@ -92,8 +92,17 @@
         margin-bottom: 1em;
       }
 
-      paper-item.custom {
-        border-bottom: thin solid #ccc;
+      paper-item.custom:nth-child(even):not(.iron-selected) { 
+        background: #f6f6f6; 
+      }
+
+      paper-item.smallfont { 
+        font-size: 13px; 
+      }
+
+      paper-item.iron-selected { 
+        background-color: red;
+        color: white;
       }
 
       hr {
@@ -160,6 +169,11 @@
           height: auto;
           padding: 0 2px 0 2px;
         }
+
+        paper-item.custom { 
+          font-size: 13px; 
+        }
+
       }
 
       @media (max-width: 875px) {
@@ -356,7 +370,7 @@
                       <div class="row">
 
                         <div class="col s4">
-                            <paper-listbox class="custom" selected-values="{{lineItem.selected_option}}" on-iron-activate="_posterAndStickerItemsChanged" multi>
+                            <paper-listbox class="custom" selected-values="{{lineItem.selected_options}}" on-iron-activate="_posterAndStickerItemsChanged" multi>
                               <template is="dom-repeat" items="{{lineItem.options}}">
                                 <paper-item class="custom" value="[[item]]">[[item]]</paper-item>
                               </template>
@@ -405,6 +419,78 @@
 
                     <!-- Other Stuff -->
 
+                    <template is="dom-if" if="[[_isOtherStuffService(quoteServiceItem)]]">
+                      <template is="dom-repeat" items="{{quote.other_stuff_line_items.items}}" as="lineItem">
+
+                      <div class="row">
+
+                        <div class="col s4">
+                          <paper-input label="Quantity" value="{{lineItem.quantity}}"></paper-input>
+                          <small>Mug/Bottle Minimum: [[lineItem.bottle_min]] </small>
+                        </div>
+                        <br><br>
+                    
+                      </div>
+                      <div class="row">
+                        
+                        <div class="col s4">
+                          <small>Options</small>
+                          <paper-listbox class="custom" selected-values="{{lineItem.selected_options}}" multi>
+                            <template is="dom-repeat" items="{{lineItem.options}}">
+                              <paper-item class$="[[_itemNeedsSmallFont(item)]] custom" value="[[item]]">[[item]]</paper-item>
+                            </template>
+                          </paper-listbox>
+
+                        </div>
+
+                        <div class="col s4">
+                          <small>Substrate</small>
+                          <paper-listbox class="custom" selected-values="{{lineItem.selected_substrates}}" multi>
+                            <template is="dom-repeat" items="{{lineItem.substrates}}">
+                              <paper-item class$="[[_itemNeedsSmallFont(item)]] custom" value="[[item]]">[[item]]</paper-item>
+                            </template>
+                          </paper-listbox>
+                        </div>
+
+                        <div class="col s4">
+                          <small>Color Fill</small>
+                          <paper-listbox class="custom" selected-values="{{lineItem.selected_fill_colors}}" multi>
+                            <template is="dom-repeat" items="{{lineItem.fill_colors}}">
+                              <paper-item class$="[[_itemNeedsSmallFont(item)]] custom" value="[[item]]">[[item]]</paper-item>
+                            </template>
+                          </paper-listbox>
+                        </div>
+
+                        <div class="col s4">
+                          <small>Available Goods</small>
+                          <paper-listbox class="custom" selected-values="{{lineItem.selected_sublimation_items}}" multi>
+                            <template is="dom-repeat" items="{{lineItem.sublimation_items}}">
+                              <paper-item class$="[[_itemNeedsSmallFont(item)]] custom" value="[[item]]">[[item]]</paper-item>
+                            </template>
+                          </paper-listbox>
+                        </div>
+
+
+                        <div class="col s4">
+                          <small>Bottle Options</small>
+                          <paper-listbox class="custom" selected-values="{{lineItem.selected_watter_bottle_options}}" multi>
+                            <template is="dom-repeat" items="{{lineItem.watter_bottle_options}}">
+                              <paper-item class$="[[_itemNeedsSmallFont(item)]] custom" value="[[item]]">[[item]]</paper-item>
+                            </template>
+                          </paper-listbox>
+                        </div>
+
+                        <div class="col s4">
+                          <small>Bottle Top</small>
+                          <paper-listbox class="custom" selected-values="{{lineItem.selected_watter_bottle_tops}}" multi>
+                            <template is="dom-repeat" items="{{lineItem.watter_bottle_tops}}">
+                              <paper-item class$="[[_itemNeedsSmallFont(item)]] custom" value="[[item]]">[[item]]</paper-item>
+                            </template>
+                          </paper-listbox>
+                        </div>
+
+                      </template>
+                    </template>
 
 
                     <div class="col s12 center">
@@ -712,13 +798,20 @@
       // this.push('quote.services', {name: this.services[e.target.selected].name, value: e.target.selected });
       // console.log('e.target.selected:',e.target.selected);
       // console.log('_serviceSelected!');
-      e.model.set('quoteServiceItem', {name: this.services[e.target.selected].name, value:  e.target.selected});
+      e.model.set('quoteServiceItem', {name: this.services[e.target.selected].name, value: e.target.selected, serviceNotes: ''});
       if(e.target.selected == 0 && this.quote.line_items.items.length == 0){ //
         // console.log('!!! _serviceSelected, gonna _addApparelLineItemRow()');
         this._addApparelLineItemRow();
       }else if(e.target.selected == 2 && this.quote.poster_and_sticker_line_items.items.length == 0){
         this._addPostersAndStickersLineItemRow();
+      }else if(e.target.selected == 5 && this.quote.other_stuff_line_items.items.length == 0){
+        this._addOtherStuffLineItemRow();
       }
+      
+      //aarg, this doesn't work :(
+      Polymer.dom(e).localTarget.setAttribute('disabled', 'disabled');
+      Polymer.dom(e).localTarget.setAttribute('aria-disabled', true);
+      console.log('aaarg Polymer.dom(e).localTarget:',Polymer.dom(e));
     },
     _serviceNeedsDisabled: function(quoteService){
       return _.where(this.quote.services, {name: quoteService}).length > 0;
@@ -728,6 +821,9 @@
     },
     _isPostersAndStickersService: function(quoteService){
       return quoteService.name.match(/posters/i); 
+    },
+    _isOtherStuffService: function(quoteService){
+      return quoteService.name.match(/stuff/i); 
     },
     _isOtherService: function(quoteService){
       return quoteService.name != undefined && quoteService.name != '' && !quoteService.name.match(/apparel/i);
@@ -856,6 +952,10 @@
     _addPostersAndStickersLineItemRow: function(){
       var _li_proto = quoteModel.line_item_posters_and_stickers_proto;
       this.push('quote.poster_and_sticker_line_items.items',_li_proto); 
+    },
+    _addOtherStuffLineItemRow: function(){
+      var _li_proto = quoteModel.line_item_other_stuff_proto;
+      this.push('quote.other_stuff_line_items.items',_li_proto); 
     },
     _removeLineItemRow: function(e){
       // this.splice(path, index, removeCount, [item1, ..., itemN])
@@ -1109,6 +1209,9 @@
       console.log('_handleAjaxGfxPostError! e:',e);
       this.$.quoteDesingUploadSpinner.active = false;
       this.$.quoteDesignUploadFeedback.innerHTML = 'ERROR! Could not upload that file. Please try again or choose a different file. If this form does not work for you please email your graphics to <a href="mailto: rebelcricket@gmail.com">rebelcricket@gmail.com</a>.';
+    },
+    _itemNeedsSmallFont: function(str){
+      return str.length > 16 ? 'smallfont' : '';
     },
     ready: function(){
       

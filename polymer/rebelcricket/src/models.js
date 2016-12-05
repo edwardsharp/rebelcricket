@@ -35,9 +35,9 @@ var quoteModel = {
   job_completion_and_shipping: {
     label: 'COMPLETION & SHIPPING INSTRUCTIONS',  
     items: [
-      {key: 'call_when_complete', label: 'Call when complete', type: 'checkbox', value: false, col: 's3'},
-      {key: 'will_call', label: 'Will Call', type: 'checkbox', value: false, col: 's3', notes: 'Local pick up.'},
       {key: 'rush_processing', label: 'Rush Processing', type: 'checkbox', value: false, col: 's3', notes: 'Rates vary.'},
+      {key: 'call_when_complete', label: 'Call', type: 'checkbox', value: false, col: 's3', notes: 'When complete.'},
+      {key: 'will_call', label: 'Pick Up', type: 'checkbox', value: false, col: 's3', notes: 'Local.'},
       {key: 'ship_via', label: 'Ship', type: 'checkbox', value: false, col: 's3'},
       {key: 'ship_via_txt', label: 'Ship Via', type: 'text', col: 's12', notes: 'ex: UPS, FedEx, USPS. Please specify your account # if you would like us to bill shipping charges.'},
       {key: 'ship_to', label: 'Ship to Address', type: 'textarea', col: 's12', rows: 3}
@@ -58,6 +58,7 @@ var quoteModel = {
     line_total: {key: 'line_total', label: 'TOTAL', type: 'number', col: 's3 m2'}
   },
   apparel_size_quantity_proto: {key: '', label: '', type: 'number', col: 's3 m2', sum: true},
+  
   line_items: {
     label: 'LINE ITEMS',
     items: []
@@ -66,7 +67,7 @@ var quoteModel = {
   line_item_posters_and_stickers_proto: {
     service_type: 'Posters & Stickers',
     options: ['Posters', 'Stickers'],
-    selected_option: '',
+    selected_options: [],
     quantity: '',
     sticker_min: 250,
     poster_min: 50,
@@ -80,6 +81,30 @@ var quoteModel = {
 
   poster_and_sticker_line_items: {
     label: 'POSTER AND STICKER LINE ITEMS',
+    items: []
+  },
+
+  line_item_other_stuff_proto: {
+    service_type: 'Other Stuff',
+    options: ['Sandblasting', 'Sublimation'],
+    selected_options: [],
+    quantity: '',
+    bottle_min: 36,
+    substrates: ['Metal', 'Glass', 'Stone', 'Other (please describe)'],
+    selected_substrates: [],
+    needs_color_fill: false,
+    fill_colors: ['red', 'yellow', 'blue', 'white', 'black'],
+    selected_fill_colors: [],
+    sublimation_items: ['11oz Mug', '15oz Mug', '600ml water bottles', 'Other (please describe)'],
+    selected_sublimation_items: [],
+    watter_bottle_options: ['silver', 'white', 'Other (please describe)'],
+    selected_watter_bottle_options: [],
+    watter_bottle_tops: ['screw top', 'straw top'],
+    selected_watter_bottle_tops: []
+  },
+
+  other_stuff_line_items: {
+    label: 'OTHER STUFF LINE ITEMS',
     items: []
   },
 
