@@ -20,9 +20,6 @@
 <link rel="import" href="../bower_components/paper-dialog/paper-dialog.html">
 <link rel="import" href="../bower_components/paper-dialog-scrollable/paper-dialog-scrollable.html">
 <link rel="import" href="../bower_components/paper-tooltip/paper-tooltip.html">
-<link rel="import" href="../bower_components/paper-item/paper-item.html">
-<link rel="import" href="../bower_components/paper-listbox/paper-listbox.html">
-<link rel="import" href="../bower_components/paper-dropdown-menu/paper-dropdown-menu.html">
 <link rel="import" href="../bower_components/paper-date-picker/paper-date-picker.html">
 <link rel="import" href="../bower_components/paper-menu/paper-menu.html">
 <link rel="import" href="../bower_components/paper-menu-button/paper-menu-button.html">
@@ -350,6 +347,66 @@
                       </div>
 
                     </template>
+
+                    <!-- Posters & Stickers -->
+
+                    <template is="dom-if" if="[[_isPostersAndStickersService(quoteServiceItem)]]">
+                      <template is="dom-repeat" items="{{quote.poster_and_sticker_line_items.items}}" as="lineItem">
+
+                      <div class="row">
+
+                        <div class="col s4">
+                            <paper-listbox class="custom" selected-values="{{lineItem.selected_option}}" on-iron-activate="_posterAndStickerItemsChanged" multi>
+                              <template is="dom-repeat" items="{{lineItem.options}}">
+                                <paper-item class="custom" value="[[item]]">[[item]]</paper-item>
+                              </template>
+                            </paper-listbox>
+                        </div>
+                        <div class="col s3">
+                          <paper-input label="Quantity" value="{{lineItem.quantity}}"></paper-input>
+                        </div>
+
+                        <div class="col s8">
+                          <small>Poster Minimum: [[lineItem.poster_min]] Sticker Minimum: [[lineItem.sticker_min]]</small>
+                        </div>
+                      </div>
+                      <div class="row">
+
+                        <div class="col s4">
+                          <paper-dropdown-menu label="Available Sticker Stock Colors">
+                            <paper-listbox class="dropdown-content" selected="{{lineItem.selected_sticker_stock}}">
+                              <template is="dom-repeat" items="{{lineItem.sticker_stock_colors}}">
+                                <paper-item class="custom" value="[[item]]">[[item]]</paper-item>
+                              </template>
+                            </paper-listbox>
+                          </paper-dropdown-menu>
+                        </div>
+
+                        <div class="col s4">
+                          <paper-dropdown-menu label="Available Poster Stock Colors">
+                            <paper-listbox class="dropdown-content" selected="{{lineItem.selected_poster_stock}}">
+                              <template is="dom-repeat" items="{{lineItem.poster_stock_colors}}">
+                                <paper-item class="custom" value="[[item]]">[[item]]</paper-item>
+                              </template>
+                            </paper-listbox>
+                          </paper-dropdown-menu>
+                        </div>
+                        <div class="col s4">
+                          <paper-dropdown-menu label="Available Poster Stock Sizes">
+                            <paper-listbox class="dropdown-content" selected="{{lineItem.selected_poster_size}}">
+                              <template is="dom-repeat" items="{{lineItem.poster_sizes}}">
+                                <paper-item class="custom" value="[[item]]">[[item]]</paper-item>
+                              </template>
+                            </paper-listbox>
+                          </paper-dropdown-menu>
+                        </div>
+                      </template>
+                    </template> 
+
+                    <!-- Other Stuff -->
+
+
+
                     <div class="col s12 center">
 
                       <paper-textarea label="Notes" value="{{quoteServiceItem.serviceNotes}}"></paper-textarea>
@@ -554,7 +611,7 @@
           return [ 
             { name: "Apparel", value: "apparel"}, 
             { name: "Parts Printing", value: "parts-printing"}, 
-            { name: "Flatstock", value: "flatstock"}, 
+            { name: "Posters & Stickers", value: "posters-and-stickers"}, 
             { name: "Buttons", value: "buttons"}, 
             { name: "Vinyl Lettering", value: "vinyl-lettering"}, 
             { name: "Other Stuff", value: "other"}
@@ -659,6 +716,8 @@
       if(e.target.selected == 0 && this.quote.line_items.items.length == 0){ //
         // console.log('!!! _serviceSelected, gonna _addApparelLineItemRow()');
         this._addApparelLineItemRow();
+      }else if(e.target.selected == 2 && this.quote.poster_and_sticker_line_items.items.length == 0){
+        this._addPostersAndStickersLineItemRow();
       }
     },
     _serviceNeedsDisabled: function(quoteService){
@@ -666,6 +725,9 @@
     },
     _isApparelService: function(quoteService){
       return quoteService.name.match(/apparel/i); 
+    },
+    _isPostersAndStickersService: function(quoteService){
+      return quoteService.name.match(/posters/i); 
     },
     _isOtherService: function(quoteService){
       return quoteService.name != undefined && quoteService.name != '' && !quoteService.name.match(/apparel/i);
@@ -686,6 +748,8 @@
       if(this.quote.services[e.model.index].name == 'Apparel'){
         // console.log('REMOVING APPAREL LINE ITEMS! _removeService e.model:',e.model.index);
         this.set('quote.line_items.items', []);
+      }else if(this.quote.services[e.model.index].name == 'Posters & Stickers'){
+        this.set('quote.poster_and_sticker_line_items.items', [])
       }
 
       // console.log('removeService idx: ',this.quote.services.indexOf(e.model.quoteServiceItem));
@@ -701,7 +765,7 @@
     },
     _quoteObserver: function(_quote){
       try{
-        // console.log('QUOTE _quoteObserver, _quote:',_quote);
+        console.log('QUOTE _quoteObserver, _quote:',_quote);
 
         var lineItemsTotalPrice = 0
           , lineItemsTotal = 0
@@ -788,6 +852,10 @@
       var _li_proto = quoteModel.line_item_apparel_proto;
       this.push('quote.line_items.items',_li_proto); 
       //this.push('quote.line_items.items',quoteModel.line_item_apparel_total_proto);
+    },
+    _addPostersAndStickersLineItemRow: function(){
+      var _li_proto = quoteModel.line_item_posters_and_stickers_proto;
+      this.push('quote.poster_and_sticker_line_items.items',_li_proto); 
     },
     _removeLineItemRow: function(e){
       // this.splice(path, index, removeCount, [item1, ..., itemN])
@@ -928,6 +996,9 @@
         // console.log('quote.graphic.items.'+_idx+'.print_on_item_names set to:',_print_on_item_names);
       }, 500);
       
+    },
+    _posterAndStickerItemsChanged: function(e){
+      console.log('_posterAndStickerItemsChanged e:',e);
     },
     _getPaletteInfo: function(e){
 
