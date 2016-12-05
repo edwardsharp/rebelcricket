@@ -485,7 +485,33 @@ ul.sidebar li a h1,ul.sidebar li a h2,ul.sidebar li a h3,ul.sidebar li a h4,ul.s
                 <tr><td>&nbsp;</td></tr>
               <% 
                 end # graphic itemz
-              end %>
+              end 
+              %>
+
+              <tr>
+                <td align="center" colspan="12">
+                  <h4 class="section_label">JOB COMPLETION AND SHIPPING</h4>
+                </td>
+              </tr>
+
+              <% 
+              if @quote["job_completion_and_shipping"] and @quote["job_completion_and_shipping"]["items"]
+                @quote["job_completion_and_shipping"]["items"].each do |item| 
+                  next unless item["value"]
+              %>
+
+              <tr>
+                <td align="left" colspan="12">
+                    <b><%= item["label"] %></b>
+                    <%= item["value"] %>
+                </td>
+              </tr>
+
+
+              <% 
+                end # job_completion_and_shipping
+              end 
+              %>
 
               <tr>
                 <td align="center" colspan="12">

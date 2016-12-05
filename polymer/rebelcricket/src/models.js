@@ -35,12 +35,12 @@ var quoteModel = {
   job_completion_and_shipping: {
     label: 'COMPLETION & SHIPPING INSTRUCTIONS',  
     items: [
-      {key: 'call_when_complete', label: 'Call when complete', type: 'checkbox', value: false, col: 's6'},
-      {key: 'will_call', label: 'Will Call', type: 'checkbox', value: false, col: 's3'},
+      {key: 'call_when_complete', label: 'Call when complete', type: 'checkbox', value: false, col: 's3'},
+      {key: 'will_call', label: 'Will Call', type: 'checkbox', value: false, col: 's3', notes: 'Local pick up.'},
+      {key: 'rush_processing', label: 'Rush Processing', type: 'checkbox', value: false, col: 's3', notes: 'Rates vary.'},
       {key: 'ship_via', label: 'Ship', type: 'checkbox', value: false, col: 's3'},
-      {key: 'ship_via_txt', label: 'Ship Via', type: 'text', col: 's6'},
-      {key: 'ship_by_date', label: 'Ship by date', type: 'text', col: 's6'},
-      {key: 'ship_to', label: 'Ship to', type: 'textarea', col: 's12', rows: 3}
+      {key: 'ship_via_txt', label: 'Ship Via', type: 'text', col: 's12', notes: 'ex: UPS, FedEx, USPS. Please specify your account # if you would like us to bill shipping charges.'},
+      {key: 'ship_to', label: 'Ship to Address', type: 'textarea', col: 's12', rows: 3}
     ]
   },
   line_item_apparel_proto: {
