@@ -102,7 +102,7 @@
 
       paper-item.iron-selected { 
         background-color: red;
-        color: white;
+        color: white!important;
       }
 
       hr {
@@ -354,6 +354,14 @@
                           </div>
                         </div>
 
+                        <div class="row">
+                          <div class="col s12 center">
+
+                            <paper-textarea label="Notes" value="{{lineItem.serviceNotes}}"></paper-textarea>
+                            <small>Any additional information about this [[quoteServiceItem.name]] item?</small>
+                          </div>
+                        </div>
+
                       </template>
                       
                       <div class="col s12 center">
@@ -414,6 +422,15 @@
                             </paper-listbox>
                           </paper-dropdown-menu>
                         </div>
+                      </div>
+
+                      <div class="row">
+                        <div class="col s12 center">
+
+                          <paper-textarea label="Notes" value="{{lineItem.serviceNotes}}"></paper-textarea>
+                          <small>Any additional information about this [[quoteServiceItem.name]] item?</small>
+                        </div>
+                      </div>
                       </template>
                     </template> 
 
@@ -488,16 +505,131 @@
                             </template>
                           </paper-listbox>
                         </div>
+                      </div>
+
+                      <div class="row">
+                        <div class="col s12 center">
+
+                          <paper-textarea label="Notes" value="{{lineItem.serviceNotes}}"></paper-textarea>
+                          <small>Any additional information about this [[quoteServiceItem.name]] item?</small>
+                        </div>
+                      </div>
 
                       </template>
                     </template>
 
+                    <!-- Die-Cut Vinyl -->
+ 
+                    <template is="dom-if" if="[[_isVinylService(quoteServiceItem)]]">
+                      <template is="dom-repeat" items="{{quote.vinyl_line_items.items}}" as="lineItem">
 
-                    <div class="col s12 center">
+                      <div class="row">
 
-                      <paper-textarea label="Notes" value="{{quoteServiceItem.serviceNotes}}"></paper-textarea>
-                      <small>Any additional information about this [[quoteServiceItem.name]] item?</small>
-                    </div>
+                        <div class="col s3">
+                          <paper-input label="Quantity" value="{{lineItem.quantity}}"></paper-input>
+                        </div>
+
+                        <div class="col s6">
+                          <paper-input label="Dimensions" value="{{lineItem.dimensions}}"></paper-input>
+                          <small>Specify Height x Width size(s).</small>
+                        </div>
+                    
+                      </div>
+                      <div class="row">
+                        
+                        <div class="col s6">
+                          <small>Options</small>
+                          <paper-listbox class="custom" selected-values="{{lineItem.selected_options}}" multi>
+                            <template is="dom-repeat" items="{{lineItem.options}}">
+                              <paper-item class$="[[_itemNeedsSmallFont(item)]] custom" value="[[item]]">[[item]]</paper-item>
+                            </template>
+                          </paper-listbox>
+
+                        </div>
+
+                      </div>
+
+                      <div class="row">
+                        <div class="col s12 center">
+
+                          <paper-textarea label="Notes" value="{{lineItem.serviceNotes}}"></paper-textarea>
+                          <small>Any additional information about this [[quoteServiceItem.name]] item?</small>
+                        </div>
+                      </div>
+
+                      </template>
+                    </template>
+
+                    <!-- Dimensional Parts -->
+
+                    <template is="dom-if" if="[[_isDimensionalPartsService(quoteServiceItem)]]">
+                      <template is="dom-repeat" items="{{quote.dimensional_parts_line_items.items}}" as="lineItem">
+
+                      <div class="row">
+
+                        <div class="col s6">
+                          <paper-input label="Dimensions" value="{{lineItem.dimensions}}"></paper-input>
+                          <small>Specify Height x Width x Depth size(s).</small>
+                        </div>
+                        
+                        <div class="col s6">
+                          <small>Options</small>
+                          <paper-listbox class="custom" selected-values="{{lineItem.selected_options}}" multi>
+                            <template is="dom-repeat" items="{{lineItem.options}}">
+                              <paper-item class$="[[_itemNeedsSmallFont(item)]] custom" value="[[item]]">[[item]]</paper-item>
+                            </template>
+                          </paper-listbox>
+
+                        </div>
+
+                      </div>
+
+                      <div class="row">
+                        <div class="col s12 center">
+
+                          <paper-textarea label="Notes" value="{{lineItem.serviceNotes}}"></paper-textarea>
+                          <small>Any additional information about this [[quoteServiceItem.name]] item?</small>
+                        </div>
+                      </div>
+
+                      </template>
+                    </template>
+
+                    <!-- Buttons -->
+
+                    <template is="dom-if" if="[[_isButtonsService(quoteServiceItem)]]">
+                      <template is="dom-repeat" items="{{quote.buttons_line_items.items}}" as="lineItem">
+
+                      <div class="row">
+
+                        <div class="col s3">
+                          <paper-input label="Quantity" value="{{lineItem.quantity}}"></paper-input>
+                          <small>Button order minimum: [[lineItem.buttons_min]]</small>
+                        </div>
+                        
+                        <div class="col s4">
+                          <small>Options</small>
+                          <paper-listbox class="custom" selected-values="{{lineItem.selected_options}}" multi>
+                            <template is="dom-repeat" items="{{lineItem.options}}">
+                              <paper-item class$="[[_itemNeedsSmallFont(item)]] custom" value="[[item]]">[[item]]</paper-item>
+                            </template>
+                          </paper-listbox>
+
+                        </div>
+
+                      </div>
+
+                      <div class="row">
+                        <div class="col s12 center">
+
+                          <paper-textarea label="Notes" value="{{lineItem.serviceNotes}}"></paper-textarea>
+                          <small>Any additional information about this [[quoteServiceItem.name]] item?</small>
+                        </div>
+                      </div>
+
+                      </template>
+                    </template>
+
 
                   </div>
                   
@@ -548,7 +680,11 @@
                       </template>
                     </paper-listbox>
                   </div>
-
+                  
+                  <div class="col s4 m3">
+                    <paper-input label="Print Size" value="{{item.size_inches}}"></paper-input>
+                    <small>Height x Width inches</small>
+                  </div>
                   <div class="col s4 m3">
 
                     <paper-dropdown-menu label="Number of Colors" on-iron-select="_numColorsChanged">
@@ -613,12 +749,12 @@
                 <template is="dom-repeat" items="{{quote.job_completion_and_shipping.items}}">
                   <div class$="col [[item.col]]">
                     <template is="dom-if" if="[[_isInput(item.type)]]">
-                      <paper-input name="[[item.key]]" label="[[item.label]]" value="{{item.value}}"></paper-input>
-                      <small>[[item.notes]]</small>
+                      <paper-input name="[[item.key]]" label="[[item.label]]" value="{{item.value}}" hidden$="[[!quote.job_completion_and_shipping.items.3.value]]"></paper-input>
+                      <small hidden$="[[!quote.job_completion_and_shipping.items.3.value]]" >[[item.notes]]</small>
                     </template>
                     <template is="dom-if" if="[[_isTextarea(item.type)]]">
-                      <paper-textarea rows="[[item.rows]]" name="[[item.key]]" label="[[item.label]]" value="{{item.value}}"></paper-textarea>
-                      <small>[[item.notes]]</small>
+                      <paper-textarea rows="[[item.rows]]" name="[[item.key]]" label="[[item.label]]" value="{{item.value}}" hidden$="[[!quote.job_completion_and_shipping.items.3.value]]"></paper-textarea>
+                      <small hidden$="[[!quote.job_completion_and_shipping.items.3.value]]">[[item.notes]]</small>
                     </template>
                     <template is="dom-if" if="[[_isCheckbox(item.type)]]">
                       <paper-checkbox checked="{{item.value}}"> [[item.label]]</paper-checkbox>
@@ -626,6 +762,12 @@
                     </template>
                   </div>
                 </template>
+                <div class="row">
+                  <div class="col s12">
+                    <p hidden$="[[!quote.job_completion_and_shipping.items.2.value]]">
+                    Our Address is 5040 SE Milwaukie Ave. Portland, OR 97202</p>
+                  </div>
+                </div>
               </div>
             </div>
           </div>
@@ -696,10 +838,10 @@
         value: function(){
           return [ 
             { name: "Apparel", value: "apparel"}, 
-            { name: "Parts Printing", value: "parts-printing"}, 
+            { name: "Dimensional Parts", value: "dimensional-parts"}, 
             { name: "Posters & Stickers", value: "posters-and-stickers"}, 
             { name: "Buttons", value: "buttons"}, 
-            { name: "Vinyl Lettering", value: "vinyl-lettering"}, 
+            { name: "Die-Cut Vinyl", value: "die-cut-vinyl"}, 
             { name: "Other Stuff", value: "other"}
           ];
         }
@@ -796,17 +938,24 @@
     },
     _serviceSelected: function(e){
       // this.push('quote.services', {name: this.services[e.target.selected].name, value: e.target.selected });
-      console.log('_serviceSelected e.target.selected:',e.target.selected);
-      // console.log('_serviceSelected!');
-      e.model.set('quoteServiceItem', {name: this.services[e.target.selected].name, value: e.target.selected, serviceNotes: ''});
+      // console.log('_serviceSelected e.target.selected:',e.target.selected);
+      e.model.set('quoteServiceItem', {name: this.services[e.target.selected].name, value: e.target.selected});
       if(e.target.selected == 0 && this.quote.line_items.items.length == 0){ //
         // console.log('!!! _serviceSelected, gonna _addApparelLineItemRow()');
         this._addApparelLineItemRow();
+      }else if(e.target.selected == 1 && this.quote.dimensional_parts_line_items.items.length == 0){
+        this._addDimensionalPartsItemRow();
       }else if(e.target.selected == 2 && this.quote.poster_and_sticker_line_items.items.length == 0){
         this._addPostersAndStickersLineItemRow();
+      }else if(e.target.selected == 3 && this.quote.buttons_line_items.items.length == 0){
+        this._addButtonsLineItemRow();
+      }else if(e.target.selected == 4 && this.quote.vinyl_line_items.items.length == 0){
+        this._addVinylLineItemRow();
       }else if(e.target.selected == 5 && this.quote.other_stuff_line_items.items.length == 0){
         this._addOtherStuffLineItemRow();
       }
+      
+
       
       //aarg, this doesn't work :(
       // Polymer.dom(e).localTarget.setAttribute('disabled', 'disabled');
@@ -831,6 +980,15 @@
     _isOtherStuffService: function(quoteService){
       return quoteService.name.match(/stuff/i); 
     },
+    _isVinylService: function(quoteService){
+      return quoteService.name.match(/vinyl/i); 
+    },
+    _isDimensionalPartsService: function(quoteService){
+      return quoteService.name.match(/dimensional/i); 
+    },
+    _isButtonsService: function(quoteService){
+      return quoteService.name.match(/buttons/i); 
+    },
     _isOtherService: function(quoteService){
       return quoteService.name != undefined && quoteService.name != '' && !quoteService.name.match(/apparel/i);
     },
@@ -854,10 +1012,16 @@
 
       if(_serviceName == 'Apparel'){
         this.set('quote.line_items.items', []);
+      }else if(_serviceName == 'Dimensional Parts'){
+        this.set('quote.dimensional_parts_line_items.items', []);
       }else if(_serviceName == 'Posters & Stickers'){
         this.set('quote.poster_and_sticker_line_items.items', []);
+      }else if(_serviceName == 'Buttons'){
+        this.set('quote.buttons_line_items.items', []);
       }else if(_serviceName == 'Other Stuff'){
         this.set('quote.other_stuff_line_items.items', []);
+      }else if(_serviceName == 'Die-Cut Vinyl'){
+        this.set('quote.vinyl_line_items.items', []);
       }
 
     },
@@ -966,10 +1130,22 @@
       var _li_proto = quoteModel.line_item_other_stuff_proto;
       this.push('quote.other_stuff_line_items.items',_li_proto); 
     },
+    _addVinylLineItemRow: function(){
+      var _li_proto = quoteModel.line_item_vinyl_proto;
+      this.push('quote.vinyl_line_items.items', _li_proto);
+    },
+    _addButtonsLineItemRow: function(){
+      var _li_proto = quoteModel.line_item_buttons_proto;
+      this.push('quote.buttons_line_items.items', _li_proto);
+    },
     _removeLineItemRow: function(e){
       // this.splice(path, index, removeCount, [item1, ..., itemN])
       // console.log('removeService idx: ',e.model.index );
       this.splice('quote.line_items.items', e.model.index, 1);
+    },
+    _addDimensionalPartsItemRow: function(){
+      var _li_proto = quoteModel.line_item_dimensional_parts_proto;
+      this.push('quote.dimensional_parts_line_items.items', _li_proto);
     },
     _addColorMeshPrint: function(e){
       //ugh, RTFM: https://www.polymer-project.org/1.0/docs/devguide/data-system#paths

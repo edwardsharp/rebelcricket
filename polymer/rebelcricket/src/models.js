@@ -52,7 +52,8 @@ var quoteModel = {
     ],
     selected_sizes: [],
     size_quantity: [],
-    apparel_sizes: ['XS', 'SM', 'MD', 'L', 'XL', '2XL', '3XL', '4XL']
+    apparel_sizes: ['XS', 'SM', 'MD', 'L', 'XL', '2XL', '3XL', '4XL'],
+    serviceNotes: ''
   },
   line_item_apparel_total_proto: {
     line_total: {key: 'line_total', label: 'TOTAL', type: 'number', col: 's3 m2'}
@@ -76,7 +77,8 @@ var quoteModel = {
     poster_stock_colors: ['white', 'natural', 'matte black', 'other (please describe)'],
     selected_poster_stock: '',
     selected_poster_size: '',
-    poster_sizes: ['up to 12"x18"', 'up to 18"x24"', 'up to 24"x38"']
+    poster_sizes: ['up to 12"x18"', 'up to 18"x24"', 'up to 24"x38"'],
+    serviceNotes: ''
   },
 
   poster_and_sticker_line_items: {
@@ -100,11 +102,50 @@ var quoteModel = {
     watter_bottle_options: ['silver', 'white', 'Other (please describe)'],
     selected_watter_bottle_options: [],
     watter_bottle_tops: ['screw top', 'straw top'],
-    selected_watter_bottle_tops: []
+    selected_watter_bottle_tops: [],
+    serviceNotes: ''
   },
 
   other_stuff_line_items: {
     label: 'OTHER STUFF LINE ITEMS',
+    items: []
+  },
+
+  line_item_vinyl_proto: {
+    dimensions: '',
+    quantity: '',
+    options: ['Indoor Wall Graphic', 'Outdoor Exterior Signage', 'Vehicle', 'Floor', 'Banner', 'Other (Please Explain)'],
+    selected_options: [],
+    serviceNotes: ''
+  },
+
+  vinyl_line_items: {
+    label: 'DIE-CUT VINYL',
+    items: []
+  },
+
+  line_item_dimensional_parts_proto: {
+    dimensions: '',
+    options: ['Wood (Raw)', 'Wood (Painted)', 'Metal (Raw)', 'Metal (Powder-coated)', 'Metal (Painted)', 'Plastic (Please Specify Type)', 'Other (Please Specify)'],
+    selected_options: [],
+    serviceNotes: ''
+  },
+
+  dimensional_parts_line_items: {
+    label: 'DIMENSIONAL PARTS',
+    items: []
+  },
+
+  line_item_buttons_proto: {
+    quantity: '',
+    buttons_min: 250,
+    options: ['1"', '1.25"', '1.5"', '2.25"'],
+    selected_options: [],
+    serviceNotes: ''
+  },
+
+  buttons_line_items: {
+    label: 'BUTTONS',
     items: []
   },
 
