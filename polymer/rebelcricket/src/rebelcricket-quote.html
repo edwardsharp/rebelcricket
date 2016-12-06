@@ -301,7 +301,8 @@
                   </div>
 
                   <div class="serviceItems col s12 center">
-   
+                    
+                    <!-- Apparel -->
                     <template is="dom-if" if="[[_isApparelService(quoteServiceItem)]]">
                       <template is="dom-repeat" items="{{quote.line_items.items}}" as="lineItem">
                         <div class="col s12 apparelRow">
@@ -650,20 +651,40 @@
             <div class="col s12 m6 offset-m3">
               <div class="col s12 section-label center">
                 <span>Graphics</span>
-              </div>  
+              </div> 
+              
             </div>
             
             <div class="col s12 m6 offset-m3">
              
               <template is="dom-repeat" items="{{quote.graphic.items}}">
                 <div class="row graphicItems">
-                  <div class="col s3">
+                  <div class="col s4">
                     <!-- <a on-tap="_getPaletteInfo"></a> -->
                       <img src="[[item.attachment_url]]" class="responsive-img quoteDesignImg">
                     
                   </div>
 
-                  <div class="col s9">
+                  <div class="col s3">
+                    <paper-input label="Print Size" value="{{item.size_inches}}"></paper-input>
+                    <small>Height x Width (inches)</small>
+                  </div>
+
+                  <div class="col s3">
+                    <paper-checkbox checked={{item.is_vector_file}}>
+                          &nbsp; Yes
+                      </paper-checkbox>
+                    <small>Is this a vector file?</small>
+                  </div>
+
+                  <div class="col s2">
+                    <paper-icon-button icon="remove" on-tap="_removeGraphic"></paper-icon-button>
+                    <small>remove</small>
+                    <paper-tooltip>Remove Graphic</paper-tooltip>
+
+                  </div> 
+
+                  <div class="col s12">
                     Print This On <small>select as many as needed.</small>
                     <paper-listbox class="custom" selected-values="{{item.print_on_items}}" on-iron-activate="_printOnItemsChanged" multi>
                       <template is="dom-repeat" items="{{printOnItems}}">
@@ -681,10 +702,6 @@
                     </paper-listbox>
                   </div>
                   
-                  <div class="col s4 m3">
-                    <paper-input label="Print Size" value="{{item.size_inches}}"></paper-input>
-                    <small>Height x Width inches</small>
-                  </div>
                   <div class="col s4 m3">
 
                     <paper-dropdown-menu label="Number of Colors" on-iron-select="_numColorsChanged">
@@ -1025,6 +1042,10 @@
       }
 
     },
+    _removeGraphic: function(e){
+      console.log('_removeGraphic e.model.index:',e.model.index);
+      console.log('right gfx?',quote.graphic.items[e.model.index]);
+    },
     _addServiceButtonText: function(_quote_services){
       if(_quote_services && _quote_services.length > 0){
         return 'Add another service';
@@ -1209,8 +1230,10 @@
       // console.log('QUOTE _lineItemForVendorObserver _lineItem:',_lineItem);
     },
     _priceForSize: function(_li, _item){
+
       var _itemIdx = _li.apparel_sizes.indexOf(_item);
-      if(_itemIdx && _li.prices){
+      
+      if(!isNaN(parseInt(_itemIdx)) && _li.prices){
         return _li.prices[_itemIdx]; 
       }else{
         return '';
@@ -1341,7 +1364,7 @@
       
 
       var params = {};
-      params["quote_number"] = this.quoteID;
+      params["number"] = this.quoteID;
       params["name"] = this.quote.client_contact_information.items[0].value;
       params["phone"] = this.quote.client_contact_information.items[1].value;
       params["email"] = this.quote.client_contact_information.items[2].value;
@@ -1352,7 +1375,7 @@
       if(params["name"] !== '' && params["name"] != undefined && params["email"] !== '' && params["email"] != undefined && this.quote.services.length > 0){
         this.set('quote.submitted', new Date);
         this.$.rebelquote.params = params;
-        this.$.rebelquote.body = JSON.stringify({quote: {data: this.quote } });
+        this.$.rebelquote.body = JSON.stringify({data: this.quote });
         
         this.$.rebelquote.generateRequest();
       }else{
@@ -1370,14 +1393,14 @@
     },
     _handleAjaxQuotePostResponse: function(e){
       console.log('_handleAjaxQuotePostResponse! e',e);
-      this.$.submitFeedbackText.innerHTML = "Thank you for submitting a quote request! <br><br> We'll get back to you shortly with an estimate and/or additional questions for the service(s) you requested.<br><br>";
+      this.$.submitFeedbackText.innerHTML = "Thank you for submitting a quote request! <br><br> We'll get back to you shortly with either <ol><li>Answers to any questions you might have.</li><li>An estimate.</li><li>Additional questions (or information needed) about the service(s) you requested.</li><ol><br><br><div>If anything comes up in the meantime, please don't hesitate to email <a href='mailto:rebelcricket@gmail.com'>rebelcricket@gmail.com</a> or call <a href='tel://1-503-545-1450'>503‑545‑1450</a>. </div>";
       //window.location.href ?
       this.$.submitFeedback.open();
     },
     _handleAjaxQuotePostError: function(e){
       console.log('_handleAjaxQuotePostError! e:',e);
       this.$.submitFeedback.open();
-      this.$.submitFeedbackText.innerHTML = 'ERROR! Could not submit your quote request. Sorry about that. :/ <br><br> If this form does not work for you please email your request to <a href="mailto: rebelcricket@gmail.com">rebelcricket@gmail.com</a>.';
+      this.$.submitFeedbackText.innerHTML = 'ERROR! Could not submit your quote request. Sorry about that. :/ <br><br> If this form does not work for you please email your request to <a href="mailto: rebelcricket@gmail.com">rebelcricket@gmail.com</a>. <br><br>Or call us <a href="tel://1-503-545-1450">503‑545‑1450</a>';
     },
     _handleAjaxGfxPostResponse: function(e){
       // console.log('_handleAjaxGfxPostResponse! e.detail.response.id',e.detail.response.id);

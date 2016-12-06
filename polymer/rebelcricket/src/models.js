@@ -154,7 +154,8 @@ var quoteModel = {
     price: 0,
     attachment_id: '',
     position: '',
-    size_inches: ''
+    size_inches: '',
+    is_vector_file: false
   },
 
   graphic: {

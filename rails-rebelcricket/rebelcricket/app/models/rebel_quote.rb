@@ -43,8 +43,14 @@ class RebelQuote < ApplicationRecord
       "Other (please describe)"
     ]
 
+   
     tmpl = File.open("#{::Rails.root}/app/views/quote_email.erb").read
-    message_html = ERB.new(tmpl).result( binding )
+      
+    begin
+      message_html = ERB.new(tmpl).result( binding )
+    rescue
+      message_html = "<h3>Opps. :( </h3>There was a problem with the quote email template.<br><br> Raw Data: <br> email: #{self.email}<br> name: #{self.name}<br> quote#: #{self.number}<br> phone: #{self.phone}<br> org: #{self.org}"
+    end
 
     mg_client = Mailgun::Client.new ENV['MAILGUN_API_KEY']
     mb_obj = Mailgun::MessageBuilder.new
@@ -56,7 +62,15 @@ class RebelQuote < ApplicationRecord
     # Define a cc recipient
     # mb_obj.add_recipient(:cc, "sally.doe@example.com", {"first" => "Sally", "last" => "Doe"});  
     # Define the subject
-    mb_obj.subject "Quote from: #{self.email} #{self.name} #{self.phone}" 
+    subj = "Quote ##{self.number} "
+
+    foragoodstrftime = '%m/%d/%Y %l:%M%p'
+    if self.created_at.strftime(foragoodstrftime) != self.updated_at.strftime(foragoodstrftime)
+      subj += "Updated: #{self.updated_at.strftime(foragoodstrftime)} "
+    end
+    subj += "Created: #{self.created_at.strftime(foragoodstrftime)}" 
+
+    mb_obj.subject subj
     # Define the body of the message
     mb_obj.body_html message_html
 
@@ -68,7 +82,7 @@ class RebelQuote < ApplicationRecord
 
     # Schedule message in the future
     # mb_obj.set_delivery_time("tomorrow 8:00AM", "PST");
-
+  
     begin
       mg_client.send_message ENV['MAILGUN_DOMAIN'], mb_obj unless Rails.env.test?
       self.update_attribute :message_sent, true

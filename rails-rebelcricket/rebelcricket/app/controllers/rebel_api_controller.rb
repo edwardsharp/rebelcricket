@@ -126,19 +126,14 @@ class RebelApiController < ApplicationController
   # post '/rebelquote' do
   def rebelquote
 
-    # params_json = JSON.parse(request.body.read)
-    Rails.logger.debug "rebelquote quote_params: #{quote_params}"
-
     if quote_params[:number] && RebelQuote.find_by(number: quote_params[:number])
       Rails.logger.debug "RebelQuote exists!"
-      @rebel_quote = RebelQuote.find(quote_params[:number])
+      @rebel_quote = RebelQuote.find_by(number: quote_params[:number])
     else
       @rebel_quote = RebelQuote.new(quote_params)
     end
 
-    # request.body.rewind
-    @rebel_quote.data = params[:quote][:data]
-    # p "rebelquote body: #{@rebel_quote.data}"
+    @rebel_quote.data = params[:data]
     
     if @rebel_quote.save
       render json: @rebel_quote.to_json
@@ -176,7 +171,7 @@ class RebelApiController < ApplicationController
 
   protected
   def quote_params
-    params.require(:quote).permit(
+    params.permit(
       :number, :name, :phone, :email, :org
     )
   end

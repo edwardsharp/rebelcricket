@@ -46,3 +46,26 @@ rails api app for handling data storage, email, & other stuff for a polymer weba
 
   curl http://localhost:3000/api/pages -H 'Authorization: Token token="afbadb4ff8485c0adcba486b4ca90cc4"'
 
+
+### Some tips on debugging ERB Templates
+
+Convert the template to a ruby file
+```sh
+$ erb -x -T - file.erb > file.rb
+```
+
+Open the file.  At the bottom, you'll see:
+```ruby
+; _erbout
+```
+
+Add a puts in front of this, so instead of returning the output, it is displayed
+```ruby
+; puts _erbout
+```
+
+If there are variables out of scope that need to be referenced, add them to the top.  Now you can run the script directly and investigate the errors.
+```sh
+$ ruby file.rb
+```
+
