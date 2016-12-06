@@ -278,7 +278,7 @@
                 <div class="row group">
                   <div class="row serviceGroup">
                     <div class="col s6 center">
-                      <paper-dropdown-menu label="Service" on-iron-select="_serviceSelected">
+                      <paper-dropdown-menu class="service-dropdown" label="Service" on-iron-select="_serviceSelected" disabled$="[[_serviceDropdownNeedsDisabled(quoteServiceItem.value)]]">
                         <paper-listbox class="dropdown-content" selected="{{quoteServiceItem.value}}">
                           <template is="dom-repeat" items="{{services}}">
                             <paper-item value="[[item.value]]" disabled$=[[_serviceNeedsDisabled(item.name)]]>[[item.name]]</paper-item>
@@ -796,7 +796,7 @@
     },
     _serviceSelected: function(e){
       // this.push('quote.services', {name: this.services[e.target.selected].name, value: e.target.selected });
-      // console.log('e.target.selected:',e.target.selected);
+      console.log('_serviceSelected e.target.selected:',e.target.selected);
       // console.log('_serviceSelected!');
       e.model.set('quoteServiceItem', {name: this.services[e.target.selected].name, value: e.target.selected, serviceNotes: ''});
       if(e.target.selected == 0 && this.quote.line_items.items.length == 0){ //
@@ -809,12 +809,18 @@
       }
       
       //aarg, this doesn't work :(
-      Polymer.dom(e).localTarget.setAttribute('disabled', 'disabled');
-      Polymer.dom(e).localTarget.setAttribute('aria-disabled', true);
-      console.log('aaarg Polymer.dom(e).localTarget:',Polymer.dom(e));
+      // Polymer.dom(e).localTarget.setAttribute('disabled', 'disabled');
+      // Polymer.dom(e).localTarget.setAttribute('aria-disabled', true);
+      // console.log('aaarg Polymer.dom(e).localTarget:',Polymer.dom(e));
+
+      // this.$$('.service-dropdown').disabled = true;
+
     },
     _serviceNeedsDisabled: function(quoteService){
       return _.where(this.quote.services, {name: quoteService}).length > 0;
+    },
+    _serviceDropdownNeedsDisabled: function(_val){
+      return _val != undefined;
     },
     _isApparelService: function(quoteService){
       return quoteService.name.match(/apparel/i); 
@@ -841,15 +847,18 @@
     },
     _removeService: function(e){
       
-      if(this.quote.services[e.model.index].name == 'Apparel'){
-        // console.log('REMOVING APPAREL LINE ITEMS! _removeService e.model:',e.model.index);
-        this.set('quote.line_items.items', []);
-      }else if(this.quote.services[e.model.index].name == 'Posters & Stickers'){
-        this.set('quote.poster_and_sticker_line_items.items', [])
-      }
+      var _serviceName = this.quote.services[e.model.index].name;
 
-      // console.log('removeService idx: ',this.quote.services.indexOf(e.model.quoteServiceItem));
+      //need to do this splice before resetting _line_items...
       this.splice('quote.services', e.model.index, 1);
+
+      if(_serviceName == 'Apparel'){
+        this.set('quote.line_items.items', []);
+      }else if(_serviceName == 'Posters & Stickers'){
+        this.set('quote.poster_and_sticker_line_items.items', []);
+      }else if(_serviceName == 'Other Stuff'){
+        this.set('quote.other_stuff_line_items.items', []);
+      }
 
     },
     _addServiceButtonText: function(_quote_services){
