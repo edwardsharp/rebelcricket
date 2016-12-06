@@ -21,6 +21,8 @@ gem 'jbuilder', '~> 2.5'
 gem 'rack-cors'
 gem 'foreman'
 gem 'mailgun-ruby'
+gem 'reverse_markdown'
+gem 'faraday'
 
 group :development, :test do
   # Call 'byebug' anywhere in the code to stop execution and get a debugger console

@@ -827,16 +827,13 @@
 
           <div class="row">
             <div class="col s12 m6 offset-m3 center">
-
-              <paper-button class="custom" on-tap="_submitQuote"><h5>Submit Quote</h5></paper-button>
-
+              <paper-button id="submitQuoteButton" class="custom" on-tap="_submitQuote"><h5>Submit Quote</h5></paper-button>
             </div>
           </div>
 
       </div>
 
-          
-   
+
     </div>
 
   </template>
@@ -877,7 +874,7 @@
         value: function() { 
           if(window.location.hash === ''){
             window.location.hash = generateID();
-            //#TODO: ajax fetch json for this quote from sinatra and set this.quote
+            //#TODO: ajax fetch json from api? (probz admin thing...)
           }
           return window.location.hash.replace(/#/,'');
         }
@@ -954,7 +951,6 @@
       return date.getFullYear() + "-" + ("0"+(date.getMonth() + 1)).slice(-2) + "-" + ("0"+date.getDate()).slice(-2);
     },
     _serviceSelected: function(e){
-      // this.push('quote.services', {name: this.services[e.target.selected].name, value: e.target.selected });
       // console.log('_serviceSelected e.target.selected:',e.target.selected);
       e.model.set('quoteServiceItem', {name: this.services[e.target.selected].name, value: e.target.selected});
       if(e.target.selected == 0 && this.quote.line_items.items.length == 0){ //
@@ -971,15 +967,6 @@
       }else if(e.target.selected == 5 && this.quote.other_stuff_line_items.items.length == 0){
         this._addOtherStuffLineItemRow();
       }
-      
-
-      
-      //aarg, this doesn't work :(
-      // Polymer.dom(e).localTarget.setAttribute('disabled', 'disabled');
-      // Polymer.dom(e).localTarget.setAttribute('aria-disabled', true);
-      // console.log('aaarg Polymer.dom(e).localTarget:',Polymer.dom(e));
-
-      // this.$$('.service-dropdown').disabled = true;
 
     },
     _serviceNeedsDisabled: function(quoteService){
@@ -1071,13 +1058,11 @@
                 if(_.where(item.size_quantity, {key: size}).length > 0){
                   _size_quantity.push(_.where(item.size_quantity, {key: size})[0]);
                 }else{
-                  
                   var _size_proto = quoteModel.apparel_size_quantity_proto;
                   _size_proto.key = size;
                   _size_proto.label = size;
                   if(item.prices != undefined && item.prices[idx] != undefined){
-                    // console.log('!!!!!!!!!!!!! setting price total to:',item.prices[idx]);
-                    _size_proto.total = item.prices[idx];
+                    _size_proto.total = item.prices[item.apparel_sizes.indexOf(size)];
                   }
                   _size_quantity.push(_size_proto);
                 }
@@ -1106,7 +1091,6 @@
               
             }
             
-
           }// if item.service_type == 'Apparel'
         });
 
@@ -1117,12 +1101,6 @@
           _li.total_price = lineItemsTotalPrice.toFixed(2);
         }
         
-        // this.set('quote.line_items.items_total', lineItemsTotal);
-          
-        
-        // console.log('SUPA TOTAL:',lineItemsTotal,' lineItemsTotalPrice:',lineItemsTotalPrice);
-
-
         this._updatePrintOnItems();
       }catch(err){
         //o noz!
@@ -1141,7 +1119,6 @@
     _addApparelLineItemRow: function(){
       var _li_proto = quoteModel.line_item_apparel_proto;
       this.push('quote.line_items.items',_li_proto); 
-      //this.push('quote.line_items.items',quoteModel.line_item_apparel_total_proto);
     },
     _addPostersAndStickersLineItemRow: function(){
       var _li_proto = quoteModel.line_item_posters_and_stickers_proto;
@@ -1160,8 +1137,6 @@
       this.push('quote.buttons_line_items.items', _li_proto);
     },
     _removeLineItemRow: function(e){
-      // this.splice(path, index, removeCount, [item1, ..., itemN])
-      // console.log('removeService idx: ',e.model.index );
       this.splice('quote.line_items.items', e.model.index, 1);
     },
     _addDimensionalPartsItemRow: function(){
@@ -1238,44 +1213,13 @@
       }else{
         return '';
       }
-      
     },
     _numColorsChanged: function(e){
-      // this.async(function(){
-        // console.log('e.model.index:',e.model.index);
-
-        if(e.model.item.colors.length != e.target.selected){
-          //this.set('e.model.item.num_colors', e.target.selected);
-          
-          //e.model.item.colors.length = e.target.selected;
-          
-
-            // this.set('e.model.item.colors.length', e.target.selected);
-            // console.log('e.target.selected',e.target.selected);
-            e.model.item.colors.length = e.target.selected;
-            e.model.item.colors = Array.apply(null, e.model.item.colors).map(String.prototype.valueOf,"")
-            // this.set('e.model.item.colors', Array.apply(null, e.model.item.colors).map(String.prototype.valueOf,""));
-
-          this.notifyPath('quote.graphic.items.'+e.model.index+'.colors');
-   
-          // console.log('set length to:', e.target.selected);
-          // console.log('and apply, now e.model.item.colors:',e.model.item.colors);
-          // this.async(function(){
-            
-            
-            // console.log('_numColorsChanged done! e.model.item.colors:',e.model.item.colors);
-            // this.async(function(){
-            //   this.notifyPath('e.model.item.colors');
-            // }, 500);
-
-          // }, 200);
-        }
-      // }, 200);
-
-      
-      
-    //   // console.log('aaarg, this.quote.graphic.items[e.model.index].colors: ',this.quote.graphic.items[e.model.index].colors);
-      
+      if(e.model.item.colors.length != e.target.selected){
+        e.model.item.colors.length = e.target.selected;
+        e.model.item.colors = Array.apply(null, e.model.item.colors).map(String.prototype.valueOf,"");
+        this.notifyPath('quote.graphic.items.'+e.model.index+'.colors');
+      }
     },
     _updatePrintOnItems: function(){
       var _itemz = [];
@@ -1301,7 +1245,6 @@
           }
         });
         this.set('quote.graphic.items.'+_idx+'.print_on_item_names', _print_on_item_names);
-        // console.log('quote.graphic.items.'+_idx+'.print_on_item_names set to:',_print_on_item_names);
       }, 500);
       
     },
@@ -1360,8 +1303,8 @@
       
     },
     _submitQuote: function(){
-      // console.log('submit quote!');
-      
+
+      this.$.submitQuoteButton.disabled = true;
 
       var params = {};
       params["number"] = this.quoteID;
@@ -1370,7 +1313,7 @@
       params["email"] = this.quote.client_contact_information.items[2].value;
       params["org"] = this.quote.client_contact_information.items[3].value;
 
-      console.log('paramz:',params);
+      // console.log('paramz:',params);
 
       if(params["name"] !== '' && params["name"] != undefined && params["email"] !== '' && params["email"] != undefined && this.quote.services.length > 0){
         this.set('quote.submitted', new Date);
@@ -1386,9 +1329,8 @@
         }
         //window.location.href ?
         this.$.submitFeedback.open();
+        this.$.submitQuoteButton.disabled = false;
       }
-
-
       
     },
     _handleAjaxQuotePostResponse: function(e){
@@ -1396,60 +1338,39 @@
       this.$.submitFeedbackText.innerHTML = "Thank you for submitting a quote request! <br><br> We'll get back to you shortly with either <ol><li>Answers to any questions you might have.</li><li>An estimate.</li><li>Additional questions (or information needed) about the service(s) you requested.</li><ol><br><br><div>If anything comes up in the meantime, please don't hesitate to email <a href='mailto:rebelcricket@gmail.com'>rebelcricket@gmail.com</a> or call <a href='tel://1-503-545-1450'>503‑545‑1450</a>. </div>";
       //window.location.href ?
       this.$.submitFeedback.open();
+      this.$.submitQuoteButton.disabled = false;
     },
     _handleAjaxQuotePostError: function(e){
       console.log('_handleAjaxQuotePostError! e:',e);
-      this.$.submitFeedback.open();
       this.$.submitFeedbackText.innerHTML = 'ERROR! Could not submit your quote request. Sorry about that. :/ <br><br> If this form does not work for you please email your request to <a href="mailto: rebelcricket@gmail.com">rebelcricket@gmail.com</a>. <br><br>Or call us <a href="tel://1-503-545-1450">503‑545‑1450</a>';
+      this.$.submitFeedback.open();
+      this.$.submitQuoteButton.disabled = true;
     },
     _handleAjaxGfxPostResponse: function(e){
-      // console.log('_handleAjaxGfxPostResponse! e.detail.response.id',e.detail.response.id);
-       
       var graphic_item = quoteModel.graphic_item_proto;
       graphic_item.attachment_id = e.detail.response.id;
       graphic_item.attachment_url = e.detail.response.url;
       this.push('quote.graphic.items', graphic_item);
       this.$.quoteDesingUploadSpinner.active = false;
       this.$.quoteDesignUploadFeedback.innerHTML = '';
-      // _this.async(function(){  }, 500);
+      this.$.quoteDesignFile.disabled = false;
     },
     _handleAjaxGfxPostError: function(e){
       console.log('_handleAjaxGfxPostError! e:',e);
       this.$.quoteDesingUploadSpinner.active = false;
       this.$.quoteDesignUploadFeedback.innerHTML = 'ERROR! Could not upload that file. Please try again or choose a different file. If this form does not work for you please email your graphics to <a href="mailto: rebelcricket@gmail.com">rebelcricket@gmail.com</a>.';
+      this.$.quoteDesignFile.disabled = true;
     },
     _itemNeedsSmallFont: function(str){
       return str.length > 16 ? 'smallfont' : '';
     },
     ready: function(){
-      
       //file upload
       var input = this.$.quoteDesignFile;
       var _this = this;
       input.addEventListener('change', function () {
+        _this.$.quoteDesignFile.disabled = true;
         var file = input.files[0]; // file is a Blob
-
-        // if(_this.quote._attachments == undefined){
-
-        //   var attachment = {};
-        
-        //   attachment[file.name] = {
-        //     type: file.type,
-        //     content_type: file.type,
-        //     data: file
-        //   }
-        //   _this.set('quote._attachments', attachment);
-        // }else{
-
-        //   var attachments = _this.quote._attachments;
-
-        //   attachments[file.name] = {
-        //     type: file.type,
-        //     content_type: file.type,
-        //     data: file
-        //   }
-        //   _this.set('quote._attachments', attachments);
-        // }
 
         _this.$.quoteDesingUploadSpinner.active = true;
 
@@ -1468,9 +1389,7 @@
 
     }
 
-
   });
-
 
   </script>
 </dom-module>

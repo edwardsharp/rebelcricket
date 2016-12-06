@@ -4,22 +4,58 @@ class RebelQuote < ApplicationRecord
 
   after_save :send_message
 
-  def update_kb
+  def create_kb
 
     require 'faraday'
 
-    conn = Faraday.new(:url => 'https://kanboard.example.com') do |faraday|
+    conn = Faraday.new(:url => 'http://localhost:8090') do |faraday|
         faraday.response :logger
-        faraday.headers['X-API-Auth'] = 'XXX'      # base64_encode('jsonrpc:API_KEY')
-        # faraday.basic_auth(ENV['user'], ENV['pw']) # user/pass to get through basic auth
+        faraday.headers['X-API-Auth'] = '3be9e99c6f71c6c3c001c64d86428e6de885a67199a930139bf6f76766b2'
+        faraday.basic_auth('jsonrpc', '3be9e99c6f71c6c3c001c64d86428e6de885a67199a930139bf6f76766b2') # user/pass to get through basic auth
         faraday.adapter Faraday.default_adapter    # make requests with Net::HTTP
+    end
+
+
+    @rebel_quote = self
+    @quote = self.data
+    @positions = [
+      "Front Center",
+      "Front Left",
+      "Front Right",
+      "Back Center",
+      "Back Lower",
+      "Left Sleeve",
+      "Right Sleeve",
+      "Not Sure",
+      "Other (please describe)"
+    ]
+
+   
+    tmpl = File.open("#{::Rails.root}/app/views/quote_md.erb").read
+      
+    begin
+      quote_html = ERB.new(tmpl).result( binding )
+      quote_md = ReverseMarkdown.convert quote_html
+    rescue
+      quote_md = "<h3>Opps. :( </h3>There was a problem with the quote email template.<br><br> Raw Data: <br> email: #{self.email}<br> name: #{self.name}<br> quote#: #{self.number}<br> phone: #{self.phone}<br> org: #{self.org}"
     end
 
     response = conn.post do |req|
         req.url '/jsonrpc.php'
         req.headers['Content-Type'] = 'application/json'
-        req.body = '{ "jsonrpc": "2.0", "id": 1, "method": "getAllProjects" }'
+        params = {
+          "owner_id": 1,
+          "creator_id": 1,
+          "description": quote_md,
+          "title": subj,
+          "project_id": 1
+      }
+      p "\n zomg, paramz\n"
+      p "{ \"jsonrpc\": \"2.0\", \"method\": \"createTask\", \"params\": #{params.to_json} }"
+      p "\n"
+      req.body = "{ \"jsonrpc\": \"2.0\", \"method\": \"createTask\", \"params\": #{params.to_json} }"
     end
+    #createTask
 
     puts response.body
 
@@ -62,13 +98,6 @@ class RebelQuote < ApplicationRecord
     # Define a cc recipient
     # mb_obj.add_recipient(:cc, "sally.doe@example.com", {"first" => "Sally", "last" => "Doe"});  
     # Define the subject
-    subj = "Quote ##{self.number} "
-
-    foragoodstrftime = '%m/%d/%Y %l:%M%p'
-    if self.created_at.strftime(foragoodstrftime) != self.updated_at.strftime(foragoodstrftime)
-      subj += "Updated: #{self.updated_at.strftime(foragoodstrftime)} "
-    end
-    subj += "Created: #{self.created_at.strftime(foragoodstrftime)}" 
 
     mb_obj.subject subj
     # Define the body of the message
@@ -95,6 +124,18 @@ class RebelQuote < ApplicationRecord
     # # message_id = result['id']
     # # message = result['message']
     # puts result['message']
+  end
+
+  def subj
+    _subj = "Quote ##{self.number} "
+
+    foragoodstrftime = '%m/%d/%Y %l:%M%p'
+    if self.created_at.strftime(foragoodstrftime) != self.updated_at.strftime(foragoodstrftime)
+      _subj += "Updated: #{self.updated_at.strftime(foragoodstrftime)} "
+    end
+    _subj += "Created: #{self.created_at.strftime(foragoodstrftime)}" 
+
+    return _subj
   end
 
 end
