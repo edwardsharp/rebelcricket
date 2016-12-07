@@ -1,15 +1,8 @@
 <html>
 
-QUOTE
 
-<table>
-        <tr>
-          <td class="container" colspan="12">
+      <table>
 
-    
-            <!-- content -->
-            <div class="content">
-   
               <tr>
                 <td align="center" colspan="12">
                   <h4 class="section_label"><%= @quote["client_contact_information"]["label"].upcase rescue '' %> </h4>
@@ -175,18 +168,9 @@ QUOTE
                   <% end %> <%# .each lineItem %>
                 <% end %> <%# if quoteService.name =~ /sticker/i %>
 
-                <% if quoteServiceItem["name"] =~ /other/i %>
+                <% if quoteServiceItem["name"] =~ /sandblasting/i %>
                   <tr><td colspan="12">&nbsp;</td></tr>
-                  <% @quote["other_stuff_line_items"]["items"].each do |lineItem| %>
-
-                    <tr class="line_item">
-                      <td align="left" colspan="12">
-                        <b>Options:</b>
-                        <% lineItem["selected_options"].each do |opt| %>
-                            <%= lineItem["options"][opt] %>;
-                        <% end %>
-                      </td>
-                    </tr>
+                  <% @quote["sandblasting_line_items"]["items"].each do |lineItem| %>
 
                     <tr class="line_item">
                       <td align="left" colspan="12">
@@ -218,6 +202,30 @@ QUOTE
                         <% lineItem["selected_fill_colors"].each do |opt| %>
                             <%= lineItem["fill_colors"][opt] %>;
                         <% end %>
+                      </td>
+                    </tr>
+
+                    <tr><td colspan="12">&nbsp;</td></tr>
+
+                    <tr>
+                      <td align="left" colspan="12">
+                        <b>Notes:</b>
+                        <%= lineItem["serviceNotes"] %>
+                      </td>
+                    </tr>
+                    <tr><td colspan="12"><hr></td></tr>
+
+                  <% end %> <%# .each lineItem %>
+                <% end %> <%# if quoteService.name =~ /sandblasting/i %>
+
+                <% if quoteServiceItem["name"] =~ /sublimation/i %>
+                  <tr><td colspan="12">&nbsp;</td></tr>
+                  <% @quote["sublimation_line_items"]["items"].each do |lineItem| %>
+
+                    <tr class="line_item">
+                      <td align="left" colspan="12">
+                        <b>Quantity:</b>
+                        <%= lineItem["quantity"] %>
                       </td>
                     </tr>
 
@@ -258,7 +266,8 @@ QUOTE
                     <tr><td colspan="12"><hr></td></tr>
 
                   <% end %> <%# .each lineItem %>
-                <% end %> <%# if quoteService.name =~ /other/i %>
+                <% end %> <%# if quoteService.name =~ /sublimation/i %>
+
 
                 <% if quoteServiceItem["name"] =~ /vinyl/i %>
                   <tr><td colspan="12">&nbsp;</td></tr>
@@ -277,13 +286,10 @@ QUOTE
                       </td>
                     </tr>
 
-
                     <tr class="line_item">
                       <td align="left" colspan="12">
-                        <b>Options:</b>
-                        <% lineItem["selected_options"].each do |opt| %>
-                            <%= lineItem["options"][opt] %>;
-                        <% end %>
+                        <b>Option:</b>
+                        <%= lineItem["selected_option"] %>
                       </td>
                     </tr>
 
@@ -346,10 +352,8 @@ QUOTE
 
                     <tr class="line_item">
                       <td align="left" colspan="12">
-                        <b>Options:</b>
-                        <% lineItem["selected_options"].each do |opt| %>
-                            <%= lineItem["options"][opt] %>;
-                        <% end %>
+                        <b>Size:</b> 
+                        <%= lineItem["selected_size"] %>
                       </td>
                     </tr>
 
@@ -503,53 +507,10 @@ QUOTE
                   </td>
                 </tr>
               <% end %>
-
-
-            </div><!-- /content -->
                   
 
- 
-            <!-- social & contact -->
-            <table class="social" width="100%">
-              <tr>
-                <td>
-                  
-                  <!-- column 1 -->
-                  <table align="left" class="column">
-                    <tr>
-                      <td>        
-                        <h5 class="white">Connect with Us:</h5>
-                        <br>
-                        <p class=""><a href="https://www.facebook.com/RebelCricketScreenPrints/" class="soc-btn fb">Facebook</a> <a href="https://twitter.com/rebelcricket" class="soc-btn tw">Twitter</a> 
-                      </td>
-                    </tr>
-                  </table><!-- /column 1 -->  
-                  
-                  <!-- column 2 -->
-                  <table align="left" class="column">
-                    <tr>
-                      <td>        
-                                      
-                        <h5 class="white">Contact Info:</h5>                       
-                        <p>
-                          Phone: <strong class="white"><a href="tel://1-503-545-1450">503‑545‑1450</a></strong><br/>
-                          Email: <strong class="white">rebelcricket@gmail.com</strong><br/>
-                          Web: <strong class="white"><a href="http://rebelcricket.com">http://rebelcricket.com</a></strong>
-                          Address: <strong class="white">5040 SE Milwaukie Ave. Portland, OR 97202 </strong>
-                        </p>
-                
-                      </td>
-                    </tr>
-                  </table><!-- /column 2 -->
-                  
-                  <span class="clear"></span> 
-                  
-                </td>
-              </tr>
-            </table><!-- /social & contact -->
-            
-          </td>
-        </tr>
       </table>
+
+
 
 </html>

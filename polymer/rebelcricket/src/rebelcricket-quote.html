@@ -203,7 +203,7 @@
 
     <iron-ajax
       id="rebelquote"
-      url="http://rebelcricket.lacuna.club/api/rebelquote"
+      url="http://localhost:3000/api/rebelquote"
       method="POST"
       content-type="application/json"
       handle-as="json"
@@ -214,7 +214,7 @@
 
     <iron-ajax
       id="rebelgfx"
-      url="http://rebelcricket.lacuna.club/api/rebelgfx"
+      url="http://localhost:3000/api/rebelgfx"
       method="POST"
       on-response="_handleAjaxGfxPostResponse"
       on-error="_handleAjaxGfxPostError"
@@ -224,7 +224,7 @@
 
     <iron-ajax
       id="rebelgfxdelete"
-      url="http://rebelcricket.lacuna.club/api/delete_image"
+      url="http://localhost:3000/api/delete_image"
       method="DELETE"
       >
     </iron-ajax>
@@ -471,32 +471,17 @@
                     </template>
 
 
-                    <!-- Other Stuff -->
+                    <!-- Sandblasting -->
 
-                    <template is="dom-if" if="[[_isOtherStuffService(quoteServiceItem)]]">
-                      <template is="dom-repeat" items="{{quote.other_stuff_line_items.items}}" as="lineItem">
+                    <template is="dom-if" if="[[_isSandblastingService(quoteServiceItem)]]">
+                      <template is="dom-repeat" items="{{quote.sandblasting_line_items.items}}" as="lineItem">
 
                       <div class="row">
 
                         <div class="col s4">
                           <paper-input label="Quantity" value="{{lineItem.quantity}}"></paper-input>
-                          <small>Mug/Bottle Minimum: [[lineItem.bottle_min]] </small>
                         </div>
-                        <br><br>
-                    
-                      </div>
-                      <div class="row">
-                        
-                        <div class="col s4">
-                          <small>Options</small>
-                          <paper-listbox class="custom" selected-values="{{lineItem.selected_options}}" multi>
-                            <template is="dom-repeat" items="{{lineItem.options}}">
-                              <paper-item class$="[[_itemNeedsSmallFont(item)]] custom" value="[[item]]">[[item]]</paper-item>
-                            </template>
-                          </paper-listbox>
-
-                        </div>
-
+           
                         <div class="col s4">
                           <small>Substrate</small>
                           <paper-listbox class="custom" selected-values="{{lineItem.selected_substrates}}" multi>
@@ -509,11 +494,45 @@
                         <div class="col s4">
                           <small>Color Fill</small>
                           <paper-listbox class="custom" selected-values="{{lineItem.selected_fill_colors}}" multi>
+                            <paper-item class="custom" value="none" selected>none</paper-item>
                             <template is="dom-repeat" items="{{lineItem.fill_colors}}">
                               <paper-item class$="[[_itemNeedsSmallFont(item)]] custom" value="[[item]]">[[item]]</paper-item>
                             </template>
                           </paper-listbox>
                         </div>
+
+                      </div>
+
+                      <div class="row">
+                        <div class="col s12 center">
+                          <paper-textarea label="Notes" value="{{lineItem.serviceNotes}}"></paper-textarea>
+                          <small>Any additional information about this [[quoteServiceItem.name]] item?</small>
+                        </div>
+                      </div>
+
+                      </template>
+
+                      <div class="col s12 center">
+                        <paper-button class="custom" on-tap="_addSandblastingLineItemRow">Add more [[quoteServiceItem.name]]</paper-button>
+                      </div>
+
+                    </template>
+
+                    <!-- Sublimation -->
+
+                    <template is="dom-if" if="[[_isSublimationService(quoteServiceItem)]]">
+                      <template is="dom-repeat" items="{{quote.sublimation_line_items.items}}" as="lineItem">
+
+                      <div class="row">
+
+                        <div class="col s4">
+                          <paper-input label="Quantity" value="{{lineItem.quantity}}"></paper-input>
+                          <small>Mug/Bottle Minimum: [[lineItem.bottle_min]] </small>
+                        </div>
+                        <br><br>
+                    
+                      </div>
+                      <div class="row">
 
                         <div class="col s4">
                           <small>Available Goods</small>
@@ -523,7 +542,6 @@
                             </template>
                           </paper-listbox>
                         </div>
-
 
                         <div class="col s4">
                           <small>Bottle Options</small>
@@ -546,13 +564,15 @@
 
                       <div class="row">
                         <div class="col s12 center">
-
                           <paper-textarea label="Notes" value="{{lineItem.serviceNotes}}"></paper-textarea>
                           <small>Any additional information about this [[quoteServiceItem.name]] item?</small>
                         </div>
                       </div>
 
                       </template>
+                      <div class="col s12 center">
+                        <paper-button class="custom" on-tap="_addSublimationLineItemRow">Add more [[quoteServiceItem.name]]</paper-button>
+                      </div>
                     </template>
 
                     <!-- Die-Cut Vinyl -->
@@ -566,35 +586,35 @@
                           <paper-input label="Quantity" value="{{lineItem.quantity}}"></paper-input>
                         </div>
 
-                        <div class="col s6">
+                        <div class="col s4">
                           <paper-input label="Dimensions" value="{{lineItem.dimensions}}"></paper-input>
-                          <small>Specify Height x Width size(s).</small>
+                          <small>Height x Width</small>
                         </div>
-                    
-                      </div>
-                      <div class="row">
                         
-                        <div class="col s6">
-                          <small>Options</small>
-                          <paper-listbox class="custom" selected-values="{{lineItem.selected_options}}" multi>
-                            <template is="dom-repeat" items="{{lineItem.options}}">
-                              <paper-item class$="[[_itemNeedsSmallFont(item)]] custom" value="[[item]]">[[item]]</paper-item>
-                            </template>
-                          </paper-listbox>
-
+                        <div class="col s5">
+                          <paper-dropdown-menu label="Options">
+                            <paper-listbox class="dropdown-content" selected="{{lineItem.selected_option}}">
+                              <paper-item class="custom"></paper-item>
+                              <template is="dom-repeat" items="{{lineItem.options}}">
+                                <paper-item class="custom" value="[[item]]">[[item]]</paper-item>
+                              </template>
+                            </paper-listbox>
+                          </paper-dropdown-menu>
                         </div>
 
                       </div>
 
                       <div class="row">
                         <div class="col s12 center">
-
                           <paper-textarea label="Notes" value="{{lineItem.serviceNotes}}"></paper-textarea>
                           <small>Any additional information about this [[quoteServiceItem.name]] item?</small>
                         </div>
                       </div>
 
                       </template>
+                      <div class="col s12 center">
+                        <paper-button class="custom" on-tap="_addVinylLineItemRow">Add more [[quoteServiceItem.name]]</paper-button>
+                      </div>
                     </template>
 
                     <!-- Dimensional Parts -->
@@ -644,13 +664,16 @@
                           <small>Button order minimum: [[lineItem.buttons_min]]</small>
                         </div>
                         
-                        <div class="col s4">
-                          <small>Options</small>
-                          <paper-listbox class="custom" selected-values="{{lineItem.selected_options}}" multi>
-                            <template is="dom-repeat" items="{{lineItem.options}}">
-                              <paper-item class$="[[_itemNeedsSmallFont(item)]] custom" value="[[item]]">[[item]]</paper-item>
-                            </template>
-                          </paper-listbox>
+                        <div class="col s3">
+
+                          <paper-dropdown-menu label="Size">
+                            <paper-listbox class="dropdown-content" selected="{{lineItem.selected_size}}">
+                              <paper-item class="custom"></paper-item>
+                              <template is="dom-repeat" items="{{lineItem.sizes}}">
+                                <paper-item class="custom" value="[[item]]">[[item]]</paper-item>
+                              </template>
+                            </paper-listbox>
+                          </paper-dropdown-menu>
 
                         </div>
 
@@ -665,6 +688,10 @@
                       </div>
 
                       </template>
+
+                      <div class="col s12 center">
+                        <paper-button class="custom" on-tap="_addButtonsLineItemRow">Add more [[quoteServiceItem.name]]</paper-button>
+                      </div>
                     </template>
 
 
@@ -701,7 +728,7 @@
                     
                   </div>
 
-                  <div class="col s3">
+                  <div class="col s6">
                     <paper-input label="Print Size" value="{{item.size_inches}}"></paper-input>
                     <small>Height x Width (inches)</small>
                   </div>
@@ -731,7 +758,7 @@
                     </paper-listbox>
                   </div>
                   
-                  <div class="col s4 m3">
+                  <div class="col s4">
 
                     <paper-dropdown-menu label="Number of Colors" on-iron-select="_numColorsChanged">
                       <paper-listbox class="dropdown-content" selected="{{item.num_colors}}">
@@ -795,22 +822,22 @@
                 <template is="dom-repeat" items="{{quote.job_completion_and_shipping.items}}">
                   <div class$="col [[item.col]]">
                     <template is="dom-if" if="[[_isInput(item.type)]]">
-                      <paper-input name="[[item.key]]" label="[[item.label]]" value="{{item.value}}" hidden$="[[!quote.job_completion_and_shipping.items.3.value]]"></paper-input>
-                      <small hidden$="[[!quote.job_completion_and_shipping.items.3.value]]" >[[item.notes]]</small>
+                      <paper-input name="[[item.key]]" label="[[item.label]]" value="{{item.value}}" hidden$="[[!quote.job_completion_and_shipping.items.2.value]]"></paper-input>
+                      <small hidden$="[[!quote.job_completion_and_shipping.items.2.value]]" >[[item.notes]]</small>
                     </template>
                     <template is="dom-if" if="[[_isTextarea(item.type)]]">
-                      <paper-textarea rows="[[item.rows]]" name="[[item.key]]" label="[[item.label]]" value="{{item.value}}" hidden$="[[!quote.job_completion_and_shipping.items.3.value]]"></paper-textarea>
-                      <small hidden$="[[!quote.job_completion_and_shipping.items.3.value]]">[[item.notes]]</small>
+                      <paper-textarea rows="[[item.rows]]" name="[[item.key]]" label="[[item.label]]" value="{{item.value}}" hidden$="[[!quote.job_completion_and_shipping.items.2.value]]"></paper-textarea>
+                      <small hidden$="[[!quote.job_completion_and_shipping.items.2.value]]">[[item.notes]]</small>
                     </template>
                     <template is="dom-if" if="[[_isCheckbox(item.type)]]">
                       <paper-checkbox checked="{{item.value}}"> [[item.label]]</paper-checkbox>
-                      <small>[[item.notes]]</small>
+                      <br><small>[[item.notes]]</small>
                     </template>
                   </div>
                 </template>
                 <div class="row">
                   <div class="col s12">
-                    <p hidden$="[[!quote.job_completion_and_shipping.items.2.value]]">
+                    <p hidden$="[[!quote.job_completion_and_shipping.items.1.value]]">
                     Our Address is 5040 SE Milwaukie Ave. Portland, OR 97202</p>
                   </div>
                 </div>
@@ -832,6 +859,7 @@
                 </paper-dialog>
                 
                 <paper-toggle-button class="red needsDateToggle" on-tap="_toggleNeedDate" checked="{{quote.need_by_date}}">Do you need this by a certain date?</paper-toggle-button>
+                <br><small>Rush Processing Available! Rates Vary. <br>Please add a note if you need something fast.</small>
               
               </div>
 
@@ -886,7 +914,8 @@
             { name: "Stickers", value: "stickers"},
             { name: "Buttons", value: "buttons"}, 
             { name: "Die-Cut Vinyl", value: "die-cut-vinyl"}, 
-            { name: "Other Stuff", value: "other"}
+            { name: "Sandblasting", value: "sandblasting"},
+            { name: "Sublimation", value: "sublimation"}
           ];
         }
       },
@@ -965,7 +994,9 @@
         type: Date,
         notify: true,
         value: function(){
-          return new Date;
+          var fourdayslater = new Date;
+          fourdayslater.setDate(fourdayslater.getDate() + 4);
+          return fourdayslater;
         }
       }, 
       addServiceButtonText: {
@@ -996,8 +1027,10 @@
         this._addButtonsLineItemRow();
       }else if(e.target.selected == 5 && this.quote.vinyl_line_items.items.length == 0){
         this._addVinylLineItemRow();
-      }else if(e.target.selected == 6 && this.quote.other_stuff_line_items.items.length == 0){
-        this._addOtherStuffLineItemRow();
+      }else if(e.target.selected == 6 && this.quote.sandblasting_line_items.items.length == 0){
+        this._addSandblastingLineItemRow();
+      }else if(e.target.selected == 7 && this.quote.sublimation_line_items.items.length == 0){
+        this._addSublimationLineItemRow();
       }
 
     },
@@ -1016,8 +1049,11 @@
     _isStickerService: function(quoteService){
       return quoteService.name.match(/sticker/i); 
     },
-    _isOtherStuffService: function(quoteService){
-      return quoteService.name.match(/stuff/i); 
+    _isSandblastingService: function(quoteService){
+      return quoteService.name.match(/sandblasting/i); 
+    },
+    _isSublimationService: function(quoteService){
+      return quoteService.name.match(/sublimation/i); 
     },
     _isVinylService: function(quoteService){
       return quoteService.name.match(/vinyl/i); 
@@ -1059,8 +1095,10 @@
         this.set('quote.sticker_line_items.items', []);
       }else if(_serviceName == 'Buttons'){
         this.set('quote.buttons_line_items.items', []);
-      }else if(_serviceName == 'Other Stuff'){
-        this.set('quote.other_stuff_line_items.items', []);
+      }else if(_serviceName == 'Sandblasting'){
+        this.set('quote.sandblasting_line_items.items', []);
+      }else if(_serviceName == 'Sublimation'){
+        this.set('quote.sublimation_line_items.items', []);
       }else if(_serviceName == 'Die-Cut Vinyl'){
         this.set('quote.vinyl_line_items.items', []);
       }
@@ -1088,7 +1126,7 @@
     },
     _quoteObserver: function(_quote){
       try{
-        console.log('QUOTE _quoteObserver, _quote:',_quote);
+        // console.log('QUOTE _quoteObserver, _quote:',_quote);
 
         var lineItemsTotalPrice = 0
           , lineItemsTotal = 0
@@ -1174,9 +1212,13 @@
       var _li_proto = quoteModel.line_item_sticker_proto;
       this.push('quote.sticker_line_items.items',_li_proto); 
     },
-    _addOtherStuffLineItemRow: function(){
-      var _li_proto = quoteModel.line_item_other_stuff_proto;
-      this.push('quote.other_stuff_line_items.items',_li_proto); 
+    _addSandblastingLineItemRow: function(){
+      var _li_proto = quoteModel.line_item_sandblasting_proto;
+      this.push('quote.sandblasting_line_items.items',_li_proto); 
+    },
+    _addSublimationLineItemRow: function(){
+      var _li_proto = quoteModel.line_item_sublimation_proto;
+      this.push('quote.sublimation_line_items.items',_li_proto); 
     },
     _addVinylLineItemRow: function(){
       var _li_proto = quoteModel.line_item_vinyl_proto;
@@ -1281,6 +1323,18 @@
         if(this.quote.sticker_line_items.items.length > 0){
           _itemz.push( _.map(this.quote.poster_line_items.items, function(item, k){return 'Sticker ' +(k+1);}) );
         }
+        if(this.quote.buttons_line_items.items.length > 0){
+          _itemz.push( _.map(this.quote.buttons_line_items.items, function(item, k){return 'Button ' +(k+1);}) );
+        }
+        if(this.quote.vinyl_line_items.items.length > 0){
+          _itemz.push( _.map(this.quote.vinyl_line_items.items, function(item, k){return 'Die-Cut Vinyl ' +(k+1);}) );
+        }
+        if(this.quote.sandblasting_line_items.items.length > 0){
+          _itemz.push( _.map(this.quote.sandblasting_line_items.items, function(item, k){return 'Sandblasting ' +(k+1);}) );
+        }
+        if(this.quote.sublimation_line_items.items.length > 0){
+          _itemz.push( _.map(this.quote.sublimation_line_items.items, function(item, k){return 'Sublimation ' +(k+1);}) );
+        }
       }catch(err){
         //o noz!
       }
@@ -1371,7 +1425,14 @@
 
       // console.log('paramz:',params);
 
-      if(params["name"] !== '' && params["name"] != undefined && params["email"] !== '' && params["email"] != undefined && this.quote.services.length > 0){
+      if(  params["name"] !== '' 
+        && params["name"] != undefined 
+        && params["email"] !== '' 
+        && params["email"] != undefined 
+        && params["phone"] !== '' 
+        && params["phone"] != undefined 
+        && this.quote.services.length > 0 )
+      {
         this.set('quote.submitted', new Date);
         this.$.rebelquote.params = params;
         this.$.rebelquote.body = JSON.stringify({data: this.quote });
@@ -1381,7 +1442,7 @@
         if(this.quote.services.length == 0){
          this.$.submitFeedbackText.innerHTML = "ERROR! Please select at least one service. (Note: click 'ADD A SERVICE' button, then select the service you need.)<br><br>";
         }else{
-          this.$.submitFeedbackText.innerHTML = "ERROR! Please fill our your name and email!<br><br>";
+          this.$.submitFeedbackText.innerHTML = "ERROR! Please fill our your name, email, and phone!<br><br>";
         }
         //window.location.href ?
         this.$.submitFeedback.open();

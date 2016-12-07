@@ -35,10 +35,9 @@ var quoteModel = {
   job_completion_and_shipping: {
     label: 'COMPLETION & SHIPPING INSTRUCTIONS',  
     items: [
-      {key: 'rush_processing', label: 'Rush Processing', type: 'checkbox', value: false, col: 's3', notes: 'Rates vary.'},
-      {key: 'call_when_complete', label: 'Call', type: 'checkbox', value: false, col: 's3', notes: 'When complete.'},
-      {key: 'will_call', label: 'Pick Up', type: 'checkbox', value: false, col: 's3', notes: 'Local.'},
-      {key: 'ship_via', label: 'Ship', type: 'checkbox', value: false, col: 's3'},
+      {key: 'call_when_complete', label: 'Call', type: 'checkbox', value: false, col: 's4', notes: 'When complete.'},
+      {key: 'will_call', label: 'Pick Up', type: 'checkbox', value: false, col: 's4', notes: 'Local.'},
+      {key: 'ship_via', label: 'Ship', type: 'checkbox', value: false, col: 's4'},
       {key: 'ship_via_txt', label: 'Ship Via', type: 'text', col: 's12', notes: 'ex: UPS, FedEx, USPS. Please specify your account # if you would like us to bill shipping charges.'},
       {key: 'ship_to', label: 'Ship to Address', type: 'textarea', col: 's12', rows: 3}
     ]
@@ -67,7 +66,7 @@ var quoteModel = {
 
   line_item_poster_proto: {
     service_type: 'Posters',
-    quantity: '',
+    quantity: 50,
     poster_min: 50,
     poster_stock_colors: ['white', 'natural', 'matte black', 'other (please describe)'],
     selected_poster_stock: '',
@@ -83,7 +82,7 @@ var quoteModel = {
 
   line_item_sticker_proto: {
     service_type: 'Stickers',
-    quantity: '',
+    quantity: 250,
     sticker_min: 250,
     sticker_stock_colors: ['clear', 'gloss white', 'matte white', 'matte golden yellow', 'matte black'],
     selected_sticker_stock: '',
@@ -95,18 +94,27 @@ var quoteModel = {
     items: []
   },
 
-  line_item_other_stuff_proto: {
-    service_type: 'Other Stuff',
-    options: ['Sandblasting', 'Sublimation'],
-    selected_options: [],
+  line_item_sandblasting_proto: {
+    service_type: 'Sandblasting',
     quantity: '',
-    bottle_min: 36,
-    substrates: ['Metal', 'Glass', 'Stone', 'Other (please describe)'],
+    substrates: ['Metal', 'Glass', 'Mirror', 'Stone', 'Ceramic', 'Other (please describe)'],
     selected_substrates: [],
     needs_color_fill: false,
     fill_colors: ['red', 'yellow', 'blue', 'white', 'black'],
     selected_fill_colors: [],
-    sublimation_items: ['11oz Mug', '15oz Mug', '600ml water bottles', 'Other (please describe)'],
+    serviceNotes: ''
+  },
+
+  sandblasting_line_items: {
+    label: 'SANDBLASTING LINE ITEMS',
+    items: []
+  },
+
+  line_item_sublimation_proto: {
+    service_type: 'Sublimation',
+    quantity: 36,
+    bottle_min: 36,
+    sublimation_items: ['11oz Mug (white)', '15oz Mug (white)', '600ml water bottles', 'Other (please describe)'],
     selected_sublimation_items: [],
     watter_bottle_options: ['silver', 'white', 'Other (please describe)'],
     selected_watter_bottle_options: [],
@@ -115,8 +123,8 @@ var quoteModel = {
     serviceNotes: ''
   },
 
-  other_stuff_line_items: {
-    label: 'OTHER STUFF LINE ITEMS',
+  sublimation_line_items: {
+    label: 'SUBLIMATION LINE ITEMS',
     items: []
   },
 
@@ -124,7 +132,7 @@ var quoteModel = {
     dimensions: '',
     quantity: '',
     options: ['Indoor Wall Graphic', 'Outdoor Exterior Signage', 'Vehicle', 'Floor', 'Banner', 'Other (Please Explain)'],
-    selected_options: [],
+    selected_option: '',
     serviceNotes: ''
   },
 
@@ -146,10 +154,10 @@ var quoteModel = {
   },
 
   line_item_buttons_proto: {
-    quantity: '',
+    quantity: 250,
     buttons_min: 250,
-    options: ['1"', '1.25"', '1.5"', '2.25"'],
-    selected_options: [],
+    sizes: ['1"', '1.25"', '1.5"', '2.25"'],
+    selected_size: '',
     serviceNotes: ''
   },
 
