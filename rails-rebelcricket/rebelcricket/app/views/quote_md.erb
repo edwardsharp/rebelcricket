@@ -1,33 +1,13 @@
 <html>
 
-<table class="head-wrap" bgcolor="red">
-  <tr>
-    <td class="header container" colspan="12">
-        
-        <div class="content">
-        <table bgcolor="red">
-          <tr>
-            <td colspan="10">
-                <h3 class="white">REBEL CRICKET SCREEN PRINTS</h3>
-            </td>
-            <td align="right" colspan="2"><h3 class="white">QUOTE</h3></td>
-          </tr>
-        </table>
-        </div>
-        
-    </td>
-  </tr>
-</table>
+QUOTE
 
-<table class="body-wrap">
-  <tr>
-    <td class="container" bgcolor="#FFFFFF" colspan="12">
-
-      <div class="content">
-      <table>
+<table>
         <tr>
           <td class="container" colspan="12">
 
+    
+            <!-- content -->
             <div class="content">
    
               <tr>
@@ -126,30 +106,14 @@
                   <% end %> <%# .each lineItem %>
                 <% end %> <%# if quoteService.name =~ /apparel/i %>
                 
-                <% if quoteServiceItem["name"] =~ /posters/i %>
+                <% if quoteServiceItem["name"] =~ /poster/i %>
                   <tr><td colspan="12">&nbsp;</td></tr>
-                  <% @quote["poster_and_sticker_line_items"]["items"].each do |lineItem| %>
-
-                    <tr class="line_item">
-                      <td align="left" colspan="12">
-                        <b>Options:</b>
-                        <% lineItem["selected_options"].each do |opt| %>
-                            <%= lineItem["options"][opt] %>;
-                        <% end %>
-                      </td>
-                    </tr>
+                  <% @quote["poster_line_items"]["items"].each do |lineItem| %>
 
                     <tr class="line_item">
                       <td align="left" colspan="12">
                         <b>Quantity:</b>
                         <%= lineItem["quantity"] %>
-                      </td>
-                    </tr>
-
-                    <tr class="line_item">
-                      <td align="left" colspan="12">
-                        <b>Sticker Stock Color:</b>
-                        <%= lineItem["sticker_stock_colors"][lineItem["selected_sticker_stock"]] %>
                       </td>
                     </tr>
 
@@ -179,6 +143,37 @@
 
                   <% end %> <%# .each lineItem %>
                 <% end %> <%# if quoteService.name =~ /poster/i %>
+
+                <% if quoteServiceItem["name"] =~ /sticker/i %>
+                  <tr><td colspan="12">&nbsp;</td></tr>
+                  <% @quote["sticker_line_items"]["items"].each do |lineItem| %>
+
+                    <tr class="line_item">
+                      <td align="left" colspan="12">
+                        <b>Quantity:</b>
+                        <%= lineItem["quantity"] %>
+                      </td>
+                    </tr>
+
+                    <tr class="line_item">
+                      <td align="left" colspan="12">
+                        <b>Sticker Stock Color:</b>
+                        <%= lineItem["sticker_stock_colors"][lineItem["selected_sticker_stock"]] %>
+                      </td>
+                    </tr>
+
+                    <tr><td colspan="12">&nbsp;</td></tr>
+
+                    <tr>
+                      <td align="left" colspan="12">
+                        <b>Notes:</b>
+                        <%= lineItem["serviceNotes"] %>
+                      </td>
+                    </tr>
+                    <tr><td colspan="12"><hr></td></tr>
+
+                  <% end %> <%# .each lineItem %>
+                <% end %> <%# if quoteService.name =~ /sticker/i %>
 
                 <% if quoteServiceItem["name"] =~ /other/i %>
                   <tr><td colspan="12">&nbsp;</td></tr>
@@ -390,7 +385,9 @@
               %>
                 <tr>
                   <td align="left" colspan="12">
+                   <!--  <img src="<%= item["attachment_url"] %>" class="responsive-img quoteDesignImg"> -->
                     <a href="<%= item["attachment_url"] %>" title="link to graphic"><%= item["attachment_url"] %></a>
+                    
                   </td>
                 </tr>
                 <tr>
@@ -434,12 +431,6 @@
                     <%= item["size_inches"] %>
                   </td>
 
-                  <%if item["is_vector_file"] %>
-                  <td align="left" colspan="3">
-                    <b>Is Vector File:</b>
-                    <%= item["is_vector_file"] %>
-                  </td>
-                  <% end %>
                 </tr>
                 <tr>
                   <td align="left" colspan="12">
@@ -448,7 +439,7 @@
                 </tr>
                 <tr><td colspan="12"><hr></td></tr>
                 <tr><td colspan="12">&nbsp;</td></tr>
-                
+
               <% 
                 end # graphic itemz
               end 
@@ -514,19 +505,51 @@
               <% end %>
 
 
-            </div>
+            </div><!-- /content -->
                   
 
-
+ 
+            <!-- social & contact -->
+            <table class="social" width="100%">
+              <tr>
+                <td>
+                  
+                  <!-- column 1 -->
+                  <table align="left" class="column">
+                    <tr>
+                      <td>        
+                        <h5 class="white">Connect with Us:</h5>
+                        <br>
+                        <p class=""><a href="https://www.facebook.com/RebelCricketScreenPrints/" class="soc-btn fb">Facebook</a> <a href="https://twitter.com/rebelcricket" class="soc-btn tw">Twitter</a> 
+                      </td>
+                    </tr>
+                  </table><!-- /column 1 -->  
+                  
+                  <!-- column 2 -->
+                  <table align="left" class="column">
+                    <tr>
+                      <td>        
+                                      
+                        <h5 class="white">Contact Info:</h5>                       
+                        <p>
+                          Phone: <strong class="white"><a href="tel://1-503-545-1450">503‑545‑1450</a></strong><br/>
+                          Email: <strong class="white">rebelcricket@gmail.com</strong><br/>
+                          Web: <strong class="white"><a href="http://rebelcricket.com">http://rebelcricket.com</a></strong>
+                          Address: <strong class="white">5040 SE Milwaukie Ave. Portland, OR 97202 </strong>
+                        </p>
+                
+                      </td>
+                    </tr>
+                  </table><!-- /column 2 -->
+                  
+                  <span class="clear"></span> 
+                  
+                </td>
+              </tr>
+            </table><!-- /social & contact -->
             
           </td>
         </tr>
       </table>
-      </div>
-
-    </td>
-    <td></td>
-  </tr>
-</table>
 
 </html>

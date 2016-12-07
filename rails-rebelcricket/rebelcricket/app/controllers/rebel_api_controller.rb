@@ -75,12 +75,12 @@ class RebelApiController < ApplicationController
 
   # delete '/api/delete_image'
   def delete_image
-    unless has_valid_token
-      render_unauthorized and return
-    end
+    # unless has_valid_token
+    #   render_unauthorized and return
+    # end
+    RebelGfx.find_by(id: gfx_params[:id], rebel_quote_number: gfx_params[:rebel_quote_number]).try(:destroy)
 
-    RebelGfx.find_by(filename: gfx_params[:filename], rebel_quote_number: 'rebelimages').destroy
-
+    render json: 'ok', status: 200
   end
 
   # post '/api/create_image'
@@ -98,7 +98,7 @@ class RebelApiController < ApplicationController
       rebel_gfx = RebelGfx.new(
         filename: gfx_params[:filename], 
         rebel_quote_number: 'rebelimages',
-        url: "http://localhost:3000/rebelimages/#{gfx_params[:filename]}",
+        url: "http://rebelcricket.lacuna.club/rebelimages/#{gfx_params[:filename]}",
         path: path
       )
 
@@ -177,7 +177,7 @@ class RebelApiController < ApplicationController
   end
 
   def gfx_params
-    params.permit(:quote_number,:file,:filename)
+    params.permit(:quote_number,:file,:filename,:id,:rebel_quote_number)
   end
 
   def page_params

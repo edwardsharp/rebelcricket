@@ -24,8 +24,12 @@ Dir.foreach("#{::Rails.root}/public/rebelimages/") do |image|
   next if image == '.' or image == '..' or RebelGfx.exists?(filename: image)
   RebelGfx.create(
     filename: image,
-    url: "http://localhost:3000/rebelimages/#{image}",
+    url: "http://rebelcricket.lacuna.club/rebelimages/#{image}",
     path: "#{::Rails.root}/public/rebelimages/#{image}",
     rebel_quote_number: 'rebelimages'
   )
+end
+
+if ApiKey.count < 1
+  ApiKey.create!
 end

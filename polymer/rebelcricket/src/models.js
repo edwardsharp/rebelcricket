@@ -65,24 +65,33 @@ var quoteModel = {
     items: []
   },
 
-  line_item_posters_and_stickers_proto: {
-    service_type: 'Posters & Stickers',
-    options: ['Posters', 'Stickers'],
-    selected_options: [],
+  line_item_poster_proto: {
+    service_type: 'Posters',
     quantity: '',
-    sticker_min: 250,
     poster_min: 50,
-    sticker_stock_colors: ['clear', 'gloss white', 'matte white', 'matte golden yellow', 'matte black'],
-    selected_sticker_stock: '',
     poster_stock_colors: ['white', 'natural', 'matte black', 'other (please describe)'],
     selected_poster_stock: '',
-    selected_poster_size: '',
     poster_sizes: ['up to 12"x18"', 'up to 18"x24"', 'up to 24"x38"'],
+    selected_poster_size: '',
     serviceNotes: ''
   },
 
-  poster_and_sticker_line_items: {
-    label: 'POSTER AND STICKER LINE ITEMS',
+  poster_line_items: {
+    label: 'POSTER LINE ITEMS',
+    items: []
+  },
+
+  line_item_sticker_proto: {
+    service_type: 'Stickers',
+    quantity: '',
+    sticker_min: 250,
+    sticker_stock_colors: ['clear', 'gloss white', 'matte white', 'matte golden yellow', 'matte black'],
+    selected_sticker_stock: '',
+    serviceNotes: ''
+  },
+
+  sticker_line_items: {
+    label: 'STICKER LINE ITEMS',
     items: []
   },
 
@@ -155,7 +164,6 @@ var quoteModel = {
     attachment_id: '',
     position: '',
     size_inches: '',
-    is_vector_file: false
   },
 
   graphic: {

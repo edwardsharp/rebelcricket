@@ -1,7 +1,7 @@
 class RebelGfx < ApplicationRecord
 
   # belongs_to :rebel_quote
-  before_destroy :destory_file
+  before_destroy :destroy_file
 
 
   def destroy_file

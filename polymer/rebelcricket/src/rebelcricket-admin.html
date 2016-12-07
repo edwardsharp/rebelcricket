@@ -81,7 +81,7 @@
 
     <iron-ajax
       id="ajaxValidateApiKey"
-      url="http://localhost:3000/api/validate_api_key"
+      url="http://rebelcricket.lacuna.club/api/validate_api_key"
       headers='{{headers}}'
       handle-as="json"
       on-response="_handleValidateApiKeyResponse">
@@ -89,7 +89,7 @@
 
     <iron-ajax
       id="ajaxGetPages"
-      url="http://localhost:3000/api/all_pages"
+      url="http://rebelcricket.lacuna.club/api/all_pages"
       headers='{{headers}}'
       handle-as="json"
       last-response="{{pages}}">
@@ -97,7 +97,7 @@
 
     <iron-ajax
       id="ajaxUpdatePage"
-      url="http://localhost:3000/api/all_pages"
+      url="http://rebelcricket.lacuna.club/api/all_pages"
       headers='{{headers}}'
       handle-as="json"
       on-response="_handleUpdatePageResponse">
@@ -105,7 +105,7 @@
 
     <iron-ajax
       id="ajaxGetImages"
-      url="http://localhost:3000/api/images"
+      url="http://rebelcricket.lacuna.club/api/images"
       headers='{{headers}}'
       handle-as="json"
       last-response="{{images}}">
@@ -113,7 +113,7 @@
 
     <iron-ajax
       id="ajaxCreateImage"
-      url="http://localhost:3000/api/create_image"
+      url="http://rebelcricket.lacuna.club/api/create_image"
       method="POST"
       headers='{{headers}}'
       on-response="_handleAjaxCreateImagePostResponse"

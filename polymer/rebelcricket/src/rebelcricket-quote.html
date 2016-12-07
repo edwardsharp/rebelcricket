@@ -203,7 +203,7 @@
 
     <iron-ajax
       id="rebelquote"
-      url="http://localhost:3000/api/rebelquote"
+      url="http://rebelcricket.lacuna.club/api/rebelquote"
       method="POST"
       content-type="application/json"
       handle-as="json"
@@ -214,10 +214,18 @@
 
     <iron-ajax
       id="rebelgfx"
-      url="http://localhost:3000/api/rebelgfx"
+      url="http://rebelcricket.lacuna.club/api/rebelgfx"
       method="POST"
       on-response="_handleAjaxGfxPostResponse"
       on-error="_handleAjaxGfxPostError"
+      >
+    </iron-ajax>
+    
+
+    <iron-ajax
+      id="rebelgfxdelete"
+      url="http://rebelcricket.lacuna.club/api/delete_image"
+      method="DELETE"
       >
     </iron-ajax>
 
@@ -371,43 +379,25 @@
 
                     </template>
 
-                    <!-- Posters & Stickers -->
+                    <!-- Posters -->
 
-                    <template is="dom-if" if="[[_isPostersAndStickersService(quoteServiceItem)]]">
-                      <template is="dom-repeat" items="{{quote.poster_and_sticker_line_items.items}}" as="lineItem">
+                    <template is="dom-if" if="[[_isPosterService(quoteServiceItem)]]">
+                      <template is="dom-repeat" items="{{quote.poster_line_items.items}}" as="lineItem">
 
                       <div class="row">
 
-                        <div class="col s4">
-                            <paper-listbox class="custom" selected-values="{{lineItem.selected_options}}" on-iron-activate="_posterAndStickerItemsChanged" multi>
-                              <template is="dom-repeat" items="{{lineItem.options}}">
-                                <paper-item class="custom" value="[[item]]">[[item]]</paper-item>
-                              </template>
-                            </paper-listbox>
-                        </div>
                         <div class="col s3">
                           <paper-input label="Quantity" value="{{lineItem.quantity}}"></paper-input>
+                          <small>Poster Minimum: <b>[[lineItem.poster_min]]</b></small>
                         </div>
-
-                        <div class="col s8">
-                          <small>Poster Minimum: [[lineItem.poster_min]] Sticker Minimum: [[lineItem.sticker_min]]</small>
-                        </div>
+       
                       </div>
                       <div class="row">
 
                         <div class="col s4">
-                          <paper-dropdown-menu label="Available Sticker Stock Colors">
-                            <paper-listbox class="dropdown-content" selected="{{lineItem.selected_sticker_stock}}">
-                              <template is="dom-repeat" items="{{lineItem.sticker_stock_colors}}">
-                                <paper-item class="custom" value="[[item]]">[[item]]</paper-item>
-                              </template>
-                            </paper-listbox>
-                          </paper-dropdown-menu>
-                        </div>
-
-                        <div class="col s4">
-                          <paper-dropdown-menu label="Available Poster Stock Colors">
+                          <paper-dropdown-menu label="Stock Color">
                             <paper-listbox class="dropdown-content" selected="{{lineItem.selected_poster_stock}}">
+                              <paper-item class="custom"></paper-item>
                               <template is="dom-repeat" items="{{lineItem.poster_stock_colors}}">
                                 <paper-item class="custom" value="[[item]]">[[item]]</paper-item>
                               </template>
@@ -415,8 +405,9 @@
                           </paper-dropdown-menu>
                         </div>
                         <div class="col s4">
-                          <paper-dropdown-menu label="Available Poster Stock Sizes">
+                          <paper-dropdown-menu label="Stock Size">
                             <paper-listbox class="dropdown-content" selected="{{lineItem.selected_poster_size}}">
+                              <paper-item class="custom"></paper-item>
                               <template is="dom-repeat" items="{{lineItem.poster_sizes}}">
                                 <paper-item class="custom" value="[[item]]">[[item]]</paper-item>
                               </template>
@@ -427,13 +418,58 @@
 
                       <div class="row">
                         <div class="col s12 center">
-
                           <paper-textarea label="Notes" value="{{lineItem.serviceNotes}}"></paper-textarea>
                           <small>Any additional information about this [[quoteServiceItem.name]] item?</small>
                         </div>
                       </div>
                       </template>
+
+                      <div class="col s12 center">
+                        <paper-button class="custom" on-tap="_addPosterLineItemRow">Add more [[quoteServiceItem.name]]</paper-button>
+                      </div>
                     </template> 
+
+                    <!-- Stickers -->
+
+                    <template is="dom-if" if="[[_isStickerService(quoteServiceItem)]]">
+                      <template is="dom-repeat" items="{{quote.sticker_line_items.items}}" as="lineItem">
+
+                      <div class="row">
+
+                        <div class="col s3">
+                          <paper-input label="Quantity" value="{{lineItem.quantity}}"></paper-input>
+                          <small>Sticker Minimum: <b>[[lineItem.sticker_min]]</b></small>
+                        </div>
+
+                      </div>
+                      <div class="row">
+
+                        <div class="col s4">
+                          <paper-dropdown-menu label="Stock Color">
+                            <paper-listbox class="dropdown-content" selected="{{lineItem.selected_sticker_stock}}">
+                              <paper-item class="custom"></paper-item>
+                              <template is="dom-repeat" items="{{lineItem.sticker_stock_colors}}">
+                                <paper-item class="custom" value="[[item]]">[[item]]</paper-item>
+                              </template>
+                            </paper-listbox>
+                          </paper-dropdown-menu>
+                        </div>
+
+                      </div>
+
+                      <div class="row">
+                        <div class="col s12 center">
+                          <paper-textarea label="Notes" value="{{lineItem.serviceNotes}}"></paper-textarea>
+                          <small>Any additional information about this [[quoteServiceItem.name]] item?</small>
+                        </div>
+                      </div>
+                      </template>
+
+                      <div class="col s12 center">
+                        <paper-button class="custom" on-tap="_addStickerLineItemRow">Add more [[quoteServiceItem.name]]</paper-button>
+                      </div>
+                    </template>
+
 
                     <!-- Other Stuff -->
 
@@ -670,13 +706,6 @@
                     <small>Height x Width (inches)</small>
                   </div>
 
-                  <div class="col s3">
-                    <paper-checkbox checked={{item.is_vector_file}}>
-                          &nbsp; Yes
-                      </paper-checkbox>
-                    <small>Is this a vector file?</small>
-                  </div>
-
                   <div class="col s2">
                     <paper-icon-button icon="remove" on-tap="_removeGraphic"></paper-icon-button>
                     <small>remove</small>
@@ -853,7 +882,8 @@
           return [ 
             { name: "Apparel", value: "apparel"}, 
             { name: "Dimensional Parts", value: "dimensional-parts"}, 
-            { name: "Posters & Stickers", value: "posters-and-stickers"}, 
+            { name: "Posters", value: "posters"}, 
+            { name: "Stickers", value: "stickers"},
             { name: "Buttons", value: "buttons"}, 
             { name: "Die-Cut Vinyl", value: "die-cut-vinyl"}, 
             { name: "Other Stuff", value: "other"}
@@ -958,13 +988,15 @@
         this._addApparelLineItemRow();
       }else if(e.target.selected == 1 && this.quote.dimensional_parts_line_items.items.length == 0){
         this._addDimensionalPartsItemRow();
-      }else if(e.target.selected == 2 && this.quote.poster_and_sticker_line_items.items.length == 0){
-        this._addPostersAndStickersLineItemRow();
-      }else if(e.target.selected == 3 && this.quote.buttons_line_items.items.length == 0){
+      }else if(e.target.selected == 2 && this.quote.poster_line_items.items.length == 0){
+        this._addPosterLineItemRow();
+      }else if(e.target.selected == 3 && this.quote.sticker_line_items.items.length == 0){
+        this._addStickerLineItemRow();
+      }else if(e.target.selected == 4 && this.quote.buttons_line_items.items.length == 0){
         this._addButtonsLineItemRow();
-      }else if(e.target.selected == 4 && this.quote.vinyl_line_items.items.length == 0){
+      }else if(e.target.selected == 5 && this.quote.vinyl_line_items.items.length == 0){
         this._addVinylLineItemRow();
-      }else if(e.target.selected == 5 && this.quote.other_stuff_line_items.items.length == 0){
+      }else if(e.target.selected == 6 && this.quote.other_stuff_line_items.items.length == 0){
         this._addOtherStuffLineItemRow();
       }
 
@@ -978,8 +1010,11 @@
     _isApparelService: function(quoteService){
       return quoteService.name.match(/apparel/i); 
     },
-    _isPostersAndStickersService: function(quoteService){
-      return quoteService.name.match(/posters/i); 
+    _isPosterService: function(quoteService){
+      return quoteService.name.match(/poster/i); 
+    },
+    _isStickerService: function(quoteService){
+      return quoteService.name.match(/sticker/i); 
     },
     _isOtherStuffService: function(quoteService){
       return quoteService.name.match(/stuff/i); 
@@ -1018,8 +1053,10 @@
         this.set('quote.line_items.items', []);
       }else if(_serviceName == 'Dimensional Parts'){
         this.set('quote.dimensional_parts_line_items.items', []);
-      }else if(_serviceName == 'Posters & Stickers'){
-        this.set('quote.poster_and_sticker_line_items.items', []);
+      }else if(_serviceName == 'Posters'){
+        this.set('quote.poster_line_items.items', []);
+      }else if(_serviceName == 'Stickers'){
+        this.set('quote.sticker_line_items.items', []);
       }else if(_serviceName == 'Buttons'){
         this.set('quote.buttons_line_items.items', []);
       }else if(_serviceName == 'Other Stuff'){
@@ -1031,7 +1068,16 @@
     },
     _removeGraphic: function(e){
       console.log('_removeGraphic e.model.index:',e.model.index);
-      console.log('right gfx?',quote.graphic.items[e.model.index]);
+      console.log('right gfx?',this.quote.graphic.items[e.model.index]);
+      
+      var params = {};
+      params["id"] = this.quote.graphic.items[e.model.index].attachment_id;
+      params["rebel_quote_number"] = this.quoteID;
+      this.$.rebelgfxdelete.params = params;
+      this.$.rebelgfxdelete.generateRequest();
+      
+      this.splice('quote.graphic.items', e.model.index, 1);
+
     },
     _addServiceButtonText: function(_quote_services){
       if(_quote_services && _quote_services.length > 0){
@@ -1120,9 +1166,13 @@
       var _li_proto = quoteModel.line_item_apparel_proto;
       this.push('quote.line_items.items',_li_proto); 
     },
-    _addPostersAndStickersLineItemRow: function(){
-      var _li_proto = quoteModel.line_item_posters_and_stickers_proto;
-      this.push('quote.poster_and_sticker_line_items.items',_li_proto); 
+    _addPosterLineItemRow: function(){
+      var _li_proto = quoteModel.line_item_poster_proto;
+      this.push('quote.poster_line_items.items',_li_proto); 
+    },
+    _addStickerLineItemRow: function(){
+      var _li_proto = quoteModel.line_item_sticker_proto;
+      this.push('quote.sticker_line_items.items',_li_proto); 
     },
     _addOtherStuffLineItemRow: function(){
       var _li_proto = quoteModel.line_item_other_stuff_proto;
@@ -1225,6 +1275,12 @@
       var _itemz = [];
       try{
         _itemz.push( _.map(this.quote.line_items.items, function(item){return _.map(item.brand_style_color, function(i){return i.value;}).join(', ');}) );
+        if(this.quote.poster_line_items.items.length > 0){
+          _itemz.push( _.map(this.quote.poster_line_items.items, function(item, k){return 'Poster ' +(k+1);}) );
+        }
+        if(this.quote.sticker_line_items.items.length > 0){
+          _itemz.push( _.map(this.quote.poster_line_items.items, function(item, k){return 'Sticker ' +(k+1);}) );
+        }
       }catch(err){
         //o noz!
       }

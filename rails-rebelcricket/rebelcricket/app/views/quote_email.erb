@@ -392,30 +392,14 @@ ul.sidebar li a h1,ul.sidebar li a h2,ul.sidebar li a h3,ul.sidebar li a h4,ul.s
                   <% end %> <%# .each lineItem %>
                 <% end %> <%# if quoteService.name =~ /apparel/i %>
                 
-                <% if quoteServiceItem["name"] =~ /posters/i %>
+                <% if quoteServiceItem["name"] =~ /poster/i %>
                   <tr><td colspan="12">&nbsp;</td></tr>
-                  <% @quote["poster_and_sticker_line_items"]["items"].each do |lineItem| %>
-
-                    <tr class="line_item">
-                      <td align="left" colspan="12">
-                        <b>Options:</b>
-                        <% lineItem["selected_options"].each do |opt| %>
-                            <%= lineItem["options"][opt] %>;
-                        <% end %>
-                      </td>
-                    </tr>
+                  <% @quote["poster_line_items"]["items"].each do |lineItem| %>
 
                     <tr class="line_item">
                       <td align="left" colspan="12">
                         <b>Quantity:</b>
                         <%= lineItem["quantity"] %>
-                      </td>
-                    </tr>
-
-                    <tr class="line_item">
-                      <td align="left" colspan="12">
-                        <b>Sticker Stock Color:</b>
-                        <%= lineItem["sticker_stock_colors"][lineItem["selected_sticker_stock"]] %>
                       </td>
                     </tr>
 
@@ -445,6 +429,37 @@ ul.sidebar li a h1,ul.sidebar li a h2,ul.sidebar li a h3,ul.sidebar li a h4,ul.s
 
                   <% end %> <%# .each lineItem %>
                 <% end %> <%# if quoteService.name =~ /poster/i %>
+
+                <% if quoteServiceItem["name"] =~ /sticker/i %>
+                  <tr><td colspan="12">&nbsp;</td></tr>
+                  <% @quote["sticker_line_items"]["items"].each do |lineItem| %>
+
+                    <tr class="line_item">
+                      <td align="left" colspan="12">
+                        <b>Quantity:</b>
+                        <%= lineItem["quantity"] %>
+                      </td>
+                    </tr>
+
+                    <tr class="line_item">
+                      <td align="left" colspan="12">
+                        <b>Sticker Stock Color:</b>
+                        <%= lineItem["sticker_stock_colors"][lineItem["selected_sticker_stock"]] %>
+                      </td>
+                    </tr>
+
+                    <tr><td colspan="12">&nbsp;</td></tr>
+
+                    <tr>
+                      <td align="left" colspan="12">
+                        <b>Notes:</b>
+                        <%= lineItem["serviceNotes"] %>
+                      </td>
+                    </tr>
+                    <tr><td colspan="12"><hr></td></tr>
+
+                  <% end %> <%# .each lineItem %>
+                <% end %> <%# if quoteService.name =~ /sticker/i %>
 
                 <% if quoteServiceItem["name"] =~ /other/i %>
                   <tr><td colspan="12">&nbsp;</td></tr>
@@ -702,12 +717,6 @@ ul.sidebar li a h1,ul.sidebar li a h2,ul.sidebar li a h3,ul.sidebar li a h4,ul.s
                     <%= item["size_inches"] %>
                   </td>
 
-                  <%if item["is_vector_file"] %>
-                  <td align="left" colspan="3">
-                    <b>Is Vector File:</b>
-                    <%= item["is_vector_file"] %>
-                  </td>
-                  <% end %>
                 </tr>
                 <tr>
                   <td align="left" colspan="12">
@@ -716,7 +725,7 @@ ul.sidebar li a h1,ul.sidebar li a h2,ul.sidebar li a h3,ul.sidebar li a h4,ul.s
                 </tr>
                 <tr><td colspan="12"><hr></td></tr>
                 <tr><td colspan="12">&nbsp;</td></tr>
-                
+
               <% 
                 end # graphic itemz
               end 
