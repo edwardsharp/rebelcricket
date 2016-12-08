@@ -34,12 +34,16 @@ class RebelApiController < ApplicationController
     end
   end
 
-  def all_pages
+  def pages
     unless has_valid_token
       render_unauthorized and return
     end
 
-    render json: RebelPage.all
+    if params[:page]
+      render json: RebelPage.find_by(name: params[:page]).data
+    else
+      render json: RebelPage.all
+    end
 
   end
 

@@ -95,16 +95,35 @@
     </iron-ajax>
 
     <iron-ajax
-      id="ajaxGetPages"
-      url="http://localhost:3000/api/all_pages"
+      id="ajaxGetHomePage"
+      url="http://localhost:3000/api/pages"
+      params='{"page":"home"}'
       headers='{{headers}}'
       handle-as="json"
-      last-response="{{pages}}">
+      last-response="{{homePage}}">
+    </iron-ajax>
+
+    <iron-ajax
+      id="ajaxGetAboutPage"
+      url="http://localhost:3000/api/pages"
+      params='{"page":"about"}'
+      headers='{{headers}}'
+      handle-as="json"
+      last-response="{{aboutPage}}">
+    </iron-ajax>
+
+    <iron-ajax
+      id="ajaxGetServicesPage"
+      url="http://localhost:3000/api/pages"
+      params='{"page":"services"}'
+      headers='{{headers}}'
+      handle-as="json"
+      last-response="{{servicesPage}}">
     </iron-ajax>
 
     <iron-ajax
       id="ajaxUpdatePage"
-      url="http://localhost:3000/api/all_pages"
+      url="http://localhost:3000/api/pages"
       headers='{{headers}}'
       handle-as="json"
       on-response="_handleUpdatePageResponse">
@@ -142,8 +161,11 @@
           <app-toolbar><span id="headerToolbar">Admin</span></app-toolbar>
           <div id="drawerButtonsContainer" hidden>
             <div class="drawer-button"><paper-button class="custom" on-tap="_setCurrentPage" page="Api Key">Api Key</paper-button></div>
-            <div class="drawer-button"><paper-button class="custom" on-tap="_setCurrentPage" page="Pages">Pages</paper-button></div>
             <div class="drawer-button"><paper-button class="custom" on-tap="_setCurrentPage" page="Images">Images</paper-button></div>
+            <div class="drawer-button"><paper-button class="custom" on-tap="_setCurrentPage" page="Home">Home</paper-button></div>
+            <div class="drawer-button"><paper-button class="custom" on-tap="_setCurrentPage" page="About">About</paper-button></div>
+            <div class="drawer-button"><paper-button class="custom" on-tap="_setCurrentPage" page="Services">Services</paper-button></div>
+            
           </div>
       </app-drawer>
 
@@ -154,9 +176,14 @@
               <paper-icon-button icon="menu" drawer-toggle></paper-icon-button>
           </app-toolbar>
           <app-toolbar>
-            <div main-title><h4>[[currentPage]]</h4></div>
+            <div main-title>
+              <h4>[[currentPage]]</h4>
+              <template is="dom-if" if="[[_isServices(currentPage)]]">
+                ([[servicesPage.items.length]])
+              </template>
+            </div>
             <template is="dom-if" if="[[isPages]]">
-              <paper-button class="custom" on-tap="_savePages">Save Pages</paper-button>
+              <paper-button class="custom" on-tap="_savePage">Save Page</paper-button>
             </template>
           </app-toolbar>
         </app-header>
@@ -165,139 +192,171 @@
 
       <div id="apiKeyContainer" hidden>
         <div class="row">
-          <div class="col s8 offset-s2">
+          <div class="col s12 m8 offset-m2">
             <paper-input label="Api Key" value="{{admin.apiKey}}"></paper-input>
           </div>
 
         </div>
       </div>
 
-      <div id="pagesContainer" hidden>
+      <div id="homePageContainer" hidden>
 
-        <template is="dom-repeat" items="{{pages}}" as="page">
+        
+        <template is="dom-if" if="[[homePage.attachments]]">
           <div class="row">
-            <h5>
-              [[page.name]]
-              <template is="dom-if" if="[[_isServices(page.name)]]">
-                ([[page.data.items.length]])
-              </template>
-            </h5>
-            <hr>
+            <div class="s12">
+              <h5>Image Carousel</h5>
+            </div>
           </div>
+
+          <template is="dom-repeat" items="{{homePage.attachments}}">
+            <div class="row">
+              <div class="col s4">
+                <img src="[[item.url]]" class="attachment">
+              </div>
+              <div class="col s6">
+                <ul>
+                <li><paper-input label="Caption" value="{{item.caption}}"></paper-input></li>
+                <li><paper-input label="Link To" value="{{item.link_to}}"></paper-input></li>
+                <li><paper-input label="URL" value="{{item.url}}"></paper-input></li>
+                <li>
+                <paper-fab mini on-tap="_removeHomePageAttachment" class="custom" label="&nbsp;&times;"></paper-fab>
+                </li>
+                </ul>
+              </div>
+            </div>
+          </template>
+          
           <div class="row">
-            <template is="dom-if" if="[[page.data.heading]]">
-              <div class="col s8 offset-s2">
-                <paper-input label="Heading" value="{{page.data.heading}}"></paper-input>
-              </div>
-            </template>
-
-            <template is="dom-if" if="[[page.data.items]]">
-              <div class="col s8 offset-s2">
-                <h5>Items</h5>
-              </div>
-              <template is="dom-repeat" items="{{page.data.items}}">
-                <template is="dom-if" if="[[!_isServices(page.name)]]"> 
-                  <div class="col s8 offset-s2">
-                    <paper-input label="Title" value="{{item.title}}"></paper-input>
-                    <paper-textarea label="Description" value="{{item.description}}"></paper-textarea>
-                  </div>
-                </template>
-
-                <template is="dom-if" if="[[item.image]]">
-                  <div class="col s8 offset-s2">
-                    <h6>Main Image</h6>
-                  </div>
-                  <div class="col s8 offset-s2">
-                    <ul>
-                    <li><paper-input label="URL" value="{{item.image}}"></paper-input></li>
-                    <li><paper-input label="Name" value="{{item.name}}"></paper-input></li>
-                    <li><paper-input label="Slug" value="{{item.slug}}"></paper-input></li>
-                    </ul>
-                  </div>
-                </template>
-
-                <template is="dom-if" if="[[_isServices(page.name)]]"> 
-                  <div class="col s8 offset-s2">
-                    <h6>Detail Images</h6>
-                  </div>
-                  <div class="col s8 offset-s2">
-                    <ul>
-                    <template is="dom-repeat" items="{{_getDetailImages(page.data, item.slug)}}" as="detailImage">
-                      <li>
-                        <paper-input label="URL" value="{{detailImage}}"></paper-input>
-                      </li>
-                    </template>
-                      <li><paper-button class="custom" on-tap="_addDetailImage">Add Detail Image</paper-button></li>
-                    </ul>
-                  </div>
-                </template>
-
-                <!-- <div>[[_getDescription(page.data, item.slug)]]</div> -->
-
-                <template is="dom-repeat" items="{{_getDescriptionItems(page.data, item.slug)}}" as="descriptionItem">
-                  <div class="col s8 offset-s2">
-                    <paper-input label="Heading" value="{{descriptionItem.name}}"></paper-input>
-
-                    <paper-textarea label="Description Item" value="{{descriptionItem.description}}"></paper-textarea>
-                    
-                  </div>
-                </template>
-
-                <div class="col s8 offset-s2">
-                  <paper-fab mini on-tap="_removeDescriptionItem" class="custom" label="&nbsp;&times;"></paper-fab>
-                </div>
-              </template>
-
-              <div class="row description-item">
-                <div class="col s8 offset-s2">
-                  <paper-button class="custom" on-tap="_addDescriptionItem">Add Description Item</paper-button>
-                </div>
-              </div>
-       
-
-            <template is="dom-if" if="[[_isServices(page.name)]]">
-              <div class="row">
-                <div class="col s12 center">
-                  <paper-button class="custom" on-tap="_addService">Add Service</paper-button>
-                </div>
-              </div>
-            </template>
-            </template>
-
-            <template is="dom-if" if="[[page.data.attachments]]">
-              <div class="row">
-                <div class="s12">
-                  <h5>Image Carousel</h5>
-                </div>
-              </div>
-
-              <template is="dom-repeat" items="{{page.data.attachments}}">
-                <div class="row">
-                  <div class="col s2">
-                    <img src="[[item.url]]" class="attachment">
-                  </div>
-                  <div class="col s8">
-                    <ul>
-                    <li><paper-input label="Caption" value="{{item.caption}}"></paper-input></li>
-                    <li><paper-input label="Link To" value="{{item.link_to}}"></paper-input></li>
-                    <li><paper-input label="URL" value="{{item.url}}"></paper-input></li>
-                    <li>
-                    <paper-fab mini on-tap="_removeAttachment" class="custom" label="&nbsp;&times;"></paper-fab>
-                    </li>
-                    </ul>
-                  </div>
-                </div>
-              </template>
-              
-              <div class="row">
-                <div class="col s12 center">
-                  <paper-button class="custom" on-tap="_addAttachment">Add Another Image</paper-button>
-                </div>
-              </div>
-            </template>
+            <div class="col s12 center">
+              <paper-button class="custom" on-tap="_addHomePageAttachment">Add Another Image</paper-button>
+            </div>
           </div>
         </template>
       </div>
+
+      <div id="aboutPageContainer" hidden>
+        
+        <div class="row">
+          <div class="col s12 m8 offset-m2">
+            <paper-input label="Heading" value="{{aboutPage.heading}}"></paper-input>
+          </div>
+
+          <template is="dom-if" if="[[aboutPage.items]]">
+            <div class="col s12 m8 offset-m2">
+              <h5>Items</h5>
+            </div>
+
+            <template id="pageDataItems" is="dom-repeat" items="{{aboutPage.items}}">
+
+              <div class="col s12 m8 offset-m2">
+                <paper-input label="Title" value="{{item.title}}"></paper-input>
+                <paper-textarea label="Description" value="{{item.description}}"></paper-textarea>
+              </div>
+
+              <div class="col s12 m8 offset-m2">
+                <paper-fab mini on-tap="_removeAboutPageDescriptionItem" class="custom" label="&nbsp;&times;"></paper-fab>
+              </div>
+             
+            </template>
+
+            <div class="row description-item">
+              <div class="col s12 m8 offset-m2">
+                <paper-button class="custom" on-tap="_addAboutPageDescriptionItem">Add Description Item</paper-button>
+              </div>
+            </div>
+    
+          </template>
+        </div>
+      </div>
+
+      <div id="servicesPageContainer" hidden>
+     
+        <div class="row">
+          <div class="col s12 m8 offset-m2">
+            <paper-input label="Heading" value="{{servicesPage.heading}}"></paper-input>
+          </div>
+
+          <div class="col s12 m8 offset-m2">
+            <h5>Items</h5>
+          </div>
+          <template id="pageDataItems" is="dom-repeat" items="{{servicesPage.items}}">
+
+            <div class="col s12 m8 offset-m2">
+              <paper-input label="Name" value="{{item.name}}"></paper-input>
+            </div>
+            <div class="col s12 m8 offset-m2">
+              <paper-input label="Slug" value="{{item.slug}}"></paper-input>
+            </div>
+
+            <div class="col s12 m8 offset-m2">
+              <h6>Main Image</h6>
+            </div>
+            <div class="col s12 m8 offset-m2">
+              <ul>
+              <li><paper-input label="URL" value="{{item.image}}"></paper-input></li>
+              </ul>
+            </div>
+      
+
+            <div class="col s12 m8 offset-m2">
+              <h6>Detail Images</h6>
+            </div>
+            <div class="col s12 m8 offset-m2">
+              <ul>
+                <template is="dom-repeat" items="{{item.detail_images}}" as="detailImageItem">
+                  <li>
+                    <paper-input label="URL" value="{{detailImageItem}}"></paper-input>
+                    <paper-fab mini on-tap="_removeServicesDetailImage" class="custom" label="&nbsp;&times;" idx$="[[_servicePageItemIndex(item)]]"></paper-fab>
+                  </li>
+                </template>
+                <li><paper-button class="custom" on-tap="_addServicesDetailImage">Add Detail Image</paper-button></li>
+              </ul>
+            </div>
+             
+            <template is="dom-repeat" items="{{item.detail_items}}" as="descriptionItem">
+              <div class="col s12 m8 offset-m2">
+                <paper-input label="Heading" value="{{descriptionItem.name}}"></paper-input>
+
+                <paper-textarea label="Description Item" value="{{descriptionItem.description}}"></paper-textarea>
+                  
+              </div>
+
+              <div class="col s12 m8 offset-m2">
+                [[item.index]]
+                <paper-fab mini on-tap="_removeServicesDescriptionItem" class="custom" label="&nbsp;&times;"></paper-fab>
+              </div>
+            </template>
+
+              
+
+            <div class="row description-item">
+              <div class="col s12 m8 offset-m2">
+                <paper-button class="custom" on-tap="_addServicesDescriptionItem">Add Description Item</paper-button>
+              </div>
+            </div>
+
+            <div class="row description-item">
+              <div class="col s12 m8 offset-m2">
+                <paper-button class="custom" on-tap="_removeService">Remove Service</paper-button>
+              </div>
+            </div>
+            
+            <hr>
+            
+          </template>
+
+
+          <div class="row">
+            <div class="col s12 center">
+              <paper-button class="custom" on-tap="_addService">Add Service</paper-button>
+            </div>
+          </div>
+
+
+        </div>
+
+      </div>      
 
       <div id="imagesContainer" hidden>
         <div class="row">
@@ -351,10 +410,18 @@
           notify: true,
           computed: '_validateApiKey(apiKey)'
         },
-        pages: {
-          type: Array,
+        homePage: {
+          type: Object,
+          notify: true
+        },
+        aboutPage: {
+          type: Object,
+          notify: true
+        },
+        servicesPage: {
+          type: Object,
           notify: true,
-          observer: '_pagesObserver'
+          observer: '_homePageObserver'
         },
         isPages: {
           type: Boolean,
@@ -374,36 +441,55 @@
         }
       },
       _header: function(_apiKey) {
-        console.log('_header _apiKey:',_apiKey);
+        // console.log('_header _apiKey:',_apiKey);
         return {'Authorization': 'Token token="'+_apiKey+'"'};
       },
       _adminObserver: function(admin){
         if(admin.apiKey != undefined && admin.apiKey != ''){
-          console.log('api key from pouch:',admin.apiKey);
+          // console.log('api key from pouch:',admin.apiKey);
           if(this.apiKey != admin.apiKey){
             this._validateApiKey(admin.apiKey);
           }
         }
       },
-      _pagesObserver: function(_pages){
-        console.log('_pagesObserver _pages:',_pages);
-      },
       _currentPageChanged: function(_currentPage){
         if(_currentPage === 'Api Key'){
           this.$.apiKeyContainer.hidden = false;
-          this.$.pagesContainer.hidden = true;
+          this.$.homePageContainer.hidden = true;
+          this.$.aboutPageContainer.hidden = true;
+          this.$.servicesPageContainer.hidden = true;
           this.$.imagesContainer.hidden = true;
           this.set('isPages', false);
-        }else if(_currentPage === 'Pages'){
-          this.$.ajaxGetPages.generateRequest();
+        }else if(_currentPage === 'Home'){
+          this.$.ajaxGetHomePage.generateRequest();
           this.$.apiKeyContainer.hidden = true;
-          this.$.pagesContainer.hidden = false;
+          this.$.homePageContainer.hidden = false;
+          this.$.aboutPageContainer.hidden = true;
+          this.$.servicesPageContainer.hidden = true;
+          this.$.imagesContainer.hidden = true;
+          this.set('isPages', true);
+        }else if(_currentPage === 'About'){
+          this.$.ajaxGetAboutPage.generateRequest();
+          this.$.apiKeyContainer.hidden = true;
+          this.$.homePageContainer.hidden = true;
+          this.$.aboutPageContainer.hidden = false;
+          this.$.servicesPageContainer.hidden = true;
+          this.$.imagesContainer.hidden = true;
+          this.set('isPages', true);
+        }else if(_currentPage === 'Services'){
+          this.$.ajaxGetServicesPage.generateRequest();
+          this.$.apiKeyContainer.hidden = true;
+          this.$.homePageContainer.hidden = true;
+          this.$.aboutPageContainer.hidden = true;
+          this.$.servicesPageContainer.hidden = false;
           this.$.imagesContainer.hidden = true;
           this.set('isPages', true);
         }else if(_currentPage === 'Images'){
           this.$.ajaxGetImages.generateRequest();
           this.$.apiKeyContainer.hidden = true;
-          this.$.pagesContainer.hidden = true;
+          this.$.homePageContainer.hidden = true;
+          this.$.aboutPageContainer.hidden = true;
+          this.$.servicesPageContainer.hidden = true;
           this.$.imagesContainer.hidden = false;
           this.set('isPages', false);
         }
@@ -413,7 +499,7 @@
         this.set('currentPage', e.target.getAttribute('page'));
       },
       _validateApiKey: function(apiKey){
-        console.log('_validateApiKey: ',apiKey == undefined || apiKey == '');
+        // console.log('_validateApiKey: ',apiKey == undefined || apiKey == '');
         this.set('apiKey', apiKey);
         //return apiKey == undefined || apiKey == '';
         this.$.ajaxValidateApiKey.generateRequest();
@@ -422,27 +508,14 @@
         this.$.drawer.toggle();
       },
       _handleValidateApiKeyResponse: function(e){
-        console.log('_handleValidateApiKeyResponse e.detail.xhr.statusText:',e.detail.xhr.statusText);
+        // console.log('_handleValidateApiKeyResponse e.detail.xhr.statusText:',e.detail.xhr.statusText);
         if(e.detail.xhr.statusText === 'OK'){
           this.$.drawerButtonsContainer.hidden = false;
-          this.set('currentPage', 'Pages');
+          this.set('currentPage', 'Home');
         }
       },
       _handleUpdatePageResponse: function(e){
          console.log('_handleUpdatePageResponse e.detail.xhr.statusText:',e.detail.xhr.statusText);
-      },
-      _getDescription: function(_page_data, _slug){
-        return _page_data[_slug].description;
-      },
-      _getDescriptionItems: function(_page_data, _slug){
-        if(_page_data[_slug].detail_items != undefined){
-          return _page_data[_slug].detail_items;
-        }
-      },
-      _getDetailImages: function(_page_data, _slug){
-        if(_page_data[_slug].detail_images != undefined){
-          return _page_data[_slug].detail_images;
-        }
       },
       _handleAjaxCreateImagePostResponse: function(e){
         console.log('_handleAjaxCreateImagePostResponse e:',e);
@@ -453,43 +526,58 @@
         console.log('_handleAjaxCreateImagePostError e:',e);
         this.$.rebelImagesSpinner.active = false;
       },
-      _savePages: function(e){
+      _savePage: function(e){
         console.log('_savePages e:',e);
-        console.log('this.pages:',this.pages);
       },
-      _addAttachment: function(e){
-        e.model.page.data.attachments.push({caption: '', link_to: '', url: ''});
-        var _idx = this.pages.indexOf(e.model.page);
-        var _data = e.model.page.data;
-        this.set('pages.'+_idx+'.data', {});
-        this.set('pages.'+_idx+'.data', _data);
+      _addHomePageAttachment: function(e){
+        this.push('homePage.attachments',{caption: '', link_to: '', url: ''});
       },
-      _removeAttachment: function(e){
-        //dunno why e.model.page is not accessiable here, but assuming constant position at index 0 for the 'about' page...
-        this.splice('pages.0.data.attachments', e.model.index, 1);
+      _removeHomePageAttachment: function(e){
+        this.splice('homePage.attachments', e.model.index, 1);
       },
       _addService: function(e){
-        console.log('_addService e:',e);
+        // console.log('_addService');
+        this.push('servicesPage.items', {image: '', name: '', slug:'', detail_images: [], detail_items: []});
       },
-      _addDescriptionItem: function(e){
-        console.log('_addDescriptionItem e.model.page:',e.model.page);
-        var _idx = this.pages.indexOf(e.model.page);
-        // var _data = e.model.page.data;
-        // this.set('pages.'+_idx+'.data', {});
-        // this.set('pages.'+_idx+'.data', _data);
-        this.push('pages.'+_idx+'.data.items', {description: '', title: ''});
+      _removeService: function(e){
+        // console.log('_removeService idx',e.model.index);
+        this.splice('servicesPage.items', e.model.index, 1)
       },
-      _removeDescriptionItem: function(e){
-        console.log('_addDescriptionItem e.model.page:',e.model.page);
-        // e.model.page.data.attachments.push({caption: '', name: '', url: ''});
-        var _idx = this.pages.indexOf(e.model.page);
-        this.splice('pages.'+_idx+'.data.items', e.model.index, 1);
+      _addAboutPageDescriptionItem: function(e){
+        this.push('aboutPage.items', {description: '', title: ''})
       },
-      _addDetailImage: function(e){
-        console.log('_addDetailImage e:',e);
+      _removeAboutPageDescriptionItem: function(e){
+        this.splice('aboutPage.items', e.model.index, 1);
+      },
+      _addServicesDetailImage: function(e){
+        // console.log('_addDetailImage e.model.index',e.model.index,' e.model.page:',e.model.page);
+        this.push('servicesPage.items.'+e.model.index+'.detail_images', '');
+      },
+      _removeServicesDetailImage: function(e){
+        var _servicesPageIdx = e.target.getAttribute('idx');
+        console.log('_removeServicesDetailImage idx attr?',_servicesPageIdx);
+        // console.log('_removeServicesDescriptionItem: this.servicesPage.items.indexOf(e.model.item):',this.servicesPage.items.indexOf(e.model.item));
+        // this.splice('servicesPage.items.'+this.servicesPage.items.indexOf(e.model.item)+'.detail_items',e.model.index, 1);
+
+        this.splice('servicesPage.items.'+_servicesPageIdx+'.detail_images', e.model.index, 1);
+      },
+      _addServicesDescriptionItem: function(e){
+        console.log('_addServicesDescriptionItem: e.model.index',e.model.index);
+        // e.model.item.detail_items.push({description: '', name: ''})
+        this.push('servicesPage.items.'+e.model.index+'.detail_items', {description: '', name: ''});
+      },
+      _removeServicesDescriptionItem: function(e){
+        console.log('_removeServicesDescriptionItem: this.servicesPage.items.indexOf(e.model.item):',this.servicesPage.items.indexOf(e.model.item));
+        this.splice('servicesPage.items.'+this.servicesPage.items.indexOf(e.model.item)+'.detail_items',e.model.index, 1);
       },
       _isServices: function(_pageName){
         return _pageName == 'services';
+      },
+      _homePageObserver: function(_homePage){
+        console.log('_servicesPageObserver _homePage:',_homePage);
+      },
+      _servicePageItemIndex: function(_item){
+        return this.servicesPage.items.indexOf(_item);
       },
       ready: function(){
         //file upload
