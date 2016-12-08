@@ -68,6 +68,13 @@
       ol, ul {
         list-style: none;
       }
+
+      img.attachment {
+        max-height: 175px;
+        max-width: 175px;
+        padding-top: 55px;
+      }
+
       @media (max-width: 767px) {
         
       }
@@ -81,7 +88,7 @@
 
     <iron-ajax
       id="ajaxValidateApiKey"
-      url="http://rebelcricket.lacuna.club/api/validate_api_key"
+      url="http://localhost:3000/api/validate_api_key"
       headers='{{headers}}'
       handle-as="json"
       on-response="_handleValidateApiKeyResponse">
@@ -89,7 +96,7 @@
 
     <iron-ajax
       id="ajaxGetPages"
-      url="http://rebelcricket.lacuna.club/api/all_pages"
+      url="http://localhost:3000/api/all_pages"
       headers='{{headers}}'
       handle-as="json"
       last-response="{{pages}}">
@@ -97,7 +104,7 @@
 
     <iron-ajax
       id="ajaxUpdatePage"
-      url="http://rebelcricket.lacuna.club/api/all_pages"
+      url="http://localhost:3000/api/all_pages"
       headers='{{headers}}'
       handle-as="json"
       on-response="_handleUpdatePageResponse">
@@ -105,7 +112,7 @@
 
     <iron-ajax
       id="ajaxGetImages"
-      url="http://rebelcricket.lacuna.club/api/images"
+      url="http://localhost:3000/api/images"
       headers='{{headers}}'
       handle-as="json"
       last-response="{{images}}">
@@ -113,7 +120,7 @@
 
     <iron-ajax
       id="ajaxCreateImage"
-      url="http://rebelcricket.lacuna.club/api/create_image"
+      url="http://localhost:3000/api/create_image"
       method="POST"
       headers='{{headers}}'
       on-response="_handleAjaxCreateImagePostResponse"
@@ -122,7 +129,7 @@
     </iron-ajax>
 <!--     <iron-ajax
       auto
-      url="http://rebelcricket.lacuna.club/api/"
+      url="http://localhost:3000/api/"
       params='{"page":"about"}'
       handle-as="json"
       on-response="_handlePageResponse">
@@ -158,7 +165,7 @@
 
       <div id="apiKeyContainer" hidden>
         <div class="row">
-          <div class="col s6 offset-s3">
+          <div class="col s8 offset-s2">
             <paper-input label="Api Key" value="{{admin.apiKey}}"></paper-input>
           </div>
 
@@ -168,7 +175,7 @@
       <div id="pagesContainer" hidden>
 
         <template is="dom-repeat" items="{{pages}}" as="page">
-          <div>
+          <div class="row">
             <h5>
               [[page.name]]
               <template is="dom-if" if="[[_isServices(page.name)]]">
@@ -176,31 +183,44 @@
               </template>
             </h5>
             <hr>
+          </div>
+          <div class="row">
             <template is="dom-if" if="[[page.data.heading]]">
-              <paper-input label="Heading" value="{{page.data.heading}}"></paper-input>
-              
+              <div class="col s8 offset-s2">
+                <paper-input label="Heading" value="{{page.data.heading}}"></paper-input>
+              </div>
             </template>
 
             <template is="dom-if" if="[[page.data.items]]">
-              <div class="row">
-                <b>items:</b>
-                <template is="dom-repeat" items="{{page.data.items}}">
-                  <template is="dom-if" if="[[!_isServices(page.name)]]"> 
+              <div class="col s8 offset-s2">
+                <h5>Items</h5>
+              </div>
+              <template is="dom-repeat" items="{{page.data.items}}">
+                <template is="dom-if" if="[[!_isServices(page.name)]]"> 
+                  <div class="col s8 offset-s2">
                     <paper-input label="Title" value="{{item.title}}"></paper-input>
                     <paper-textarea label="Description" value="{{item.description}}"></paper-textarea>
-                  </template>
+                  </div>
+                </template>
 
-                  <template is="dom-if" if="[[item.image]]">
-                    Main Image:
+                <template is="dom-if" if="[[item.image]]">
+                  <div class="col s8 offset-s2">
+                    <h6>Main Image</h6>
+                  </div>
+                  <div class="col s8 offset-s2">
                     <ul>
                     <li><paper-input label="URL" value="{{item.image}}"></paper-input></li>
                     <li><paper-input label="Name" value="{{item.name}}"></paper-input></li>
                     <li><paper-input label="Slug" value="{{item.slug}}"></paper-input></li>
                     </ul>
-                  </template>
+                  </div>
+                </template>
 
-                  <template is="dom-if" if="[[_isServices(page.name)]]"> 
-                    Detail Images:
+                <template is="dom-if" if="[[_isServices(page.name)]]"> 
+                  <div class="col s8 offset-s2">
+                    <h6>Detail Images</h6>
+                  </div>
+                  <div class="col s8 offset-s2">
                     <ul>
                     <template is="dom-repeat" items="{{_getDetailImages(page.data, item.slug)}}" as="detailImage">
                       <li>
@@ -209,58 +229,69 @@
                     </template>
                       <li><paper-button class="custom" on-tap="_addDetailImage">Add Detail Image</paper-button></li>
                     </ul>
-                  </template>
+                  </div>
+                </template>
 
-                  <div>[[_getDescription(page.data, item.slug)]]</div>
+                <!-- <div>[[_getDescription(page.data, item.slug)]]</div> -->
 
-                  <template is="dom-repeat" items="{{_getDescriptionItems(page.data, item.slug)}}" as="descriptionItem">
+                <template is="dom-repeat" items="{{_getDescriptionItems(page.data, item.slug)}}" as="descriptionItem">
+                  <div class="col s8 offset-s2">
                     <paper-input label="Heading" value="{{descriptionItem.name}}"></paper-input>
 
                     <paper-textarea label="Description Item" value="{{descriptionItem.description}}"></paper-textarea>
-                    <br><br>
-                  </template>
-
-                 
-                  <paper-fab mini on-tap="_removeDescriptionItem" class="custom" label="&nbsp;&times;"></paper-fab>
-                
-
+                    
+                  </div>
                 </template>
 
-                <div class="row description-item">
-                  <div class="col s12">
-                    <paper-button class="custom" on-tap="_addDescriptionItem">Add Description Item</paper-button>
-                  </div>
-                </div>
-              </div>
-
-              <template is="dom-if" if="[[_isServices(page.name)]]">
-                <div class="row">
-                  <div class="col s12 center">
-                    <paper-button class="custom" on-tap="_addService">Add Service</paper-button>
-                  </div>
+                <div class="col s8 offset-s2">
+                  <paper-fab mini on-tap="_removeDescriptionItem" class="custom" label="&nbsp;&times;"></paper-fab>
                 </div>
               </template>
+
+              <div class="row description-item">
+                <div class="col s8 offset-s2">
+                  <paper-button class="custom" on-tap="_addDescriptionItem">Add Description Item</paper-button>
+                </div>
+              </div>
+       
+
+            <template is="dom-if" if="[[_isServices(page.name)]]">
+              <div class="row">
+                <div class="col s12 center">
+                  <paper-button class="custom" on-tap="_addService">Add Service</paper-button>
+                </div>
+              </div>
+            </template>
             </template>
 
             <template is="dom-if" if="[[page.data.attachments]]">
               <div class="row">
-                <div class="col s12">
-                  <b>attachments:</b><br>
-                  <template is="dom-repeat" items="{{page.data.attachments}}">
-                  <ul>
-                  <li><paper-input label="Caption" value="{{item.caption}}"></paper-input></li>
-                  <li><paper-input label="Name" value="{{item.name}}"></paper-input></li>
-                  <li><paper-input label="URL" value="{{item.url}}"></paper-input></li>
-                  <li>
-                  <paper-fab mini on-tap="_removeAttachment" class="custom" label="&nbsp;&times;"></paper-fab>
-                  </li>
-                  </ul>
-                  </template>
+                <div class="s12">
+                  <h5>Image Carousel</h5>
                 </div>
               </div>
+
+              <template is="dom-repeat" items="{{page.data.attachments}}">
+                <div class="row">
+                  <div class="col s2">
+                    <img src="[[item.url]]" class="attachment">
+                  </div>
+                  <div class="col s8">
+                    <ul>
+                    <li><paper-input label="Caption" value="{{item.caption}}"></paper-input></li>
+                    <li><paper-input label="Link To" value="{{item.link_to}}"></paper-input></li>
+                    <li><paper-input label="URL" value="{{item.url}}"></paper-input></li>
+                    <li>
+                    <paper-fab mini on-tap="_removeAttachment" class="custom" label="&nbsp;&times;"></paper-fab>
+                    </li>
+                    </ul>
+                  </div>
+                </div>
+              </template>
+              
               <div class="row">
                 <div class="col s12 center">
-                  <paper-button class="custom" on-tap="_addAttachment">Add Attachment</paper-button>
+                  <paper-button class="custom" on-tap="_addAttachment">Add Another Image</paper-button>
                 </div>
               </div>
             </template>
@@ -427,7 +458,7 @@
         console.log('this.pages:',this.pages);
       },
       _addAttachment: function(e){
-        e.model.page.data.attachments.push({caption: '', name: '', url: ''});
+        e.model.page.data.attachments.push({caption: '', link_to: '', url: ''});
         var _idx = this.pages.indexOf(e.model.page);
         var _data = e.model.page.data;
         this.set('pages.'+_idx+'.data', {});
@@ -442,7 +473,6 @@
       },
       _addDescriptionItem: function(e){
         console.log('_addDescriptionItem e.model.page:',e.model.page);
-        // e.model.page.data.attachments.push({caption: '', name: '', url: ''});
         var _idx = this.pages.indexOf(e.model.page);
         // var _data = e.model.page.data;
         // this.set('pages.'+_idx+'.data', {});
