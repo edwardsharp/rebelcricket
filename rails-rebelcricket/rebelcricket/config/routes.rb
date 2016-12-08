@@ -11,7 +11,7 @@ Rails.application.routes.draw do
 
   get '/api/validate_api_key', to: 'rebel_api#validate_api_key', as: :rebel_validate_api_key
   get '/api/pages', to: 'rebel_api#pages', as: :rebel_api_pages
-  post '/api/update_pages', to: 'rebel_api#update_pages', as: :rebel_update_pages
+  post '/api/pages', to: 'rebel_api#update_pages', as: :rebel_update_pages
   get '/api/images', to: 'rebel_api#images', as: :rebel_images
   post '/api/create_image', to: 'rebel_api#create_image', as: :rebel_create_image
   delete '/api/delete_image', to: 'rebel_api#delete_image', as: :rebel_delete_image

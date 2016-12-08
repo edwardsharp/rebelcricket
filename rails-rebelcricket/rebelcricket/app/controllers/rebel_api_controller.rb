@@ -54,16 +54,18 @@ class RebelApiController < ApplicationController
       render_unauthorized and return
     end
 
-    Rails.logger.debug "\n\n update_pages params: #{params.inspect}\n\n"
+    Rails.logger.debug "\n\n update_pages params[:page]: #{params[:page]} params[data]: #{params[:data]}\n\n"
 
-    params[:pages].each do |page|
-      @rebel_page = RebelPage.find_by(name: page[:name])
-      @rebel_page.data = page[:data]
+    @rebel_page = RebelPage.find_by(name: params[:page])
+
+    unless params[:data].blank?
+      @rebel_page.data = params[:data]
+      
       unless @rebel_page.save
         render(status: 500) and return
       end
     end
-    
+
     render json: 'ok', status: 200
   end
 

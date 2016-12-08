@@ -124,8 +124,10 @@
     <iron-ajax
       id="ajaxUpdatePage"
       url="http://localhost:3000/api/pages"
+      method="POST"
       headers='{{headers}}'
       handle-as="json"
+      content-type="application/json"
       on-response="_handleUpdatePageResponse">
     </iron-ajax>
 
@@ -528,6 +530,23 @@
       },
       _savePage: function(e){
         console.log('_savePages e:',e);
+
+        var params = {};
+        
+        if(this.currentPage == 'Home'){
+          params["page"] = 'home';
+          this.$.ajaxUpdatePage.body = {data: this.homePage};
+        }else if(this.currentPage == 'About'){
+          params["page"] = 'about';
+          this.$.ajaxUpdatePage.body = {data: this.aboutPage};
+        }else if(this.currentPage == 'Services'){
+          params["page"] = 'services';
+          // params["data"] = ; 
+          this.$.ajaxUpdatePage.body = {data: this.servicesPage};
+        }
+
+        this.$.ajaxUpdatePage.params = params;
+        this.$.ajaxUpdatePage.generateRequest();
       },
       _addHomePageAttachment: function(e){
         this.push('homePage.attachments',{caption: '', link_to: '', url: ''});
@@ -597,6 +616,7 @@
 
           _this.$.ajaxCreateImage.body = formData;
           _this.$.ajaxCreateImage.generateRequest();
+
 
         });
 
