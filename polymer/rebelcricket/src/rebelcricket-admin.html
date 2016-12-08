@@ -422,8 +422,7 @@
         },
         servicesPage: {
           type: Object,
-          notify: true,
-          observer: '_homePageObserver'
+          notify: true
         },
         isPages: {
           type: Boolean,
@@ -591,9 +590,6 @@
       },
       _isServices: function(_pageName){
         return _pageName == 'services';
-      },
-      _homePageObserver: function(_homePage){
-        console.log('_servicesPageObserver _homePage:',_homePage);
       },
       _servicePageItemIndex: function(_item){
         return this.servicesPage.items.indexOf(_item);

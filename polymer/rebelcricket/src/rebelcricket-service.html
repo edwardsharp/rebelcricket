@@ -5,6 +5,7 @@
 <link rel="import" href="../bower_components/iron-ajax/iron-ajax.html">
 
 <link rel="import" href="shared-styles.html">
+<script src="underscore-min.js"></script>
 
 <dom-module id="rebelcricket-service">
 
@@ -36,7 +37,7 @@
 
     <iron-ajax
       auto
-      url="http://rebelcricket.lacuna.club/api/rebelpages"
+      url="http://localhost:3000/api/rebelpages"
       params='{"page":"services"}'
       handle-as="json"
       on-response="_handlePageResponse">
@@ -48,21 +49,26 @@
           <template is="dom-if" if="{{_hasMoreThanOne(service.detail_images)}}">
             <l2t-paper-slider class="moveControl" total-slides="[[_getTotalSlides(service)]]" position="0" auto-progress slide-duration="3">
               <template is="dom-repeat" items="{{_toArray(service.detail_images)}}">
-                <paper-slide style$="background-image: url('http://rebelcricket.lacuna.club/{{item.value}}');background-repeat:no-repeat;background-position:center center;background-size:contain;"></paper-slide>
+                <paper-slide style$="background-image: url('http://localhost:3000/{{item.value}}');background-repeat:no-repeat;background-position:center center;background-size:contain;"></paper-slide>
               </template>
             </l2t-paper-slider>
             <!-- <paper-button class="proceed" onclick="document.querySelector('.moveControl').movePrev();">Previous</paper-button>
             <paper-button class="proceed" onclick="document.querySelector('.moveControl').moveNext();">Next</paper-button> -->
           </template>
           <template is="dom-if" if="{{!_hasMoreThanOne(service.detail_images)}}">
-            <img src$="http://rebelcricket.lacuna.club/[[service.detail_images.0]]">
+            <img src$="http://localhost:3000/[[service.detail_images.0]]">
           </template>
         </div>  
         <div class="col s12 m6">
           <h1>[[service.name]]</h1>
           <p>[[service.description]]</p>
           <template is="dom-repeat" items="{{service.detail_items}}">
-            <p><h5>[[item.name]]:</h5> [[item.description]]</p>
+            <p>
+              <template is="dom-if" if="[[item.name]]">
+                <h5>[[item.name]]:</h5> 
+              </template>
+              [[item.description]]
+            </p>
           </template>
         </div> 
 
@@ -105,13 +111,13 @@
         }
       },
       _servicesChanged: function(e){
-        // console.log('SERVICEZZZ CHANGED! e:',e);
-        if(e[this._serviceKey()] != undefined){
-          this.set('service', e[this._serviceKey()]);
+        console.log('SERVICEZZZ CHANGED!this._serviceKey():',_.find(e.items, {slug: this._serviceKey()}),' e:',e);
+        if(_.find(e.items, {slug: this._serviceKey()}) != undefined){
+          this.set('service', _.find(e.items, {slug: this._serviceKey()}));
         }
       },
       _serviceChanged: function(e){
-        // console.log('SERVICE CHANGED! e:',e);
+        console.log('SERVICE CHANGED! e:',e);
       },
       // _servicesChanged: function(e){
       //   console.log('DETAIL SERVICES CHANGED! e:',e);
@@ -125,7 +131,7 @@
           // console.log('DETAIL path empty, REMOVE!??');
           // this.remove();
         }else if(this.services != undefined){
-          this.set('service', this.services[this._serviceKey()]);
+          this.set('service', _.find(this.services.items, {slug: this._serviceKey()}));
         }
         
       },
