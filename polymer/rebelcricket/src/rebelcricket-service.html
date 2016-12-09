@@ -30,6 +30,10 @@
       margin-top: 1em;
     }
 
+    .quote-button-container {
+      margin-top: 2em;
+    }
+
     @media (max-width: 767px) {
       
     }
@@ -49,14 +53,14 @@
           <template is="dom-if" if="{{_hasMoreThanOne(service.detail_images)}}">
             <l2t-paper-slider class="moveControl" total-slides="[[_getTotalSlides(service)]]" position="0" auto-progress slide-duration="3">
               <template is="dom-repeat" items="{{_toArray(service.detail_images)}}">
-                <paper-slide style$="background-image: url('http://localhost:3000/{{item.value}}');background-repeat:no-repeat;background-position:center center;background-size:contain;"></paper-slide>
+                <paper-slide style$="background-image: url('{{item.value}}');background-repeat:no-repeat;background-position:center center;background-size:contain;"></paper-slide>
               </template>
             </l2t-paper-slider>
             <!-- <paper-button class="proceed" onclick="document.querySelector('.moveControl').movePrev();">Previous</paper-button>
             <paper-button class="proceed" onclick="document.querySelector('.moveControl').moveNext();">Next</paper-button> -->
           </template>
           <template is="dom-if" if="{{!_hasMoreThanOne(service.detail_images)}}">
-            <img src$="http://localhost:3000/[[service.detail_images.0]]">
+            <img src$="[[service.detail_images.0]]">
           </template>
         </div>  
         <div class="col s12 m6">
@@ -73,13 +77,13 @@
         </div> 
 
         <div class="col s12 m6">
-          <h5>To order [[service.name]] services or to get more information, please fill out our quote form:</h5> 
-
-          <div class="col s12 center">
-            <a href="/quote"><paper-button class="custom"><h5>Quote</h5></paper-button></a>
-          </div>
-
+          <h5>To order [[service.name]] services or to get more information, please fill out a quote form:</h5> 
         </div>
+        <div class="col s12 m6 center quote-button-container">
+          <a href="/quote"><paper-button class="custom"><h5>Quote</h5></paper-button></a>
+        </div>
+
+        
 
         
 

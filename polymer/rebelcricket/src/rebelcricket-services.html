@@ -5,6 +5,7 @@
 <link rel="import" href="../bower_components/iron-ajax/iron-ajax.html">
 
 <link rel="import" href="shared-styles.html">
+<script src="underscore-min.js"></script>
 
 <dom-module id="rebelcricket-services">
 
@@ -22,7 +23,7 @@
       }
 
       .item_name {
-        margin-top: 27%;
+        margin-top: 20%;
         font-size: 2em;
         width: 85%;
         justify-content: center;
@@ -47,6 +48,34 @@
         clip-path: polygon(0 0, 100% 3%, 100% 100%, 0 97%);*/
       }
 
+      .smallfont { 
+        font-size: 0.7em; 
+        line-height: 1em;
+        padding-top: 0.5em;
+        padding-bottom: 0.5em;
+      }
+
+      .item-list{
+        width: 85%;
+        list-style: none;
+
+        background-color: rgba(255, 0, 0, 0.6);
+        font-size: 15px;
+        display: inline-block;
+
+        margin-top: 75px;
+        padding-top: 1em;
+        padding-bottom: 100px;
+
+        -webkit-clip-path: polygon(0 3%, 100% 0, 100% 97%, 0 100%);
+        clip-path: polygon(0 3%, 100% 0, 100% 97%, 0 100%);
+        box-shadow: 0 0 2px 5px transparent;
+      }
+
+      .item-list:hover{
+        background-color: red;
+      }
+
       @media (max-width: 767px) {
         .service_item { 
           
@@ -58,7 +87,7 @@
 
     <iron-ajax
       auto
-      url="http://rebelcricket.lacuna.club/api/rebelpages"
+      url="http://localhost:3000/api/rebelpages"
       params='{"page":"services"}'
       handle-as="json"
       on-response="_handlePageResponse">
@@ -74,12 +103,19 @@
       <div class="row">
         <template is="dom-repeat" items="{{services.items}}">
           <div class="col s12 m6 l4">
-            <div class="service_item" style$="background-image: url('http://rebelcricket.lacuna.club/[[item.image]]');background-repeat:no-repeat;background-position:center center;background-size:contain;">
+            <div class="service_item" style$="background-image: url('[[item.image]]');background-repeat:no-repeat;background-position:center center;background-size:contain;">
              
-              <paper-button raised on-tap="_detailLink" class="custom item_name" fuck="dood" data-slug$="[[item.slug]]">
-                  [[item.name]]
+              <paper-button raised on-tap="_detailLink" class="custom item_name" data-slug$="[[item.slug]]">
+                  <span class$="[[_itemNeedsSmallFont(item.name)]]">[[item.name]]</span>
               </paper-button>
              
+               <template is="dom-if" if="[[_hasDetailItems(item.detail_items)]]">
+                <div class="item-list">
+                  <template is="dom-repeat" items="[[item.detail_items]]">
+                    <div>[[item.name]]</div>
+                  </template>
+                </div>
+              </template>
             </div>
           </div>
         </template>
@@ -106,6 +142,16 @@
       },
       _handlePageResponse: function(e) {
         this.set('services',e.detail.response);
+      },
+      _itemNeedsSmallFont: function(str){
+        return str.length > 10 ? 'smallfont' : '';
+      },
+      _hasDetailItems: function(_items){
+        console.log('aarg itemz:',_items);
+        console.log('_hasDetailItems:', _.filter(_items, function(itm){return itm.name != ''}).length);
+        // _.contains(_items, function(item){return item.name != undefined && item.name != '' ; });
+
+        return _.filter(_items, function(itm){return itm.name != ''}).length > 0
       }
 
     });
