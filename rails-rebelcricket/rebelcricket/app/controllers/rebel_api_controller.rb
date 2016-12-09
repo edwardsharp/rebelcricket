@@ -34,6 +34,19 @@ class RebelApiController < ApplicationController
     end
   end
 
+  def quote
+    unless has_valid_token
+      render_unauthorized and return
+    end
+
+    if params[:quote_number]
+      render json: RebelQuote.find_by(number: params[:quote_number]).data
+    else
+      render(status: 500) and return
+    end
+
+  end
+
   def pages
     unless has_valid_token
       render_unauthorized and return

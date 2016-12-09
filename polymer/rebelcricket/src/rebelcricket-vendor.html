@@ -89,7 +89,7 @@
     }
 
     .buttonz {
-      position: fixed;
+      position: relative;
       bottom: 20px;
 
     }
@@ -108,7 +108,7 @@
 
     <iron-ajax
       auto
-      url="http://rebelcricket.lacuna.club/api/rebelvendor/companycasuals.json"
+      url="http://localhost:3000/api/rebelvendor/companycasuals.json"
       handle-as="json"
       on-response="_handleProductsResponse"
       debounce-duration="500">

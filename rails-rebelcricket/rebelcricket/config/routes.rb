@@ -15,5 +15,6 @@ Rails.application.routes.draw do
   get '/api/images', to: 'rebel_api#images', as: :rebel_images
   post '/api/create_image', to: 'rebel_api#create_image', as: :rebel_create_image
   delete '/api/delete_image', to: 'rebel_api#delete_image', as: :rebel_delete_image
+  get '/api/quote', to: 'rebel_api#quote', as: :rebel_api_quote
 
 end

@@ -16,7 +16,6 @@
 
 <link rel="import" href="shared-styles.html">
 
-
 <dom-module id="rebelcricket-admin">
 
   <template>
@@ -43,7 +42,7 @@
       paper-button.custom, paper-fab.custom {
         background: rgba(255,0,0,0.8);
         
-        margin: 1em;
+        margin: 0.5em;
         display: inline-block;
       }
       paper-fab.custom {
@@ -92,6 +91,17 @@
       headers='{{headers}}'
       handle-as="json"
       on-response="_handleValidateApiKeyResponse">
+    </iron-ajax>
+
+    
+    <iron-ajax
+      id="ajaxFetchQuote"
+      url="http://localhost:3000/api/quote"
+      headers='{{headers}}'
+      handle-as="json"
+      on-response="_handleFetchQuoteResponse"
+      last-response="{{quote}}"
+      debounce-duration="500">
     </iron-ajax>
 
     <iron-ajax
@@ -155,6 +165,7 @@
           <app-toolbar><span id="headerToolbar">Admin</span></app-toolbar>
           <div id="drawerButtonsContainer" hidden>
             <div class="drawer-button"><paper-button class="custom" on-tap="_setCurrentPage" page="Api Key">Api Key</paper-button></div>
+            <div class="drawer-button"><paper-button class="custom" on-tap="_setCurrentPage" page="Quote">Quotes</paper-button></div>
             <div class="drawer-button"><paper-button class="custom" on-tap="_setCurrentPage" page="Images">Images</paper-button></div>
             <div class="drawer-button"><paper-button class="custom" on-tap="_setCurrentPage" page="Home">Home</paper-button></div>
             <div class="drawer-button"><paper-button class="custom" on-tap="_setCurrentPage" page="About">About</paper-button></div>
@@ -191,6 +202,17 @@
           </div>
 
         </div>
+      </div>
+
+      <div id="quotesContainer" hidden>
+        <div class="row">
+          <div class="col s12 m8 offset-m2">
+            <paper-input label="Quote Number" value="{{admin.quoteID}}"></paper-input>
+          </div>
+
+        </div>
+
+        <rebelcricket-quote quote="[[quote]]"></rebelcricket-quote>
       </div>
 
       <div id="homePageContainer" hidden>
@@ -395,6 +417,17 @@
             return '';
           }
         },
+        quoteID: {
+          type: String,
+          notify: true,
+          value: function() { 
+            return window.location.hash.replace(/#/,'');
+          }
+        },
+        quote: {
+          type: Object,
+          notify: true
+        },
         headers: {
           type: Object,
           computed: '_header(apiKey)'
@@ -444,10 +477,35 @@
             this._validateApiKey(admin.apiKey);
           }
         }
+        if(admin.quoteID != undefined && admin.quoteID != ''){
+          if(this.quoteID != admin.quoteID){
+            this._fetchQuote(admin.quoteID);
+          }
+        }
       },
       _currentPageChanged: function(_currentPage){
         if(_currentPage === 'Api Key'){
           this.$.apiKeyContainer.hidden = false;
+          this.$.quotesContainer.hidden = true;
+          this.$.homePageContainer.hidden = true;
+          this.$.aboutPageContainer.hidden = true;
+          this.$.servicesPageContainer.hidden = true;
+          this.$.imagesContainer.hidden = true;
+          this.set('isPages', false);
+        }else if(_currentPage === 'Quote'){
+
+          this.importHref('src/rebelcricket-quote.html', function(e) {
+            // e.target.import is the import document.
+            var quoteElem = document.createElement('rebelcricket-quote');
+            quoteElem.quoteID = this.quoteID
+            quoteElem.quote = this.quote;
+            Polymer.dom(this.$.apiKeyContainer).appendChild(quoteElem);  
+          }, function(e) {
+            // loading error
+          });
+
+          this.$.apiKeyContainer.hidden = true;
+          this.$.quotesContainer.hidden = false;
           this.$.homePageContainer.hidden = true;
           this.$.aboutPageContainer.hidden = true;
           this.$.servicesPageContainer.hidden = true;
@@ -456,14 +514,16 @@
         }else if(_currentPage === 'Home'){
           this.$.ajaxGetHomePage.generateRequest();
           this.$.apiKeyContainer.hidden = true;
+          this.$.quotesContainer.hidden = true;
           this.$.homePageContainer.hidden = false;
           this.$.aboutPageContainer.hidden = true;
           this.$.servicesPageContainer.hidden = true;
           this.$.imagesContainer.hidden = true;
-          this.set('isPages', true);
+          this.set('isPages', false);
         }else if(_currentPage === 'About'){
           this.$.ajaxGetAboutPage.generateRequest();
           this.$.apiKeyContainer.hidden = true;
+          this.$.quotesContainer.hidden = true;
           this.$.homePageContainer.hidden = true;
           this.$.aboutPageContainer.hidden = false;
           this.$.servicesPageContainer.hidden = true;
@@ -472,6 +532,7 @@
         }else if(_currentPage === 'Services'){
           this.$.ajaxGetServicesPage.generateRequest();
           this.$.apiKeyContainer.hidden = true;
+          this.$.quotesContainer.hidden = true;
           this.$.homePageContainer.hidden = true;
           this.$.aboutPageContainer.hidden = true;
           this.$.servicesPageContainer.hidden = false;
@@ -480,6 +541,7 @@
         }else if(_currentPage === 'Images'){
           this.$.ajaxGetImages.generateRequest();
           this.$.apiKeyContainer.hidden = true;
+          this.$.quotesContainer.hidden = true;
           this.$.homePageContainer.hidden = true;
           this.$.aboutPageContainer.hidden = true;
           this.$.servicesPageContainer.hidden = true;
@@ -496,6 +558,20 @@
         this.set('apiKey', apiKey);
         //return apiKey == undefined || apiKey == '';
         this.$.ajaxValidateApiKey.generateRequest();
+      },
+      _fetchQuote: function(_quoteID){
+        this.set('quoteID',_quoteID);
+
+        var params = {};
+        params["quote_number"] = _quoteID;
+        this.$.ajaxFetchQuote.params = params;
+
+        this.$.ajaxFetchQuote.generateRequest();
+      },
+      _handleFetchQuoteResponse: function(_quote){
+        console.log('_handleFetchQuoteResponse _quote:',_quote);
+
+        console.log('this.quote:',this.quote);
       },
       _toggleDrawer: function(e){
         this.$.drawer.toggle();
@@ -587,6 +663,15 @@
         return this.servicesPage.items.indexOf(_item);
       },
       ready: function(){
+
+        if(window.location.hash.replace(/#/,'').length > 5){
+          console.log('lookz like we have a quoteID! ',window.location.hash.replace(/#/,''));
+          this.async(function(){
+            this.set('quoteID', '');
+            this.set('admin.quoteID', window.location.hash.replace(/#/,''));
+          }, 500);
+          
+        }
         //file upload
         var input = this.$.rebelImages;
         var _this = this;
