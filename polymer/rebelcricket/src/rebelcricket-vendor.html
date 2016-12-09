@@ -60,14 +60,14 @@
       width: 80vw;
     }
     .item {
-      margin-bottom: 1em;
+      margin-bottom: 0.5em;
       font-size: 15px;
       line-height: 16px;
       text-align: justify;
       text-justify: inter-word;
       overflow: hidden;
       text-overflow: ellipsis;
-      height: 160px;
+      
       border-bottom: thin solid #eeddee;
     }
     .item:hover{
@@ -154,14 +154,11 @@
         </div> <!-- row -->
 
 
-        <div class="item-content row center">
+        <div class="item-content row">
     
           <template is="dom-repeat" items="[[filteredProducts]]" as="product">
             
-              <div class="col s12 m6 l4 item" on-tap="_itemSelected">
-                <template is="dom-if" if="[[product.items.prod_id]]">
-                  <img src$="http://cdn.companycasuals.com/cache/cc/[[product.items.prod_id]].jpg">
-                </template>
+              <div class="col s12 item" on-tap="_itemSelected">
                 <div>[[product.title]]</div>
               </div>
             
@@ -173,20 +170,29 @@
       <template is="dom-if" if="[[isDetailView]]">
         <div class="detail-content row">
           
-          <div class="col s2 back-btn">
-            <paper-button class="custom" on-tap="_exitDetailViewWithoutSelection">back</paper-button>
-          </div>
+          <div class="row">
+            <div class="col s2 back-btn">
+              <paper-button class="custom" on-tap="_exitDetailViewWithoutSelection">back</paper-button>
+            </div>
 
-          <div class="col s8 center">
-            <h5>[[selectedItem.title]]</h5>
-            <h6>[[selectedItem.items.prod_id]] [[selectedItem.category]] [[selectedItem.sub_item]]</h6>
+            <div class="col s8 center">
+              <h5>[[selectedItem.title]]</h5>
+              <h6>[[selectedItem.items.prod_id]] [[selectedItem.category]] [[selectedItem.sub_item]]</h6>
+            </div>
           </div>
 
           <div class="row">
-            <div class="col s12 m6 center">
+          
+            <template is="dom-if" if="[[selectedItem.items.prod_id]]">
+              <div class="col s12 m2 center">
+                <img src$="http://cdn.companycasuals.com/cache/cc/[[selectedItem.items.prod_id]].jpg">
+              </div>
+            </template>
+
+            <div class="col s12 m5 center">
               <p>[[selectedItem.items.prod_desc_text]]</p>
             </div>
-            <div class="col s12 m6">
+            <div class="col s12 m5">
               <ul>
                 <template is="dom-repeat" items="[[selectedItem.items.prod_desc_items]]">
                   <li>[[item]]</li>

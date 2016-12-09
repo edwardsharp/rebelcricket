@@ -45,6 +45,15 @@
         margin: 0.5em;
         display: inline-block;
       }
+
+      paper-button.adm_drwr{
+        display: inline-block;
+      }
+      paper-button.adm_drwr:hover {
+        background: rgba(255,0,0,0.8);
+        color: white;
+      }
+      
       paper-fab.custom {
         font-size:1.5em;
         line-height: 1em;
@@ -64,6 +73,9 @@
         margin: 2em;
       }
 
+       {
+
+      }
       ol, ul {
         list-style: none;
       }
@@ -164,12 +176,13 @@
       <app-drawer>
           <app-toolbar><span id="headerToolbar">Admin</span></app-toolbar>
           <div id="drawerButtonsContainer" hidden>
-            <div class="drawer-button"><paper-button class="custom" on-tap="_setCurrentPage" page="Api Key">Api Key</paper-button></div>
-            <div class="drawer-button"><paper-button class="custom" on-tap="_setCurrentPage" page="Quote">Quotes</paper-button></div>
-            <div class="drawer-button"><paper-button class="custom" on-tap="_setCurrentPage" page="Images">Images</paper-button></div>
-            <div class="drawer-button"><paper-button class="custom" on-tap="_setCurrentPage" page="Home">Home</paper-button></div>
-            <div class="drawer-button"><paper-button class="custom" on-tap="_setCurrentPage" page="About">About</paper-button></div>
-            <div class="drawer-button"><paper-button class="custom" on-tap="_setCurrentPage" page="Services">Services</paper-button></div>
+            <div class="drawer-button"><paper-button class="adm_drwr" on-tap="_setCurrentPage" page="Api Key">Api Key</paper-button></div>
+            <div class="drawer-button"><paper-button class="adm_drwr" on-tap="_setCurrentPage" page="Quote">Quotes</paper-button></div>
+            <div class="drawer-button"><paper-button class="adm_drwr" on-tap="_setCurrentPage" page="Vendor Goods">Vendor Goods</paper-button></div>
+            <div class="drawer-button"><paper-button class="adm_drwr" on-tap="_setCurrentPage" page="Images">Images</paper-button></div>
+            <div class="drawer-button"><paper-button class="adm_drwr" on-tap="_setCurrentPage" page="Home">Home</paper-button></div>
+            <div class="drawer-button"><paper-button class="adm_drwr" on-tap="_setCurrentPage" page="About">About</paper-button></div>
+            <div class="drawer-button"><paper-button class="adm_drwr" on-tap="_setCurrentPage" page="Services">Services</paper-button></div>
             
           </div>
       </app-drawer>
@@ -212,7 +225,10 @@
 
         </div>
 
-        <rebelcricket-quote quote="[[quote]]"></rebelcricket-quote>
+        <!-- <rebelcricket-quote quote="[[quote]]" quote-id="[[quoteID]]"></rebelcricket-quote> -->
+      </div>
+
+      <div id="vendorGoodsContainer" hidden>
       </div>
 
       <div id="homePageContainer" hidden>
@@ -487,6 +503,7 @@
         if(_currentPage === 'Api Key'){
           this.$.apiKeyContainer.hidden = false;
           this.$.quotesContainer.hidden = true;
+          this.$.vendorGoodsContainer.hidden = true;
           this.$.homePageContainer.hidden = true;
           this.$.aboutPageContainer.hidden = true;
           this.$.servicesPageContainer.hidden = true;
@@ -494,18 +511,48 @@
           this.set('isPages', false);
         }else if(_currentPage === 'Quote'){
 
-          this.importHref('src/rebelcricket-quote.html', function(e) {
-            // e.target.import is the import document.
-            var quoteElem = document.createElement('rebelcricket-quote');
-            quoteElem.quoteID = this.quoteID
-            quoteElem.quote = this.quote;
-            Polymer.dom(this.$.apiKeyContainer).appendChild(quoteElem);  
-          }, function(e) {
-            // loading error
-          });
+          if(this.$$('rebelcricket-quote') == undefined){
+            this.importHref('src/rebelcricket-quote.html', function(e) {
+              // e.target.import is the import document.
+              var quoteElem = document.createElement('rebelcricket-quote');
+              quoteElem.quoteID = this.quoteID
+              quoteElem.quote = this.quote;
+              Polymer.dom(this.$.quotesContainer).appendChild(quoteElem);  
+            }, function(e) {
+              // loading error
+            });
+          }
 
           this.$.apiKeyContainer.hidden = true;
           this.$.quotesContainer.hidden = false;
+          this.$.vendorGoodsContainer.hidden = true;
+          this.$.homePageContainer.hidden = true;
+          this.$.aboutPageContainer.hidden = true;
+          this.$.servicesPageContainer.hidden = true;
+          this.$.imagesContainer.hidden = true;
+          this.set('isPages', false);
+        }else if(_currentPage === 'Vendor Goods'){
+
+          if(this.$$('rebelcricket-vendor') != undefined){
+            console.log('DONOT NEED TO IMPORT HREF FOR VENDOR!');
+          }else{
+            console.log('GONNA IMPORT HREF FOR VENDOR!');
+            this.importHref('src/rebelcricket-vendor.html', function(e) {
+              // e.target.import is the import document.
+              var vendorElem = document.createElement('rebelcricket-vendor');
+              // quoteElem.quoteID = this.quoteID
+              // quoteElem.lineItem = this.lineItemForVendor; //lineItemForVendor
+              
+              Polymer.dom(this.$.vendorGoodsContainer).appendChild(vendorElem);  
+            }, function(e) {
+              // loading error
+            });
+          }
+          
+
+          this.$.apiKeyContainer.hidden = true;
+          this.$.quotesContainer.hidden = true;
+          this.$.vendorGoodsContainer.hidden = false;
           this.$.homePageContainer.hidden = true;
           this.$.aboutPageContainer.hidden = true;
           this.$.servicesPageContainer.hidden = true;
@@ -515,6 +562,7 @@
           this.$.ajaxGetHomePage.generateRequest();
           this.$.apiKeyContainer.hidden = true;
           this.$.quotesContainer.hidden = true;
+          this.$.vendorGoodsContainer.hidden = true;
           this.$.homePageContainer.hidden = false;
           this.$.aboutPageContainer.hidden = true;
           this.$.servicesPageContainer.hidden = true;
@@ -524,6 +572,7 @@
           this.$.ajaxGetAboutPage.generateRequest();
           this.$.apiKeyContainer.hidden = true;
           this.$.quotesContainer.hidden = true;
+          this.$.vendorGoodsContainer.hidden = true;
           this.$.homePageContainer.hidden = true;
           this.$.aboutPageContainer.hidden = false;
           this.$.servicesPageContainer.hidden = true;
@@ -533,6 +582,7 @@
           this.$.ajaxGetServicesPage.generateRequest();
           this.$.apiKeyContainer.hidden = true;
           this.$.quotesContainer.hidden = true;
+          this.$.vendorGoodsContainer.hidden = true;
           this.$.homePageContainer.hidden = true;
           this.$.aboutPageContainer.hidden = true;
           this.$.servicesPageContainer.hidden = false;
@@ -542,6 +592,7 @@
           this.$.ajaxGetImages.generateRequest();
           this.$.apiKeyContainer.hidden = true;
           this.$.quotesContainer.hidden = true;
+          this.$.vendorGoodsContainer.hidden = true;
           this.$.homePageContainer.hidden = true;
           this.$.aboutPageContainer.hidden = true;
           this.$.servicesPageContainer.hidden = true;
@@ -568,10 +619,13 @@
 
         this.$.ajaxFetchQuote.generateRequest();
       },
-      _handleFetchQuoteResponse: function(_quote){
-        console.log('_handleFetchQuoteResponse _quote:',_quote);
+      _handleFetchQuoteResponse: function(e){
+        console.log('_handleFetchQuoteResponse e:',e);
 
         console.log('this.quote:',this.quote);
+        this.$$('rebelcricket-quote').quoteID = this.quoteID;
+        this.$$('rebelcricket-quote').quote = e.detail.response;
+
       },
       _toggleDrawer: function(e){
         this.$.drawer.toggle();
@@ -669,7 +723,7 @@
           this.async(function(){
             this.set('quoteID', '');
             this.set('admin.quoteID', window.location.hash.replace(/#/,''));
-          }, 500);
+          }, 200);
           
         }
         //file upload
