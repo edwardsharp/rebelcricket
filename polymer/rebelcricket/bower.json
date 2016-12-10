@@ -39,7 +39,8 @@
     "paper-date-picker": "polymer-paper-date-picker#^1.2.0",
     "poly-filter": "^1.2.2",
     "paper-menu": "PolymerElements/paper-menu#^1.2.2",
-    "paper-menu-button": "PolymerElements/paper-menu-button#^1.5.2"
+    "paper-menu-button": "PolymerElements/paper-menu-button#^1.5.2",
+    "jsoneditor": "^5.5.10"
   },
   "devDependencies": {
     "web-component-tester": "^4.0.0"
