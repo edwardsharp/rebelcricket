@@ -305,11 +305,9 @@ _erbout = ''; _erbout.concat "<!DOCTYPE html PUBLIC \"-//W3C//DTD XHTML 1.0 Tran
 
 ; _erbout.concat "              ";  if @quote["client_contact_information"] and @quote["client_contact_information"]["items"] ; _erbout.concat "\n"
 ; _erbout.concat "                ";  @quote["client_contact_information"]["items"].each do |item| ; _erbout.concat "\n"
-; _erbout.concat "                  <tr>\n                    <td align=\"left\" colspan=\"2\">\n                      <b>"
+; _erbout.concat "                  <tr>\n                    <td align=\"left\" colspan=\"12\">\n                      <b>"
 
-; _erbout.concat(( item["label"] ).to_s); _erbout.concat ":</b>\n                    </td>\n                    <td align=\"left\" colspan=\"10\">\n                      "
-
-
+; _erbout.concat(( item["label"] ).to_s); _erbout.concat ":</b> \n                      "
 ; _erbout.concat(( item["value"] ).to_s); _erbout.concat "\n"
 ; _erbout.concat "                    </td>\n                  </tr>\n                "
 
@@ -340,9 +338,7 @@ _erbout = ''; _erbout.concat "<!DOCTYPE html PUBLIC \"-//W3C//DTD XHTML 1.0 Tran
 
 
 ;  if quoteServiceItem["total"] ; _erbout.concat "\n"
-; _erbout.concat "                  <td align=\"right\" colspan=\"2\">\n                    <b>Items Total:</b>\n                  </td>\n                  <td align=\"center\" colspan=\"2\">\n                    "
-
-
+; _erbout.concat "                  <td align=\"left\" colspan=\"12\">\n                    <b>Items Total:</b>\n                    "
 
 ; _erbout.concat(( quoteServiceItem["total"] ).to_s); _erbout.concat " $"; _erbout.concat(( quoteServiceItem["total_price"]  ).to_s); _erbout.concat "\n"
 ; _erbout.concat "                  </td>\n                  "
@@ -355,16 +351,14 @@ _erbout = ''; _erbout.concat "<!DOCTYPE html PUBLIC \"-//W3C//DTD XHTML 1.0 Tran
 ;  @quote["line_items"]["items"].each do |lineItem| ; _erbout.concat "\n"
 ; _erbout.concat "\n"
 ; _erbout.concat "                    ";  lineItem["brand_style_color"].each do |item| ; _erbout.concat "\n"
-; _erbout.concat "                      <tr class=\"brand_style_color\">\n                        <td align=\"left\" colspan=\"2\">\n                          <b>"
+; _erbout.concat "                      <tr class=\"brand_style_color\">\n                        <td align=\"left\" colspan=\"12\">\n                          <b>"
 
-; _erbout.concat(( item["label"] ).to_s); _erbout.concat ":</b>\n                        </td>\n                        <td align=\"left\" colspan=\"10\">\n                          "
-
-
+; _erbout.concat(( item["label"] ).to_s); _erbout.concat ":</b>\n                          "
 ; _erbout.concat(( item["value"] ).to_s); _erbout.concat "\n"
 ; _erbout.concat "                        </td>\n                      </tr>\n                    "
 
 ;  end ; _erbout.concat "\n"
-; _erbout.concat "                    \n                    <tr><td colspan=\"12\">&nbsp;</td></tr>\n                    <tr class=\"line_item\">\n                      \n                      "
+; _erbout.concat "                    \n                    <tr><td colspan=\"12\">&nbsp;</td></tr>\n                    <tr class=\"line_item\">\n                      <td>&nbsp;</td>\n                      "
 
 
 
@@ -392,39 +386,21 @@ _erbout = ''; _erbout.concat "<!DOCTYPE html PUBLIC \"-//W3C//DTD XHTML 1.0 Tran
 
 
 ; _erbout.concat(( lineItem["serviceNotes"] ).to_s); _erbout.concat "\n"
-; _erbout.concat "                      </td>\n                    </tr>\n                    <tr><td colspan=\"12\">&nbsp;</td></tr>\n                    <tr><td colspan=\"12\"><hr></td></tr>\n                    <tr><td colspan=\"12\">&nbsp;</td></tr>\n\n"
-
-
+; _erbout.concat "                      </td>\n                    </tr>\n                    <tr><td colspan=\"12\"><hr></td></tr>\n\n"
 
 
 
 ; _erbout.concat "                  ";  end ; _erbout.concat " "; _erbout.concat "\n"
 ; _erbout.concat "                ";  end ; _erbout.concat " "; _erbout.concat "\n"
 ; _erbout.concat "                \n                "
-;  if quoteServiceItem["name"] =~ /posters/i ; _erbout.concat "\n"
+;  if quoteServiceItem["name"] =~ /poster/i ; _erbout.concat "\n"
 ; _erbout.concat "                  <tr><td colspan=\"12\">&nbsp;</td></tr>\n                  "
-;  @quote["poster_and_sticker_line_items"]["items"].each do |lineItem| ; _erbout.concat "\n"
+;  @quote["poster_line_items"]["items"].each do |lineItem| ; _erbout.concat "\n"
 ; _erbout.concat "\n"
-; _erbout.concat "                    <tr class=\"line_item\">\n                      <td align=\"left\" colspan=\"12\">\n                        <b>Options:</b>\n                        "
-
-
-;  lineItem["selected_options"].each do |opt| ; _erbout.concat "\n"
-; _erbout.concat "                            "; _erbout.concat(( lineItem["options"][opt] ).to_s); _erbout.concat ";\n                        "
-;  end ; _erbout.concat "\n"
-; _erbout.concat "                      </td>\n                    </tr>\n\n"
-
-
 ; _erbout.concat "                    <tr class=\"line_item\">\n                      <td align=\"left\" colspan=\"12\">\n                        <b>Quantity:</b>\n                        "
 
 
 ; _erbout.concat(( lineItem["quantity"] ).to_s); _erbout.concat "\n"
-; _erbout.concat "                      </td>\n                    </tr>\n\n"
-
-
-; _erbout.concat "                    <tr class=\"line_item\">\n                      <td align=\"left\" colspan=\"12\">\n                        <b>Sticker Stock Color:</b>\n                        "
-
-
-; _erbout.concat(( lineItem["sticker_stock_colors"][lineItem["selected_sticker_stock"]] ).to_s); _erbout.concat "\n"
 ; _erbout.concat "                      </td>\n                    </tr>\n\n"
 
 
@@ -448,28 +424,48 @@ _erbout = ''; _erbout.concat "<!DOCTYPE html PUBLIC \"-//W3C//DTD XHTML 1.0 Tran
 
 
 ; _erbout.concat(( lineItem["serviceNotes"] ).to_s); _erbout.concat "\n"
-; _erbout.concat "                      </td>\n                    </tr>\n                    <tr><td colspan=\"12\">&nbsp;</td></tr>\n                    <tr><td colspan=\"12\"><hr></td></tr>\n                    <tr><td colspan=\"12\">&nbsp;</td></tr>\n\n"
-
-
+; _erbout.concat "                      </td>\n                    </tr>\n                    <tr><td colspan=\"12\"><hr></td></tr>\n\n"
 
 
 
 ; _erbout.concat "                  ";  end ; _erbout.concat " "; _erbout.concat "\n"
 ; _erbout.concat "                ";  end ; _erbout.concat " "; _erbout.concat "\n"
 ; _erbout.concat "\n"
-; _erbout.concat "                ";  if quoteServiceItem["name"] =~ /other/i ; _erbout.concat "\n"
+; _erbout.concat "                ";  if quoteServiceItem["name"] =~ /sticker/i ; _erbout.concat "\n"
 ; _erbout.concat "                  <tr><td colspan=\"12\">&nbsp;</td></tr>\n                  "
-;  @quote["other_stuff_line_items"]["items"].each do |lineItem| ; _erbout.concat "\n"
+;  @quote["sticker_line_items"]["items"].each do |lineItem| ; _erbout.concat "\n"
 ; _erbout.concat "\n"
-; _erbout.concat "                    <tr class=\"line_item\">\n                      <td align=\"left\" colspan=\"12\">\n                        <b>Options:</b>\n                        "
+; _erbout.concat "                    <tr class=\"line_item\">\n                      <td align=\"left\" colspan=\"12\">\n                        <b>Quantity:</b>\n                        "
 
 
-;  lineItem["selected_options"].each do |opt| ; _erbout.concat "\n"
-; _erbout.concat "                            "; _erbout.concat(( lineItem["options"][opt] ).to_s); _erbout.concat ";\n                        "
-;  end ; _erbout.concat "\n"
+; _erbout.concat(( lineItem["quantity"] ).to_s); _erbout.concat "\n"
 ; _erbout.concat "                      </td>\n                    </tr>\n\n"
 
 
+; _erbout.concat "                    <tr class=\"line_item\">\n                      <td align=\"left\" colspan=\"12\">\n                        <b>Sticker Stock Color:</b>\n                        "
+
+
+; _erbout.concat(( lineItem["sticker_stock_colors"][lineItem["selected_sticker_stock"]] ).to_s); _erbout.concat "\n"
+; _erbout.concat "                      </td>\n                    </tr>\n\n"
+
+
+; _erbout.concat "                    <tr><td colspan=\"12\">&nbsp;</td></tr>\n\n"
+
+; _erbout.concat "                    <tr>\n                      <td align=\"left\" colspan=\"12\">\n                        <b>Notes:</b>\n                        "
+
+
+; _erbout.concat(( lineItem["serviceNotes"] ).to_s); _erbout.concat "\n"
+; _erbout.concat "                      </td>\n                    </tr>\n                    <tr><td colspan=\"12\"><hr></td></tr>\n\n"
+
+
+
+; _erbout.concat "                  ";  end ; _erbout.concat " "; _erbout.concat "\n"
+; _erbout.concat "                ";  end ; _erbout.concat " "; _erbout.concat "\n"
+; _erbout.concat "\n"
+; _erbout.concat "                ";  if quoteServiceItem["name"] =~ /sandblasting/i ; _erbout.concat "\n"
+; _erbout.concat "                  <tr><td colspan=\"12\">&nbsp;</td></tr>\n                  "
+;  @quote["sandblasting_line_items"]["items"].each do |lineItem| ; _erbout.concat "\n"
+; _erbout.concat "\n"
 ; _erbout.concat "                    <tr class=\"line_item\">\n                      <td align=\"left\" colspan=\"12\">\n                        <b>Quantity:</b>\n                        "
 
 
@@ -500,6 +496,30 @@ _erbout = ''; _erbout.concat "<!DOCTYPE html PUBLIC \"-//W3C//DTD XHTML 1.0 Tran
 ;  lineItem["selected_fill_colors"].each do |opt| ; _erbout.concat "\n"
 ; _erbout.concat "                            "; _erbout.concat(( lineItem["fill_colors"][opt] ).to_s); _erbout.concat ";\n                        "
 ;  end ; _erbout.concat "\n"
+; _erbout.concat "                      </td>\n                    </tr>\n\n"
+
+
+; _erbout.concat "                    <tr><td colspan=\"12\">&nbsp;</td></tr>\n\n"
+
+; _erbout.concat "                    <tr>\n                      <td align=\"left\" colspan=\"12\">\n                        <b>Notes:</b>\n                        "
+
+
+; _erbout.concat(( lineItem["serviceNotes"] ).to_s); _erbout.concat "\n"
+; _erbout.concat "                      </td>\n                    </tr>\n                    <tr><td colspan=\"12\"><hr></td></tr>\n\n"
+
+
+
+; _erbout.concat "                  ";  end ; _erbout.concat " "; _erbout.concat "\n"
+; _erbout.concat "                ";  end ; _erbout.concat " "; _erbout.concat "\n"
+; _erbout.concat "\n"
+; _erbout.concat "                ";  if quoteServiceItem["name"] =~ /sublimation/i ; _erbout.concat "\n"
+; _erbout.concat "                  <tr><td colspan=\"12\">&nbsp;</td></tr>\n                  "
+;  @quote["sublimation_line_items"]["items"].each do |lineItem| ; _erbout.concat "\n"
+; _erbout.concat "\n"
+; _erbout.concat "                    <tr class=\"line_item\">\n                      <td align=\"left\" colspan=\"12\">\n                        <b>Quantity:</b>\n                        "
+
+
+; _erbout.concat(( lineItem["quantity"] ).to_s); _erbout.concat "\n"
 ; _erbout.concat "                      </td>\n                    </tr>\n\n"
 
 
@@ -535,14 +555,13 @@ _erbout = ''; _erbout.concat "<!DOCTYPE html PUBLIC \"-//W3C//DTD XHTML 1.0 Tran
 
 
 ; _erbout.concat(( lineItem["serviceNotes"] ).to_s); _erbout.concat "\n"
-; _erbout.concat "                      </td>\n                    </tr>\n                    <tr><td colspan=\"12\">&nbsp;</td></tr>\n                    <tr><td colspan=\"12\"><hr></td></tr>\n                    <tr><td colspan=\"12\">&nbsp;</td></tr>\n\n"
-
-
+; _erbout.concat "                      </td>\n                    </tr>\n                    <tr><td colspan=\"12\"><hr></td></tr>\n\n"
 
 
 
 ; _erbout.concat "                  ";  end ; _erbout.concat " "; _erbout.concat "\n"
 ; _erbout.concat "                ";  end ; _erbout.concat " "; _erbout.concat "\n"
+; _erbout.concat "\n"
 ; _erbout.concat "\n"
 ; _erbout.concat "                ";  if quoteServiceItem["name"] =~ /vinyl/i ; _erbout.concat "\n"
 ; _erbout.concat "                  <tr><td colspan=\"12\">&nbsp;</td></tr>\n                  "
@@ -561,13 +580,10 @@ _erbout = ''; _erbout.concat "<!DOCTYPE html PUBLIC \"-//W3C//DTD XHTML 1.0 Tran
 ; _erbout.concat "                      </td>\n                    </tr>\n\n"
 
 
-; _erbout.concat "\n"
-; _erbout.concat "                    <tr class=\"line_item\">\n                      <td align=\"left\" colspan=\"12\">\n                        <b>Options:</b>\n                        "
+; _erbout.concat "                    <tr class=\"line_item\">\n                      <td align=\"left\" colspan=\"12\">\n                        <b>Option:</b>\n                        "
 
 
-;  lineItem["selected_options"].each do |opt| ; _erbout.concat "\n"
-; _erbout.concat "                            "; _erbout.concat(( lineItem["options"][opt] ).to_s); _erbout.concat ";\n                        "
-;  end ; _erbout.concat "\n"
+; _erbout.concat(( lineItem["selected_option"] ).to_s); _erbout.concat "\n"
 ; _erbout.concat "                      </td>\n                    </tr>\n\n"
 
 
@@ -577,9 +593,7 @@ _erbout = ''; _erbout.concat "<!DOCTYPE html PUBLIC \"-//W3C//DTD XHTML 1.0 Tran
 
 
 ; _erbout.concat(( lineItem["serviceNotes"] ).to_s); _erbout.concat "\n"
-; _erbout.concat "                      </td>\n                    </tr>\n                    <tr><td colspan=\"12\">&nbsp;</td></tr>\n                    <tr><td colspan=\"12\"><hr></td></tr>\n                    <tr><td colspan=\"12\">&nbsp;</td></tr>\n\n"
-
-
+; _erbout.concat "                      </td>\n                    </tr>\n                    <tr><td colspan=\"12\"><hr></td></tr>\n\n"
 
 
 
@@ -612,9 +626,7 @@ _erbout = ''; _erbout.concat "<!DOCTYPE html PUBLIC \"-//W3C//DTD XHTML 1.0 Tran
 
 
 ; _erbout.concat(( lineItem["serviceNotes"] ).to_s); _erbout.concat "\n"
-; _erbout.concat "                      </td>\n                    </tr>\n                    <tr><td colspan=\"12\">&nbsp;</td></tr>\n                    <tr><td colspan=\"12\"><hr></td></tr>\n                    <tr><td colspan=\"12\">&nbsp;</td></tr>\n\n"
-
-
+; _erbout.concat "                      </td>\n                    </tr>\n                    <tr><td colspan=\"12\"><hr></td></tr>\n\n"
 
 
 
@@ -632,12 +644,10 @@ _erbout = ''; _erbout.concat "<!DOCTYPE html PUBLIC \"-//W3C//DTD XHTML 1.0 Tran
 ; _erbout.concat "                      </td>\n                    </tr>\n\n"
 
 
-; _erbout.concat "                    <tr class=\"line_item\">\n                      <td align=\"left\" colspan=\"12\">\n                        <b>Options:</b>\n                        "
+; _erbout.concat "                    <tr class=\"line_item\">\n                      <td align=\"left\" colspan=\"12\">\n                        <b>Size:</b> \n                        "
 
 
-;  lineItem["selected_options"].each do |opt| ; _erbout.concat "\n"
-; _erbout.concat "                            "; _erbout.concat(( lineItem["options"][opt] ).to_s); _erbout.concat ";\n                        "
-;  end ; _erbout.concat "\n"
+; _erbout.concat(( lineItem["selected_size"] ).to_s); _erbout.concat "\n"
 ; _erbout.concat "                      </td>\n                    </tr>\n\n"
 
 
@@ -647,18 +657,14 @@ _erbout = ''; _erbout.concat "<!DOCTYPE html PUBLIC \"-//W3C//DTD XHTML 1.0 Tran
 
 
 ; _erbout.concat(( lineItem["serviceNotes"] ).to_s); _erbout.concat "\n"
-; _erbout.concat "                      </td>\n                    </tr>\n                    <tr><td colspan=\"12\">&nbsp;</td></tr>\n                    <tr><td colspan=\"12\"><hr></td></tr>\n                    <tr><td colspan=\"12\">&nbsp;</td></tr>\n\n"
-
-
+; _erbout.concat "                      </td>\n                    </tr>\n                    <tr><td colspan=\"12\"><hr></td></tr>\n\n"
 
 
 
 ; _erbout.concat "                  ";  end ; _erbout.concat " "; _erbout.concat "\n"
 ; _erbout.concat "                ";  end ; _erbout.concat " "; _erbout.concat "\n"
 ; _erbout.concat "\n"
-; _erbout.concat "\n"
-; _erbout.concat "                <tr><td colspan=\"12\">&nbsp;</td></tr>\n                <tr><td colspan=\"12\">&nbsp;</td></tr>\n              "
-
+; _erbout.concat "                <tr><td colspan=\"12\">&nbsp;</td></tr>\n              "
 ;  
                 end 
               end
@@ -688,17 +694,19 @@ _erbout = ''; _erbout.concat "<!DOCTYPE html PUBLIC \"-//W3C//DTD XHTML 1.0 Tran
 ;  item["print_on_item_names"].each do |print_on_item| ; _erbout.concat "\n"
 ; _erbout.concat "                      "; _erbout.concat(( print_on_item ).to_s); _erbout.concat ";<br>\n                    "
 ;  end ; _erbout.concat "\n"
-; _erbout.concat "                  </td>\n                </tr>\n                <tr>\n                  <td align=\"left\" colspan=\"12\">\n                    <b>Position:</b>\n                    "
+; _erbout.concat "                  </td>\n                </tr>\n                "
 
-
+;  if item["print_positions"] ; _erbout.concat "\n"
+; _erbout.concat "                  <tr>\n                    <td align=\"left\" colspan=\"12\">\n                      <b>Position:</b>\n                      "
 
 
 ;  item["print_positions"].each do |print_position| ; _erbout.concat "\n"
-; _erbout.concat "                      "; _erbout.concat(( @positions[print_position.to_i] ).to_s); _erbout.concat ";<br>\n                    "
+; _erbout.concat "                        "; _erbout.concat(( @positions[print_position.to_i] ).to_s); _erbout.concat ";<br>\n                      "
 ;  end ; _erbout.concat "\n"
-; _erbout.concat "                  </td>\n                </tr>\n                <tr>\n                  <td align=\"left\" colspan=\"12\">\n                    <b>Colors Qty:</b> "
+; _erbout.concat "                    </td>\n                  </tr>\n                "
 
-
+;  end ; _erbout.concat "\n"
+; _erbout.concat "                <tr>\n                  <td align=\"left\" colspan=\"12\">\n                    <b>Colors Qty:</b> "
 
 ; _erbout.concat(( item["num_colors"] ).to_s); _erbout.concat "\n"
 ; _erbout.concat "                  </td>\n                </tr>\n                <tr>\n                  <td align=\"left\" colspan=\"12\">\n                    <b>Colors:</b>\n                    "
@@ -723,22 +731,16 @@ _erbout = ''; _erbout.concat "<!DOCTYPE html PUBLIC \"-//W3C//DTD XHTML 1.0 Tran
 ; _erbout.concat(( item["size_inches"] ).to_s); _erbout.concat "\n"
 ; _erbout.concat "                  </td>\n\n"
 
-; _erbout.concat "                  <if item[\"is_vector_file\"] %>\n"
-; _erbout.concat "                  <td align=\"left\" colspan=\"3\">\n                    <b>Is Vector File:</b>\n                    "
-
-; _erbout.concat(( item["is_vector_file"] ).to_s); _erbout.concat "\n"
-; _erbout.concat "                  </td>\n                  "
-;  end ; _erbout.concat "\n"
 ; _erbout.concat "                </tr>\n                <tr>\n                  <td align=\"left\" colspan=\"12\">\n                    <b>Graphic Notes:</b> "
 
 
 ; _erbout.concat(( item["notes"] ).to_s); _erbout.concat "\n"
-; _erbout.concat "                  </td>\n                </tr>\n                <tr><td colspan=\"12\">&nbsp;</td></tr>\n                <tr><td colspan=\"12\"><hr></td></tr>\n                <tr><td colspan=\"12\">&nbsp;</td></tr>\n              "
+; _erbout.concat "                  </td>\n                </tr>\n                <tr><td colspan=\"12\"><hr></td></tr>\n                <tr><td colspan=\"12\">&nbsp;</td></tr>\n\n"
 
 
 
 
-;  
+; _erbout.concat "              ";  
                 end # graphic itemz
               end 
               ; _erbout.concat "\n"

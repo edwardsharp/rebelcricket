@@ -86,6 +86,12 @@
         padding-top: 55px;
       }
 
+      .current-page {
+        width: 1em;
+        height: 100%;
+        background-color: red;
+      }
+
       @media (max-width: 767px) {
         
       }
@@ -177,13 +183,27 @@
         <div style="height: 100%; overflow: auto;">
           <app-toolbar><span id="headerToolbar">Admin</span></app-toolbar>
           <div id="drawerButtonsContainer" hidden>
-            <div class="drawer-button"><paper-button class="adm_drwr" on-tap="_setCurrentPage" page="Quote">Quotes</paper-button></div>
-            <div class="drawer-button"><paper-button class="adm_drwr" on-tap="_setCurrentPage" page="Vendor Goods">Vendor Goods</paper-button></div>
-            <div class="drawer-button"><paper-button class="adm_drwr" on-tap="_setCurrentPage" page="Images">Images</paper-button></div>
-            <div class="drawer-button"><paper-button class="adm_drwr" on-tap="_setCurrentPage" page="Home">Home</paper-button></div>
-            <div class="drawer-button"><paper-button class="adm_drwr" on-tap="_setCurrentPage" page="About">About</paper-button></div>
-            <div class="drawer-button"><paper-button class="adm_drwr" on-tap="_setCurrentPage" page="Services">Services</paper-button></div>
-            <div class="drawer-button"><paper-button class="adm_drwr" on-tap="_setCurrentPage" page="Api Key">Api Key</paper-button></div>
+            <div class="drawer-button">
+              <paper-button class="adm_drwr" on-tap="_setCurrentPage" page="Quote">Quotes</paper-button>
+            </div>
+            <div class="drawer-button">
+              <paper-button class="adm_drwr" on-tap="_setCurrentPage" page="Vendor Goods">Vendor Goods</paper-button>
+            </div>
+            <div class="drawer-button">
+              <paper-button class="adm_drwr" on-tap="_setCurrentPage" page="Images">Images</paper-button>
+            </div>
+            <div class="drawer-button">
+              <paper-button class="adm_drwr" on-tap="_setCurrentPage" page="Home">Home</paper-button>
+            </div>
+            <div class="drawer-button">
+              <paper-button class="adm_drwr" on-tap="_setCurrentPage" page="About">About</paper-button>
+            </div>
+            <div class="drawer-button">
+              <paper-button class="adm_drwr" on-tap="_setCurrentPage" page="Services">Services</paper-button>
+            </div>
+            <div class="drawer-button">
+              <paper-button class="adm_drwr" on-tap="_setCurrentPage" page="Api Key">Api Key</paper-button>
+            </div>
           </div>
         </div>
       </app-drawer>
@@ -356,7 +376,6 @@
               </div>
 
               <div class="col s12 m8 offset-m2">
-                [[item.index]]
                 <paper-fab mini on-tap="_removeServicesDescriptionItem" class="custom" label="&nbsp;&times;"></paper-fab>
               </div>
             </template>
@@ -371,7 +390,7 @@
 
             <div class="row description-item">
               <div class="col s12 m8 offset-m2">
-                <paper-button class="custom" on-tap="_removeService">Remove Service</paper-button>
+                <paper-button class="custom" on-tap="_removeService">Remove [[item.name]] Service</paper-button>
               </div>
             </div>
             
@@ -516,7 +535,8 @@
             this.importHref('src/rebelcricket-quote.html', function(e) {
               // e.target.import is the import document.
               var quoteElem = document.createElement('rebelcricket-quote');
-              quoteElem.quoteID = this.quoteID
+              // console.log('GONNA SET quoteID:',this.admin.quoteID);
+              quoteElem.quoteID = this.admin.quoteID;
               quoteElem.quote = this.quote;
               Polymer.dom(this.$.quotesContainer).appendChild(quoteElem);  
             }, function(e) {
@@ -535,9 +555,9 @@
         }else if(_currentPage === 'Vendor Goods'){
 
           if(this.$$('rebelcricket-vendor') != undefined){
-            console.log('DONOT NEED TO IMPORT HREF FOR VENDOR!');
+            // console.log('DONOT NEED TO IMPORT HREF FOR VENDOR!');
           }else{
-            console.log('GONNA IMPORT HREF FOR VENDOR!');
+            // console.log('GONNA IMPORT HREF FOR VENDOR!');
             this.importHref('src/rebelcricket-vendor.html', function(e) {
               // e.target.import is the import document.
               var vendorElem = document.createElement('rebelcricket-vendor');
@@ -602,7 +622,7 @@
         }
       },
       _setCurrentPage: function(e){
-        console.log('_setCurrentPage e.target.getAttribute(page):',e.target.getAttribute('page'));
+        // console.log('_setCurrentPage e.target.getAttribute(page):',e.target.getAttribute('page'));
         this.set('currentPage', e.target.getAttribute('page'));
       },
       _validateApiKey: function(apiKey){
@@ -621,12 +641,10 @@
         this.$.ajaxFetchQuote.generateRequest();
       },
       _handleFetchQuoteResponse: function(e){
-        console.log('_handleFetchQuoteResponse e:',e);
-
-        console.log('this.quote:',this.quote);
+        // console.log('_handleFetchQuoteResponse e:',e);
+        // console.log('this.quote:',this.quote);
         this.$$('rebelcricket-quote').quoteID = this.quoteID;
         this.$$('rebelcricket-quote').quote = e.detail.response;
-
       },
       _toggleDrawer: function(e){
         this.$.drawer.toggle();
@@ -639,19 +657,19 @@
         }
       },
       _handleUpdatePageResponse: function(e){
-         console.log('_handleUpdatePageResponse e.detail.xhr.statusText:',e.detail.xhr.statusText);
+         // console.log('_handleUpdatePageResponse e.detail.xhr.statusText:',e.detail.xhr.statusText);
       },
       _handleAjaxCreateImagePostResponse: function(e){
-        console.log('_handleAjaxCreateImagePostResponse e:',e);
+        // console.log('_handleAjaxCreateImagePostResponse e:',e);
         this.$.rebelImagesSpinner.active = false;
         this.$.ajaxGetImages.generateRequest();
       },
       _handleAjaxCreateImagePostError: function(e){
-        console.log('_handleAjaxCreateImagePostError e:',e);
+        // console.log('_handleAjaxCreateImagePostError e:',e);
         this.$.rebelImagesSpinner.active = false;
       },
       _savePage: function(e){
-        console.log('_savePages e:',e);
+        // console.log('_savePages e:',e);
 
         var params = {};
         
@@ -696,23 +714,22 @@
       },
       _removeServicesDetailImage: function(e){
         var _servicesPageIdx = e.target.getAttribute('idx');
-        console.log('_removeServicesDetailImage idx attr?',_servicesPageIdx);
-        // console.log('_removeServicesDescriptionItem: this.servicesPage.items.indexOf(e.model.item):',this.servicesPage.items.indexOf(e.model.item));
-        // this.splice('servicesPage.items.'+this.servicesPage.items.indexOf(e.model.item)+'.detail_items',e.model.index, 1);
-
+        // console.log('_removeServicesDetailImage idx attr?',_servicesPageIdx);
         this.splice('servicesPage.items.'+_servicesPageIdx+'.detail_images', e.model.index, 1);
       },
       _addServicesDescriptionItem: function(e){
-        console.log('_addServicesDescriptionItem: e.model.index',e.model.index);
-        // e.model.item.detail_items.push({description: '', name: ''})
+        // console.log('_addServicesDescriptionItem: e.model.index',e.model.index);
         this.push('servicesPage.items.'+e.model.index+'.detail_items', {description: '', name: ''});
       },
       _removeServicesDescriptionItem: function(e){
-        console.log('_removeServicesDescriptionItem: this.servicesPage.items.indexOf(e.model.item):',this.servicesPage.items.indexOf(e.model.item));
+        // console.log('_removeServicesDescriptionItem: this.servicesPage.items.indexOf(e.model.item):',this.servicesPage.items.indexOf(e.model.item));
         this.splice('servicesPage.items.'+this.servicesPage.items.indexOf(e.model.item)+'.detail_items',e.model.index, 1);
       },
       _isServices: function(_pageName){
         return _pageName == 'services';
+      },
+      _isCurrentPage: function(_pageName){
+        return this.currentPage == _pageName ? 'current-page' : '';
       },
       _servicePageItemIndex: function(_item){
         return this.servicesPage.items.indexOf(_item);
@@ -720,7 +737,7 @@
       ready: function(){
 
         if(window.location.hash.replace(/#/,'').length > 5){
-          console.log('lookz like we have a quoteID! ',window.location.hash.replace(/#/,''));
+          // console.log('lookz like we have a quoteID! ',window.location.hash.replace(/#/,''));
           this.async(function(){
             this.set('quoteID', '');
             this.set('admin.quoteID', window.location.hash.replace(/#/,''));

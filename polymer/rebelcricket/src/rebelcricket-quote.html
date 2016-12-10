@@ -168,9 +168,13 @@
         padding-left: 1.4em;
       }
       
-      #quoteDesignFileWrapper * {
+      #quoteDesignFileWrapper label, #quoteDesignFileWrapper input {
         font-size: 22px;
         line-height: 15px;
+      }
+
+      #quoteDesignFileWrapper label:hover {
+        color: red;
       }
 
       @media (max-width: 600px) {
@@ -815,6 +819,9 @@
 
               <paper-spinner id="quoteDesingUploadSpinner" alt="Uploading File..."></paper-spinner>
               <span id="quoteDesignUploadFeedback"></span>
+              <div>
+                <small>Graphic files can be sent as ai, eps, pdf, psd, svg, jpeg, or tiff. They should be sized to the desired print size at 300 dpi. If you have a physical copy of the art let us know, we’ll schedule a time for you to bring it in and discuss the options. </small>
+              </div>
             </div>
 
 
@@ -1115,9 +1122,8 @@
 
     },
     _removeGraphic: function(e){
-      console.log('_removeGraphic e.model.index:',e.model.index);
-      console.log('right gfx?',this.quote.graphic.items[e.model.index]);
-      
+      // console.log('_removeGraphic e.model.index:',e.model.index);
+      // console.log('right gfx?',this.quote.graphic.items[e.model.index]);
       var params = {};
       params["id"] = this.quote.graphic.items[e.model.index].attachment_id;
       params["rebel_quote_number"] = this.quoteID;
@@ -1368,9 +1374,6 @@
       }, 500);
       
     },
-    _posterAndStickerItemsChanged: function(e){
-      console.log('_posterAndStickerItemsChanged e:',e);
-    },
     _getPaletteInfo: function(e){
 
       // options with defaults (not required)
@@ -1461,17 +1464,17 @@
       
     },
     _handleAjaxQuotePostResponse: function(e){
-      console.log('_handleAjaxQuotePostResponse! e',e);
+      // console.log('_handleAjaxQuotePostResponse! e',e);
       this.$.submitFeedbackText.innerHTML = "Thank you for submitting a quote request! <br><br> We'll get back to you shortly with either <ol><li>Answers to any questions you might have.</li><li>An estimate.</li><li>Additional questions (or information needed) about the service(s) you requested.</li><ol><br><br><div>If anything comes up in the meantime, please don't hesitate to email <a href='mailto:rebelcricket@gmail.com'>rebelcricket@gmail.com</a> or call <a href='tel://1-503-545-1450'>503‑545‑1450</a>. </div>";
       //window.location.href ?
       this.$.submitFeedback.open();
       this.$.submitQuoteButton.disabled = false;
     },
     _handleAjaxQuotePostError: function(e){
-      console.log('_handleAjaxQuotePostError! e:',e);
+      // console.log('_handleAjaxQuotePostError! e:',e);
       this.$.submitFeedbackText.innerHTML = 'ERROR! Could not submit your quote request. Sorry about that. :/ <br><br> If this form does not work for you please email your request to <a href="mailto: rebelcricket@gmail.com">rebelcricket@gmail.com</a>. <br><br>Or call us <a href="tel://1-503-545-1450">503‑545‑1450</a>';
       this.$.submitFeedback.open();
-      this.$.submitQuoteButton.disabled = true;
+      this.$.submitQuoteButton.disabled = false;
     },
     _handleAjaxGfxPostResponse: function(e){
       var graphic_item = quoteModel.graphic_item_proto;
@@ -1483,10 +1486,10 @@
       this.$.quoteDesignFile.disabled = false;
     },
     _handleAjaxGfxPostError: function(e){
-      console.log('_handleAjaxGfxPostError! e:',e);
+      // console.log('_handleAjaxGfxPostError! e:',e);
       this.$.quoteDesingUploadSpinner.active = false;
       this.$.quoteDesignUploadFeedback.innerHTML = 'ERROR! Could not upload that file. Please try again or choose a different file. If this form does not work for you please email your graphics to <a href="mailto: rebelcricket@gmail.com">rebelcricket@gmail.com</a>.';
-      this.$.quoteDesignFile.disabled = true;
+      this.$.quoteDesignFile.disabled = false;
     },
     _itemNeedsSmallFont: function(str){
       return str.length > 16 ? 'smallfont' : '';

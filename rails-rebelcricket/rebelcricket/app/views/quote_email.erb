@@ -313,15 +313,20 @@ ul.sidebar li a h1,ul.sidebar li a h2,ul.sidebar li a h3,ul.sidebar li a h4,ul.s
                 <% end %>
               <% end %>
 
-
-
+              <tr><td colspan="12">&nbsp;</td></tr>
+              <tr>
+                <td colspan="12">
+                  <b>Edit this quote:</b> 
+                  <a href="http://localhost:8080/admin#<%= @rebel_quote.number%>"><%= @rebel_quote.number %></a>
+                </td>
+              </tr>
+              <tr><td colspan="12">&nbsp;</td></tr>
 
               <tr>
                 <td align="center" colspan="12">
                   <h4 class="section_label">SERVICES</h4>
                 </td>
               </tr>
-                
               
               <%
                 if @quote["services"] 
@@ -332,7 +337,7 @@ ul.sidebar li a h1,ul.sidebar li a h2,ul.sidebar li a h3,ul.sidebar li a h4,ul.s
                     <b>Service:</b>
                   </td>
                   <td align="left" colspan="10">
-                      <%= quoteServiceItem["name"] %>
+                      <h5><%= quoteServiceItem["name"] %></h5>
                   </td>
                 </tr>
                 <tr>
@@ -567,12 +572,13 @@ ul.sidebar li a h1,ul.sidebar li a h2,ul.sidebar li a h3,ul.sidebar li a h4,ul.s
                   <% @quote["vinyl_line_items"]["items"].each do |lineItem| %>
 
 
-                    <tr class="line_item">
+                    <tr>
                       <td align="left" colspan="12">
                         <b>Dimensions:</b>
                         <%= lineItem["dimensions"] %>
                       </td>
-
+                    </tr>
+                    <tr>
                       <td align="left" colspan="12">
                         <b>Quantity:</b>
                         <%= lineItem["quantity"] %>
@@ -582,7 +588,7 @@ ul.sidebar li a h1,ul.sidebar li a h2,ul.sidebar li a h3,ul.sidebar li a h4,ul.s
                     <tr class="line_item">
                       <td align="left" colspan="12">
                         <b>Option:</b>
-                        <%= lineItem["selected_option"] %>
+                        <%= lineItem["options"][lineItem["selected_option"].to_i] rescue lineItem["selected_option"] %>
                       </td>
                     </tr>
 
@@ -695,14 +701,16 @@ ul.sidebar li a h1,ul.sidebar li a h2,ul.sidebar li a h3,ul.sidebar li a h4,ul.s
                     <% end %>
                   </td>
                 </tr>
-                <tr>
-                  <td align="left" colspan="12">
-                    <b>Position:</b>
-                    <% item["print_positions"].each do |print_position| %>
-                      <%= @positions[print_position.to_i] %>;<br>
-                    <% end %>
-                  </td>
-                </tr>
+                <% if item["print_positions"] %>
+                  <tr>
+                    <td align="left" colspan="12">
+                      <b>Position:</b>
+                      <% item["print_positions"].each do |print_position| %>
+                        <%= @positions[print_position.to_i] %>;<br>
+                      <% end %>
+                    </td>
+                  </tr>
+                <% end %>
                 <tr>
                   <td align="left" colspan="12">
                     <b>Colors Qty:</b> <%= item["num_colors"] %>
@@ -803,48 +811,7 @@ ul.sidebar li a h1,ul.sidebar li a h2,ul.sidebar li a h3,ul.sidebar li a h4,ul.s
 
 
             </div><!-- /content -->
-                  
 
- 
-            <!-- social & contact -->
-            <table class="social" width="100%">
-              <tr>
-                <td>
-                  
-                  <!-- column 1 -->
-                  <table align="left" class="column">
-                    <tr>
-                      <td>        
-                        <h5 class="white">Connect with Us:</h5>
-                        <br>
-                        <p class=""><a href="https://www.facebook.com/RebelCricketScreenPrints/" class="soc-btn fb">Facebook</a> <a href="https://twitter.com/rebelcricket" class="soc-btn tw">Twitter</a> 
-                      </td>
-                    </tr>
-                  </table><!-- /column 1 -->  
-                  
-                  <!-- column 2 -->
-                  <table align="left" class="column">
-                    <tr>
-                      <td>        
-                                      
-                        <h5 class="white">Contact Info:</h5>                       
-                        <p>
-                          Phone: <strong class="white"><a href="tel://1-503-545-1450">503‑545‑1450</a></strong><br/>
-                          Email: <strong class="white">rebelcricket@gmail.com</strong><br/>
-                          Web: <strong class="white"><a href="http://rebelcricket.com">http://rebelcricket.com</a></strong>
-                          Address: <strong class="white">5040 SE Milwaukie Ave. Portland, OR 97202 </strong>
-                        </p>
-                
-                      </td>
-                    </tr>
-                  </table><!-- /column 2 -->
-                  
-                  <span class="clear"></span> 
-                  
-                </td>
-              </tr>
-            </table><!-- /social & contact -->
-            
           </td>
         </tr>
       </table>
@@ -855,6 +822,44 @@ ul.sidebar li a h1,ul.sidebar li a h2,ul.sidebar li a h3,ul.sidebar li a h4,ul.s
   </tr>
 </table><!-- /BODY -->
 
+<!-- social & contact -->
+<table class="social" width="100%">
+  <tr>
+    <td colspan="12">
+      
+      <!-- column 1 -->
+      <table align="left" class="column">
+        <tr>
+          <td colspan="6">        
+            <h5 class="white">Connect with Us:</h5>
+            <br>
+            <p class=""><a href="https://www.facebook.com/RebelCricketScreenPrints/" class="soc-btn fb">Facebook</a> <a href="https://twitter.com/rebelcricket" class="soc-btn tw">Twitter</a> 
+          </td>
+        </tr>
+      </table><!-- /column 1 -->  
+      
+      <!-- column 2 -->
+      <table align="left" class="column">
+        <tr>
+          <td colspan="6">        
+                          
+            <h5 class="white">Contact Info:</h5>                       
+            <p>
+              Phone: <strong class="white"><a href="tel://1-503-545-1450">503‑545‑1450</a></strong><br/>
+              Email: <strong class="white">rebelcricket@gmail.com</strong><br/>
+              Web: <strong class="white"><a href="http://rebelcricket.com">http://rebelcricket.com</a></strong>
+              Address: <strong class="white">5040 SE Milwaukie Ave. Portland, OR 97202 </strong>
+            </p>
+    
+          </td>
+        </tr>
+      </table><!-- /column 2 -->
+      
+      <span class="clear"></span> 
+      
+    </td>
+  </tr>
+</table><!-- /social & contact -->
 
 </body>
 </html>
