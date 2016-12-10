@@ -22,6 +22,7 @@
 <link rel="import" href="shared-styles.html">
 <script src="../bower_components/jsoneditor/dist/jsoneditor.min.js"></script>
 
+<script src="underscore-min.js"></script>
 
 <dom-module id="rebelcricket-admin">
 
@@ -96,7 +97,7 @@
 
       #jsoneditor {
         height: 100%;
-        width: 100%;
+        width: 99%;
       }
       ol, ul {
         list-style: none;
@@ -123,7 +124,8 @@
 
       .rightrow {
         float: right;
-  
+        padding-top: 2.5em;
+        padding-bottom: 1.5em;
         min-width: 300px;
       }
 
@@ -268,6 +270,7 @@
         <app-header reveals effects="waterfall">
           <app-toolbar>
             <paper-icon-button icon="menu" drawer-toggle></paper-icon-button>
+            
             <div main-title>
               <h4>
                 [[currentPage]]
@@ -277,29 +280,44 @@
               </h4>
                
             </div>
+            <div class="row rightrow">
+              <template is="dom-if" if="[[_isVendorGoods(currentPage)]]">
+                <div id="vendorGoodsFilePicker">
+                  <div class="col s4">
+                    <paper-input id="vendorDataFilter" value="{{admin.VendorDataFilter}}" label="Filter"></paper-input>
+                    
+                  </div>
+                  <div class="col s3">
+                    <paper-button class="custom" on-tap="_applyVendorDataFilter">Filter</paper-button>
+                  </div>
+
+                  <div class="col s3">
+                    <paper-dropdown-menu label="Load Data File..." on-iron-select="_dataFileSelected">
+                      <paper-listbox class="dropdown-content">
+                        <paper-item class="custom">Load Data File...</paper-item>
+                        <template is="dom-repeat" items="{{vendorDatafiles}}">
+                          <paper-item class="custom" value="[[item]]">[[item]]</paper-item>
+                        </template>
+                      </paper-listbox>
+                    </paper-dropdown-menu>
+                  </div>
+                  <div class="col s2">
+                    <paper-button class="custom" on-tap="_saveVendorData">Save</paper-button>
+                  </div>
+
+                </div>
+              </template>
+
+              <template is="dom-if" if="[[isPages]]">
+                <div id="savePageButton">
+                  <paper-button class="custom" on-tap="_savePage">Save Page</paper-button>
+                </div>
+              </template>
+          </div>
           </app-toolbar>
         </app-header>
 
-        <div class="row rightrow">
-            <template is="dom-if" if="[[_isVendorGoods(currentPage)]]">
-              <div id="vendorGoodsFilePicker">
-                <paper-dropdown-menu label="Load Data File..." on-iron-select="_dataFileSelected">
-                  <paper-listbox class="dropdown-content" >
-                    <paper-item class="custom">Load Data File...</paper-item>
-                    <template is="dom-repeat" items="{{vendorDatafiles}}">
-                      <paper-item class="custom" value="[[item]]">[[item]]</paper-item>
-                    </template>
-                  </paper-listbox>
-                </paper-dropdown-menu>
-              </div>
-            </template>
-
-            <template is="dom-if" if="[[isPages]]">
-              <div id="savePageButton">
-                <paper-button class="custom" on-tap="_savePage">Save Page</paper-button>
-              </div>
-            </template>
-        </div>
+        
 
         <div id="apiKeyContainer" hidden>
           <div class="row">
@@ -744,9 +762,9 @@
         this.$.ajaxVendorGoods.generateRequest();
       },
       _handleVendorGoodsResponse: function(e){
+        this.set('vendorgoods',e.detail.response);
         editor.set(e.detail.response);
         // get json
-        // var json = editor.get();
       },
       _toggleDrawer: function(e){
         this.$.drawer.toggle();
@@ -840,9 +858,49 @@
         return this.servicesPage.items.indexOf(_item);
       },
       _dataFileSelected: function(e){
-        console.log('_dateFileSelected e:',e);
+        console.log('_dataFileSelected e:',e);
         console.log('val:',this.vendorDatafiles[e.target.selected-1]);
+        this.set('admin.selectedVendorDatafile', this.vendorDatafiles[e.target.selected-1]) 
         this._fetchVendorGoods(this.vendorDatafiles[e.target.selected-1]);
+      },
+      _saveVendorData: function(){
+        console.log('admin.selectedVendorDatafile:',this.admin.selectedVendorDatafile);
+
+        var _jsonOut = editor.get();
+        console.log('wooo vendor data: ', _.filter(_jsonOut, {selected: true}) );
+      },
+      _applyVendorDataFilter: function(){
+        var _filteredGoodz = [];
+        try{
+          var _dFilter = this.admin.VendorDataFilter;
+          if(this.admin.VendorDataFilter.match('=')){
+             _filteredGoodz = _.filter(this.vendorgoods, function(_good){ return _good[_dFilter.split('=')[0]].toLowerCase().indexOf(_dFilter.split('=')[1]) != -1; });
+          }else if(this.admin.VendorDataFilter.match('~')){
+            _filteredGoodz = _.filter(this.vendorgoods, function(_good){ return _good[_dFilter.split('~')[0]].match(_dFilter.split('~')[1]); });
+            
+          }else if(this.admin.VendorDataFilter.match('>')){
+            _filteredGoodz = _.filter(this.vendorgoods, function(_good){ return _good[_dFilter.split('>')[0]] > _dFilter.split('>')[1]; });
+          }else if(this.admin.VendorDataFilter.match('<')){
+            _filteredGoodz = _.filter(this.vendorgoods, function(_good){ return _good[_dFilter.split('<')[0]] < _dFilter.split('<')[1]; });
+          }else{
+            _filteredGoodz = _.filter(this.vendorgoods, function(_good){ return _good.title.toLowerCase().indexOf(_dFilter) != -1; });
+          }
+        }catch(err){
+          //o noz!
+          // console.log('o noz _applyVendorDataFilter caught err:',err);
+        }
+
+        if(_filteredGoodz.length > 0){
+
+          // console.log('_filteredGoodz.length:',_filteredGoodz.length,' _dFilter:',_dFilter);
+          editor.set(_filteredGoodz);
+        }else{
+          // console.log('no filtered itemz');
+          editor.set(this.vendorgoods);
+        }
+        
+        
+
       },
       ready: function(){
 
