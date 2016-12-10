@@ -1,0 +1,2 @@
+class RebelVendorGood < ApplicationRecord
+end

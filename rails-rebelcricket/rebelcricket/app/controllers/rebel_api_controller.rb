@@ -142,6 +142,21 @@ class RebelApiController < ApplicationController
     send_file "#{::Rails.root}/public/companycasuals.json"
   end
 
+  def vendorgoods
+
+    unless has_valid_token
+      render_unauthorized and return
+    end
+    
+    if params[:datafiles]
+      render json: Dir["#{::Rails.root}/vendorgoods/**/*.json"].collect {|f| f.gsub("#{::Rails.root}/vendorgoods/",'') }
+    elsif params[:selected]
+      send_file "#{::Rails.root}/vendorgoods/#{params[:selected]}" 
+    elsif params[:existingdata]
+      render json: RebelVendorGood.where(category: params[:selected])
+    end
+  end
+
   # post '/rebelquote' do
   def rebelquote
 
