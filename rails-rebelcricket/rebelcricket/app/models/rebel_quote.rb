@@ -8,13 +8,12 @@ class RebelQuote < ApplicationRecord
 
     require 'faraday'
 
-    conn = Faraday.new(:url => 'http://localhost:8090') do |faraday|
+    conn = Faraday.new(:url => ENV['KB_URL']) do |faraday|
         faraday.response :logger
-        faraday.headers['X-API-Auth'] = '3be9e99c6f71c6c3c001c64d86428e6de885a67199a930139bf6f76766b2'
-        faraday.basic_auth('jsonrpc', '3be9e99c6f71c6c3c001c64d86428e6de885a67199a930139bf6f76766b2') # user/pass to get through basic auth
+        faraday.headers['X-API-Auth'] = ENV['KB_API_KEY']
+        faraday.basic_auth('jsonrpc', ENV['KB_API_KEY']) # user/pass to get through basic auth
         faraday.adapter Faraday.default_adapter    # make requests with Net::HTTP
     end
-
 
     @rebel_quote = self
     @quote = self.data
@@ -50,14 +49,11 @@ class RebelQuote < ApplicationRecord
           "title": subj,
           "project_id": 1
       }
-      p "\n zomg, paramz\n"
-      p "{ \"jsonrpc\": \"2.0\", \"method\": \"createTask\", \"params\": #{params.to_json} }"
-      p "\n"
       req.body = "{ \"jsonrpc\": \"2.0\", \"method\": \"createTask\", \"params\": #{params.to_json} }"
     end
     #createTask
 
-    puts response.body
+    Rails.logger.debug "crea_kb response.body: #{response.body}"
 
   end
 
@@ -119,6 +115,11 @@ class RebelQuote < ApplicationRecord
       Rails.logger.debug "COULD NOT SEND QUOTE MESSAGE! err: #{err.inspect}"
     end
 
+    begin
+      create_kb
+    rescue Exception => err
+      Rails.logger.debug "COULD NOT CREATE KB! err: #{err.inspect}"
+    end
     # result = mg_client.send_message(ENV['MAILGUN_DOMAIN'], message_params).to_h!
 
     # # message_id = result['id']

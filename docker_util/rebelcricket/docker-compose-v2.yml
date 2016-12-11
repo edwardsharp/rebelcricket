@@ -1,25 +1,38 @@
 version: "2"
 services:
   web:
-    restart: always
     image: hub.sked.site:5000/rebelcricket
+    # restart: always
     environment:
-      - DATABASE_URL=postgres://rebelcricket@pg/rebelcricket
-      - MAILGUN_API_KEY=key
+      - SECRET_KEY_BASE=key
+      - PG_DATABASE_NAME=rebelcricket_production
+      - PG_DATABASE_USER=rebelcricket
+      - PG_DATABASE_PASSWORD=key
+      - MAILGUN_API_KEY=key-
       - MAILGUN_DOMAIN=mg.lacuna.club
       - MAIL_GOES_TO=edward@edwardsharp.net
-      - SERVE_TEST_INDEX=false
       - VIRTUAL_HOST=http://rebelcricket.lacuna.club
+      - KB_API_KEY=key
+      - KB_URL=http://rebelcricket.lacuna.club:8081
+    network_mode: bridge
     ports:
       - "8080:8080"
     links:
       - pg:pg
-    restart: always
+    # restart: always
+    # volumes: 
+    #   - /home/core/rebelgfx:/rebelcricket/public/rebelgfx
+  kanboard: 
+    image: kanboard/kanboard:stable
+    environment:
+      - DATABASE_URL=postgres://kan:board@pg:5432/kanboard
     network_mode: bridge
-    volumes: 
-      - /home/core/rebelgfx:/rebelcricket/public/rebelgfx
+    ports:
+      - "8081:80"
+    links:
+      - pg:pg
   pg:
-    restart: always
+    # restart: always
     image: postgres:9.6
     network_mode: bridge
     volumes:
