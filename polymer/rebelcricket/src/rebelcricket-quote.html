@@ -1304,14 +1304,17 @@
           _lineItems.splice(this.lineItemIdxForVendor, 1);
 
           var _this = this;
-          _.each(_vendorItem.colorsSelected, function(v,k){
+          _.each(_vendorItem.colorsSelected, function(v,k,o){
             var _li = JSON.parse(JSON.stringify(_lineItem)); //eek.
             _li.brand_style_color[0].value = _vendorItem.product.brand;
             _li.brand_style_color[1].value = _vendorItem.product.style;
             _li.brand_style_color[2].value = k;
             _li.apparel_sizes = v.sizes;
             _li.prices = v.prices;
-            // console.log('quote k:',k,', gonna push _li',_li);
+            _li.price_href = v.price_href;
+            // console.log('!!!!quote k:',k,', gonna push _li',_li);
+            // console.log('!!!!_vendorItem.colorsSelected o:',o);
+            // console.log('do we have it???? v.price_href:',v.price_href);
             _lineItems.push(_li);
       
           });

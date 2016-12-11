@@ -90,7 +90,7 @@
       url="http://rebelcricket.lacuna.club/api/rebelpages"
       params='{"page":"services"}'
       handle-as="json"
-      on-response="_handlePageResponse">
+      last-response="{{services}}">
     </iron-ajax>
 
 
@@ -137,20 +137,12 @@
         }
       },
       _detailLink: function(e){
-        // console.log('_detailLink! slug:',e.model.item.slug);
         this.set('route.path', '/service/'+e.model.item.slug);
-      },
-      _handlePageResponse: function(e) {
-        this.set('services',e.detail.response);
       },
       _itemNeedsSmallFont: function(str){
         return str.length > 10 ? 'smallfont' : '';
       },
       _hasDetailItems: function(_items){
-        console.log('aarg itemz:',_items);
-        console.log('_hasDetailItems:', _.filter(_items, function(itm){return itm.name != ''}).length);
-        // _.contains(_items, function(item){return item.name != undefined && item.name != '' ; });
-
         return _.filter(_items, function(itm){return itm.name != ''}).length > 0
       }
 

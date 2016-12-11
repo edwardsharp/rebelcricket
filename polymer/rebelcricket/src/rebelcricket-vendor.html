@@ -334,7 +334,7 @@
         }
       },
       _itemSelected: function(e){
-        // console.log('e.model.product', e.model.product);
+        console.log('e.model.product', e.model.product);
         this.set('selectedItem', e.model.product);
         this.set('isDetailView', true);
         var _style = e.model.product.category + ' ' + e.model.product.sub_item;
@@ -368,7 +368,7 @@
         // console.log('VENDOR _vendorItemObserver _vendorItem:',_vendorItem);
       },
       _colorChecked: function(e){
-        // console.log('_colorChecked e.model.item.name',e.model.item.name,' this.selectedItem:',this.selectedItem);
+        console.log('_colorChecked e.model.item.name',e.model.item.name,' this.selectedItem.price_href:',this.selectedItem.price_href);
         if(e.target.checked){
           var _clrPrices = this._colorPricesForName(this.selectedItem, e.model.item.name);
           if(this.vendorItem.colorsSelected == undefined){
@@ -376,8 +376,10 @@
           }
           this.vendorItem.colorsSelected[e.model.item.name] = {
             prices: _.map(_clrPrices, function(item){ return item.price; }), 
-            sizes: _.map(_clrPrices, function(item){ return item.size; })
+            sizes: _.map(_clrPrices, function(item){ return item.size; }),
+            price_href: this.selectedItem.price_href
           };
+          // this.vendorItem.price_href = this.selectedItem.price_href;
           // this.set('vendorItem.colorsSelected.'+e.model.item.name, {
           //   prices: _.map(_clrPrices, function(item){ return item.price; }), 
           //   sizes: _.map(_clrPrices, function(item){ return item.size; })

@@ -1109,17 +1109,17 @@
         return this.servicesPage.items.indexOf(_item);
       },
       _dataFileSelected: function(e){
-        console.log('_dataFileSelected e:',e);
-        console.log('val:',this.vendorDatafiles[e.target.selected-1]);
+        // console.log('_dataFileSelected e:',e);
+        // console.log('val:',this.vendorDatafiles[e.target.selected-1]);
         this.set('admin.selectedVendorDatafile', this.vendorDatafiles[e.target.selected-1]) 
         this._fetchVendorGoods(this.vendorDatafiles[e.target.selected-1]);
       },
       _saveVendorData: function(){
-        console.log('admin.selectedVendorDatafile:',this.admin.selectedVendorDatafile);
+        // console.log('admin.selectedVendorDatafile:',this.admin.selectedVendorDatafile);
 
         // var _jsonOut = editor.get();
         //console.log('wooo vendor data: ', _.filter(this.vendorgoods, {selected: true}) );
-        console.log('_saveVendorData this.selectedVendorGoods:',this.selectedVendorGoods);
+        // console.log('_saveVendorData this.selectedVendorGoods:',this.selectedVendorGoods);
 
         this.$.saveVendorGoods.body = JSON.stringify({vendorgoods: this.selectedVendorGoods });
         
@@ -1127,10 +1127,10 @@
 
       },
       _handlesaveVendorGoodsResponse: function(e){
-        console.log('_handlesaveVendorGoodsResponse e:',e);
+        // console.log('_handlesaveVendorGoodsResponse e:',e);
       },
       _handlesaveVendorGoodsError: function(e){
-        console.log('_handlesaveVendorGoodsError e:',e);
+        // console.log('_handlesaveVendorGoodsError e:',e);
       },
       _showSelected: function(){
         this.set('filteredVendorgoods', this.selectedVendorGoods);
@@ -1188,7 +1188,7 @@
         return retArr;
       },
       _vendorGoodSelected: function(e){
-        console.log('_vendorGoodSelected: e.target.checked:',e.target.checked,'  e.model.item',e.model.item);
+        // console.log('_vendorGoodSelected: e.target.checked:',e.target.checked,'  e.model.item',e.model.item);
         if(e.target.checked){
           if(this.selectedVendorGoods.indexOf(e.model.item) == -1){
             this.push('selectedVendorGoods',e.model.item);
