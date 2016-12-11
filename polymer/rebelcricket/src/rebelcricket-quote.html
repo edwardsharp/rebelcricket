@@ -469,6 +469,18 @@
                           </paper-dropdown-menu>
                         </div>
 
+                        
+                        <div class="col s4">
+                          <paper-dropdown-menu label="Size">
+                            <paper-listbox class="dropdown-content" selected="{{lineItem.selected_sticker_size}}">
+                              <paper-item class="custom"></paper-item>
+                              <template is="dom-repeat" items="{{lineItem.sticker_sizes}}">
+                                <paper-item class="custom" value="[[item]]">[[item]]</paper-item>
+                              </template>
+                            </paper-listbox>
+                          </paper-dropdown-menu>
+                        </div>
+
                       </div>
 
                       <div class="row">
@@ -764,7 +776,7 @@
                   </div>
                   
                   <div class="col s6 m4">
-                    Position <br><small>select as many as needed.</small>
+                    Position <br><small>select as many as needed.<br>Only applicable to apparel.</small>
                     <paper-listbox class="custom" selected-values="{{item.print_positions}}" multi>
                       <template is="dom-repeat" items="{{positions}}">
                         <paper-item class="custom" value="[[item]]">[[item]]</paper-item>
@@ -781,6 +793,7 @@
                         </template>
                       </paper-listbox>
                     </paper-dropdown-menu>
+                    <small>Max: Apparel 8, Stickers 4</small>
 
                   </div>
            

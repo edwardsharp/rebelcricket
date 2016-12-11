@@ -411,14 +411,14 @@ ul.sidebar li a h1,ul.sidebar li a h2,ul.sidebar li a h3,ul.sidebar li a h4,ul.s
                     <tr class="line_item">
                       <td align="left" colspan="12">
                         <b>Poster Stock:</b>
-                        <%= lineItem["poster_stock_colors"][lineItem["selected_poster_stock"]] %>
+                        <%= lineItem["poster_stock_colors"][lineItem["selected_poster_stock"].to_i - 1] rescue lineItem["selected_poster_stock"] %>
                       </td>
                     </tr>
 
                     <tr class="line_item">
                       <td align="left" colspan="12">
                         <b>Poster Size:</b>
-                        <%= lineItem["poster_sizes"][lineItem["selected_poster_size"]] %>
+                        <%= lineItem["poster_sizes"][lineItem["selected_poster_size"].to_i - 1] rescue lineItem["selected_poster_size"] %>
                       </td>
                     </tr>
 
@@ -449,7 +449,14 @@ ul.sidebar li a h1,ul.sidebar li a h2,ul.sidebar li a h3,ul.sidebar li a h4,ul.s
                     <tr class="line_item">
                       <td align="left" colspan="12">
                         <b>Sticker Stock Color:</b>
-                        <%= lineItem["sticker_stock_colors"][lineItem["selected_sticker_stock"]] %>
+                        <%= lineItem["sticker_stock_colors"][lineItem["selected_sticker_stock"].to_i - 1] rescue lineItem["selected_sticker_stock"]%>
+                      </td>
+                    </tr>
+
+                    <tr class="line_item">
+                      <td align="left" colspan="12">
+                        <b>Sticker Size:</b>
+                        <%= lineItem["sticker_sizes"][lineItem["selected_sticker_size"].to_i - 1] rescue lineItem["selected_sticker_size"] %>
                       </td>
                     </tr>
 
@@ -498,7 +505,7 @@ ul.sidebar li a h1,ul.sidebar li a h2,ul.sidebar li a h3,ul.sidebar li a h4,ul.s
                       <td align="left" colspan="12">
                         <b>Fill Colors:</b>
                         <% lineItem["selected_fill_colors"].each do |opt| %>
-                            <%= lineItem["fill_colors"][opt] %>;
+                            <%= lineItem["fill_colors"][opt.to_i - 1] %>;
                         <% end %>
                       </td>
                     </tr>
@@ -588,7 +595,7 @@ ul.sidebar li a h1,ul.sidebar li a h2,ul.sidebar li a h3,ul.sidebar li a h4,ul.s
                     <tr class="line_item">
                       <td align="left" colspan="12">
                         <b>Option:</b>
-                        <%= lineItem["options"][lineItem["selected_option"].to_i] rescue lineItem["selected_option"] %>
+                        <%= lineItem["options"][lineItem["selected_option"].to_i - 1] rescue lineItem["selected_option"] %>
                       </td>
                     </tr>
 
@@ -699,6 +706,7 @@ ul.sidebar li a h1,ul.sidebar li a h2,ul.sidebar li a h3,ul.sidebar li a h4,ul.s
                     <% item["print_on_item_names"].each do |print_on_item| %>
                       <%= print_on_item %>;<br>
                     <% end %>
+                    <small>Select as many as needed</small>
                   </td>
                 </tr>
                 <% if item["print_positions"] %>
@@ -708,6 +716,7 @@ ul.sidebar li a h1,ul.sidebar li a h2,ul.sidebar li a h3,ul.sidebar li a h4,ul.s
                       <% item["print_positions"].each do |print_position| %>
                         <%= @positions[print_position.to_i] %>;<br>
                       <% end %>
+                      <small>Only applicable to apparel items</small>
                     </td>
                   </tr>
                 <% end %>
@@ -845,7 +854,7 @@ ul.sidebar li a h1,ul.sidebar li a h2,ul.sidebar li a h3,ul.sidebar li a h4,ul.s
                           
             <h5 class="white">Contact Info:</h5>                       
             <p>
-              Phone: <strong class="white"><a href="tel://1-503-545-1450">503‑545‑1450</a></strong><br/>
+              Phone: <strong class="white"><a href="tel://1-503-545-1450">503-545-1450</a></strong><br/>
               Email: <strong class="white">rebelcricket@gmail.com</strong><br/>
               Web: <strong class="white"><a href="http://rebelcricket.com">http://rebelcricket.com</a></strong>
               Address: <strong class="white">5040 SE Milwaukie Ave. Portland, OR 97202 </strong>

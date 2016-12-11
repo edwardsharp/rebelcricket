@@ -114,12 +114,19 @@ class RebelApiController < ApplicationController
 
       File.open(path, 'wb') {|f| f.write gfx_params[:file].read }
 
-      rebel_gfx = RebelGfx.new(
-        filename: gfx_params[:filename], 
-        rebel_quote_number: 'rebelimages',
-        url: "http://rebelcricket.lacuna.club/rebelimages/#{gfx_params[:filename]}",
-        path: path
-      )
+      if RebelGfx.exists?(filename: gfx_params[:filename])
+        rebel_gfx = RebelGfx.find_by filename: gfx_params[:filename]
+        rebel_gfx.rebel_quote_number = 'rebelimages'
+        rebel_gfx.url = "http://rebelcricket.lacuna.club/rebelimages/#{gfx_params[:filename]}"
+        rebel_gfx.path = path
+      else
+        rebel_gfx = RebelGfx.new(
+          filename: gfx_params[:filename], 
+          rebel_quote_number: 'rebelimages',
+          url: "http://rebelcricket.lacuna.club/rebelimages/#{gfx_params[:filename]}",
+          path: path
+        )
+      end
 
       rebel_gfx.save!
       

@@ -314,11 +314,16 @@ _erbout = ''; _erbout.concat "<!DOCTYPE html PUBLIC \"-//W3C//DTD XHTML 1.0 Tran
 ;  end ; _erbout.concat "\n"
 ; _erbout.concat "              ";  end ; _erbout.concat "\n"
 ; _erbout.concat "\n"
-; _erbout.concat "\n"
-; _erbout.concat "\n"
-; _erbout.concat "\n"
-; _erbout.concat "              <tr>\n                <td align=\"center\" colspan=\"12\">\n                  <h4 class=\"section_label\">SERVICES</h4>\n                </td>\n              </tr>\n                \n              \n              "
+; _erbout.concat "              <tr><td colspan=\"12\">&nbsp;</td></tr>\n              <tr>\n                <td colspan=\"12\">\n                  <b>Edit this quote:</b> \n                  <a href=\"http://localhost:8080/admin#"
 
+
+
+; _erbout.concat(( @rebel_quote.number).to_s); _erbout.concat "\">"; _erbout.concat(( @rebel_quote.number ).to_s); _erbout.concat "</a>\n                </td>\n              </tr>\n              <tr><td colspan=\"12\">&nbsp;</td></tr>\n\n"
+
+
+
+
+; _erbout.concat "              <tr>\n                <td align=\"center\" colspan=\"12\">\n                  <h4 class=\"section_label\">SERVICES</h4>\n                </td>\n              </tr>\n              \n              "
 
 
 
@@ -328,13 +333,13 @@ _erbout = ''; _erbout.concat "<!DOCTYPE html PUBLIC \"-//W3C//DTD XHTML 1.0 Tran
                 if @quote["services"] 
                   @quote["services"].each do |quoteServiceItem| 
               ; _erbout.concat "\n"
-; _erbout.concat "                <tr>\n                  <td align=\"left\" colspan=\"2\">\n                    <b>Service:</b>\n                  </td>\n                  <td align=\"left\" colspan=\"10\">\n                      "
+; _erbout.concat "                <tr>\n                  <td align=\"left\" colspan=\"2\">\n                    <b>Service:</b>\n                  </td>\n                  <td align=\"left\" colspan=\"10\">\n                      <h5>"
 
 
 
 
-; _erbout.concat(( quoteServiceItem["name"] ).to_s); _erbout.concat "\n"
-; _erbout.concat "                  </td>\n                </tr>\n                <tr>\n                  "
+; _erbout.concat(( quoteServiceItem["name"] ).to_s); _erbout.concat "</h5>\n                  </td>\n                </tr>\n                <tr>\n                  "
+
 
 
 ;  if quoteServiceItem["total"] ; _erbout.concat "\n"
@@ -407,14 +412,14 @@ _erbout = ''; _erbout.concat "<!DOCTYPE html PUBLIC \"-//W3C//DTD XHTML 1.0 Tran
 ; _erbout.concat "                    <tr class=\"line_item\">\n                      <td align=\"left\" colspan=\"12\">\n                        <b>Poster Stock:</b>\n                        "
 
 
-; _erbout.concat(( lineItem["poster_stock_colors"][lineItem["selected_poster_stock"]] ).to_s); _erbout.concat "\n"
+; _erbout.concat(( lineItem["poster_stock_colors"][lineItem["selected_poster_stock"].to_i - 1] rescue lineItem["selected_poster_stock"] ).to_s); _erbout.concat "\n"
 ; _erbout.concat "                      </td>\n                    </tr>\n\n"
 
 
 ; _erbout.concat "                    <tr class=\"line_item\">\n                      <td align=\"left\" colspan=\"12\">\n                        <b>Poster Size:</b>\n                        "
 
 
-; _erbout.concat(( lineItem["poster_sizes"][lineItem["selected_poster_size"]] ).to_s); _erbout.concat "\n"
+; _erbout.concat(( lineItem["poster_sizes"][lineItem["selected_poster_size"].to_i - 1] rescue lineItem["selected_poster_size"] ).to_s); _erbout.concat "\n"
 ; _erbout.concat "                      </td>\n                    </tr>\n\n"
 
 
@@ -445,7 +450,14 @@ _erbout = ''; _erbout.concat "<!DOCTYPE html PUBLIC \"-//W3C//DTD XHTML 1.0 Tran
 ; _erbout.concat "                    <tr class=\"line_item\">\n                      <td align=\"left\" colspan=\"12\">\n                        <b>Sticker Stock Color:</b>\n                        "
 
 
-; _erbout.concat(( lineItem["sticker_stock_colors"][lineItem["selected_sticker_stock"]] ).to_s); _erbout.concat "\n"
+; _erbout.concat(( lineItem["sticker_stock_colors"][lineItem["selected_sticker_stock"].to_i - 1] rescue lineItem["selected_sticker_stock"]).to_s); _erbout.concat "\n"
+; _erbout.concat "                      </td>\n                    </tr>\n\n"
+
+
+; _erbout.concat "                    <tr class=\"line_item\">\n                      <td align=\"left\" colspan=\"12\">\n                        <b>Sticker Size:</b>\n                        "
+
+
+; _erbout.concat(( lineItem["sticker_sizes"][lineItem["selected_sticker_size"].to_i - 1] rescue lineItem["selected_sticker_size"] ).to_s); _erbout.concat "\n"
 ; _erbout.concat "                      </td>\n                    </tr>\n\n"
 
 
@@ -494,7 +506,7 @@ _erbout = ''; _erbout.concat "<!DOCTYPE html PUBLIC \"-//W3C//DTD XHTML 1.0 Tran
 
 
 ;  lineItem["selected_fill_colors"].each do |opt| ; _erbout.concat "\n"
-; _erbout.concat "                            "; _erbout.concat(( lineItem["fill_colors"][opt] ).to_s); _erbout.concat ";\n                        "
+; _erbout.concat "                            "; _erbout.concat(( lineItem["fill_colors"][opt.to_i - 1] ).to_s); _erbout.concat ";\n                        "
 ;  end ; _erbout.concat "\n"
 ; _erbout.concat "                      </td>\n                    </tr>\n\n"
 
@@ -568,13 +580,14 @@ _erbout = ''; _erbout.concat "<!DOCTYPE html PUBLIC \"-//W3C//DTD XHTML 1.0 Tran
 ;  @quote["vinyl_line_items"]["items"].each do |lineItem| ; _erbout.concat "\n"
 ; _erbout.concat "\n"
 ; _erbout.concat "\n"
-; _erbout.concat "                    <tr class=\"line_item\">\n                      <td align=\"left\" colspan=\"12\">\n                        <b>Dimensions:</b>\n                        "
+; _erbout.concat "                    <tr>\n                      <td align=\"left\" colspan=\"12\">\n                        <b>Dimensions:</b>\n                        "
 
 
 ; _erbout.concat(( lineItem["dimensions"] ).to_s); _erbout.concat "\n"
-; _erbout.concat "                      </td>\n\n"
+; _erbout.concat "                      </td>\n                    </tr>\n                    <tr>\n                      <td align=\"left\" colspan=\"12\">\n                        <b>Quantity:</b>\n                        "
 
-; _erbout.concat "                      <td align=\"left\" colspan=\"12\">\n                        <b>Quantity:</b>\n                        "
+
+
 
 ; _erbout.concat(( lineItem["quantity"] ).to_s); _erbout.concat "\n"
 ; _erbout.concat "                      </td>\n                    </tr>\n\n"
@@ -583,7 +596,7 @@ _erbout = ''; _erbout.concat "<!DOCTYPE html PUBLIC \"-//W3C//DTD XHTML 1.0 Tran
 ; _erbout.concat "                    <tr class=\"line_item\">\n                      <td align=\"left\" colspan=\"12\">\n                        <b>Option:</b>\n                        "
 
 
-; _erbout.concat(( lineItem["selected_option"] ).to_s); _erbout.concat "\n"
+; _erbout.concat(( lineItem["options"][lineItem["selected_option"].to_i - 1] rescue lineItem["selected_option"] ).to_s); _erbout.concat "\n"
 ; _erbout.concat "                      </td>\n                    </tr>\n\n"
 
 
@@ -694,7 +707,8 @@ _erbout = ''; _erbout.concat "<!DOCTYPE html PUBLIC \"-//W3C//DTD XHTML 1.0 Tran
 ;  item["print_on_item_names"].each do |print_on_item| ; _erbout.concat "\n"
 ; _erbout.concat "                      "; _erbout.concat(( print_on_item ).to_s); _erbout.concat ";<br>\n                    "
 ;  end ; _erbout.concat "\n"
-; _erbout.concat "                  </td>\n                </tr>\n                "
+; _erbout.concat "                    <small>Select as many as needed</small>\n                  </td>\n                </tr>\n                "
+
 
 ;  if item["print_positions"] ; _erbout.concat "\n"
 ; _erbout.concat "                  <tr>\n                    <td align=\"left\" colspan=\"12\">\n                      <b>Position:</b>\n                      "
@@ -703,13 +717,15 @@ _erbout = ''; _erbout.concat "<!DOCTYPE html PUBLIC \"-//W3C//DTD XHTML 1.0 Tran
 ;  item["print_positions"].each do |print_position| ; _erbout.concat "\n"
 ; _erbout.concat "                        "; _erbout.concat(( @positions[print_position.to_i] ).to_s); _erbout.concat ";<br>\n                      "
 ;  end ; _erbout.concat "\n"
-; _erbout.concat "                    </td>\n                  </tr>\n                "
+; _erbout.concat "                      <small>Only applicable to apparel items</small>\n                    </td>\n                  </tr>\n                "
+
 
 ;  end ; _erbout.concat "\n"
 ; _erbout.concat "                <tr>\n                  <td align=\"left\" colspan=\"12\">\n                    <b>Colors Qty:</b> "
 
 ; _erbout.concat(( item["num_colors"] ).to_s); _erbout.concat "\n"
-; _erbout.concat "                  </td>\n                </tr>\n                <tr>\n                  <td align=\"left\" colspan=\"12\">\n                    <b>Colors:</b>\n                    "
+; _erbout.concat "                    <small>Apparel Max 8. Sticker Max 4.</small>\n                  </td>\n                </tr>\n                <tr>\n                  <td align=\"left\" colspan=\"12\">\n                    <b>Colors:</b>\n                    "
+
 
 
 
@@ -805,12 +821,9 @@ _erbout = ''; _erbout.concat "<!DOCTYPE html PUBLIC \"-//W3C//DTD XHTML 1.0 Tran
 ;  end ; _erbout.concat "\n"
 ; _erbout.concat "\n"
 ; _erbout.concat "\n"
-; _erbout.concat "            </div><!-- /content -->\n                  \n\n"
+; _erbout.concat "            </div><!-- /content -->\n\n"
 
-
-; _erbout.concat " \n            <!-- social & contact -->\n            <table class=\"social\" width=\"100%\">\n              <tr>\n                <td>\n                  \n                  <!-- column 1 -->\n                  <table align=\"left\" class=\"column\">\n                    <tr>\n                      <td>        \n                        <h5 class=\"white\">Connect with Us:</h5>\n                        <br>\n                        <p class=\"\"><a href=\"https://www.facebook.com/RebelCricketScreenPrints/\" class=\"soc-btn fb\">Facebook</a> <a href=\"https://twitter.com/rebelcricket\" class=\"soc-btn tw\">Twitter</a> \n                      </td>\n                    </tr>\n                  </table><!-- /column 1 -->  \n                  \n                  <!-- column 2 -->\n                  <table align=\"left\" class=\"column\">\n                    <tr>\n                      <td>        \n                                      \n                        <h5 class=\"white\">Contact Info:</h5>                       \n                        <p>\n                          Phone: <strong class=\"white\"><a href=\"tel://1-503-545-1450\">503\xE2\x80\x91545\xE2\x80\x911450</a></strong><br/>\n                          Email: <strong class=\"white\">rebelcricket@gmail.com</strong><br/>\n                          Web: <strong class=\"white\"><a href=\"http://rebelcricket.com\">http://rebelcricket.com</a></strong>\n                          Address: <strong class=\"white\">5040 SE Milwaukie Ave. Portland, OR 97202 </strong>\n                        </p>\n                \n                      </td>\n                    </tr>\n                  </table><!-- /column 2 -->\n                  \n                  <span class=\"clear\"></span> \n                  \n                </td>\n              </tr>\n            </table><!-- /social & contact -->\n            \n          </td>\n        </tr>\n      </table>\n      </div><!-- /content -->\n                  \n    </td>\n    <td></td>\n  </tr>\n</table><!-- /BODY -->\n\n"
-
-
+; _erbout.concat "          </td>\n        </tr>\n      </table>\n      </div><!-- /content -->\n                  \n    </td>\n    <td></td>\n  </tr>\n</table><!-- /BODY -->\n\n"
 
 
 
@@ -820,6 +833,7 @@ _erbout = ''; _erbout.concat "<!DOCTYPE html PUBLIC \"-//W3C//DTD XHTML 1.0 Tran
 
 
 
+; _erbout.concat "<!-- social & contact -->\n<table class=\"social\" width=\"100%\">\n  <tr>\n    <td colspan=\"12\">\n      \n      <!-- column 1 -->\n      <table align=\"left\" class=\"column\">\n        <tr>\n          <td colspan=\"6\">        \n            <h5 class=\"white\">Connect with Us:</h5>\n            <br>\n            <p class=\"\"><a href=\"https://www.facebook.com/RebelCricketScreenPrints/\" class=\"soc-btn fb\">Facebook</a> <a href=\"https://twitter.com/rebelcricket\" class=\"soc-btn tw\">Twitter</a> \n          </td>\n        </tr>\n      </table><!-- /column 1 -->  \n      \n      <!-- column 2 -->\n      <table align=\"left\" class=\"column\">\n        <tr>\n          <td colspan=\"6\">        \n                          \n            <h5 class=\"white\">Contact Info:</h5>                       \n            <p>\n              Phone: <strong class=\"white\"><a href=\"tel://1-503-545-1450\">503-545-1450</a></strong><br/>\n              Email: <strong class=\"white\">rebelcricket@gmail.com</strong><br/>\n              Web: <strong class=\"white\"><a href=\"http://rebelcricket.com\">http://rebelcricket.com</a></strong>\n              Address: <strong class=\"white\">5040 SE Milwaukie Ave. Portland, OR 97202 </strong>\n            </p>\n    \n          </td>\n        </tr>\n      </table><!-- /column 2 -->\n      \n      <span class=\"clear\"></span> \n      \n    </td>\n  </tr>\n</table><!-- /social & contact -->\n\n"
 
 
 
@@ -858,7 +872,6 @@ _erbout = ''; _erbout.concat "<!DOCTYPE html PUBLIC \"-//W3C//DTD XHTML 1.0 Tran
 
 
 
-; _erbout.concat "\n"
 ; _erbout.concat "</body>\n</html>\n"
 
 ; _erbout.force_encoding(__ENCODING__)

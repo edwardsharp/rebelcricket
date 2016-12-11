@@ -118,14 +118,14 @@
         <tr class="line_item">
           <td align="left" colspan="12">
             <b>Poster Stock:</b>
-            <%= lineItem["poster_stock_colors"][lineItem["selected_poster_stock"]] %>
+                        <%= lineItem["poster_stock_colors"][lineItem["selected_poster_stock"].to_i - 1] rescue lineItem["selected_poster_stock"] %>
           </td>
         </tr>
 
         <tr class="line_item">
           <td align="left" colspan="12">
             <b>Poster Size:</b>
-            <%= lineItem["poster_sizes"][lineItem["selected_poster_size"]] %>
+            <%= lineItem["poster_sizes"][lineItem["selected_poster_size"].to_i - 1] rescue lineItem["selected_poster_size"] %>
           </td>
         </tr>
 
@@ -156,7 +156,14 @@
         <tr class="line_item">
           <td align="left" colspan="12">
             <b>Sticker Stock Color:</b>
-            <%= lineItem["sticker_stock_colors"][lineItem["selected_sticker_stock"]] %>
+            <%= lineItem["sticker_stock_colors"][lineItem["selected_sticker_stock"].to_i - 1] rescue lineItem["selected_sticker_stock"]%>
+          </td>
+        </tr>
+
+        <tr class="line_item">
+          <td align="left" colspan="12">
+            <b>Sticker Size:</b>
+            <%= lineItem["sticker_sizes"][lineItem["selected_sticker_size"].to_i - 1] rescue lineItem["selected_sticker_size"] %>
           </td>
         </tr>
 
@@ -205,7 +212,7 @@
           <td align="left" colspan="12">
             <b>Fill Colors:</b>
             <% lineItem["selected_fill_colors"].each do |opt| %>
-                <%= lineItem["fill_colors"][opt] %>;
+                <%= lineItem["fill_colors"][opt.to_i - 1] %>;
             <% end %>
           </td>
         </tr>
@@ -295,7 +302,7 @@
         <tr class="line_item">
           <td align="left" colspan="12">
             <b>Option:</b>
-            <%= lineItem["options"][lineItem["selected_option"].to_i] rescue lineItem["selected_option"] %>
+            <%= lineItem["options"][lineItem["selected_option"].to_i - 1] rescue lineItem["selected_option"] %>
           </td>
         </tr>
 

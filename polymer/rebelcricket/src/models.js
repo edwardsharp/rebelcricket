@@ -86,6 +86,8 @@ var quoteModel = {
     sticker_min: 250,
     sticker_stock_colors: ['clear', 'gloss white', 'matte white', 'matte golden yellow', 'matte black'],
     selected_sticker_stock: '',
+    sticker_sizes: ['1.5" x 6"','2" x 4.5"','2.25 x 4"','3" x 3"','1.125" x 6"','1.75" x 4"','2.25" x 3"','2" x 3.5"', '3" x 6"', '4" x 4.5"','3" x 9"','2.25" x 12"','2.25" x 6"','3" x 4.5"'],
+    selected_sticker_size: '',
     serviceNotes: ''
   },
 
