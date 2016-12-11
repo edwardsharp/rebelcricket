@@ -129,16 +129,20 @@
       }
 
       .rightrow {
-        float: right;
+     
         padding-top: 2.5em;
         padding-bottom: 1.5em;
-        min-width: 300px;
+        /*min-width: 300px;*/
       }
 
       .drawerItemSelected{
         background-color: red;
       }
 
+      .saveVendorGoodsRow{
+        padding-top:1.5em;
+        padding-bottom:1.5em;
+      }
       /* vendorItem stylez*/
       .subtitle {
         background-color: rgba(255,255,255,0.8);
@@ -285,6 +289,28 @@
       debounce-duration="500"
       last-response="{{vendorDatafiles}}">
     </iron-ajax>
+    
+    <iron-ajax
+      auto
+      url="http://localhost:3000/api/vendorgoods"
+      params='{"existingdata":"true"}'
+      handle-as="json"
+      headers='{{headers}}'
+      debounce-duration="500"
+      last-response="{{selectedVendorGoods}}">
+    </iron-ajax>
+
+    <iron-ajax
+      id="saveVendorGoods"
+      url="http://localhost:3000/api/vendorgoods"
+      method="POST"
+      headers='{{headers}}'
+      content-type="application/json"
+      handle-as="json"
+      on-response="_handlesaveVendorGoodsResponse"
+      on-error="_handlesaveVendorGoodsError"
+      >
+    </iron-ajax>
 
     <paper-dialog id="vendorGoodsInfo">
       <paper-dialog-scrollable>
@@ -410,12 +436,15 @@
               <template is="dom-if" if="[[_isVendorGoods(currentPage)]]">
                 <div id="vendorGoodsFilePicker">
                   <div class="col s4">
+                    <paper-button class="adm_drwr" on-tap="_showSelected">Selected ([[selectedVendorGoods.length]])</paper-button>
+                  </div>
+                  <div class="col s3">
                     <paper-input id="vendorDataFilter" value="{{admin.VendorDataFilter}}" label="Filter"></paper-input>
                   </div>
                   <div class="col s2">
-                    <paper-button class="custom" on-tap="_applyVendorDataFilter">Filter</paper-button>
+                    <paper-button class="adm_drwr" on-tap="_applyVendorDataFilter">Filter</paper-button>
                   </div>
-                  <div class="col s4">
+                  <div class="col s3">
                     <paper-dropdown-menu label="Load Data File..." on-iron-select="_dataFileSelected">
                       <paper-listbox class="dropdown-content">
                         <paper-item class="custom">Load Data File...</paper-item>
@@ -424,9 +453,6 @@
                         </template>
                       </paper-listbox>
                     </paper-dropdown-menu>
-                  </div>
-                  <div class="col s2">
-                    <paper-button class="custom" on-tap="_saveVendorData">Save</paper-button>
                   </div>
                 </div>
               </template>
@@ -464,9 +490,20 @@
 
         <div id="vendorGoodsContainer" hidden>
           <!-- <div id="jsoneditor"></div> -->
+          <div class="row saveVendorGoodsRow">
+            <div class="col s12 center">
+              <paper-button class="custom" on-tap="_saveVendorData">Save Vendor Goods</paper-button>
+            </div>
+          </div>
+       <!--    <template is="dom-if" if="[[filteredVendorgoods.length]]">
+            <div>
+              <paper-checkbox on-change="_selectAllFilteredGoods"></paper-checkbox>
+              Select All
+            </div>
+          </template> -->
           <template is="dom-repeat" items="[[filteredVendorgoods]]">
             <div>
-              <paper-checkbox checked={{item.selected}}></paper-checkbox>
+              <paper-checkbox checked={{item.selected}} on-change="_vendorGoodSelected"></paper-checkbox>
               <paper-icon-button icon="shopping-basket" on-tap="_openDialog"></paper-icon-button>
               [[item.title]]
             </div>
@@ -654,14 +691,6 @@
 
       </app-header-layout>
     </app-drawer-layout>
-
-
-
-
-
-
-
-    
    
   </template>
 
@@ -739,11 +768,15 @@
           notify: true
         },
         vendorgoods: {
-          type: Object,
+          type: Array,
           notify: true
         },
         filteredVendorgoods: {
-          type: Object,
+          type: Array,
+          notify: true
+        },
+        selectedVendorGoods: {
+          type: Array,
           notify: true
         },
         vendorDatafiles: {
@@ -1075,7 +1108,22 @@
         console.log('admin.selectedVendorDatafile:',this.admin.selectedVendorDatafile);
 
         // var _jsonOut = editor.get();
-        console.log('wooo vendor data: ', _.filter(this.vendorgoods, {selected: true}) );
+        //console.log('wooo vendor data: ', _.filter(this.vendorgoods, {selected: true}) );
+        console.log('_saveVendorData this.selectedVendorGoods:',this.selectedVendorGoods);
+
+        this.$.saveVendorGoods.body = JSON.stringify({vendorgoods: this.selectedVendorGoods });
+        
+        this.$.saveVendorGoods.generateRequest();
+
+      },
+      _handlesaveVendorGoodsResponse: function(e){
+        console.log('_handlesaveVendorGoodsResponse e:',e);
+      },
+      _handlesaveVendorGoodsError: function(e){
+        console.log('_handlesaveVendorGoodsError e:',e);
+      },
+      _showSelected: function(){
+        this.set('filteredVendorgoods', this.selectedVendorGoods);
       },
       _applyVendorDataFilter: function(){
         var _filteredGoodz = [];
@@ -1113,7 +1161,7 @@
 
       },
       _filteredGoodsLength(_filteredVendorgoods){
-        return '('+_filteredVendorgoods.length+')';
+        return 'shown: ('+_filteredVendorgoods.length+')';
       },
       _openDialog: function(e){
         this.set('vendorItem', e.model.item);
@@ -1128,6 +1176,25 @@
           }
         });
         return retArr;
+      },
+      _vendorGoodSelected: function(e){
+        console.log('_vendorGoodSelected: e.target.checked:',e.target.checked,'  e.model.item',e.model.item);
+        if(e.target.checked){
+          if(this.selectedVendorGoods.indexOf(e.model.item) == -1){
+            this.push('selectedVendorGoods',e.model.item);
+          }
+        }else{
+          if(this.selectedVendorGoods.indexOf(e.model.item) != -1){
+            this.splice('selectedVendorGoods', e.model.item, 1);
+          }
+        }
+      },
+      _selectAllFilteredGoods: function(e){
+        if(e.target.checked){
+          this.set('filteredVendorgoods', _.each(this.filteredVendorgoods, function(o) {o.selected = true;}));
+        }else{
+          this.set('filteredVendorgoods', _.each(this.filteredVendorgoods, function(o) {o.selected = false;}));
+        }
       },
       ready: function(){
 

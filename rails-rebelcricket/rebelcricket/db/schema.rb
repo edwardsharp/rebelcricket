@@ -54,6 +54,7 @@ ActiveRecord::Schema.define(version: 20161210044643) do
     t.datetime "updated_at",   null: false
     t.string   "category"
     t.string   "sub_category"
+    t.string   "title"
     t.json     "data"
   end
 

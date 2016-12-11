@@ -142,12 +142,13 @@ class RebelApiController < ApplicationController
     send_file "#{::Rails.root}/public/companycasuals.json"
   end
 
+  # get '/api/vendorgoods'
   def vendorgoods
 
     unless has_valid_token
       render_unauthorized and return
     end
-    
+
     if params[:datafiles]
       render json: Dir["#{::Rails.root}/vendorgoods/**/*.json"].collect {|f| f.gsub("#{::Rails.root}/vendorgoods/",'') }
     elsif params[:selected]
@@ -155,6 +156,34 @@ class RebelApiController < ApplicationController
     elsif params[:existingdata]
       render json: RebelVendorGood.where(category: params[:selected])
     end
+  end
+
+  # post '/api/vendorgoods'
+  def save_vendor_goods
+    if params[:vendorgoods]
+      RebelVendorGood.destroy_all
+      params[:vendorgoods].each do |_good|
+        if RebelVendorGood.exists?(title: _good["title"])
+          _rebelVendorGood = RebelVendorGood.find_by title: _good["title"]
+          _rebelVendorGood.title = _good["title"]
+          _rebelVendorGood.category = _good["category"]
+          _rebelVendorGood.sub_category = _good["sub_category"]
+          _rebelVendorGood.data = _good["data"]
+          _rebelVendorGood.save
+        else
+          RebelVendorGood.create(
+            title: _good["title"],
+            category: _good["category"],
+            sub_category: _good["sub_item"],
+            data: _good
+          )
+        end
+      end
+
+      render(json: 'ok', status: 200) and return
+    end
+
+    render status: 422
   end
 
   # post '/rebelquote' do
