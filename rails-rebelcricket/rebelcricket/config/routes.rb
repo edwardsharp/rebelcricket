@@ -5,8 +5,9 @@ Rails.application.routes.draw do
   post '/api/rebelgfx', to: 'rebel_api#rebelgfx', as: :rebel_gfx
   get '/api/rebelpages', to: 'rebel_api#rebelpages', as: :rebel_pages
   get '/api/rebelvendor/companycasuals.json', to: 'rebel_api#rebelvendor', as: :rebel_vendor
-  get '/api/vendorgoods', to: 'rebel_api#vendorgoods', as: :rebel_vendorgoods
+  get '/api/vendorgoods', to: 'rebel_api#vendorgoods', as: :api_rebel_vendor_goods
   post '/api/vendorgoods', to: 'rebel_api#save_vendor_goods', as: :rebel_save_vendor_goods
+  get '/api/rebelvendorgoods', to: 'rebel_api#rebelvendorgoods', as: :rebel_vendor_goods
 
   get '/api/inboxinfo', to: 'inbox_api#info', as: :inboxinfo
   get '/api/inboxcustomer', to: 'inbox_api#customer', as: :inboxcustomer

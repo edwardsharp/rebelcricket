@@ -3,7 +3,7 @@ class CreateRebelVendorGoods < ActiveRecord::Migration[5.0]
     create_table :rebel_vendor_goods do |t|
       t.timestamps null: false
       t.string :category
-      t.string :sub_category
+      t.string :sub_item
       t.string :title
       t.json :data
     end

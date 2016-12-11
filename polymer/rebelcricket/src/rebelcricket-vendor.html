@@ -108,10 +108,10 @@
 
     <iron-ajax
       auto
-      url="http://localhost:3000/api/rebelvendor/companycasuals.json"
+      url="http://localhost:3000/api/rebelvendorgoods"
       handle-as="json"
-      on-response="_handleProductsResponse"
-      debounce-duration="500">
+      debounce-duration="500"
+      last-response="{{companycasual}}">
     </iron-ajax>
     
     <app-pouchdb-document
@@ -177,24 +177,24 @@
 
             <div class="col s8 center">
               <h5>[[selectedItem.title]]</h5>
-              <h6>[[selectedItem.items.prod_id]] [[selectedItem.category]] [[selectedItem.sub_item]]</h6>
+              <h6>[[selectedItem.prod_id]] [[selectedItem.category]] [[selectedItem.sub_item]]</h6>
             </div>
           </div>
 
           <div class="row">
           
-            <template is="dom-if" if="[[selectedItem.items.prod_id]]">
+            <template is="dom-if" if="[[selectedItem.prod_id]]">
               <div class="col s12 m2 center">
-                <img src$="http://cdn.companycasuals.com/cache/cc/[[selectedItem.items.prod_id]].jpg">
+                <img src$="http://cdn.companycasuals.com/cache/cc/[[selectedItem.prod_id]].jpg">
               </div>
             </template>
 
             <div class="col s12 m5 center">
-              <p>[[selectedItem.items.prod_desc_text]]</p>
+              <p>[[selectedItem.prod_desc_text]]</p>
             </div>
             <div class="col s12 m5">
               <ul>
-                <template is="dom-repeat" items="[[selectedItem.items.prod_desc_items]]">
+                <template is="dom-repeat" items="[[selectedItem.prod_desc_items]]">
                   <li>[[item]]</li>
                 </template>
               </ul>
@@ -212,7 +212,7 @@
 
           </div>
 
-          <template is="dom-repeat" items="[[selectedItem.items.colors]]">
+          <template is="dom-repeat" items="[[selectedItem.colors]]">
             <div class="row">
               <div class="col s4 m3 l2 color-img" style$="background-color: none;background: url([[item.href]]);">
                 <paper-checkbox class="red" on-tap="_colorChecked">
@@ -222,7 +222,7 @@
                 </paper-checkbox>
               </div>
               <div class="col s8 m9 l10">
-                <template is="dom-repeat" items="[[_colorPricesForName(selectedItem.items, item.name)]]" as="colorPrices">
+                <template is="dom-repeat" items="[[_colorPricesForName(selectedItem, item.name)]]" as="colorPrices">
                   
                   <span class="color-price center">[[colorPrices.size]]<br>[[colorPrices.price]]</span>
                   
@@ -304,9 +304,10 @@
         }
       },
       _filterProducts: function(by_str){
-        // console.log('_filterProducts by_str:',by_str);
+        console.log('_filterProducts by_str:',by_str);
+        console.log('this.companycasual:',this.companycasual);
         this.set('filteredProducts', _.filter(this.companycasual, function(item){
-          return item.category == by_str || item.sub_item == by_str;
+          return item.category.trim() == by_str.trim() || item.sub_item.trim() == by_str.trim();
         }));
       },
       _productCategories(obj){
@@ -369,7 +370,7 @@
       _colorChecked: function(e){
         // console.log('_colorChecked e.model.item.name',e.model.item.name,' this.selectedItem:',this.selectedItem);
         if(e.target.checked){
-          var _clrPrices = this._colorPricesForName(this.selectedItem.items, e.model.item.name);
+          var _clrPrices = this._colorPricesForName(this.selectedItem, e.model.item.name);
           if(this.vendorItem.colorsSelected == undefined){
             this.vendorItem.colorsSelected = {};
           }
@@ -387,10 +388,6 @@
         }
         // console.log('vendor vendorItem:',this.vendorItem);
         this.notifyPath('vendorItem.colorsSelected.'+e.model.item.name);
-      },
-      _handleProductsResponse: function(e){
-        // console.log('_handleProductsResponse! e.detail.response.length:', e.detail.response.length);
-        this.set('companycasual', e.detail.response);
       }
       
     });

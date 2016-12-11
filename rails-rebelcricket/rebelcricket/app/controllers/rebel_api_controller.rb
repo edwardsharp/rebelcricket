@@ -158,8 +158,22 @@ class RebelApiController < ApplicationController
     end
   end
 
+  # get '/api/rebelvendorgoods'
+  def rebelvendorgoods
+    if params[:category]
+      render json: RebelVendorGood.select(:data).where(category: params[:category]).map(&:data)
+    else
+      render json: RebelVendorGood.select(:data).all.map(&:data)
+    end
+  end
+
   # post '/api/vendorgoods'
   def save_vendor_goods
+
+    unless has_valid_token
+      render_unauthorized and return
+    end
+
     if params[:vendorgoods]
       RebelVendorGood.destroy_all
       params[:vendorgoods].each do |_good|
@@ -167,14 +181,14 @@ class RebelApiController < ApplicationController
           _rebelVendorGood = RebelVendorGood.find_by title: _good["title"]
           _rebelVendorGood.title = _good["title"]
           _rebelVendorGood.category = _good["category"]
-          _rebelVendorGood.sub_category = _good["sub_category"]
+          _rebelVendorGood.sub_item = _good["sub_item"]
           _rebelVendorGood.data = _good["data"]
           _rebelVendorGood.save
         else
           RebelVendorGood.create(
             title: _good["title"],
             category: _good["category"],
-            sub_category: _good["sub_item"],
+            sub_item: _good["sub_item"],
             data: _good
           )
         end

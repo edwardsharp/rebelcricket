@@ -50,10 +50,10 @@ ActiveRecord::Schema.define(version: 20161210044643) do
   end
 
   create_table "rebel_vendor_goods", force: :cascade do |t|
-    t.datetime "created_at",   null: false
-    t.datetime "updated_at",   null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
     t.string   "category"
-    t.string   "sub_category"
+    t.string   "sub_item"
     t.string   "title"
     t.json     "data"
   end
