@@ -112,7 +112,7 @@
       img.attachment {
         max-height: 175px;
         max-width: 175px;
-        padding-top: 55px;
+        padding-top: 30px;
       }
 
       .current-page {
@@ -133,6 +133,7 @@
         padding-top: 2.5em;
         padding-bottom: 1.5em;
         /*min-width: 300px;*/
+        width: 100%;
       }
 
       .drawerItemSelected{
@@ -429,14 +430,35 @@
                   ([[servicesPage.items.length]])
                 </template>
                  <template is="dom-if" if="[[_isVendorGoods(currentPage)]]">
-                  [[filteredGoodsLength]]
+                    [[filteredGoodsLength]]
                 </template>
             </div>
             <div class="row rightrow">
+
+   
+              <div class="center" hidden$="[[!_isImages(currentPage)]]">
+                
+                <label for="rebelImages">&nbsp;Upload Image file</label>
+                <input id="rebelImages" type="file">
+
+                <paper-spinner id="rebelImagesSpinner" alt="Uploading File..."></paper-spinner>
+                <span id="rebelImagesFeedback"></span>
+              </div>
+          
+              <template is="dom-if" if="[[_isQuote(currentPage)]]">
+                <div class="col s12 m6 offset-m3 center">
+                  <paper-input label="Quote Number" value="{{admin.quoteID}}"></paper-input>
+                </div>
+              </template>
+
               <template is="dom-if" if="[[_isVendorGoods(currentPage)]]">
+                
                 <div id="vendorGoodsFilePicker">
-                  <div class="col s4">
-                    <paper-button class="adm_drwr" on-tap="_showSelected">Selected ([[selectedVendorGoods.length]])</paper-button>
+                  <div class="col s2">
+                    <paper-button class="custom" on-tap="_saveVendorData">Save</paper-button>
+                  </div>
+                  <div class="col s2">
+                    <paper-button class="adm_drwr" on-tap="_showSelected">([[selectedVendorGoods.length]])</paper-button>
                   </div>
                   <div class="col s3">
                     <paper-input id="vendorDataFilter" value="{{admin.VendorDataFilter}}" label="Filter"></paper-input>
@@ -454,6 +476,7 @@
                       </paper-listbox>
                     </paper-dropdown-menu>
                   </div>
+
                 </div>
               </template>
 
@@ -478,23 +501,16 @@
         </div>
 
         <div id="quotesContainer" hidden>
-          <div class="row">
-            <div class="col s12 m8 offset-m2">
-              <paper-input label="Quote Number" value="{{admin.quoteID}}"></paper-input>
-            </div>
-
-          </div>
-
           <!-- <rebelcricket-quote quote="[[quote]]" quote-id="[[quoteID]]"></rebelcricket-quote> -->
         </div>
 
         <div id="vendorGoodsContainer" hidden>
           <!-- <div id="jsoneditor"></div> -->
-          <div class="row saveVendorGoodsRow">
+     <!--      <div class="row saveVendorGoodsRow">
             <div class="col s12 center">
-              <paper-button class="custom" on-tap="_saveVendorData">Save Vendor Goods</paper-button>
+              
             </div>
-          </div>
+          </div> -->
        <!--    <template is="dom-if" if="[[filteredVendorgoods.length]]">
             <div>
               <paper-checkbox on-change="_selectAllFilteredGoods"></paper-checkbox>
@@ -527,9 +543,9 @@
                 </div>
                 <div class="col s6">
                   <ul>
-                  <li><paper-input label="Caption" value="{{item.caption}}"></paper-input></li>
-                  <li><paper-input label="Link To" value="{{item.link_to}}"></paper-input></li>
+                  <!-- <li><paper-input label="Caption" value="{{item.caption}}"></paper-input></li> -->
                   <li><paper-input label="URL" value="{{item.url}}"></paper-input></li>
+                  <li><paper-input label="Link To" value="{{item.link_to}}"></paper-input></li>
                   <li>
                   <paper-fab mini on-tap="_removeHomePageAttachment" class="custom" label="&nbsp;&times;"></paper-fab>
                   </li>
@@ -669,16 +685,7 @@
         </div>      
 
         <div id="imagesContainer" hidden>
-          <div class="row">
-            <div class="col s12 m6 offset-m3">
-              <br><br><br>
-              <label for="rebelImages">&nbsp;Upload Image file</label>
-              <input id="rebelImages" type="file">
-
-              <paper-spinner id="rebelImagesSpinner" alt="Uploading File..."></paper-spinner>
-              <span id="rebelImagesFeedback"></span>
-            </div>
-          </div>
+          
           <div class="row">
             <div class="col s12">
               <template is="dom-repeat" items="{{images}}">
@@ -1092,8 +1099,11 @@
       _isVendorGoods: function(_pageName){
         return _pageName.match(/vendor/i);
       },
-      _isCurrentPage: function(_pageName){
-        return this.currentPage == _pageName ? 'current-page' : '';
+      _isQuote: function(_pageName){
+        return _pageName.match(/quote/i);
+      },
+      _isImages: function(_pageName){
+        return _pageName.match(/images/i);
       },
       _servicePageItemIndex: function(_item){
         return this.servicesPage.items.indexOf(_item);
@@ -1161,7 +1171,7 @@
 
       },
       _filteredGoodsLength(_filteredVendorgoods){
-        return 'shown: ('+_filteredVendorgoods.length+')';
+        return '('+_filteredVendorgoods.length+')';
       },
       _openDialog: function(e){
         this.set('vendorItem', e.model.item);

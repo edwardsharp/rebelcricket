@@ -50,7 +50,9 @@
         <template is="dom-repeat" items="{{about.items}}">
           <div class="s6 offset-s3">
             <h3>[[item.title]]</h3>
-            <p>[[item.description]]</p>
+            <p>
+              <div inner-h-t-m-l="[[item.description]]"></div>
+            </p>
           </div>
         </template>
 
