@@ -46,7 +46,7 @@ class RebelQuote < ApplicationRecord
           "owner_id": 1,
           "creator_id": 1,
           "description": quote_md,
-          "title": subj,
+          "title": "#{self.name} #{self.org} ##{self.number}",
           "project_id": 1
       }
       req.body = "{ \"jsonrpc\": \"2.0\", \"method\": \"createTask\", \"params\": #{params.to_json} }"

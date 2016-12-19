@@ -23,6 +23,7 @@ var quoteModel = {
   notes: '',
   need_by_date: false,
   date_needed: '',
+  wants_mail: false,
   client_contact_information: {
     label: 'CONTACT INFORMATION',
     items: [

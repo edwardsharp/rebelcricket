@@ -2,7 +2,7 @@
 unless RebelPage.find_by name: 'home'
   RebelPage.create(
     name: 'home',
-    data: JSON.parse('{"attachments":[{"name":"maxresdefault.jpg","url":"http://rebelcricket.lacuna.club/maxresdefault.jpg","caption":""},{"name":"funny-cats-sneezing-3.jpg","url":"http://rebelcricket.lacuna.club/funny-cats-sneezing-3.jpg","caption":""},{"name":"edfsaf.jpg","url":"http://rebelcricket.lacuna.club/edfsaf.jpg","caption":""},{"name":"200_s.gif","url":"http://rebelcricket.lacuna.club/200_s.gif","caption":""}]}')
+    data: JSON.parse('{"attachments":[{"name":"maxresdefault.jpg","url":"http://beta.rebelcricket.com/maxresdefault.jpg","caption":""},{"name":"funny-cats-sneezing-3.jpg","url":"http://beta.rebelcricket.com/funny-cats-sneezing-3.jpg","caption":""},{"name":"edfsaf.jpg","url":"http://beta.rebelcricket.com/edfsaf.jpg","caption":""},{"name":"200_s.gif","url":"http://beta.rebelcricket.com/200_s.gif","caption":""}]}')
   )
 end
 
@@ -24,7 +24,7 @@ Dir.foreach("#{::Rails.root}/public/rebelimages/") do |image|
   next if image == '.' or image == '..' or RebelGfx.exists?(filename: image)
   RebelGfx.create(
     filename: image,
-    url: "http://rebelcricket.lacuna.club/rebelimages/#{image}",
+    url: "http://beta.rebelcricket.com/rebelimages/#{image}",
     path: "#{::Rails.root}/public/rebelimages/#{image}",
     rebel_quote_number: 'rebelimages'
   )

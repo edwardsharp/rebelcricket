@@ -108,7 +108,7 @@
 
     <iron-ajax
       auto
-      url="http://rebelcricket.lacuna.club/api/rebelvendorgoods"
+      url="http://beta.rebelcricket.com/api/rebelvendorgoods"
       handle-as="json"
       debounce-duration="500"
       last-response="{{companycasual}}">
@@ -385,6 +385,7 @@
           //   sizes: _.map(_clrPrices, function(item){ return item.size; })
           // });
         }else{
+          //#TODO: fix this? safari is thowing errz on the this next line:
           delete this.vendorItem.colorsSelected[e.model.item.name];
           // this.set('vendorItem.colorsSelected.'+e.model.item.name, undefined);
         }

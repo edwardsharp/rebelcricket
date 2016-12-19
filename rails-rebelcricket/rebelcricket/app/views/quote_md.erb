@@ -24,7 +24,7 @@
   <tr>
     <td colspan="12">
       <b>Edit this quote:</b> 
-      <a href="http://localhost:8080/admin#<%= @rebel_quote.number%>"><%= @rebel_quote.number %></a>
+      <a href="http://beta.rebelcricket.com/admin#<%= @rebel_quote.number%>"><%= @rebel_quote.number %></a>
     </td>
   </tr>
   
@@ -505,6 +505,16 @@
         <%= @quote["date_needed"] %>
       <% end %>
     </td>
+  </tr>
+
+  <tr>
+    <td align="left" colspan="12">
+      <% if @quote["wants_mail"] %>
+        <b>Wants mail:</b>
+        <%= @quote["wants_mail"] %>
+      <% end %>
+    </td>
+    
   </tr>
   <tr>
     <td align="left" colspan="12">

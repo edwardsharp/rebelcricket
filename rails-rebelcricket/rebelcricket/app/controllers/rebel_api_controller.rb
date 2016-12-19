@@ -117,13 +117,13 @@ class RebelApiController < ApplicationController
       if RebelGfx.exists?(filename: gfx_params[:filename])
         rebel_gfx = RebelGfx.find_by filename: gfx_params[:filename]
         rebel_gfx.rebel_quote_number = 'rebelimages'
-        rebel_gfx.url = "http://rebelcricket.lacuna.club/rebelimages/#{gfx_params[:filename]}"
+        rebel_gfx.url = "http://beta.rebelcricket.com/rebelimages/#{gfx_params[:filename]}"
         rebel_gfx.path = path
       else
         rebel_gfx = RebelGfx.new(
           filename: gfx_params[:filename], 
           rebel_quote_number: 'rebelimages',
-          url: "http://rebelcricket.lacuna.club/rebelimages/#{gfx_params[:filename]}",
+          url: "http://beta.rebelcricket.com/rebelimages/#{gfx_params[:filename]}",
           path: path
         )
       end
@@ -238,7 +238,7 @@ class RebelApiController < ApplicationController
       rebel_gfx = RebelGfx.new(
         filename: gfx_params[:filename], 
         rebel_quote_number: gfx_params[:quote_number],
-        url: "http://rebelcricket.lacuna.club/rebelgfx/#{gfx_params[:filename]}",
+        url: "http://beta.rebelcricket.com/rebelgfx/#{gfx_params[:filename]}",
         path: path
       )
 

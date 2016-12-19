@@ -317,7 +317,7 @@ ul.sidebar li a h1,ul.sidebar li a h2,ul.sidebar li a h3,ul.sidebar li a h4,ul.s
               <tr>
                 <td colspan="12">
                   <b>Edit this quote:</b> 
-                  <a href="http://localhost:8080/admin#<%= @rebel_quote.number%>"><%= @rebel_quote.number %></a>
+                  <a href="http://beta.rebelcricket.com/admin#<%= @rebel_quote.number%>"><%= @rebel_quote.number %></a>
                 </td>
               </tr>
               <tr><td colspan="12">&nbsp;</td></tr>
@@ -807,6 +807,16 @@ ul.sidebar li a h1,ul.sidebar li a h2,ul.sidebar li a h3,ul.sidebar li a h4,ul.s
                   <% end %>
                 </td>
               </tr>
+
+              <tr>
+                <td align="left" colspan="12">
+                  <% if @quote["wants_mail"] %>
+                    <b>Wants mail:</b>
+                    <%= @quote["wants_mail"] %>
+                  <% end %>
+                </td>
+              </tr>
+
               <tr>
                 <td align="left" colspan="12">
                   <b>Notes:</b>

@@ -200,7 +200,7 @@
 
     <iron-ajax
       id="ajaxValidateApiKey"
-      url="http://rebelcricket.lacuna.club/api/validate_api_key"
+      url="http://beta.rebelcricket.com/api/validate_api_key"
       headers='{{headers}}'
       handle-as="json"
       on-response="_handleValidateApiKeyResponse">
@@ -209,7 +209,7 @@
     
     <iron-ajax
       id="ajaxFetchQuote"
-      url="http://rebelcricket.lacuna.club/api/quote"
+      url="http://beta.rebelcricket.com/api/quote"
       headers='{{headers}}'
       handle-as="json"
       on-response="_handleFetchQuoteResponse"
@@ -219,7 +219,7 @@
 
     <iron-ajax
       id="ajaxGetHomePage"
-      url="http://rebelcricket.lacuna.club/api/pages"
+      url="http://beta.rebelcricket.com/api/pages"
       params='{"page":"home"}'
       headers='{{headers}}'
       handle-as="json"
@@ -228,7 +228,7 @@
 
     <iron-ajax
       id="ajaxGetAboutPage"
-      url="http://rebelcricket.lacuna.club/api/pages"
+      url="http://beta.rebelcricket.com/api/pages"
       params='{"page":"about"}'
       headers='{{headers}}'
       handle-as="json"
@@ -237,7 +237,7 @@
 
     <iron-ajax
       id="ajaxGetServicesPage"
-      url="http://rebelcricket.lacuna.club/api/pages"
+      url="http://beta.rebelcricket.com/api/pages"
       params='{"page":"services"}'
       headers='{{headers}}'
       handle-as="json"
@@ -246,7 +246,7 @@
 
     <iron-ajax
       id="ajaxUpdatePage"
-      url="http://rebelcricket.lacuna.club/api/pages"
+      url="http://beta.rebelcricket.com/api/pages"
       method="POST"
       headers='{{headers}}'
       handle-as="json"
@@ -256,7 +256,7 @@
 
     <iron-ajax
       id="ajaxGetImages"
-      url="http://rebelcricket.lacuna.club/api/images"
+      url="http://beta.rebelcricket.com/api/images"
       headers='{{headers}}'
       handle-as="json"
       last-response="{{images}}">
@@ -264,7 +264,7 @@
 
     <iron-ajax
       id="ajaxCreateImage"
-      url="http://rebelcricket.lacuna.club/api/create_image"
+      url="http://beta.rebelcricket.com/api/create_image"
       method="POST"
       headers='{{headers}}'
       on-response="_handleAjaxCreateImagePostResponse"
@@ -274,7 +274,7 @@
 
     <iron-ajax
       id="ajaxVendorGoods"
-      url="http://rebelcricket.lacuna.club/api/vendorgoods"
+      url="http://beta.rebelcricket.com/api/vendorgoods"
       handle-as="json"
       headers='{{headers}}'
       debounce-duration="500"
@@ -283,7 +283,7 @@
 
     <iron-ajax
       auto
-      url="http://rebelcricket.lacuna.club/api/vendorgoods"
+      url="http://beta.rebelcricket.com/api/vendorgoods"
       params='{"datafiles":"true"}'
       handle-as="json"
       headers='{{headers}}'
@@ -293,7 +293,7 @@
     
     <iron-ajax
       auto
-      url="http://rebelcricket.lacuna.club/api/vendorgoods"
+      url="http://beta.rebelcricket.com/api/vendorgoods"
       params='{"existingdata":"true"}'
       handle-as="json"
       headers='{{headers}}'
@@ -303,7 +303,7 @@
 
     <iron-ajax
       id="saveVendorGoods"
-      url="http://rebelcricket.lacuna.club/api/vendorgoods"
+      url="http://beta.rebelcricket.com/api/vendorgoods"
       method="POST"
       headers='{{headers}}'
       content-type="application/json"

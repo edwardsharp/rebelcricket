@@ -22,7 +22,7 @@ DataMapper.setup(:default, ENV['DATABASE_URL'] || 'postgres://localhost/rebelcri
 
 #cors
 # set :protection, origin_whitelist: ['http://localhost:8080']
-set :allow_origin, ['http://localhost:8080', 'http://rebelcricket.lacuna.club', 'http://rebelcricket.com']
+set :allow_origin, ['http://localhost:8080', 'http://rebelcricket.lacuna.club', 'http://rebelcricket.com', 'http://beta.rebelcricket.com', 'http://kb.rebelcricket.com']
 set :allow_methods, [:post]
 set :allow_credentials, false #not using http auth or cookies
 set :max_age, "1728000" #20 dayz
@@ -265,7 +265,7 @@ post '/rebelgfx' do
       id: params[:file], 
       rebel_quote_id: params[:id],
       created_at: Time.now, 
-      url: "http://rebelcricket.lacuna.club/rebelgfx/#{params[:file]}",
+      url: "http://beta.rebelcricket.com/rebelgfx/#{params[:file]}",
       path: target
     )
     rebel_gfx.save!

@@ -217,7 +217,7 @@
 
     <iron-ajax
       id="rebelquote"
-      url="http://rebelcricket.lacuna.club/api/rebelquote"
+      url="http://beta.rebelcricket.com/api/rebelquote"
       method="POST"
       content-type="application/json"
       handle-as="json"
@@ -228,7 +228,7 @@
 
     <iron-ajax
       id="rebelgfx"
-      url="http://rebelcricket.lacuna.club/api/rebelgfx"
+      url="http://beta.rebelcricket.com/api/rebelgfx"
       method="POST"
       on-response="_handleAjaxGfxPostResponse"
       on-error="_handleAjaxGfxPostError"
@@ -238,7 +238,7 @@
 
     <iron-ajax
       id="rebelgfxdelete"
-      url="http://rebelcricket.lacuna.club/api/delete_image"
+      url="http://beta.rebelcricket.com/api/delete_image"
       method="DELETE"
       >
     </iron-ajax>
@@ -912,6 +912,14 @@
                 </template>
               </div>
               </template>
+
+              <div class="row">
+                <div class="col s12">
+                  <paper-checkbox checked={{quote.wants_mail}}>
+                      Sign up to receive email updates on new products, blog stories, special promotions, sales, and more.
+                  </paper-checkbox>
+                </div>
+              </div>
 
               <div class="col s12">
                 <paper-textarea rows="4" label="Notes" value="{{quote.notes}}"></paper-textarea>

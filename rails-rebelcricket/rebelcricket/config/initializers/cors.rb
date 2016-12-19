@@ -7,7 +7,7 @@
 
 Rails.application.config.middleware.insert_before 0, Rack::Cors do
   allow do
-    origins ['localhost:8080', 'rebelcricket.lacuna.club', 'rebelcricket.com']
+    origins ['localhost:8080', 'rebelcricket.lacuna.club', 'rebelcricket.com', 'beta.rebelcricket.com', 'kb.rebelcricket.com']
 
     resource '*',
       headers: :any,
