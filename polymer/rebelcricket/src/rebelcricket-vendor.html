@@ -307,17 +307,29 @@
         console.log('_filterProducts by_str:',by_str);
         console.log('this.companycasual:',this.companycasual);
         this.set('filteredProducts', _.filter(this.companycasual, function(item){
-          return item.category.trim() == by_str.trim() || item.sub_item.trim() == by_str.trim();
+          if(item){
+             return item.category.trim() == by_str.trim() || item.sub_item.trim() == by_str.trim();
+           }else{
+            return false;
+           }
+         
         }));
       },
       _productCategories(obj){
         return _.uniq(_.map(obj, function(item){
-          return item.category;
+          if(item){
+            return item.category;
+          }
         }));
       },
       _productSubCategories(obj, category){
         return _.uniq(_.map(_.filter(obj, function(item){
-          return item.category == category;
+          if(item){
+            return item.category == category;
+          }else{
+            return false;
+          }
+          
         }), function(item){
           return item.sub_item;
         }));

@@ -21,6 +21,8 @@
 <link rel="import" href="../bower_components/paper-checkbox/paper-checkbox.html">
 <link rel="import" href="../bower_components/paper-dialog/paper-dialog.html">
 <link rel="import" href="../bower_components/paper-dialog-scrollable/paper-dialog-scrollable.html">
+<link rel="import" href="../bower_components/iron-dropdown/iron-dropdown-scroll-manager.html">
+
 
 <link rel="import" href="shared-styles.html">
 <!-- <script src="../bower_components/jsoneditor/dist/jsoneditor.min.js"></script> -->
@@ -183,6 +185,10 @@
         max-width: 200px;
       }
       /* END vendorItem stylez*/
+
+      #dataLoadingSpinner {
+        margin-top: 10px;
+      }
 
       @media (max-width: 767px) {
         #adminContent {
@@ -467,7 +473,7 @@
                     <paper-button class="adm_drwr" on-tap="_applyVendorDataFilter">Filter</paper-button>
                   </div>
                   <div class="col s3">
-                    <paper-dropdown-menu label="Load Data File..." on-iron-select="_dataFileSelected">
+                    <paper-dropdown-menu label="Load Data File..." on-iron-select="_dataFileSelected" hidden$="[[dataLoading]]">
                       <paper-listbox class="dropdown-content">
                         <paper-item class="custom">Load Data File...</paper-item>
                         <template is="dom-repeat" items="{{vendorDatafiles}}">
@@ -475,6 +481,8 @@
                         </template>
                       </paper-listbox>
                     </paper-dropdown-menu>
+
+                    <paper-spinner id="dataLoadingSpinner" active$="[[dataLoading]]" hidden$="[[!dataLoading]]"></paper-spinner>
                   </div>
 
                 </div>
@@ -511,12 +519,12 @@
               
             </div>
           </div> -->
-       <!--    <template is="dom-if" if="[[filteredVendorgoods.length]]">
+          <template is="dom-if" if="[[filteredVendorgoods.length]]">
             <div>
-              <paper-checkbox on-change="_selectAllFilteredGoods"></paper-checkbox>
+              <paper-checkbox checked={{selectAll}} on-change="_selectAllFilteredGoods"></paper-checkbox>
               Select All
             </div>
-          </template> -->
+          </template>
           <template is="dom-repeat" items="[[filteredVendorgoods]]">
             <div>
               <paper-checkbox checked={{item.selected}} on-change="_vendorGoodSelected"></paper-checkbox>
@@ -687,11 +695,12 @@
         <div id="imagesContainer" hidden>
           
           <div class="row">
-            <div class="col s12">
-              <template is="dom-repeat" items="{{images}}">
-                <img class="rebel-image" src$="[[item.url]]">
-              </template>
-            </div>
+            <template is="dom-repeat" items="{{images}}">
+              <div class="col s6 m4 l3">
+                <img class="rebel-image" src$="[[item.url]]" on-tap="_imageSelected">
+                <input value="[[item.url]]">
+              </div>
+            </template>
           </div>
 
         </div>
@@ -793,6 +802,14 @@
         vendorItem: {
           type: Object,
           notify: true
+        },
+        dataLoading: {
+          type: Boolean,
+          value: false
+        },
+        selectAll: {
+          type: Boolean,
+          value: false
         }
       },
       _header: function(_apiKey) {
@@ -1009,10 +1026,13 @@
         this.$.ajaxVendorGoods.generateRequest();
       },
       _handleVendorGoodsResponse: function(e){
+
         this.set('vendorgoods',e.detail.response);
         // editor.set(e.detail.response);
         this.set('filteredVendorgoods', e.detail.response);
         // get json
+        this.set('dataLoading', false);
+        this.set('selectAll', false);
       },
       _toggleDrawer: function(e){
         this.$.drawer.toggle();
@@ -1109,6 +1129,7 @@
         return this.servicesPage.items.indexOf(_item);
       },
       _dataFileSelected: function(e){
+        this.set('dataLoading', true);
         // console.log('_dataFileSelected e:',e);
         // console.log('val:',this.vendorDatafiles[e.target.selected-1]);
         this.set('admin.selectedVendorDatafile', this.vendorDatafiles[e.target.selected-1]) 
@@ -1119,7 +1140,7 @@
 
         // var _jsonOut = editor.get();
         //console.log('wooo vendor data: ', _.filter(this.vendorgoods, {selected: true}) );
-        // console.log('_saveVendorData this.selectedVendorGoods:',this.selectedVendorGoods);
+        console.log('_saveVendorData this.selectedVendorGoods:',this.selectedVendorGoods);
 
         this.$.saveVendorGoods.body = JSON.stringify({vendorgoods: this.selectedVendorGoods });
         
@@ -1200,11 +1221,39 @@
         }
       },
       _selectAllFilteredGoods: function(e){
+        
+        var _goodz = this.filteredVendorgoods;
+        console.log('_selectAllFilteredGoods e.target.checked:',_goodz);
         if(e.target.checked){
-          this.set('filteredVendorgoods', _.each(this.filteredVendorgoods, function(o) {o.selected = true;}));
+          this.set('filteredVendorgoods',[]);
+          console.log('fuck this.filteredVendorgoods:',this.filteredVendorgoods);
+          
+          this.async(function(){
+            _this = this;
+            this.set('filteredVendorgoods', _.each(_goodz, function(o) {
+              o.selected = true;
+              if(_this.selectedVendorGoods.indexOf(o) == -1){
+                _this.push('selectedVendorGoods',o);
+              }
+            }));
+           },1);
+         
+          // console.log('tadafuck this.filteredVendorgoods:',this.filteredVendorgoods);
         }else{
-          this.set('filteredVendorgoods', _.each(this.filteredVendorgoods, function(o) {o.selected = false;}));
+          this.set('filteredVendorgoods',[]);
+          this.async(function(){
+            _this = this;
+            this.set('filteredVendorgoods', _.each(_goodz, function(o) {
+              o.selected = false;
+              if(_this.selectedVendorGoods.indexOf(o) != -1){
+                _this.splice('selectedVendorGoods', o, 1);
+              }
+            }));
+          },1);
         }
+      },
+      _imageSelected: function(e){
+        console.log('_imageSelected e.model.item:',e.model.item);
       },
       ready: function(){
 
@@ -1242,6 +1291,17 @@
 
 
         });
+
+
+        //prevent scrolling when dialog is open.
+        // this.$.vendorGoodsInfo.addEventListener('opened-changed', function(e){
+        //   console.log('vendorGoodsInfo e:',e.opened);
+        //   if(e.opened) {
+        //     Polymer.IronDropdownScrollManager.pushScrollLock(this.$.vendorGoodsInfo);
+        //   } else {
+        //     Polymer.IronDropdownScrollManager.removeScrollLock(this.$.vendorGoodsInfo);
+        //   }
+        // });
 
 
       }

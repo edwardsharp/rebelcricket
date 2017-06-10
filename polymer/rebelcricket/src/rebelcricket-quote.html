@@ -338,8 +338,8 @@
        
                           <div class="col s2">
         
-                            <paper-icon-button icon="shopping-basket" on-tap="_openDialog"></paper-icon-button>
-                            <small>browse</small>
+                            <paper-icon-button icon="shopping-basket" on-tap="_openDialog" disabled$="[[_madeVendorSelection(lineItem)]]"></paper-icon-button>
+                            <small hidden$="[[_madeVendorSelection(lineItem)]]">browse</small>
 
                           </div>
 
@@ -835,10 +835,12 @@
             <div class="col s12 m6 offset-m3" id="quoteDesignFileWrapper">
 
               <label for="quoteDesignFile"><iron-icon icon="add"></iron-icon>Upload Image Files</label>
-              <input id="quoteDesignFile" type="file"></input>
+              <input id="quoteDesignFile" type="file" on-change="_quoteFileChnaged" disabled$="[[quoteDesingUploading]]"></input>
 
-              <paper-spinner id="quoteDesingUploadSpinner" alt="Uploading File..."></paper-spinner>
-              <span id="quoteDesignUploadFeedback"></span>
+              <paper-spinner id="quoteDesingUploadSpinner" alt="Uploading File..." active="[[quoteDesingUploading]]"></paper-spinner>
+              <span id="quoteDesignUploadFeedback" hidden$="[[!gfxError]]">
+                ERROR! Could not upload that file. Please try again or choose a different file. If this form does not work for you please email your graphics to <a href="mailto: rebelcricket@gmail.com">rebelcricket@gmail.com</a>.
+              </span>
               <div>
                 <small>Graphic files can be sent as ai, eps, pdf, psd, svg, jpeg, or tiff. They should be sized to the desired print size at 300 dpi. If you have a physical copy of the art let us know, we’ll schedule a time for you to bring it in and discuss the options. </small>
               </div>
@@ -1057,6 +1059,14 @@
         type: String,
         notify: true,
         computed: '_addServiceButtonText(quote.services)'
+      },
+      quoteDesingUploading: {
+        type: Boolean,
+        value: false
+      },
+      gfxError: {
+        type: Boolean,
+        value: false
       }
     },
     _quoteNeedByDateObserver: function(e){
@@ -1521,42 +1531,51 @@
       graphic_item.attachment_id = e.detail.response.id;
       graphic_item.attachment_url = e.detail.response.url;
       this.push('quote.graphic.items', graphic_item);
-      this.$.quoteDesingUploadSpinner.active = false;
-      this.$.quoteDesignUploadFeedback.innerHTML = '';
-      this.$.quoteDesignFile.disabled = false;
+      this.set('quoteDesingUploading', false);
+      // this.$.quoteDesignUploadFeedback.innerHTML = '';
+      this.set('gfxError',false);
     },
     _handleAjaxGfxPostError: function(e){
       // console.log('_handleAjaxGfxPostError! e:',e);
-      this.$.quoteDesingUploadSpinner.active = false;
-      this.$.quoteDesignUploadFeedback.innerHTML = 'ERROR! Could not upload that file. Please try again or choose a different file. If this form does not work for you please email your graphics to <a href="mailto: rebelcricket@gmail.com">rebelcricket@gmail.com</a>.';
-      this.$.quoteDesignFile.disabled = false;
+      this.set('quoteDesingUploading', false);
+      this.set('gfxError',true);
     },
     _itemNeedsSmallFont: function(str){
       return str.length > 16 ? 'smallfont' : '';
     },
-    ready: function(){
-      //file upload
-      var input = this.$.quoteDesignFile;
-      var _this = this;
-      input.addEventListener('change', function () {
-        _this.$.quoteDesignFile.disabled = true;
-        var file = input.files[0]; // file is a Blob
+    _quoteFileChnaged: function(e){
+      console.log('_quoteFileChnaged! e:',e.target);
 
-        _this.$.quoteDesingUploadSpinner.active = true;
+      if(e.target.files[0] != undefined){
+        e.target.disabled = true;
+        var file = e.target.files[0]; // file is a Blob
+
+        this.set('quoteDesingUploading', true);
 
         var params = {};
-        params["quote_number"] = _this.quoteID;
-        params["filename"] = _this.quoteID+'-'+file.name;
-        _this.$.rebelgfx.params = params;
+        params["quote_number"] = this.quoteID;
+        params["filename"] = this.quoteID+'-'+file.name;
+        this.$.rebelgfx.params = params;
 
         var formData = new FormData();
         formData.append('file', file);
 
-        _this.$.rebelgfx.body = formData;
-        _this.$.rebelgfx.generateRequest();
+        this.$.rebelgfx.body = formData;
+        this.$.rebelgfx.generateRequest();
+      }
 
-      });
 
+    },
+    _madeVendorSelection: function(_item){
+      console.log('_madeVendorSelection _item:',_item);
+      return _item != undefined 
+      && _item.brand_style_color[0].value != undefined 
+      && _item.brand_style_color[0].value.length > 0
+      && _item.brand_style_color[1].value != undefined 
+      && _item.brand_style_color[1].value.length > 0
+      && _item.brand_style_color[2].value != undefined 
+      && _item.brand_style_color[1].value.length > 0;
+      // return _item != undefined && _item.length > 0;
     }
 
   });
