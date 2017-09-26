@@ -10,6 +10,11 @@ export class OrderService {
 
   constructor() { }
 
+  getOrder(id: string): Promise<Order> {
+    return this.getOrders()
+      .then(orders => orders.find(order => order.id === id));
+  }
+
   getOrders(): Promise<Order[]> {
     //environment.couch_host
     return Promise.resolve(ORDERS);

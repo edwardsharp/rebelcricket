@@ -10,17 +10,25 @@ import { AppComponent } from './app.component';
 import { OrdersComponent } from './orders/orders.component';
 import { OrderService } from './orders/order.service';
 import { OrderDetailComponent } from './order-detail/order-detail.component';
-
+import { DashboardComponent } from './dashboard/dashboard.component';
 
 const appRoutes: Routes = [
-  { path: 'order/:id',      component: OrderDetailComponent },
+  { 
+  	path: 'dashboard',	
+  	component: DashboardComponent 
+  },
+  { 
+  	path: 'dashboard/order/:id', 
+  	component: OrderDetailComponent
+  },
   {
-    path: 'orders',
+    path: 'dashboard/orders',
     component: OrdersComponent,
     data: { title: 'Orders List' }
   },
-  { path: '',
-    redirectTo: '/orders',
+  { 
+  	path: '',
+    redirectTo: '/dashboard',
     pathMatch: 'full'
   }
   // ,
@@ -31,7 +39,8 @@ const appRoutes: Routes = [
   declarations: [
     AppComponent,
     OrdersComponent,
-    OrderDetailComponent
+    OrderDetailComponent,
+    DashboardComponent
   ],
   imports: [
   	RouterModule.forRoot(

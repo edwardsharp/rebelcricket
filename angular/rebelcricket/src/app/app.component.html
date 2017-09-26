@@ -1,12 +1,54 @@
-<!--The content below is only a placeholder and can be replaced.-->
-<!-- <div style="text-align:center">
-  <h1>
-    Welcome to {{title}}!
-  </h1>  
-</div>
+<md-toolbar color="primary">
+  <button type="button" class="menu-button" md-icon-button (click)="sidenav.toggle()">
+    <md-icon>menu</md-icon>
+  </button>
+  <span class="flexfill"></span>
+  <span>{{title}}</span>
+  <span class="flexfill"></span>
+  
+  <button md-icon-button [mdMenuTriggerFor]="menu">
+    <md-icon class="example-icon">more_vert</md-icon>
+  </button>
+  <md-menu #menu="mdMenu">
+    <button md-menu-item>
+      <md-icon>account_circle</md-icon>
+      <span>account</span>
+    </button>
+    <button md-menu-item disabled>
+      <md-icon>notifications_off</md-icon>
+      <span>disable alerts</span>
+    </button>
+    <button md-menu-item>
+      <md-icon>favorite_border</md-icon>
+      <span><small>madewithlove</small></span>
+    </button>
+  </md-menu>
 
-<nav>
-  <a routerLink="/orders" routerLinkActive="active">Orders</a>
-</nav> -->
+</md-toolbar>
 
-<router-outlet></router-outlet>
+<md-sidenav-container class="dashboard-container">
+  <md-sidenav 
+    #sidenav 
+    mode="push" 
+    opened="false"
+    class="dashboard-sidenav">
+  
+    <md-nav-list>
+      
+      <md-list-item routerLink="/dashboard" routerLinkActive="active" (click)="sidenav.close()">
+        <span class="badge"></span> Dashboard
+      </md-list-item>
+
+      <md-list-item routerLink="/dashboard/orders" routerLinkActive="active" (click)="sidenav.close()">
+        <span class="badge"></span> Orders
+      </md-list-item>
+    </md-nav-list>
+
+  </md-sidenav>
+
+  
+  <div class="dashboard-sidenav-content">
+    <router-outlet></router-outlet>
+  </div>
+
+</md-sidenav-container>
