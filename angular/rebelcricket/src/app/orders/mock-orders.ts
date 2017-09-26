@@ -67,6 +67,33 @@ export const ORDERS: Order[] = [
       service_label: 'string',
       items: []
     })
+  },
+  { id: '1506406224-tsnr3y', 
+    name: 'Some Body',
+    email: 'so@me.body',
+    phone: '999-666-9999',
+    org: '',
+    submitted: true,
+    notes: 'beep beep',
+    need_by_date: true,
+    date_needed: '1506406224',
+    wants_mail: true,
+    order_services: ORDER_SERVICES,
+    line_items: new Array<LineItem>({
+      notes: 'some note',
+      quantity: 2,
+      total: 13.32,
+      service_key: 'string',
+      service_label: 'some service',
+      items: ['a thing', 'another thing']
+    },{
+      notes: 'string3',
+      quantity: 3,
+      total: 19.98,
+      service_key: 'string',
+      service_label: 'some other service',
+      items: ['item 1', 'item 2', 'item 3']
+    })
   }
 ];
 

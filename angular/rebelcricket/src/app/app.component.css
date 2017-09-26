@@ -1,10 +1,9 @@
-md-list-item:hover{
-	background-color: gray;
+[hidden] {
+  display: none;
 }
 
-.selected{
-	font-weight: bold;
-	background-color: #f3f3f3;
+md-list-item:hover {
+	background-color: gray;
 }
 
 .dashboard-container {
@@ -14,14 +13,12 @@ md-list-item:hover{
 
 .dashboard-sidenav-content {
   display: flex;
-  
   overflow-y: scroll;
   align-items: flex-start;
   justify-content: center;
 }
 
 .dashboard-sidenav {
-  padding: 20px;
   min-width: 285px;
   background: #f3f3f3;
 }
@@ -30,7 +27,4 @@ md-toolbar {
 	position: sticky;
 	top: 0;
 	z-index: 1;
-}
-.flexfill {
-  flex: 1 1 auto;
 }

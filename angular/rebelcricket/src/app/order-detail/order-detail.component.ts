@@ -46,6 +46,7 @@ export class OrderDetailComponent  { //implements OnInit
     //   	this.orderService.getOrder( params.get('id') )
     //   );
 
+    // .switchMap() is a debounced observable; rad!
     this.route.paramMap
     	.switchMap((params: ParamMap) => this.orderService.getOrder( params.get('id') ))
     	.subscribe((order: Order) => this.order = order);

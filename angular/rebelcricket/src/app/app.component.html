@@ -2,10 +2,16 @@
   <button type="button" class="menu-button" md-icon-button (click)="sidenav.toggle()">
     <md-icon>menu</md-icon>
   </button>
+  <button md-icon-button (click)="back()">
+    <md-icon>arrow_back</md-icon>
+  </button>
+
   <span class="flexfill"></span>
   <span>{{title}}</span>
   <span class="flexfill"></span>
   
+  <app-search-box class="search-container" #searchBox (onSearch)="doSearch($event)" (onFocus)="doSearch($event)"></app-search-box>
+
   <button md-icon-button [mdMenuTriggerFor]="menu">
     <md-icon class="example-icon">more_vert</md-icon>
   </button>
@@ -32,17 +38,8 @@
     mode="push" 
     opened="false"
     class="dashboard-sidenav">
-  
-    <md-nav-list>
-      
-      <md-list-item routerLink="/dashboard" routerLinkActive="active" (click)="sidenav.close()">
-        <span class="badge"></span> Dashboard
-      </md-list-item>
 
-      <md-list-item routerLink="/dashboard/orders" routerLinkActive="active" (click)="sidenav.close()">
-        <span class="badge"></span> Orders
-      </md-list-item>
-    </md-nav-list>
+    <app-nav (sidenavEvent)="sidenav.close()"></app-nav>
 
   </md-sidenav>
 

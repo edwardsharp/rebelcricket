@@ -1,7 +1,13 @@
-ORDER D33TZ {{order}}
+<div *ngIf="!order" class="content">
+	<div class="header">
+	  <h2 class="name">Order Not Found!</h2>
+	  <small>:(</small>
+	</div>
+</div>
+
 <div *ngIf="order" class="content">
   <div class="header">
-	  <h2 class="name">{{order.org}} - {{order.name}}</h2>
+	  <h2 class="name">{{order.name}} <span *ngIf="order.org" class="badge">&nbsp;({{order.org}})</span></h2>
 	  <small>#{{order.id}}</small>
 	</div>
 
@@ -34,7 +40,7 @@ ORDER D33TZ {{order}}
 
 	<h3 *ngIf="order.line_items">Line Items ({{order.line_items.length}})</h3>
   <div *ngFor="let line_item of order.line_items">
-  	<h5>Service: {{line_item.service_label}}</h5>
+  	<h3>Service: {{line_item.service_label}}</h3>
 
   	<md-form-field>
 	    <input mdInput [(ngModel)]="line_item.quantity" placeholder="quantity" type="number">

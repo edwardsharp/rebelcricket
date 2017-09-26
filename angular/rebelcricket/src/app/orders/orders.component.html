@@ -6,7 +6,10 @@
     [class.selected]="order === selectedOrder"
     routerLink="/dashboard/order/{{order.id}}" 
     routerLinkActive="active">
-    <span class="badge">{{order.id}}</span> {{order.name}}
+    {{order.name}} <span *ngIf="order.org" class="badge">&nbsp;({{order.org}})</span>
+
+    <span class="flexfill"></span>
+    <md-icon>navigate_next</md-icon>
   </md-list-item>
 </md-nav-list>
 
