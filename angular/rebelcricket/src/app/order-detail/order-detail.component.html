@@ -1,0 +1,58 @@
+<div *ngIf="order" class="content">
+  <div class="header">
+	  <h2 class="name">{{order.org}} - {{order.name}}</h2>
+	  <small>#{{order.id}}</small>
+	</div>
+
+  <div>
+	  <md-form-field>
+	    <input mdInput [(ngModel)]="order.name" placeholder="name">
+	  </md-form-field>
+	  <md-form-field>
+	    <input mdInput [(ngModel)]="order.org" placeholder="org">
+	  </md-form-field>
+	  
+	</div>
+	<div>
+		<md-form-field>
+	    <input mdInput [(ngModel)]="order.email" placeholder="email">
+	  </md-form-field>
+	  <md-form-field>
+	    <input mdInput [(ngModel)]="order.phone" placeholder="phone">
+	  </md-form-field>
+	</div>
+  <div>
+	  <md-form-field class="fullwidth">
+	    <textarea mdInput [(ngModel)]="order.notes" placeholder="notes"></textarea>
+	  </md-form-field>
+	</div>
+
+  <md-list>
+	  <md-list-item *ngFor="let service of order.services">{{service}}</md-list-item>
+	</md-list>
+
+	<h3 *ngIf="order.line_items">Line Items ({{order.line_items.length}})</h3>
+  <div *ngFor="let line_item of order.line_items">
+  	<h5>Service: {{line_item.service_label}}</h5>
+
+  	<md-form-field>
+	    <input mdInput [(ngModel)]="line_item.quantity" placeholder="quantity" type="number">
+	  </md-form-field>
+
+	  <md-form-field>
+	    <input mdInput [(ngModel)]="line_item.total" placeholder="total" type="number">
+	  </md-form-field>
+
+	  <div>
+	  	<md-form-field class="fullwidth">
+		    <textarea mdInput [(ngModel)]="line_item.notes" placeholder="notes"></textarea>
+		  </md-form-field>
+		</div>
+
+	  <h4 *ngIf="items">Items ({{items.length}})</h4>
+	  <div *ngFor="let item of items">
+	  	{{item}}
+	  </div>
+  </div>
+
+</div>

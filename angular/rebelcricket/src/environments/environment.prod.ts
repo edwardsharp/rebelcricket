@@ -1,3 +1,4 @@
 export const environment = {
-  production: true
+  production: true,
+  couch_host: 'https://couch.rebelcricket.com'
 };

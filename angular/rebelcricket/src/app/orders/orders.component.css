@@ -1,0 +1,39 @@
+.sidenav-menu{
+	position: sticky;
+	top: 0;
+	min-width: 90px;
+	z-index: 1;
+	background-color: rbga(255,255,255,100);
+}
+.sidenav-menu button{
+	background-color: white;
+}
+
+md-list-item:hover{
+	background-color: gray;
+}
+
+.selected{
+	font-weight: bold;
+	background-color: #f3f3f3;
+}
+
+
+.orders-container {
+  width: 100%;
+  height: 100vh;
+}
+
+.orders-sidenav-content {
+  display: flex;
+  
+  overflow-y: scroll;
+  align-items: flex-start;
+  justify-content: center;
+}
+
+.orders-sidenav {
+  padding: 20px;
+  min-width: 285px;
+  background: #f3f3f3;
+}

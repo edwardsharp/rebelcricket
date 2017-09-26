@@ -1,0 +1,30 @@
+<md-sidenav-container class="orders-container">
+  <md-sidenav 
+    #sidenav 
+    mode="push" 
+    opened="true"
+    class="orders-sidenav">
+  
+    <md-nav-list>
+      <span *ngIf="loading">
+        <i>loading orders...</i>
+      </span> 
+      <md-list-item *ngFor="let order of orders" 
+        [class.selected]="order === selectedOrder"
+        (click)="onSelect(order);sidenav.close()">
+        <span class="badge">{{order.id}}</span> {{order.name}}
+      </md-list-item>
+    </md-nav-list>
+
+  </md-sidenav>
+  <div class="sidenav-menu">
+    <button type="button" md-button (click)="sidenav.toggle()">
+      <md-icon>menu</md-icon>
+    </button>
+  </div>
+  
+  <div class="orders-sidenav-content">
+    <app-order-detail [order]="selectedOrder"></app-order-detail>
+  </div>
+
+</md-sidenav-container>
