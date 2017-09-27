@@ -1,0 +1,14 @@
+ <md-nav-list>
+
+  <md-list-item 
+    *ngFor="let item of sidebarItems" 
+    routerLink="{{item.href}}" 
+    routerLinkActive="active" 
+    [routerLinkActiveOptions]="{exact: true}"
+    (click)="sidebarClose()">
+    {{item.name}}
+    <span class="flexfill"></span>
+    <md-icon>navigate_next</md-icon>
+  </md-list-item>
+
+</md-nav-list>

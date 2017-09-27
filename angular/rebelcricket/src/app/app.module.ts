@@ -3,14 +3,16 @@ import { NgModule } from '@angular/core';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { RouterModule, Routes }   from '@angular/router';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
-
+// import { HttpModule, HttpClientModule } from '@angular/common/http';
+import { HttpModule } from '@angular/http';
 
 import { AppMaterialModule } from './app-material.module';
 
-import { AppComponent } from './app.component';
-import { NavComponent } from './nav/nav.component';
-import { OrdersComponent } from './orders/orders.component';
 import { OrderService } from './orders/order.service';
+import { VendorGoodsService } from './vendor-goods/vendor-goods.service';
+import { AppComponent } from './app.component';
+import { SidebarComponent } from './sidebar/sidebar.component';
+import { OrdersComponent } from './orders/orders.component';
 import { OrderDetailComponent } from './order-detail/order-detail.component';
 import { DashboardComponent } from './dashboard/dashboard.component';
 import { VendorGoodsComponent } from './vendor-goods/vendor-goods.component';
@@ -46,7 +48,7 @@ const appRoutes: Routes = [
 @NgModule({
   declarations: [
     AppComponent,
-    NavComponent,
+    SidebarComponent,
     OrdersComponent,
     OrderDetailComponent,
     DashboardComponent,
@@ -62,12 +64,13 @@ const appRoutes: Routes = [
     BrowserAnimationsModule,
     FormsModule,
     ReactiveFormsModule,
+    HttpModule,  
     AppMaterialModule
   ],
   // entryComponents: [
-  // 	OrdersComponent
+  // 	DashboardComponent, OrdersComponent
   // ],
-  providers: [OrderService],
+  providers: [OrderService, VendorGoodsService],
   bootstrap: [AppComponent]
 })
 export class AppModule { }
