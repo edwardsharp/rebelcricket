@@ -1,16 +1,38 @@
-<i *ngIf="loading">
-	loading vendor goods...
-</i>
+<md-toolbar color="primary">
+  <span class="truncate">Vendor Goods</span>
+  <span>
+	  &nbsp;(0/{{vendorGoods.length}} selected)
+	</span>
+  <span class="flexfill"></span>
 
-<div *ngIf="vendorGoods">
-  <div>
-    <!-- <paper-checkbox checked={{selectAll}} on-change="_selectAllFilteredGoods"></paper-checkbox> -->
-    Select All
-  </div>
-</div>
+  <i *ngIf="loading">
+		loading vendor goods...
+	</i>
+	<span *ngIf="vendorGoods">
+		<!-- <paper-checkbox checked={{selectAll}} on-change="_selectAllFilteredGoods"></paper-checkbox> -->
+		<md-checkbox></md-checkbox>
+	</span>
+</md-toolbar>
+<small class="truncate">{{vendorGoodsService.selectedDatafile}}</small>
+<md-list>
+  <md-list-item *ngFor="let item of vendorGoods">
 
-<div *ngFor="let item of vendorGoods">
+    
+    <h3 mdLine class="truncate" title="{{item.title}}"> {{item.title}} </h3>
+    <p mdLine class="truncate">
+      <span> {{item.category}} -- {{item.sub_item}} </span>
+      <span> ({{item.colors.length}} Colors) </span>
+    </p>
+    <button type="button" md-icon-button>
+	    <md-icon>shopping_basket</md-icon>
+	  </button>
+
+	  <md-checkbox></md-checkbox>
+  </md-list-item>
+</md-list>
+
+
+
   <!-- <paper-checkbox checked={{item.selected}} on-change="_vendorGoodSelected"></paper-checkbox> -->
-  <!-- <paper-icon-button icon="shopping-basket" on-tap="_openDialog"></paper-icon-button> -->
-  {{item.title}}
-</div>
+	  <!-- <paper-icon-button icon="shopping-basket" on-tap="_openDialog"></paper-icon-button> -->
+  

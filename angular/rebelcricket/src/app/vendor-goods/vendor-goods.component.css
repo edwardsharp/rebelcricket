@@ -1,0 +1,12 @@
+md-toolbar {
+	margin-top: 1em;
+	overflow: visible;
+	position: sticky;
+	top: 56px;
+	z-index: 2;
+}
+.truncate {
+	white-space: pre-wrap;
+  text-overflow: ellipsis;
+  max-width: 88vw;
+}

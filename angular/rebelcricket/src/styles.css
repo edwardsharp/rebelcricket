@@ -11,3 +11,10 @@ body {
 .flexfill {
   flex: 1 1 auto;
 }
+
+md-sidenav-container, .mat-drawer-content {
+  overflow: visible!important;
+}
+.mat-list-item-content{
+	height: auto!important;
+}
