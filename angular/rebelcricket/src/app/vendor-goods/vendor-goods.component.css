@@ -7,7 +7,7 @@
 
 #vendorGoodsIndex md-selection-list{
 	position: sticky;
-	top: 56px;
+	top: 66px;
 	overflow: scroll;
 	scroll-behavior: all;
 	max-height: (100vh - 56px);
