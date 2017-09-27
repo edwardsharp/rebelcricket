@@ -12,9 +12,14 @@ body {
   flex: 1 1 auto;
 }
 
+[hidden] {
+  display: none!important;
+}
+
 md-sidenav-container, .mat-drawer-content {
   overflow: visible!important;
 }
 .mat-list-item-content{
 	height: auto!important;
+	padding-bottom: 5px!important;
 }

@@ -1,6 +1,26 @@
+#vendorGoodsContainer{
+	display: -webkit-flex;
+	display: flex;
+	flex-direction: row;
+	margin-top: 1em;
+}
+
+#vendorGoodsIndex md-selection-list{
+	position: sticky;
+	top: 56px;
+	overflow: scroll;
+	scroll-behavior: all;
+	max-height: (100vh - 56px);
+}
+#vendorGoodsIndex h3{
+	text-align: center;
+}
+#vendorGoodsContent {
+	-webkit-flex: 1;
+          flex: 1;
+}
 md-toolbar {
 	margin-top: 1em;
-	overflow: visible;
 	position: sticky;
 	top: 56px;
 	z-index: 2;
@@ -8,5 +28,14 @@ md-toolbar {
 .truncate {
 	white-space: pre-wrap;
   text-overflow: ellipsis;
-  max-width: 88vw;
+  max-width: 86vw;
+}
+
+@media (max-width: 599px) {
+  #vendorGoodsContainer{
+  	flex-direction: column-reverse;
+  }
+  .truncate {
+	  max-width: 77vw;
+	}
 }

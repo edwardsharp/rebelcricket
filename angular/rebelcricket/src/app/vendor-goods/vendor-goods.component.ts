@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ElementRef } from '@angular/core';
 import { Input, OnChanges } from '@angular/core';
 import { Observable } from 'rxjs/Observable';
 
@@ -12,48 +12,46 @@ import { VendorGoodsService } from './vendor-goods.service';
 export class VendorGoodsComponent implements OnInit {
 
 	loading: boolean = true;
-	vendorGoods: string[] = [];
+	vendorGoods: Array<{filename:string,items:any}> = [];
+	selectedVendorGoodFiles: Array<string> = [];
 
-  constructor(private vendorGoodsService: VendorGoodsService) { }
+  constructor(
+  	private vendorGoodsService: VendorGoodsService,
+  	private elementRef:ElementRef ) { }
+
+  toggleVendorGoodFile(filename:string){
+  	if(this.selectedVendorGoodFiles.indexOf(filename) !== -1){
+  		this.selectedVendorGoodFiles.splice(this.selectedVendorGoodFiles.indexOf(filename), 1);
+  	}else{
+  		this.selectedVendorGoodFiles.push(filename);	
+  		setTimeout(() => this.goTo(filename), 1000);
+  	}
+  }
+
+  selectAll(selected:boolean,items:any){
+  	items.map(item => item.selected = selected);
+  }
 
   getVendorGoods(): void {
-    // this.vendorGoodsService.getVendorGoods().then(vendorGoods => {
-    // 	this.vendorGoods = vendorGoods;
-    // 	this.loading = false;
-    // }, err => {
-    // 	console.log('o noz! orderService.getVendorGoods() err:',err);
-    // 	this.loading = false;
-    // });
 
     this.loading = true;
-    // this.vendorGoodsService.getVendorGoods().then(() => {
-    // 	this.loading = false;
-    // 	console.log('ok, vendor goodz? this.vendorGoodsService.vendorGoods',this.vendorGoodsService.vendorGoods);
-    // 	this.vendorGoods = this.vendorGoodsService.vendorGoods;
-    // });
 
-    this.vendorGoodsService.getVendorGoods()
-    	.then((vendorGoods) => {
-      	this.vendorGoods = vendorGoods;
+    for(let vendorGood of this.vendorGoodsService.getAllVendorGoods()){
+    	vendorGood.promise.then((vendorGoods) => {
+      	this.vendorGoods.push({filename: vendorGood.filename, items: vendorGoods});
       	this.loading = false;
     	})
     	.catch((err) => {
     		this.loading = false;
     		console.error('o noz! getVendorGoods err:', err);
     	});
+    }
 
-
-    // this.vendorGoodsService.getVendorGoods()
-	   //  .subscribe(
-	   //  	vendorGoods => {
-	   //  		this.vendorGoods = vendorGoods;
-	   //  		this.loading = false;
-	   //  	}, 
-    //   	err => {
-	   //      console.log('o noz! getVendorGoods err:', err);
-	   //      this.loading = false;
-    //     });
   }
+
+  goTo(hash: string): void {
+		window.location.hash = hash;
+	}
 
   ngOnInit(): void {
     this.getVendorGoods();

@@ -17,6 +17,11 @@ import { OrderDetailComponent } from './order-detail/order-detail.component';
 import { DashboardComponent } from './dashboard/dashboard.component';
 import { VendorGoodsComponent } from './vendor-goods/vendor-goods.component';
 import { SearchBoxComponent } from './search/search-box.component';
+import { 
+  SliceVendorFilenamePipe, 
+  SliceVendorFilenameDatePipe, 
+  SliceVendorFilenameCategoryPipe,
+  InspectorPipe } from './vendor-goods/slice-vendor-filename.pipe';
 
 const appRoutes: Routes = [
   { 
@@ -53,7 +58,11 @@ const appRoutes: Routes = [
     OrderDetailComponent,
     DashboardComponent,
     VendorGoodsComponent,
-    SearchBoxComponent
+    SearchBoxComponent,
+    SliceVendorFilenamePipe,
+    SliceVendorFilenameDatePipe,
+    SliceVendorFilenameCategoryPipe,
+    InspectorPipe
   ],
   imports: [
   	RouterModule.forRoot(

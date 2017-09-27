@@ -24,7 +24,6 @@ import 'rxjs/add/operator/toPromise';
 export class VendorGoodsService {
 
 	vendorDatafiles: Array<string> = [
-		'companycasuals.json',
 		'1481360436454-companycasuals-infant___toddler.json',
 		'1481360436454-companycasuals-outerwear.json',
 		'1481360436454-companycasuals-activewear.json',
@@ -39,9 +38,12 @@ export class VendorGoodsService {
 		'1481360436454-companycasuals-ladies.json',
 		'1481360436454-companycasuals-bags.json',
 		'1481360436454-companycasuals-sweatshirts_fleece.json',
-		'1481360436454-companycasuals-accessories.json',
-		'1481355595461companycasuals.json'
+		'1481360436454-companycasuals-accessories.json'
 	];
+
+	//EVERYTHING!
+	//'companycasuals.json',
+  // '1481355595461companycasuals.json'
 
 	dataFilePath: string = '/assets/vendor-goods/';
 
@@ -67,7 +69,29 @@ export class VendorGoodsService {
       .get(`${this.dataFilePath}${this.selectedDatafile}`)
       .map((response) => response.json())
       .toPromise();
-   }
+  }
+
+  getVendorGoodForIndex(idx: number){
+		return this.http
+      .get(`${this.dataFilePath}${this.vendorDatafiles[idx]}`)
+      .map((response) => response.json())
+      .toPromise();
+  }
+
+  getVendorGoodForFilename(filename: string){
+		return this.http
+      .get(`${this.dataFilePath}${filename}`)
+      .map((response) => response.json())
+      .toPromise();
+  }
+
+  getAllVendorGoods(): Array<any>{
+  	let retPromises = [];
+  	for(let filename of this.vendorDatafiles){
+  		retPromises.push({filename: filename, promise: this.getVendorGoodForFilename(filename)});
+  	}
+  	return retPromises;
+  }
 
  //  getVendorGoods() {
  //    //environment.couch_host
