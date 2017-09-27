@@ -1,0 +1,52 @@
+<h1 md-dialog-title>{{vendorItem.title}}</h1>
+
+<div md-dialog-content>     
+  <h6>{{vendorItem.prod_id}} {{vendorItem.category}} {{vendorItem.sub_item}}</h6>
+  <div class="row">
+
+    <div class="center" *ngIf="vendorItem.prod_id">
+      <img src="http://cdn.companycasuals.com/cache/cc/{{vendorItem.prod_id}}.jpg" class="info">
+    </div>
+
+    <div class="center">
+      <p>{{vendorItem.prod_desc_text}}</p>
+    </div>
+    <div class="">
+      <ul>
+        <li *ngFor="let item of vendorItem.prod_desc_items">{{item}}</li>
+      </ul>
+    </div>
+
+  </div>
+
+  <div class="row">
+    <div class="color-img">
+     Color(s) &nbsp;
+    </div>
+    <div class="flexfill">
+      Sizes &amp; Prices
+    </div>
+
+  </div>
+
+  <div class="row" *ngFor="let item of vendorItem.colors">
+    <div class="color-img" 
+      [style.background-color]="'none'"
+      [style.background-image] = "'url(' + item.href + ')'">
+      <div class="subtitle">
+        {{item.name}}
+      </div>
+    </div>
+    <div class="flexfill">
+      <span class="color-price center" *ngFor="let colorPrices of colorPricesForName(vendorItem, item.name)">
+        {{colorPrices.size}}<br>{{colorPrices.price}}
+      </span>
+    </div>
+  </div>
+
+ <div md-dialog-actions>
+    <button md-button [md-dialog-close]="vendorItem" tabindex="2">close</button>
+    <!-- <button md-button (click)="onNoClick()" tabindex="-1">clear</button> -->
+  </div>   
+
+</div>

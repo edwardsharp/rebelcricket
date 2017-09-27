@@ -16,6 +16,7 @@ import { OrdersComponent } from './orders/orders.component';
 import { OrderDetailComponent } from './order-detail/order-detail.component';
 import { DashboardComponent } from './dashboard/dashboard.component';
 import { VendorGoodsComponent } from './vendor-goods/vendor-goods.component';
+import { VendorGoodsDialogComponent } from './vendor-goods/vendor-goods-dialog.component';
 import { SearchBoxComponent } from './search/search-box.component';
 import { 
   SliceVendorFilenamePipe, 
@@ -58,6 +59,7 @@ const appRoutes: Routes = [
     OrderDetailComponent,
     DashboardComponent,
     VendorGoodsComponent,
+    VendorGoodsDialogComponent,
     SearchBoxComponent,
     SliceVendorFilenamePipe,
     SliceVendorFilenameDatePipe,
@@ -76,9 +78,10 @@ const appRoutes: Routes = [
     HttpModule,  
     AppMaterialModule
   ],
-  // entryComponents: [
-  // 	DashboardComponent, OrdersComponent
-  // ],
+  entryComponents: [
+    VendorGoodsDialogComponent
+  	// DashboardComponent, OrdersComponent
+  ],
   providers: [OrderService, VendorGoodsService],
   bootstrap: [AppComponent]
 })

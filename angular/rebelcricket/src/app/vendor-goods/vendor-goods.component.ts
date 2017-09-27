@@ -1,9 +1,11 @@
 import { Component, OnInit, ElementRef } from '@angular/core';
 import { Input, OnChanges } from '@angular/core';
 import { Observable } from 'rxjs/Observable';
-
+import {MdDialog, MdDialogRef, MD_DIALOG_DATA, MdDatepickerInputEvent} from '@angular/material';
 
 import { VendorGoodsService } from './vendor-goods.service';
+import {VendorGoodsDialogComponent} from './vendor-goods-dialog.component';
+
 @Component({
   selector: 'app-vendor-goods',
   templateUrl: './vendor-goods.component.html',
@@ -17,7 +19,11 @@ export class VendorGoodsComponent implements OnInit {
 
   constructor(
   	private vendorGoodsService: VendorGoodsService,
-  	private elementRef:ElementRef ) { }
+  	public dialog: MdDialog ) { }
+	
+	ngOnInit(): void {
+    this.getVendorGoods();
+  }
 
   toggleVendorGoodFile(filename:string){
   	if(this.selectedVendorGoodFiles.indexOf(filename) !== -1){
@@ -53,8 +59,25 @@ export class VendorGoodsComponent implements OnInit {
 		window.location.hash = hash;
 	}
 
-  ngOnInit(): void {
-    this.getVendorGoods();
+  //dialog stuff 
+  animal: string;
+  name: string;
+
+  date: Date;
+  destination: string;
+
+  // constructor(public dialog: MdDialog) {}
+
+  openDialog(data:any): void {
+    let dialogRef = this.dialog.open(VendorGoodsDialogComponent, {
+      
+      data: data
+    });
+
+    dialogRef.afterClosed().subscribe(result => {
+      // console.log('dialog closed');
+      this.animal = result;
+    });
   }
 
 }

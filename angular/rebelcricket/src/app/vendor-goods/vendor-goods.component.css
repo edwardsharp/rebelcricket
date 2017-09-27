@@ -31,6 +31,10 @@ md-toolbar {
   max-width: 86vw;
 }
 
+md-dialog-container {
+	max-height: 100vh;
+}
+
 @media (max-width: 599px) {
   #vendorGoodsContainer{
   	flex-direction: column-reverse;

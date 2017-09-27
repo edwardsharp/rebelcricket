@@ -15,9 +15,6 @@
 					loading vendor goods...
 				</i>
 				<span *ngIf="vendorGoods">
-					<!-- <paper-checkbox checked={{selectAll}} on-change="_selectAllFilteredGoods"></paper-checkbox> -->
-					<!-- <button md-raised-button (click)="groceries.selectAll()">Select all</button> -->
-      		<!-- <button md-raised-button (click)="groceries.deselectAll()">Deselect all</button> -->
 					<md-checkbox *ngIf="selectedVendorGoodFiles.indexOf(vendorGood.filename) != -1" (change)="selectAll(vendorGood.selectAll, vendorGood.items)" [(ngModel)]="vendorGood.selectAll"></md-checkbox>
 				</span>
 			</md-toolbar>
@@ -36,7 +33,7 @@
 			      <span> {{item.category}} -- {{item.sub_item}} </span>
 			      <span> ({{item.colors?.length}} Colors) </span>
 			    </p>
-			    <button type="button" md-icon-button>
+			    <button type="button" md-icon-button (click)="openDialog(item)">
 				    <md-icon>shopping_basket</md-icon>
 				  </button>
 
@@ -58,6 +55,3 @@
 	</div>
 
 </div>
-  <!-- <paper-checkbox checked={{item.selected}} on-change="_vendorGoodSelected"></paper-checkbox> -->
-	  <!-- <paper-icon-button icon="shopping-basket" on-tap="_openDialog"></paper-icon-button> -->
-  

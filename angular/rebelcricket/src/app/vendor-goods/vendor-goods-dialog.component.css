@@ -1,0 +1,50 @@
+.row {
+  display: flex;
+  flex-direction: row;
+}
+
+@media (max-width: 599px) {
+  .row{
+    flex-direction: column;
+  }
+}
+
+.color-img {
+  flex: 0 0 25%;
+}
+
+.subtitle {
+  background-color: rgba(255,255,255,0.8);
+  color: black;
+  margin-left: 0.5em;
+  padding-left: 0.5em;
+  padding-right: 0.5em;
+}
+
+.left{
+  width: 350px;
+  overflow-x: hidden;
+  overflow-y: scroll;
+  padding: 1em;
+}
+
+.color-img{
+
+  margin-top: 8px;
+  margin-bottom: 1em;
+  word-wrap: break-word;
+  -webkit-clip-path: polygon(0% 0%, 95% 0, 100% 50%, 95% 100%, 0% 100%);
+  clip-path: polygon(0% 0%, 95% 0, 100% 50%, 95% 100%, 0% 100%);
+}
+
+.color-price{
+  display: inline-block;
+  margin-right: 1em;
+}
+
+img.info {
+  float: left;
+  max-height: 200px;
+  max-width: 200px;
+}
+
