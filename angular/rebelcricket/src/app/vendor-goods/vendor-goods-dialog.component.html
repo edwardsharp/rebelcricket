@@ -1,7 +1,7 @@
-<h1 md-dialog-title>{{vendorItem.title}}</h1>
+<h1 md-dialog-title class="center">{{vendorItem.title}}</h1>
 
 <div md-dialog-content>     
-  <h6>{{vendorItem.prod_id}} {{vendorItem.category}} {{vendorItem.sub_item}}</h6>
+  <h4 class="center">{{vendorItem.prod_id}} {{vendorItem.category}} {{vendorItem.sub_item}}</h4>
   <div class="row">
 
     <div class="center" *ngIf="vendorItem.prod_id">
@@ -11,7 +11,7 @@
     <div class="center">
       <p>{{vendorItem.prod_desc_text}}</p>
     </div>
-    <div class="">
+    <div>
       <ul>
         <li *ngFor="let item of vendorItem.prod_desc_items">{{item}}</li>
       </ul>
@@ -45,7 +45,7 @@
   </div>
 
  <div md-dialog-actions>
-    <button md-button [md-dialog-close]="vendorItem" tabindex="2">close</button>
+    <button md-button [md-dialog-close]="vendorItem" tabindex="-1">close</button>
     <!-- <button md-button (click)="onNoClick()" tabindex="-1">clear</button> -->
   </div>   
 
