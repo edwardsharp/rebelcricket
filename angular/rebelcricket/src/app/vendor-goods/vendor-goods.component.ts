@@ -30,7 +30,7 @@ export class VendorGoodsComponent implements OnInit {
   		this.selectedVendorGoodFiles.splice(this.selectedVendorGoodFiles.indexOf(filename), 1);
   	}else{
   		this.selectedVendorGoodFiles.push(filename);	
-  		setTimeout(() => this.goTo(filename), 1000);
+  		setTimeout(() => this.goTo(filename), 500);
   	}
   }
 

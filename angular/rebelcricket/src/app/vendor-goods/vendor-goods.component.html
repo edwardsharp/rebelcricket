@@ -1,57 +1,60 @@
+<!-- 
+<md-expansion-panel>
+      <md-expansion-panel-header>
+        <md-panel-title>
+          &nbsp;Categories 
+        </md-panel-title>
+        <md-panel-description>
+          ({{vendorGoods.length}})
+        </md-panel-description>
+      </md-expansion-panel-header>
+      
+      <md-selection-list #vendorGoodsFilenameIndex dense>
+        <md-list-option *ngFor="let vendorGood of vendorGoods" (click)="toggleVendorGoodFile(vendorGood.filename)" [selected]="selectedVendorGoodFiles.indexOf(vendorGood.filename) != -1">
+          <span class="truncate">{{vendorGood.filename | sliceVendorFilenameCategory | titlecase }} ({{vendorGood.items?.length}})</span>
+        </md-list-option>
+      </md-selection-list>
+
+    </md-expansion-panel> -->
+
 <div id="vendorGoodsContainer">
+  <div id="vendorGoodsIndex">
+    <h3 mdLine>Categories ({{vendorGoods.length}})</h3>
+    <md-selection-list #vendorGoodsFilenameIndex dense>
+      <md-list-option *ngFor="let vendorGood of vendorGoods" (click)="toggleVendorGoodFile(vendorGood.filename)" [selected]="selectedVendorGoodFiles.indexOf(vendorGood.filename) != -1">
+        <span class="truncate">{{vendorGood.filename | sliceVendorFilenameCategory | titlecase }} ({{vendorGood.items?.length}})</span>
+      </md-list-option>
+    </md-selection-list>
 
-	<div id="vendorGoodsContent">
-		<div *ngFor="let vendorGood of vendorGoods">
-			<a name="{{vendorGood.filename}}"></a>
-			<md-toolbar color="primary">
-			  <span class="truncate" (click)="toggleVendorGoodFile(vendorGood.filename)">{{vendorGood.filename | sliceVendorFilename | titlecase }} ({{vendorGood.items?.length}})</span>
-			  <span class="flexfill"></span>
-			  <span>
-				  
-				</span>
-			  <span class="flexfill"></span>
+  </div>
 
-			  <i *ngIf="loading">
-					loading vendor goods...
-				</i>
-				<span *ngIf="vendorGoods">
-					<md-checkbox *ngIf="selectedVendorGoodFiles.indexOf(vendorGood.filename) != -1" (change)="selectAll(vendorGood.selectAll, vendorGood.items)" [(ngModel)]="vendorGood.selectAll"></md-checkbox>
-				</span>
-			</md-toolbar>
-			<div style="display:flex;">
-				<small class="truncate">created: {{vendorGood.filename | sliceVendorFilenameDate | date:'short' }}
-				</small>
-				<span class="flexfill"></span>
-				<small class="truncate" title="Data Filename">{{vendorGood.filename}}</small>
-			</div>
+  <div id="vendorGoodsContent">
+    <i *ngIf="loading">
+      loading vendor goods...
+    </i>
+    <md-list>
+      <div *ngFor="let vendorGood of vendorGoods">
+        <div *ngIf="selectedVendorGoodFiles.indexOf(vendorGood.filename) != -1">
+          <h3 md-subheader class="sticky">{{vendorGood.filename | sliceVendorFilenameCategory | titlecase }} ({{vendorGood.items?.length}})</h3>
+          <a name="{{vendorGood.filename}}">&nbsp;</a>
+          <md-list-item 
+            *ngFor="let item of vendorGood.items"
+            (click)="openDialog(item)">
+            <h3 mdLine class="truncate" title="{{item.title}}"> {{item.title}} </h3>
+            <p mdLine class="truncate">
+              <span> {{item.category}} -- {{item.sub_item}} </span>
+              <span> ({{item.colors?.length}} Colors) </span>
+            </p>
+            <button type="button" md-icon-button>
+              <md-icon>shopping_basket</md-icon>
+            </button>
+          </md-list-item>
+          <md-divider></md-divider>
 
-			<md-list *ngIf="selectedVendorGoodFiles.indexOf(vendorGood.filename) != -1">
-			  <md-list-item *ngFor="let item of vendorGood.items">
+        </div>
+      </div>
+    </md-list>
 
-			    <h3 mdLine class="truncate" title="{{item.title}}"> {{item.title}} </h3>
-			    <p mdLine class="truncate">
-			      <span> {{item.category}} -- {{item.sub_item}} </span>
-			      <span> ({{item.colors?.length}} Colors) </span>
-			    </p>
-			    <button type="button" md-icon-button (click)="openDialog(item)">
-				    <md-icon>shopping_basket</md-icon>
-				  </button>
-
-				  <md-checkbox [checked]="item.selected"></md-checkbox>
-			  </md-list-item>
-			</md-list>
-
-		</div>
-	</div>
-
-	<div id="vendorGoodsIndex">
-		<h3 mdLine>Categories ({{vendorGoods.length}})</h3>
-		<md-selection-list #vendorGoodsFilenameIndex>
-		  <md-list-option *ngFor="let vendorGood of vendorGoods" (click)="toggleVendorGoodFile(vendorGood.filename)" [selected]="selectedVendorGoodFiles.indexOf(vendorGood.filename) != -1">
-		    <span class="truncate">{{vendorGood.filename | sliceVendorFilenameCategory | titlecase }} ({{vendorGood.items?.length}})</span>
-		  </md-list-option>
-		</md-selection-list>
-
-	</div>
+  </div>
 
 </div>

@@ -1,0 +1,6 @@
+{
+  "globalDependencies": {
+    "gapi": "registry:dt/gapi#0.0.0+20170224013708",
+    "object-path": "registry:dt/object-path#0.9.0+20160510002910"
+  }
+}

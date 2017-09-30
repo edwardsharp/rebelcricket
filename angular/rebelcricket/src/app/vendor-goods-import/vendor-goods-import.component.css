@@ -1,0 +1,6 @@
+md-toolbar {
+	margin-top: 1em;
+	position: sticky;
+	top: 56px;
+	z-index: 2;
+}

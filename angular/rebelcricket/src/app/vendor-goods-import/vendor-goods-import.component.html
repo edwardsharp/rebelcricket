@@ -1,0 +1,34 @@
+
+<md-toolbar color="primary">
+  <h1 [hidden]="isSignedIn">Vendor Goods Import</h1>
+  <h1 [hidden]="!isSignedIn">Authorize</h1>
+  <button md-icon-button (click)="signIn()" title="Authorize" [hidden]="isSignedIn">
+  	<md-icon>fingerprint</md-icon>
+	</button>
+	<button md-icon-button (click)="signOut()" title="Sign Out" [hidden]="!isSignedIn">
+	  <md-icon>delete</md-icon>
+	</button>
+</md-toolbar>
+
+<div *ngIf="isSignedIn">
+	<md-form-field>
+	  <input mdInput [(ngModel)]="gsheetId" placeholder="Google Sheet ID">
+	</md-form-field>
+	<br>
+	<md-form-field>
+	  <input mdInput [(ngModel)]="gsheetRange" placeholder="Google Sheet Range">
+	</md-form-field>
+	<br>
+	<button md-icon-button (click)="getVendorGoodsFromGsheet(gsheetId)">
+	  <md-icon>import_export</md-icon>
+	</button>
+</div>
+
+
+
+
+<pre *ngFor="let item of pre">
+	{{item}}
+</pre>
+
+

@@ -17,6 +17,8 @@ import { OrderDetailComponent } from './order-detail/order-detail.component';
 import { DashboardComponent } from './dashboard/dashboard.component';
 import { VendorGoodsComponent } from './vendor-goods/vendor-goods.component';
 import { VendorGoodsDialogComponent } from './vendor-goods/vendor-goods-dialog.component';
+import { VendorGoodsImportComponent } from './vendor-goods-import/vendor-goods-import.component';
+import { GsheetService } from './gsheet.service';
 import { SearchBoxComponent } from './search/search-box.component';
 import { 
   SliceVendorFilenamePipe, 
@@ -42,6 +44,10 @@ const appRoutes: Routes = [
     path: 'dashboard/vendor_goods',
     component: VendorGoodsComponent
   },
+  {
+    path: 'dashboard/vendor_goods/import',
+    component: VendorGoodsImportComponent
+  },
   { 
   	path: '',
     redirectTo: '/dashboard',
@@ -60,6 +66,7 @@ const appRoutes: Routes = [
     DashboardComponent,
     VendorGoodsComponent,
     VendorGoodsDialogComponent,
+    VendorGoodsImportComponent,
     SearchBoxComponent,
     SliceVendorFilenamePipe,
     SliceVendorFilenameDatePipe,
@@ -82,7 +89,7 @@ const appRoutes: Routes = [
     VendorGoodsDialogComponent
   	// DashboardComponent, OrdersComponent
   ],
-  providers: [OrderService, VendorGoodsService],
+  providers: [OrderService, VendorGoodsService, GsheetService],
   bootstrap: [AppComponent]
 })
 export class AppModule { }

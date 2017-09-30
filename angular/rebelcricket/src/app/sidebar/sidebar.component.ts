@@ -11,6 +11,7 @@ export class SidebarComponent implements OnInit {
     {'name': 'Dashboard','href': '/dashboard'},
     {'name': 'Orders','href': '/dashboard/orders'},
     {'name': 'Vendor Goods','href': '/dashboard/vendor_goods'},
+    {'name': 'Vendor Goods Import', 'href': '/dashboard/vendor_goods/import'}
   ];
 
   constructor() { }

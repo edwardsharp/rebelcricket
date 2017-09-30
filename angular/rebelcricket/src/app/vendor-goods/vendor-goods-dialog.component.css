@@ -16,9 +16,12 @@
 .subtitle {
   background-color: rgba(255,255,255,0.8);
   color: black;
-  margin-left: 0.5em;
-  padding-left: 0.5em;
-  padding-right: 0.5em;
+  margin-left: 1.5em;
+  padding: 0.25em 0.5em 0.25em 0.25em;
+}
+.subtitle:hover{
+  background-color: rgba(255,255,255,0.0);
+  color: rgba(255,255,255,0.0);
 }
 
 .left{
@@ -29,7 +32,6 @@
 }
 
 .color-img{
-
   margin-top: 8px;
   margin-bottom: 1em;
   word-wrap: break-word;
@@ -40,6 +42,7 @@
 .color-price{
   display: inline-block;
   margin-right: 1em;
+  padding: 0.25em 0.5em;
 }
 
 img.info {

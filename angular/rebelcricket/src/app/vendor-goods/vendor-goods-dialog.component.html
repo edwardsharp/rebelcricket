@@ -1,27 +1,23 @@
 <h1 md-dialog-title class="center">{{vendorItem.title}}</h1>
 
 <div md-dialog-content>     
-  <h4 class="center">{{vendorItem.prod_id}} {{vendorItem.category}} {{vendorItem.sub_item}}</h4>
+  <div class="center">{{vendorItem.prod_id}} {{vendorItem.category}} {{vendorItem.sub_item}}</div>
   <div class="row">
-
-    <div class="center" *ngIf="vendorItem.prod_id">
-      <img src="http://cdn.companycasuals.com/cache/cc/{{vendorItem.prod_id}}.jpg" class="info">
-    </div>
-
     <div class="center">
+      <img *ngIf="vendorItem.prod_id" src="http://cdn.companycasuals.com/cache/cc/{{vendorItem.prod_id}}.jpg" class="info">
       <p>{{vendorItem.prod_desc_text}}</p>
     </div>
-    <div>
+    <div style="min-width: 33vw;">
       <ul>
         <li *ngFor="let item of vendorItem.prod_desc_items">{{item}}</li>
       </ul>
     </div>
 
   </div>
-
+  <hr>
   <div class="row">
     <div class="color-img">
-     Color(s) &nbsp;
+     Colors &nbsp;
     </div>
     <div class="flexfill">
       Sizes &amp; Prices
@@ -29,11 +25,12 @@
 
   </div>
 
-  <div class="row" *ngFor="let item of vendorItem.colors">
+  <div class="row" *ngFor="let item of vendorItem.colors" (click)="item.selected = !item.selected">
     <div class="color-img" 
       [style.background-color]="'none'"
       [style.background-image] = "'url(' + item.href + ')'">
       <div class="subtitle">
+        <md-checkbox [checked]="item.selected" tabindex="-1"></md-checkbox>
         {{item.name}}
       </div>
     </div>
