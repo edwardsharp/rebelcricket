@@ -1,4 +1,5 @@
 
+
 <md-toolbar color="primary">
   <h1 [hidden]="isSignedIn">Vendor Goods Import</h1>
   <h1 [hidden]="!isSignedIn">Authorize</h1>
@@ -24,11 +25,8 @@
 	</button>
 </div>
 
-
-
+isSignedIn:{{isSignedIn}}
 
 <pre *ngFor="let item of pre">
 	{{item}}
 </pre>
-
-

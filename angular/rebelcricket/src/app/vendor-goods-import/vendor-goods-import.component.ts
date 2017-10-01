@@ -1,11 +1,9 @@
-import { Component, OnInit, OnDestroy, NgZone } from '@angular/core';
+import { Component, OnInit, OnDestroy } from '@angular/core';
 
 // import { VendorGoodsService } from '../vendor-goods/vendor-goods.service';
 import { GsheetService } from '../gsheet.service';
 
-// import 'gapi';
-// import 'gapi.auth2';
-// declare var gapi:any;
+declare var gapi:any;
 
 @Component({
   selector: 'app-vendor-goods-import',
@@ -22,7 +20,7 @@ export class VendorGoodsImportComponent implements OnInit, OnDestroy {
 	//gsheet stuffz
 	isSignedIn: boolean = false;
 
-  pre: string[];
+  pre: string[] = [];
   // Client ID and API key from the Developer Console
   client_id: string = '89197182438-ubo90q5tik0pktvh88vcekks34knjcsa.apps.googleusercontent.com';
   api_key: string = 'AIzaSyCBoUSi-sA5Yofhcu4XRyviiyWJ0E2y9Ig';
@@ -34,33 +32,37 @@ export class VendorGoodsImportComponent implements OnInit, OnDestroy {
   scopes: string = "https://www.googleapis.com/auth/spreadsheets.readonly";
 
 
-
-	// gapi: any;
-
-
   constructor(
-  	private gsheetService: GsheetService,
-	  private ngZone: NgZone) { }
+  	private gsheetService: GsheetService) { }
 
   ngOnInit() {
-  	// this.handleClientLoad('init');
-
-  	window.my = window.my || {};
-    window.my.namespace = window.my.namespace || {};
-    window.my.namespace.publicFunc = this.publicFunc.bind(this);
-
+    this.loadGapiScript();
   }
   ngOnDestroy() {
-  	window.my.namespace.publicFunc = null;
   }
 
-  publicFunc() {
-  	console.log('hooray publicFunc!');
-    this.ngZone.run(() => this.privateFunc());
-  }
+  loadGapiScript(){
 
-  privateFunc() {
-    console.log('do private stuff!!');
+    let needToLoadGapi: boolean = true;
+    try{
+      needToLoadGapi = !gapi;
+    }catch(e){ }
+
+    if(needToLoadGapi){
+      let scriptElement = document.createElement("script");
+      scriptElement.type = "text/javascript";
+      scriptElement.src = 'https://apis.google.com/js/api.js';
+      scriptElement.async = true;
+      scriptElement.defer = true;
+      scriptElement.onload = () => {
+         gapi.load('client:auth2', () => {this.initClient()}); //note ()=>{} here to maintain 'this' references
+      };
+      scriptElement.onerror = (error: any) => {
+        console.log('o noz! gapi load err:',error);
+      };
+      document.getElementsByTagName('body')[0].appendChild(scriptElement);
+    }
+    
   }
 
   getVendorGoodsFromGsheet(gsheetId:string): void {
@@ -78,37 +80,22 @@ export class VendorGoodsImportComponent implements OnInit, OnDestroy {
 
   }
 
-
-
-  
-  /**
-   *  On load, called to load the auth2 library and API client library.
-   */
-  handleClientLoad(e) {
-  	// console.log('handleClientLoad! gapi?:',gapi);
-  	// setTimeout(() => gapi.load('client:auth2', this.initClient), 1000);
-  }
-
   /**
    *  Initializes the API client library and sets up sign-in state
    *  listeners.
    */
-  initClient() {
-  	console.log('gonna initClient!!');
-  	// gapi.client.init({
-   //    apiKey: this.api_key,
-   //    clientId: this.client_id,
-   //    discoveryDocs: this.discovery_docs,
-   //    scope: this.scopes
-   //  }).then(function () {
-   //  	console.log('initClient THEN!!')
-   //    // Listen for sign-in state changes.
-   //    gapi.auth2.getAuthInstance().isSignedIn.listen(this.updateSigninStatus);
-
-   //    // Handle the initial sign-in state.
-   //    this.updateSigninStatus(gapi.auth2.getAuthInstance().isSignedIn.get());
-
-   //  });
+  initClient() {  	
+  	gapi.client.init({
+      apiKey: this.api_key,
+      clientId: this.client_id,
+      discoveryDocs: this.discovery_docs,
+      scope: this.scopes
+    }).then( () => {
+      // Listen for sign-in state changes.
+      gapi.auth2.getAuthInstance().isSignedIn.listen(this.updateSigninStatus);
+      // Handle the initial sign-in state.
+      this.updateSigninStatus(gapi.auth2.getAuthInstance().isSignedIn.get());
+    });
     
   }
 
@@ -124,6 +111,7 @@ export class VendorGoodsImportComponent implements OnInit, OnDestroy {
     } else {
     	this.isSignedIn = false;
     }
+    console.log('updateSigninStatus done! this.isSignedIn:',this.isSignedIn);
   }
 
   /**
@@ -131,12 +119,12 @@ export class VendorGoodsImportComponent implements OnInit, OnDestroy {
    */
   signIn() {
   	
-  	// if(gapi.auth2.getAuthInstance()){
-  	// 	console.log('gonna signIn');
-  	// 	gapi.auth2.getAuthInstance().signIn();
-  	// }else{
-  	// 	console.log('NOT GONNA signIn :(');
-  	// }
+  	if(gapi.auth2.getAuthInstance()){
+  		console.log('gonna signIn');
+  		gapi.auth2.getAuthInstance().signIn();
+  	}else{
+  		console.log('NOT GONNA signIn :(');
+  	}
     
   }
 
@@ -146,7 +134,7 @@ export class VendorGoodsImportComponent implements OnInit, OnDestroy {
   signOut() {
   	console.log('gonna signOut');
   	this.isSignedIn = false;
-    // gapi.auth2.getAuthInstance().signOut();
+    gapi.auth2.getAuthInstance().signOut();
   }
 
   /**
@@ -156,7 +144,7 @@ export class VendorGoodsImportComponent implements OnInit, OnDestroy {
    * @param {string} message Text to be placed in pre element.
    */
   appendPre(message) {
-    this.pre.push(message)
+    this.pre.push(message);
   }
 
   /**
@@ -164,25 +152,25 @@ export class VendorGoodsImportComponent implements OnInit, OnDestroy {
    * https://docs.google.com/spreadsheets/d/1BxiMVs0XRA5nFMdKvBdBZjgmUUqptlbs74OgvE2upms/edit
    */
   listMajors() {
-    // gapi.client.sheets.spreadsheets.values.get({
-    //   spreadsheetId: this.gsheetId,
-    //   range: this.gsheetRange,
-    // }).then(function(response) {
-    //   var range = response.result;
-    //   if (range.values.length > 0) {
-    //     this.appendPre('Name, Major:');
-    //     let i: number = 0;
-    //     for (i = 0; i < range.values.length; i++) {
-    //       var row = range.values[i];
-    //       // Print columns A and E, which correspond to indices 0 and 4.
-    //       this.appendPre(row[0] + ', ' + row[4]);
-    //     }
-    //   } else {
-    //     this.appendPre('No data found.');
-    //   }
-    // }, function(response) {
-    //   this.appendPre('Error: ' + response.result.error.message);
-    // });
+    gapi.client.sheets.spreadsheets.values.get({
+      spreadsheetId: this.gsheetId,
+      range: this.gsheetRange,
+    }).then( (response) => {
+      var range = response.result;
+      if (range.values.length > 0) {
+        this.appendPre('Name, Major:');
+        let i: number = 0;
+        for (i = 0; i < range.values.length; i++) {
+          var row = range.values[i];
+          // Print columns A and E, which correspond to indices 0 and 4.
+          this.appendPre(row[0] + ', ' + row[4]);
+        }
+      } else {
+        this.appendPre('No data found.');
+      }
+    }, (err) => {
+      this.appendPre('Error: ' + err.result.error.message);
+    });
   }
 
 }

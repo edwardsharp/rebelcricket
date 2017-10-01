@@ -5,6 +5,5 @@ interface NodeModule {
 }
 
 interface Window { 
-	my: any; 
-	gapi: any;
+	app: any; 
 }
