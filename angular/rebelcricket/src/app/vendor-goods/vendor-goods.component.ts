@@ -41,17 +41,14 @@ export class VendorGoodsComponent implements OnInit {
   getVendorGoods(): void {
 
     this.loading = true;
-
-    for(let vendorGood of this.vendorGoodsService.getAllVendorGoods()){
-    	vendorGood.promise.then((vendorGoods) => {
-      	this.vendorGoods.push({filename: vendorGood.filename, items: vendorGoods});
-      	this.loading = false;
-    	})
-    	.catch((err) => {
-    		this.loading = false;
-    		console.error('o noz! getVendorGoods err:', err);
-    	});
-    }
+    this.vendorGoodsService.getVendorGoods().then((vendorGoods) => {
+      console.log('this.vendorGoodsService.getVendorGoods() vendorGoods:',vendorGoods);
+      this.vendorGoods = vendorGoods.rows;
+      this.loading = false;
+    }).catch((err) => {
+      this.loading = false;
+      console.error('o noz! getVendorGoods err:', err);
+    });
 
   }
 

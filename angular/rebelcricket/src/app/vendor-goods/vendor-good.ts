@@ -1,10 +1,13 @@
 export class VendorGood {
-  selected: boolean;
-  price: number;
-  title: string;
   category: string;
   sub_category: string;
-  images: Array<string>;
+  title: string;
+  prod_id: string;
+  price: number;
+  colors_count: number;
+  prod_desc_text: string;
+  prod_desc_items: Array<string>;
+  href_items: Array<string>;
   colors: Array<{name: string, href: string}>;
-  color_sizes_prices: Array<{color: string, sizes: Array<string>, prices: Array<string>}>;
+  color_size_prices: Array<{color: string, size_prices: Array<[string,string]>}>;
 }

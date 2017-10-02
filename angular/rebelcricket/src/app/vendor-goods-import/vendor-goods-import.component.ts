@@ -1,7 +1,8 @@
 import { Component, OnInit, OnDestroy } from '@angular/core';
 
 // import { VendorGoodsService } from '../vendor-goods/vendor-goods.service';
-import { GsheetService } from '../gsheet.service';
+import { VendorGoodsService } from '../vendor-goods/vendor-goods.service';
+import { VendorGood } from '../vendor-goods/vendor-good';
 
 declare var gapi:any;
 
@@ -32,7 +33,7 @@ export class VendorGoodsImportComponent implements OnInit, OnDestroy {
   // included, separated by spaces.
   scopes: string = "https://www.googleapis.com/auth/spreadsheets.readonly";
 
-  constructor(private gsheetService: GsheetService) { }
+  constructor(private vendorGoodsService: VendorGoodsService) { }
 
   ngOnInit() {
     this.loadGapiScript();
@@ -179,17 +180,25 @@ export class VendorGoodsImportComponent implements OnInit, OnDestroy {
       let range = response.result;
       if (range.values.length > 0) {
         this.appendPre(`Processing ${range.values.length} items...`); 
-        // this.appendPre('- - - - - - - - - -');
-        // let idx:any = range.values[0];
-        // for (let i = 1; i < range.values.length; i++) {
-        //   var row = range.values[i];
-        //   // Print columns A and E, which correspond to indices 0 and 4.
-        //   for(var x=0; x<row.length;x++){
-        //     this.appendPre(`${idx[x]}: ${row[x]}`);
 
-        //   }
-        //   this.appendPre('- - - - - - - - - -');
-        // }
+        let idx:any = range.values[0];
+        for (let i = 1; i < range.values.length; i++) {
+          var row = range.values[i];
+          // Print columns A and E, which correspond to indices 0 and 4.
+          for(var x=0; x<row.length;x++){
+            this.appendPre(`${idx[x]}: ${row[x]}`);
+            let _vendorGood: VendorGood = new VendorGood;
+            if(idx[x].endsWith('s')){
+              _vendorGood[idx[x]] = JSON.parse(row[x]);
+            }else{
+              _vendorGood[idx[x]] = row[x];
+            }
+            
+            this.vendorGoodsService.addVendorGood(_vendorGood);
+
+          }
+          this.appendPre('done!');
+        }
       } else {
         this.appendPre('No data found.');
       }

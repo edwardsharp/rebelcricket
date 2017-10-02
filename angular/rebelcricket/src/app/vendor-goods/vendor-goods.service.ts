@@ -19,81 +19,45 @@ import { Injectable } from '@angular/core';
 import 'rxjs/add/operator/map';
 import 'rxjs/add/operator/toPromise';
 
+// import * as PouchDB from "pouchdb";
+// import { PouchDB } from 'pouchdb';
+// import 'pouchdb';
+// declare var PouchDB:any;
+// import PouchDB from 'pouchdb';
+// var PouchDB = require("pouchdb");
+
+// import 'pouchdb';
+declare var PouchDB:any;
 import { VendorGood } from './vendor-good';
 
 @Injectable()
 export class VendorGoodsService {
 
-	vendorDatafiles: Array<string> = [
-		'1481360436454-companycasuals-infant___toddler.json',
-		'1481360436454-companycasuals-outerwear.json',
-		'1481360436454-companycasuals-activewear.json',
-		'1481360436454-companycasuals-tall.json',
-		'1481360436454-companycasuals-youth.json',
-		'1481360436454-companycasuals-t_shirts_.json',
-		'1481360436454-companycasuals-polos_knits.json',
-		'1481360436454-companycasuals-woven_shirts.json',
-		'1481360436454-companycasuals-caps.json',
-		'1481360436454-companycasuals-workwear.json',
-		'1481360436454-companycasuals-juniors___young_men.json',
-		'1481360436454-companycasuals-ladies.json',
-		'1481360436454-companycasuals-bags.json',
-		'1481360436454-companycasuals-sweatshirts_fleece.json',
-		'1481360436454-companycasuals-accessories.json'
-	];
+	vendorGoods: Array<VendorGood>;
+	db: any;
 
-	//EVERYTHING!
-	//'companycasuals.json',
-  // '1481355595461companycasuals.json'
-
-	dataFilePath: string = '/assets/vendor-goods/';
-
-	selectedDatafile: string = this.vendorDatafiles[1];
-	// vendorGoods: string[] = [];
-
-  constructor(private http: Http) { }
-
-  // ngOnInit(): void {
-  //   // Make the HTTP request:
-  //   // this.http.get(`${this.dataFilePath}${this.selectedDatafile}`).subscribe(data => {
-  //   //   // Read the result field from the JSON response.
-  //   //   this.vendorGoods = data['results'];
-  //   // });
-
-  // }
-
-  getVendorGoods(){
-	  // return this.http.get(`${this.dataFilePath}${this.selectedDatafile}`)
-			// .map((res:Response) => res.json())
-			// .catch((error:any) => Observable.throw(error.json().error || 'Server error'));
-		return this.http
-      .get(`${this.dataFilePath}${this.selectedDatafile}`)
-      .map((response) => response.json())
-      .toPromise();
+  constructor(private http: Http) {
+  	this.db = new PouchDB('vendor_goods');
   }
 
-  getVendorGoodForIndex(idx: number){
-		return this.http
-      .get(`${this.dataFilePath}${this.vendorDatafiles[idx]}`)
-      .map((response) => response.json())
-      .toPromise();
-  }
+ 	getVendorGoods(){
+		return this.db.allDocs({
+		  include_docs: true,
+		  attachments: false
+		});
+ 	}
 
-  getVendorGoodForFilename(filename: string){
-		return this.http
-      .get(`${this.dataFilePath}${filename}`)
-      .map((response) => response.json())
-      .toPromise();
-  }
-
-  getAllVendorGoods(): Array<any>{
+  addVendorGoods(vendorGoods){
   	let retPromises = [];
-  	for(let filename of this.vendorDatafiles){
-  		retPromises.push({filename: filename, promise: this.getVendorGoodForFilename(filename)});
+  	for(let vendorGood of vendorGoods){
+  		retPromises.push(this.addVendorGood(vendorGood));
   	}
   	return retPromises;
   }
 
+  addVendorGood(vendorGood){
+  	return this.db.put(vendorGood);
+  }
  //  getVendorGoods() {
  //    //environment.couch_host
  //    // return Promise.resolve([]);
