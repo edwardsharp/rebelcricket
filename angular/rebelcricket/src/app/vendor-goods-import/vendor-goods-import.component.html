@@ -1,31 +1,55 @@
-
-
 <md-toolbar color="primary">
-  <h1 [hidden]="isSignedIn">Vendor Goods Import</h1>
-  <h1 [hidden]="!isSignedIn">Authorize</h1>
-  <button md-icon-button (click)="signIn()" title="Authorize" [hidden]="isSignedIn">
-  	<md-icon>fingerprint</md-icon>
-	</button>
-	<button md-icon-button (click)="signOut()" title="Sign Out" [hidden]="!isSignedIn">
-	  <md-icon>delete</md-icon>
-	</button>
+	
+  <h1>Vendor Goods Import</h1>
+
+  <span class="flexfill"></span>
+
+  <span *ngIf="isSignedIn">
+  	<button md-icon-button [mdMenuTriggerFor]="acct">
+	    <md-icon class="example-icon">more_vert</md-icon>
+	  </button>
+	  <md-menu #acct="mdMenu">
+	    <button md-menu-item (click)="signOut()" title="Sign Out">
+	      <md-icon>delete</md-icon>
+	      <span>Google sign out</span>
+	    </button>
+	  </md-menu>
+  </span>
 </md-toolbar>
 
-<div *ngIf="isSignedIn">
-	<md-form-field>
-	  <input mdInput [(ngModel)]="gsheetId" placeholder="Google Sheet ID">
-	</md-form-field>
-	<br>
-	<md-form-field>
-	  <input mdInput [(ngModel)]="gsheetRange" placeholder="Google Sheet Range">
-	</md-form-field>
-	<br>
-	<button md-icon-button (click)="getVendorGoodsFromGsheet(gsheetId)">
-	  <md-icon>import_export</md-icon>
+<i *ngIf="loading">loadng...</i>
+
+<div class="center" *ngIf="!isSignedIn">
+	<button md-button (click)="signIn()" title="Authorize">
+	  <md-icon>account_circle</md-icon>
+	  <span>Authorize with Google</span>
 	</button>
 </div>
 
-isSignedIn:{{isSignedIn}}
+<div *ngIf="isSignedIn">
+	<div class="center">
+		<md-form-field class="fullwidth">
+		  <input mdInput [(ngModel)]="gsheetId" placeholder="Google Sheet ID">
+		</md-form-field>
+
+		<md-select [placeholder]="gsheetIds.length > 0 ? 'Select Sheet' : 'loading sheets...'" [(ngModel)]="sheetId" class="halfwidth">
+		  <md-option *ngFor="let sheet of gsheetIds" [value]="sheet.sheetId">
+		    {{ sheet.title }}
+		  </md-option>
+		</md-select>
+
+		<md-form-field class="halfwidth">
+		  <input mdInput [(ngModel)]="gsheetRange" placeholder="Google Sheet Range">
+		</md-form-field>
+	</div>
+	<button md-button (click)="getVendorGoodsFromGsheet(gsheetId)" [disabled]="sheetId == undefined">
+	  <md-icon>import_export</md-icon> Import Vendor Goods
+	</button>
+</div>
+
+
+
+<!-- <h1 *ngIf="zomg">zomg!</h1> -->
 
 <pre *ngFor="let item of pre">
 	{{item}}

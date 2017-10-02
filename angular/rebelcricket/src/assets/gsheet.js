@@ -1,3 +1,5 @@
+
+
 /* template html:
 <button id="authorize-button" style="display: none;">Authorize</button>
 <button id="signout-button" style="display: none;">Sign Out</button>
@@ -12,61 +14,161 @@
   onload="this.onload=function(){};handleClientLoad()"
   onreadystatechange="if (this.readyState === 'complete') this.onload()">
 </script>
-*/
 
+"updateSheetProperties": {
+            "properties": {
+              "sheetId": sheetId,
+              "gridProperties": {
+                "rowCount": rows.length + 2
+                // ,"columnCount": COLUMNS.length
+              }
+            },
+            "fields": '*'
+          }
 
-/*                 "userEnteredFormat": {
+                 "userEnteredFormat": {
                     'backgroundColor': {
                         'red': .2,
                         'blue': .75,
                         'green': .75
+                    },
+                    "horizontalAlignment" : "CENTER",
+                    "textFormat": {
+                      "foregroundColor": {
+                        "red": 1.0,
+                        "green": 1.0,
+                        "blue": 1.0
+                      },
+                      "fontSize": 12,
+                      "bold": true
                     }
                 }
                 */
+
+var sheetId;
 var rows = [];
 
 var fields = [];
-let url = '/assets/vendor-goods/1481360436454-companycasuals-infant___toddler.json';
+var fieldsRow = [];
+var orderedFields = [];
 
-fetch(url)
-  .then(res => res.json())
-  .then((out) => {
-    fields = _.reduce(out, function(vendorGood,v){
-      return _.union(vendorGood,Object.keys(v));
-    });
+let companycasualz = [
+  '/assets/vendor-goods/1481360436454-companycasuals-accessories.json',
+  '/assets/vendor-goods/1481360436454-companycasuals-activewear.json',
+  '/assets/vendor-goods/1481360436454-companycasuals-bags.json',
+  '/assets/vendor-goods/1481360436454-companycasuals-caps.json',
+  '/assets/vendor-goods/1481360436454-companycasuals-infant___toddler.json',
+  '/assets/vendor-goods/1481360436454-companycasuals-juniors___young_men.json',
+  '/assets/vendor-goods/1481360436454-companycasuals-ladies.json',
+  '/assets/vendor-goods/1481360436454-companycasuals-outerwear.json',
+  '/assets/vendor-goods/1481360436454-companycasuals-polos_knits.json',
+  '/assets/vendor-goods/1481360436454-companycasuals-sweatshirts_fleece.json',
+  '/assets/vendor-goods/1481360436454-companycasuals-t_shirts_.json',
+  '/assets/vendor-goods/1481360436454-companycasuals-tall.json',
+  '/assets/vendor-goods/1481360436454-companycasuals-workwear.json',
+  '/assets/vendor-goods/1481360436454-companycasuals-woven_shirts.json',
+  '/assets/vendor-goods/1481360436454-companycasuals-youth.json'
+]
+appendPre('loading '+companycasualz.length+' filez...');
+for(let url of companycasualz){
+  
+  fetch(url)
+    .then(res => res.json())
+    .then((out) => {
+      if(fields.length == 0){
+        fields = _.reduce(out, function(vendorGood,v){
+          return _.union(vendorGood,Object.keys(v));
+        });
+        //["selected","price","title","category","sub_item","colors","color_prices","prod_id","prod_desc_text","prod_desc_items","price_href"]
+        //price title category  sub_category  colors  color_size_price  prod_id prod_desc_text  prod_desc_items price_href 
+        
+        _.each([ "category",
+          "sub_item",
+          "title",
+          "prod_id",
+          "price",
+          "colors_count",
+          "prod_desc_text",
+          "prod_desc_items",
+          "price_href",
+          "colors",
+          "color_prices"], function(f){
 
-    _.each(out, function(g){
-      // S+T+R+I+N+G+I+F+Y
-      g.selected = g.selected ? 't' : 'f';
-      g.colors = _.map(g.colors, function(c){return [c.name, c.href]}).join(', ');
-      g.color_prices = g.color_prices.join(', ');
-      g.price_href = g.price_href.join(', ');
-      g.prod_desc_items = g.prod_desc_items.join(', ');
-      
-      var values = [];
-      _.each(Object.values(g), function(v){
-        values.push({
-          "userEnteredValue": 
-          {
-            "stringValue": v
+          if(f == 'sub_item'){
+            f = 'sub_category';
+          }
+          if(f == 'color_prices'){
+            f = 'color_size_prices';
+          }
+          if(f == 'price_href'){
+            f == 'href_items';
+          }
+          if(f != 'selected'){
+            fieldsRow.push({
+              "userEnteredValue": { "stringValue": f },
+              "userEnteredFormat": {
+                "horizontalAlignment" : "CENTER",
+                "textFormat": { "bold": true }
+              }
+            });
+            orderedFields.push(f);
+          }
+          
+        });
+        fieldsRow = {
+          "values": fieldsRow
+        };
+      }
+
+      _.each(out, function(g){
+        // S+T+R+I+N+G+I+F+Y
+        // g.selected = g.selected ? 't' : 'f';
+        delete g.selected;
+        g["sub_category"] = g.sub_item;
+        delete g.sub_item;
+
+        g.colors = JSON.stringify( _.map(g.colors, function(c){return [c.name, c.href]}) );
+        
+        var color_size_prices = [];
+        _.each(g.color_prices, function(v){
+          var color = v.shift()[1];
+          color_size_prices.push({color:color,size_prices:v});
+        });
+        delete g.color_prices;
+        g["color_size_prices"] = JSON.stringify(color_size_prices);
+        g["colors_count"] = color_size_prices.length.toString();
+        g.color_prices = JSON.stringify(g.color_prices);
+        g["href_items"] = JSON.stringify(g.href_items);
+        delete g.price_href; 
+        g.prod_desc_items = JSON.stringify(g.prod_desc_items);
+
+        var values = [];
+        _.each(orderedFields, function(f){
+          if(g[f] != undefined){
+            values.push({
+              "userEnteredValue": 
+              {
+                "stringValue": g[f]
+              }
+            });
           }
         });
+
+        rows.push({
+          "values": values
+        });
+    
       });
 
-      rows.push({
-        "values": values
-      });
-  
-    });
+      console.log('vendor goodz JSON:', rows);
+    })
+    .catch(err => {console.error('o noz! vendor json err:',err);appendPre('o noz! fetch and parse json err:',err);} );
 
-    console.log('vendor goodz JSON:', rows);
-  })
-  .catch(err => console.error('o noz! vendor json err:',err));
-
+}
 
 // Client ID and API key from the Developer Console
-var CLIENT_ID = '';
-var API_KEY = '';
+var CLIENT_ID = '89197182438-ubo90q5tik0pktvh88vcekks34knjcsa.apps.googleusercontent.com';
+var API_KEY = 'AIzaSyCBoUSi-sA5Yofhcu4XRyviiyWJ0E2y9Ig';
 
 // Array of API discovery doc URLs for APIs used by the quickstart
 var DISCOVERY_DOCS = ["https://sheets.googleapis.com/$discovery/rest?version=v4"];
@@ -179,17 +281,18 @@ function getSpreadsheet() {
   }).then(function(response) {
     console.log('ZZZZZZZOMG response:',response);
     var range = response.result;
-    if (range.values.length > 0) {
-      appendPre(' ');
-      for (i = 0; i < range.values.length; i++) {
+    appendPre('ready!');
+    // if (range.values.length > 0) {
+    //   appendPre(' ');
+    //   for (i = 0; i < range.values.length; i++) {
 
-        appendPre(range.values[i]);
-      }
-    } else {
-      appendPre('No data found.');
-    }
+    //     appendPre(range.values[i]);
+    //   }
+    // } else {
+    //   appendPre('No data found.');
+    // }
   }, function(response) {
-    appendPre('Error: ' + response.result.error.message);
+    appendPre('o noz! getSpreadsheet err: ' + response.result.error.message);
   });
 }
 
@@ -233,6 +336,53 @@ function getSpreadsheet() {
 //   });
 // }
 
+function writeSheetRows(sheetId){
+  var params = {
+    spreadsheetId: '1yJlSC9LtuBJEPmHJE8CQEWjxmuS0z0GqmYf45YZHM_s'
+  };
+  var batch = {};
+  batch['requests'] = [];
+
+  for (var i = 0; i < rows.length; i += 999){
+
+    var batch_rows = rows.slice(i, i + 999);
+
+    batch.requests.push({
+      "updateCells": {
+        "start": {
+          "sheetId": sheetId,
+          "rowIndex": i+2, //+2 to not write the header row.
+          "columnIndex": 0
+        },
+        "rows": batch_rows,
+        "fields": '*'
+      }
+    });
+  } // for batch_rows
+
+  batch.requests.push({
+    "addProtectedRange": {
+      "protectedRange": {
+        "range": {
+          "sheetId": sheetId,
+        },
+        "description": "Read Only",
+        "warningOnly": true
+      }
+    }
+  });
+  gapi.client.sheets.spreadsheets.batchUpdate(params, batch).then(function(resp){
+    document.getElementById('new-sheet-content').appendChild(document.createTextNode(
+       sheetId + ' batch rows written \n')
+    );
+  }, function(err){
+    console.log('write sheet err:',err);
+    document.getElementById('new-sheet-content').appendChild(document.createTextNode(
+       'batch rows write err:' + err.result.error.message + ' \n')
+    );
+  });
+}
+
 
 function writeNewSheet() {
   var params = {
@@ -240,7 +390,7 @@ function writeNewSheet() {
     spreadsheetId: '1yJlSC9LtuBJEPmHJE8CQEWjxmuS0z0GqmYf45YZHM_s',  // TODO: Update placeholder value.
   };
 
-  var sheetId = Math.random().toString(36).substr(2, 5);
+  sheetId = Math.random().toString(36).substr(2, 5);
   var batchUpdateSpreadsheetRequestBody = {
     // A list of updates to apply to the spreadsheet.
     // Requests will be applied in the order they are specified.
@@ -250,10 +400,10 @@ function writeNewSheet() {
           "addSheet": {
             "properties": {
               "title": sheetId,
-              // "gridProperties": {
-              //   "rowCount": 20,
-              //   "columnCount": 12
-              // }
+              "gridProperties": {
+                "rowCount": rows.length+2
+                // ,"columnCount": 12
+              }
             }
           }
         }
@@ -262,7 +412,7 @@ function writeNewSheet() {
     // TODO: Add desired properties to the request body.
   };
 
-  var sheetId;
+  
   var request = gapi.client.sheets.spreadsheets.batchUpdate(params, batchUpdateSpreadsheetRequestBody);
   request.then(function(response) {
     console.log(response.result);
@@ -277,25 +427,13 @@ function writeNewSheet() {
               "rowIndex": 0,
               "columnIndex": 0
             },
-            "rows": rows,
+            "rows": fieldsRow,
             "fields": '*'
-            // ,
-            // "fields": fields.join(',') //i guess/hope these are all key'd the same?!
-          }
-        },{
-          "addProtectedRange": {
-            "protectedRange": {
-              "range": {
-                "sheetId": sheetId,
-              },
-              "description": "Read Only",
-              "warningOnly": true
-            }
           }
         }
       ]}).then(function(resp){
         document.getElementById('new-sheet-content').appendChild(document.createTextNode(
-           sheetId + ' Protected \n')
+           sheetId + ' fields added to new sheet \n')
         );
       }, function(err){
         console.log('write sheet err:',err);
@@ -304,6 +442,7 @@ function writeNewSheet() {
         );
       });
 
+      writeSheetRows(sheetId);
 
     }
 

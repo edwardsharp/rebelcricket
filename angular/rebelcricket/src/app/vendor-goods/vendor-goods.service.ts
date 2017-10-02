@@ -19,6 +19,7 @@ import { Injectable } from '@angular/core';
 import 'rxjs/add/operator/map';
 import 'rxjs/add/operator/toPromise';
 
+import { VendorGood } from './vendor-good';
 
 @Injectable()
 export class VendorGoodsService {
