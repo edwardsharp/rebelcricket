@@ -3,6 +3,7 @@ import { Input, OnChanges } from '@angular/core';
 import { Observable } from 'rxjs/Observable';
 import {MdDialog, MdDialogRef, MD_DIALOG_DATA, MdDatepickerInputEvent} from '@angular/material';
 
+import { VendorGood } from './vendor-good';
 import { VendorGoodsService } from './vendor-goods.service';
 import {VendorGoodsDialogComponent} from './vendor-goods-dialog.component';
 
@@ -14,8 +15,10 @@ import {VendorGoodsDialogComponent} from './vendor-goods-dialog.component';
 export class VendorGoodsComponent implements OnInit {
 
 	loading: boolean = true;
-	vendorGoods: Array<{filename:string,items:any}> = [];
-	selectedVendorGoodFiles: Array<string> = [];
+	vendorGoods: Array<VendorGood> = [];
+  vendorGoodsCategories: Array<{name:string,count:number}> = [];
+
+	vendorGoodsIndexSelected: Array<string> = [];
 
   constructor(
   	private vendorGoodsService: VendorGoodsService,
@@ -25,12 +28,12 @@ export class VendorGoodsComponent implements OnInit {
     this.getVendorGoods();
   }
 
-  toggleVendorGoodFile(filename:string){
-  	if(this.selectedVendorGoodFiles.indexOf(filename) !== -1){
-  		this.selectedVendorGoodFiles.splice(this.selectedVendorGoodFiles.indexOf(filename), 1);
+  toggleVendorGoodCategory(category:string){
+  	if(this.vendorGoodsIndexSelected.indexOf(category) !== -1){
+  		this.vendorGoodsIndexSelected.splice(this.vendorGoodsIndexSelected.indexOf(category), 1);
   	}else{
-  		this.selectedVendorGoodFiles.push(filename);	
-  		setTimeout(() => this.goTo(filename), 500);
+  		this.vendorGoodsIndexSelected.push(category);	
+  		setTimeout(() => this.goTo(category), 500);
   	}
   }
 
@@ -42,14 +45,29 @@ export class VendorGoodsComponent implements OnInit {
 
     this.loading = true;
     this.vendorGoodsService.getVendorGoods().then((vendorGoods) => {
-      console.log('this.vendorGoodsService.getVendorGoods() vendorGoods:',vendorGoods);
-      this.vendorGoods = vendorGoods.rows;
+      
+      this.vendorGoods = vendorGoods.rows.map(d=>{return d.doc});
+      let catCount = this.vendorGoods
+        .map(({ category }) => category)
+        .reduce((categories, category) => {
+          const count = categories[category] || 0;
+          categories[category] = count + 1;
+          return categories;
+        }, {});
+
+      for(let item of Object.keys(catCount)){
+        this.vendorGoodsCategories.push({name: item,count: catCount[item]});
+      }
       this.loading = false;
     }).catch((err) => {
       this.loading = false;
       console.error('o noz! getVendorGoods err:', err);
     });
 
+  }
+
+  vendorGoodsForCategory(category:string){
+    return this.vendorGoods.filter(g => g.category == category);
   }
 
   goTo(hash: string): void {
@@ -66,6 +84,7 @@ export class VendorGoodsComponent implements OnInit {
   // constructor(public dialog: MdDialog) {}
 
   openDialog(data:any): void {
+    console.log('openDialog data:',data);
     let dialogRef = this.dialog.open(VendorGoodsDialogComponent, {
       
       data: data

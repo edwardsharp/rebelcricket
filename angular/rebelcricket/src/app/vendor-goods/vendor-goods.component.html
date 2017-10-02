@@ -10,7 +10,7 @@
       </md-expansion-panel-header>
       
       <md-selection-list #vendorGoodsFilenameIndex dense>
-        <md-list-option *ngFor="let vendorGood of vendorGoods" (click)="toggleVendorGoodFile(vendorGood.filename)" [selected]="selectedVendorGoodFiles.indexOf(vendorGood.filename) != -1">
+        <md-list-option *ngFor="let vendorGood of vendorGoods" (click)="toggleVendorGoodCategory(vendorGood.filename)" [selected]="vendorGoodsCategories.indexOf(vendorGood.filename) != -1">
           <span class="truncate">{{vendorGood.filename | sliceVendorFilenameCategory | titlecase }} ({{vendorGood.items?.length}})</span>
         </md-list-option>
       </md-selection-list>
@@ -19,10 +19,10 @@
 
 <div id="vendorGoodsContainer">
   <div id="vendorGoodsIndex">
-    <h3 mdLine>Categories ({{vendorGoods.length}})</h3>
-    <md-selection-list #vendorGoodsFilenameIndex dense>
-      <md-list-option *ngFor="let vendorGood of vendorGoods" (click)="toggleVendorGoodFile(vendorGood.filename)" [selected]="selectedVendorGoodFiles.indexOf(vendorGood.filename) != -1">
-        <span class="truncate">{{vendorGood.filename | sliceVendorFilenameCategory | titlecase }} ({{vendorGood.items?.length}})</span>
+    <h3 mdLine>Categories ({{vendorGoodsCategories.length}})</h3>
+    <md-selection-list #vendorGoodsIndex dense>
+      <md-list-option *ngFor="let idx of vendorGoodsCategories" (click)="toggleVendorGoodCategory(idx.name)" >
+        <span class="truncate">{{idx.name}} ({{idx.count}})</span>
       </md-list-option>
     </md-selection-list>
 
@@ -33,17 +33,18 @@
       loading vendor goods...
     </i>
     <md-list>
-      <div *ngFor="let vendorGood of vendorGoods">
-        <div *ngIf="selectedVendorGoodFiles.indexOf(vendorGood.filename) != -1">
-          <h3 md-subheader class="sticky">{{vendorGood.filename | sliceVendorFilenameCategory | titlecase }} ({{vendorGood.items?.length}})</h3>
-          <a name="{{vendorGood.filename}}">&nbsp;</a>
+
+      <div *ngFor="let item of vendorGoodsIndexSelected">
+        <div >
+          <h3 md-subheader class="sticky">{{item}}</h3>
+          <a name="{{item}}">&nbsp;</a>
           <md-list-item 
-            *ngFor="let item of vendorGood.items"
-            (click)="openDialog(item)">
-            <h3 mdLine class="truncate" title="{{item.title}}"> {{item.title}} </h3>
+            *ngFor="let vendorGood of vendorGoodsForCategory(item)"
+            (click)="openDialog(vendorGood)">
+            <h3 mdLine class="truncate" title="{{vendorGood.title}}"> {{vendorGood.title}} </h3>
             <p mdLine class="truncate">
-              <span> {{item.category}} -- {{item.sub_item}} </span>
-              <span> ({{item.colors?.length}} Colors) </span>
+              <span> {{vendorGood.category}} -- {{vendorGood.sub_category}} </span>
+              <span> ({{vendorGood.colors?.length}} Colors) </span>
             </p>
             <button type="button" md-icon-button>
               <md-icon>shopping_basket</md-icon>

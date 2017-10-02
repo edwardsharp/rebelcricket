@@ -1,7 +1,7 @@
 <h1 md-dialog-title class="center">{{vendorItem.title}}</h1>
 
 <div md-dialog-content>     
-  <div class="center">{{vendorItem.prod_id}} {{vendorItem.category}} {{vendorItem.sub_item}}</div>
+  <div class="center">{{vendorItem.prod_id}} {{vendorItem.category}} {{vendorItem.sub_category}}</div>
   <div class="row">
     <div class="center">
       <img *ngIf="vendorItem.prod_id" src="http://cdn.companycasuals.com/cache/cc/{{vendorItem.prod_id}}.jpg" class="info">
@@ -28,15 +28,15 @@
   <div class="row" *ngFor="let item of vendorItem.colors" (click)="item.selected = !item.selected">
     <div class="color-img" 
       [style.background-color]="'none'"
-      [style.background-image] = "'url(' + item.href + ')'">
+      [style.background-image]="'url(' + backgroundImgFor(vendorItem.href_items,item.color) + ')'">
       <div class="subtitle">
         <md-checkbox [checked]="item.selected" tabindex="-1"></md-checkbox>
-        {{item.name}}
+        {{item.color}}
       </div>
     </div>
     <div class="flexfill">
-      <span class="color-price center" *ngFor="let colorPrices of colorPricesForName(vendorItem, item.name)">
-        {{colorPrices.size}}<br>{{colorPrices.price}}
+      <span class="color-price center" *ngFor="let sizePrices of item.size_prices">
+        {{sizePrices[0]}}<br>{{sizePrices[1].length == 2 ? sizePrices[1][0] : sizePrices[1]  }}
       </span>
     </div>
   </div>

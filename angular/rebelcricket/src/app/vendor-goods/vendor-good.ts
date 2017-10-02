@@ -1,4 +1,5 @@
 export class VendorGood {
+  _id: string;
   category: string;
   sub_category: string;
   title: string;

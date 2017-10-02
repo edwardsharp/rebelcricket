@@ -21,6 +21,23 @@ export class VendorGoodsDialogComponent implements OnInit {
     this.dialogRef.close();
   }
 
+  backgroundImgFor(href_items:Array<string>, color:string){
+    // return `'url('${href_items.filter(i=> i[0] == color)[0][1]}')'`;
+    try{
+      return href_items.filter(i=> i[0] == color)[0][1]
+    }catch(e){
+      if(color.constructor === Array){
+        return href_items.filter(i=> i[0] == color[0])[0][1];
+      }else{
+        return [];
+      }
+      // console.log('ZOMGGG DEBUG THIS: color:',color,' href_items:',href_items);
+      // console.log('ZOMGGG DEBUG THIS: href_items.filter(i=> i[0] == color):',href_items.filter(i=> i[0] == color));
+
+      
+    }
+  }
+
   colorPricesForName(items:any, name:string){
     let retArr = [];
     _.each(items.color_prices, function(color_prices){

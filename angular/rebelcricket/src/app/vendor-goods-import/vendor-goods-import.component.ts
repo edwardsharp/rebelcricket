@@ -184,21 +184,20 @@ export class VendorGoodsImportComponent implements OnInit, OnDestroy {
         let idx:any = range.values[0];
         for (let i = 1; i < range.values.length; i++) {
           var row = range.values[i];
-          // Print columns A and E, which correspond to indices 0 and 4.
+          let _vendorGood: VendorGood = new VendorGood;
           for(var x=0; x<row.length;x++){
-            this.appendPre(`${idx[x]}: ${row[x]}`);
-            let _vendorGood: VendorGood = new VendorGood;
+            // this.appendPre(`${idx[x]}: ${row[x]}`);
             if(idx[x].endsWith('s')){
               _vendorGood[idx[x]] = JSON.parse(row[x]);
             }else{
               _vendorGood[idx[x]] = row[x];
             }
-            
-            this.vendorGoodsService.addVendorGood(_vendorGood);
-
           }
-          this.appendPre('done!');
+          _vendorGood["_id"] = `${_vendorGood.category}__${_vendorGood.sub_category}__${_vendorGood.prod_id}`;
+          this.vendorGoodsService.addVendorGood(_vendorGood);
+          console.log('vendorGoodsService.addVendorGood added _vendorGood:',_vendorGood);
         }
+        this.appendPre('done!');
       } else {
         this.appendPre('No data found.');
       }
