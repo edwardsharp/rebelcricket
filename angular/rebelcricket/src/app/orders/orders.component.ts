@@ -15,6 +15,7 @@ export class OrdersComponent implements OnInit {
 	orders: Order[];
   selectedOrder: Order;
   loading: Boolean = false;
+  orderTags: Array<string>=[];
 
   constructor(private orderService: OrderService) { }
 

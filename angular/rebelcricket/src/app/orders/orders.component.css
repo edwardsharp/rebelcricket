@@ -1,0 +1,51 @@
+#orders-container{
+	display: -webkit-flex;
+	display: flex;
+	flex-direction: row;
+	margin-top: 1em;
+}
+
+#orders-nav{
+
+}
+
+#orders-content{
+	-webkit-flex: 1;
+          flex: 1;
+ 	width: 75vw;
+}
+md-toolbar{
+	margin-top: 1em;
+	width: 100%;
+}
+md-selection-list{
+	overflow: scroll;
+	scroll-behavior: all;
+	max-height: (100vh - 56px);
+	width: 25vw;
+}
+.sticky{
+	position: sticky;
+	top: 56px;	
+	z-index: 1;
+}
+.fullwidth{
+	width:100%;
+}
+
+@media (max-width: 599px) {
+  #orders-container{
+  	flex-direction: column;
+  }
+  md-selection-list, .sticky{
+		width: 100vw;
+	}
+	#orders-content {
+	 	width: 100vw;
+	}
+  .truncate {
+	  max-width: 77vw;
+	  white-space: initial!important;
+	}
+
+}

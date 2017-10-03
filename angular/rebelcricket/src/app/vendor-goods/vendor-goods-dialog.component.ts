@@ -21,20 +21,45 @@ export class VendorGoodsDialogComponent implements OnInit {
     this.dialogRef.close();
   }
 
+  //sometimez shit is nested in a deep array (like low inventory tracking), which is mostly
+  // data cruft so try and iron that out flat, here:
+  flattenColorName(color:any){
+    try{
+      if(color[0] && color[0].constructor === Array){
+        // console.log('flattenColorName ret color[0][0]:',color[0][0]);
+        return color[0][0];
+      }else if(color && color.constructor === Array){
+        return color[0];
+      }else{
+        // console.log('flattenColorName ret color:',color);
+        return color;
+      }
+    }catch(e) { return color; }
+  }
+
+  flattenSizePrice(size_price:any){
+    try{
+      if(size_price[0] && size_price[0].constructor === Array){
+        return size_price[0][0];
+      }else if(size_price && size_price.constructor === Array){
+        return size_price[0];
+      }else{
+        return size_price;
+      }
+    }catch(e) { return size_price; }
+  }
+
   backgroundImgFor(href_items:Array<string>, color:string){
-    // return `'url('${href_items.filter(i=> i[0] == color)[0][1]}')'`;
     try{
       return href_items.filter(i=> i[0] == color)[0][1]
     }catch(e){
-      if(color && color.constructor === Array){
-        return href_items.filter(i=> i[0] == color[0])[0][1];
-      }else{
-        return [];
-      }
-      // console.log('ZOMGGG DEBUG THIS: color:',color,' href_items:',href_items);
-      // console.log('ZOMGGG DEBUG THIS: href_items.filter(i=> i[0] == color):',href_items.filter(i=> i[0] == color));
-
-      
+      try{
+        if(color && color.constructor === Array){
+          return href_items.filter(i=> i[0] == color[0])[0][1];
+        }else{
+          return [];
+        }
+      }catch(e){ return []; }
     }
   }
 
@@ -50,16 +75,3 @@ export class VendorGoodsDialogComponent implements OnInit {
   }
 
 }
-
-
-// <h1 md-dialog-title>{{data.title}}</h1>
-//     <div md-dialog-content>
-//       <p>title:</p>
-//       <md-form-field>
-//         <input mdInput tabindex="1" [(ngModel)]="data.title">
-//       </md-form-field>
-//     </div>
-//     <div md-dialog-actions>
-//       <button md-button [md-dialog-close]="data.title" tabindex="2">done</button>
-//       <button md-button (click)="onNoClick()" tabindex="-1">clear</button>
-//     </div>

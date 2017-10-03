@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { ActivatedRoute, ParamMap } from '@angular/router';
+import { ActivatedRoute, ParamMap, Router } from '@angular/router';
 import { Observable }           from 'rxjs/Observable';
 
 // import 'rxjs/add/operator/map';
@@ -21,7 +21,8 @@ export class OrderDetailComponent  { //implements OnInit
 
   constructor(
   	private orderService: OrderService,
-  	private route: ActivatedRoute
+  	private route: ActivatedRoute,
+    private router: Router
   ) { }
 
 
@@ -49,11 +50,18 @@ export class OrderDetailComponent  { //implements OnInit
     // .switchMap() is a debounced observable; rad!
     this.route.paramMap
     	.switchMap((params: ParamMap) => this.orderService.getOrder( params.get('id') ))
-    	.subscribe((order: Order) => this.order = order);
+    	.subscribe((order: Order) => {
+        if(order && order.id){
+          this.order = order;
+        }else{
+          this.order = new Order;
+        } 
+       
+      });
     
-    setTimeout( () => {    //use ()=> syntax
-      console.log('zomg, this this!',this.order);
-		 }, 3000);
+   //  setTimeout( () => {    //use ()=> syntax
+   //    console.log('zomg, this this!',this.order);
+		 // }, 3000);
 
   //   this.orderSub.subscribe(
 		//    value => this.obj = value,

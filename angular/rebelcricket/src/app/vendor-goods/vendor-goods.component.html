@@ -35,17 +35,16 @@
     <md-list>
 
       <div *ngFor="let item of vendorGoodsIndexSelected">
-        <div >
-          <h3 md-subheader class="sticky">{{item}}</h3>
-          <a name="{{item}}">&nbsp;</a>
+        <h3 md-subheader class="sticky center">{{item}}</h3>
+        <a name="{{item}}">&nbsp;</a>
+        <div *ngFor="let subGood of vendorGoodsSubCategories(item)">
+          <h3 md-subheader class="sticky center">{{item}} - {{subGood}}</h3>
+          <a name="{{subGood}}">&nbsp;</a>
           <md-list-item 
-            *ngFor="let vendorGood of vendorGoodsForCategory(item)"
+            *ngFor="let vendorGood of vendorGoodsForCategory(item,subGood)"
             (click)="openDialog(vendorGood)">
-            <h3 mdLine class="truncate" title="{{vendorGood.title}}"> {{vendorGood.title}} </h3>
-            <p mdLine class="truncate">
-              <span> {{vendorGood.category}} -- {{vendorGood.sub_category}} </span>
-              <span> ({{vendorGood.colors?.length}} Colors) </span>
-            </p>
+            <h3 mdLine class="truncate" title="{{vendorGood.title}}"> {{vendorGood.title}} <small class="colorCount">({{vendorGood.colors?.length}} Colors)</small></h3>
+     
             <button type="button" md-icon-button>
               <md-icon>shopping_basket</md-icon>
             </button>

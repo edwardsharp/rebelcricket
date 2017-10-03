@@ -66,8 +66,18 @@ export class VendorGoodsComponent implements OnInit {
 
   }
 
-  vendorGoodsForCategory(category:string){
-    return this.vendorGoods.filter(g => g.category == category);
+  vendorGoodsSubCategories(category:string){
+    return this.vendorGoods
+      .filter(g => g.category == category)
+      .map(g => g.sub_category)
+      .filter((value, index, self) => self.indexOf(value) === index);
+  }
+  vendorGoodsForCategory(category:string,sub_category:string){
+    if(sub_category != undefined || sub_category != ''){
+      return this.vendorGoods.filter(g => g.category == category && g.sub_category == sub_category);
+    }else{
+      return this.vendorGoods.filter(g => g.category == category);
+    } 
   }
 
   goTo(hash: string): void {

@@ -11,6 +11,20 @@
 .fullwidth {
 	width: 100%;
 }
-.header{
-	margin-bottom: 1em;
+
+.float{
+	float:left;
+}
+
+.sticky{
+	margin-top: 1em;
+	position: sticky;
+	top: 56px;
+	z-index: 2;
+}
+
+@media (max-width: 599px) {
+	md-form-field{
+		width: 100%;
+	}
 }

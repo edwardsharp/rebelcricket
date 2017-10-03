@@ -24,9 +24,7 @@ export class OrderService {
     return new Promise(resolve => {
       // simulate server latency with 2 second delay
       setTimeout(() => resolve(this.getOrders()), 2000);
-      
       // throw 'o noz!';
-
     });
   }
 

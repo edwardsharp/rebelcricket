@@ -29,10 +29,10 @@ export class Order {
   date_needed: string;
   wants_mail: boolean;
 
-  // constructor(
-  //   public order_services: OrderService[],
-  //   public line_items: LineItem[]
-  // ) { }
+  constructor(
+    // public order_services: OrderService[],
+    // public line_items: LineItem[]
+  ) {  this.id = this.id || Math.floor(Date.now() / 1000) + '-' + Math.random().toString(36).substr(2, 6); }
 
   order_services: Array<OrderService>;
   line_items: Array<LineItem>;

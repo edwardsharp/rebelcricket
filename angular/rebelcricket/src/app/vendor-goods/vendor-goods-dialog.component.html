@@ -31,12 +31,14 @@
       [style.background-image]="'url(' + backgroundImgFor(vendorItem.href_items,item.color) + ')'">
       <div class="subtitle">
         <md-checkbox [checked]="item.selected" tabindex="-1"></md-checkbox>
-        {{ item.color && item.color.length == 2 ? item.color[0] : item.color}}
+        {{flattenColorName(item.color)}}
       </div>
     </div>
     <div class="flexfill">
       <span class="color-price center" *ngFor="let sizePrices of item.size_prices">
-        {{sizePrices[0]}}<br>{{sizePrices[1] && sizePrices[1].length == 2 ? sizePrices[1][0] : sizePrices[1]  }}
+        
+        {{sizePrices[0]}}<br>
+        {{flattenSizePrice(sizePrices[1])}}
       </span>
     </div>
   </div>

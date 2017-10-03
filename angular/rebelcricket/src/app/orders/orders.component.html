@@ -1,16 +1,37 @@
-<md-nav-list>
-  <span *ngIf="loading">
-    <i>loading orders...</i>
-  </span> 
-  <md-list-item *ngFor="let order of orders" 
-    [class.selected]="order === selectedOrder"
-    routerLink="/dashboard/order/{{order.id}}" 
-    routerLinkActive="active">
-    {{order.name}} <span *ngIf="order.org" class="badge">&nbsp;({{order.org}})</span>
+<div id="orders-container">
+  <div id="orders-nav">
+    <h3 mdLine class="center">Tags <span *ngIf="orderTags">({{orderTags.length}})</span></h3>
+    <md-selection-list class="sticky" #selectedOrderTags>
+      <md-list-option *ngFor="let tag of orderTags">
+        {{tag}}
+      </md-list-option>
+    </md-selection-list>
+  </div>
+  <div id="orders-content">
 
-    <span class="flexfill"></span>
-    <md-icon>navigate_next</md-icon>
-  </md-list-item>
-</md-nav-list>
+    <md-toolbar color="primary" class="sticky">
+      <h1>Orders</h1>
+      <span class="flexfill"></span>
+      <button md-icon-button>
+        <md-icon class="md-24" aria-label="Create a new order" mdTooltip="Create a new order" mdTooltipPosition="left" routerLink="/dashboard/order/new">add</md-icon>
+      </button>
+    </md-toolbar>
 
+    <md-nav-list>
+      <span *ngIf="loading">
+        <i>loading orders...</i>
+      </span> 
+      <md-list-item *ngFor="let order of orders" 
+        [class.selected]="order === selectedOrder"
+        routerLink="/dashboard/order/{{order.id}}" 
+        routerLinkActive="active">
+        {{order.name}} <span *ngIf="order.org" class="badge">&nbsp;({{order.org}})</span>
+
+        <span class="flexfill"></span>
+        <md-icon>navigate_next</md-icon>
+      </md-list-item>
+    </md-nav-list>
+
+  </div>
+</div>
 <!-- <app-order-detail [order]="selectedOrder"></app-order-detail> -->
