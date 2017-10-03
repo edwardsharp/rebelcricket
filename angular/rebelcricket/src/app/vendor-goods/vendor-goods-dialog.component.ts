@@ -26,7 +26,7 @@ export class VendorGoodsDialogComponent implements OnInit {
     try{
       return href_items.filter(i=> i[0] == color)[0][1]
     }catch(e){
-      if(color.constructor === Array){
+      if(color && color.constructor === Array){
         return href_items.filter(i=> i[0] == color[0])[0][1];
       }else{
         return [];
