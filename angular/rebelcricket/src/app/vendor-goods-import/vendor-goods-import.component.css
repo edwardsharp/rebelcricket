@@ -1,5 +1,6 @@
 :host{
 	max-width: 85vw;
+	margin-top: 1.5em;
 }
 md-toolbar {
 	margin-top: 1em;
@@ -23,4 +24,14 @@ pre{
 	width: 46%;
 	margin-left: 1%;
 	margin-right: 1%;
+}
+
+.headers-align .mat-expansion-panel-header-title, 
+.headers-align .mat-expansion-panel-header-description {
+  flex-basis: 0;
+}
+
+.headers-align .mat-expansion-panel-header-description {
+  justify-content: space-between;
+  align-items: center;
 }

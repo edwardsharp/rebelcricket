@@ -6,6 +6,11 @@
 body {
 	margin: 0;
 	padding: 0;
+	font-family: 'Roboto', 'Noto', sans-serif;
+}
+
+h1,h2,h3,h4,h5,h6{
+	font-family: 'Open Sans', sans-serif;
 }
 
 .flexfill {
@@ -27,3 +32,10 @@ md-sidenav-container, .mat-drawer-content {
 .nolist {
   list-style: none;
 }
+
+.order-details mat-tab-header{
+		position: sticky!important;
+		top: 	120px;
+		z-index: 2;
+		background-color: white;
+	}

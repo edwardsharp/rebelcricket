@@ -29,16 +29,18 @@ export class Order {
   date_needed: string;
   wants_mail: boolean;
 
+  created_at: Date;
   constructor(
     // public order_services: OrderService[],
     // public line_items: LineItem[]
-  ) {  this.id = this.id || Math.floor(Date.now() / 1000) + '-' + Math.random().toString(36).substr(2, 6); }
+  ) { 
+    this.id = this.id || Math.floor(Date.now() / 1000).toString(36); 
+    this.created_at = new Date(parseInt(this.id, 36) * 1000);
+  }
 
   order_services: Array<OrderService>;
   line_items: Array<LineItem>;
 
-
-  
 }
 
 export class OrderField {

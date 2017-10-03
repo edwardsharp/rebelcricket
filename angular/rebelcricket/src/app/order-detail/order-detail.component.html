@@ -11,63 +11,98 @@
     	<md-icon class="md-24" aria-label="Back to orders" routerLink="/dashboard/orders" mdTooltip="Back to orders">arrow_back</md-icon>
   	</button>
   	
-	  <h2 class="name">#{{order.id}}</h2>  
+	  <h2 class="name"><small>{{order.created_at | date:'short' }}</small> {{order.name}} <span *ngIf="order.org">-- {{order.org}}</span></h2>  
+	  <span class="flexfill"></span>
+		<button md-icon-button [mdMenuTriggerFor]="orderDetailMenu">
+	    <md-icon class="example-icon">more_vert</md-icon>
+	  </button>
+	  <md-menu #orderDetailMenu="mdMenu">
+	    <button md-menu-item disabled>
+	      <md-icon>delete</md-icon>
+	      <span>delete</span>
+	    </button>
+	    <button md-menu-item disabled>
+	      <md-icon>notifications_off</md-icon>
+	      <span>disable alerts</span>
+	    </button>
+	    <button md-menu-item>
+	      <md-icon>favorite_border</md-icon>
+	      <span><small>madewithlove</small></span>
+	    </button>
+	  </md-menu>
 
 	</md-toolbar>
 
-  <div >
-  	
-	</div>
+	<md-tab-group class="order-details">
+	  <md-tab label="Details">
+	  	<div>
+			  <md-form-field>
+			    <input mdInput [(ngModel)]="order.name" placeholder="name">
+			  </md-form-field>
+			  <md-form-field>
+			    <input mdInput [(ngModel)]="order.org" placeholder="org">
+			  </md-form-field>
+			  
+			</div>
+			<div>
+				<md-form-field>
+			    <input mdInput [(ngModel)]="order.email" placeholder="email">
+			  </md-form-field>
+			  <md-form-field>
+			    <input mdInput [(ngModel)]="order.phone" placeholder="phone">
+			  </md-form-field>
+			</div>
+		  <div>
+			  <md-form-field class="fullwidth">
+			    <textarea mdInput [(ngModel)]="order.notes" placeholder="notes"></textarea>
+			  </md-form-field>
+			</div>
 
-  <div>
-	  <md-form-field>
-	    <input mdInput [(ngModel)]="order.name" placeholder="name">
-	  </md-form-field>
-	  <md-form-field>
-	    <input mdInput [(ngModel)]="order.org" placeholder="org">
-	  </md-form-field>
+		  <md-list>
+			  <md-list-item *ngFor="let service of order.services">{{service}}</md-list-item>
+			</md-list>
+
+			<h3 *ngIf="order.line_items">Line Items ({{order.line_items.length}})</h3>
+		  <div *ngFor="let line_item of order.line_items">
+		  	<h3>Service: {{line_item.service_label}}</h3>
+
+		  	<md-form-field>
+			    <input mdInput [(ngModel)]="line_item.quantity" placeholder="quantity" type="number">
+			  </md-form-field>
+
+			  <md-form-field>
+			    <input mdInput [(ngModel)]="line_item.total" placeholder="total" type="number">
+			  </md-form-field>
+
+			  <div>
+			  	<md-form-field class="fullwidth">
+				    <textarea mdInput [(ngModel)]="line_item.notes" placeholder="notes"></textarea>
+				  </md-form-field>
+				</div>
+
+			  <h4 *ngIf="items">Items ({{items.length}})</h4>
+			  <div *ngFor="let item of items">
+			  	{{item}}
+			  </div>
+		  </div>
+	  </md-tab>
+
+	  <md-tab label="Attachments (0)">
+	  	<md-list>
+			  <md-list-item>List of order attachments will go here...</md-list-item>
+			</md-list>
+	  </md-tab>
 	  
-	</div>
-	<div>
-		<md-form-field>
-	    <input mdInput [(ngModel)]="order.email" placeholder="email">
-	  </md-form-field>
-	  <md-form-field>
-	    <input mdInput [(ngModel)]="order.phone" placeholder="phone">
-	  </md-form-field>
-	</div>
-  <div>
-	  <md-form-field class="fullwidth">
-	    <textarea mdInput [(ngModel)]="order.notes" placeholder="notes"></textarea>
-	  </md-form-field>
-	</div>
+	  <md-tab label="Updates (1)">
+	  	<md-list>
+			  <md-list-item>
+	  			List of order history &amp; conversational message thread stuff will go here...
+	  		</md-list-item>
+	  	</md-list>
+	  </md-tab>
+	  
+	</md-tab-group>
 
-  <md-list>
-	  <md-list-item *ngFor="let service of order.services">{{service}}</md-list-item>
-	</md-list>
-
-	<h3 *ngIf="order.line_items">Line Items ({{order.line_items.length}})</h3>
-  <div *ngFor="let line_item of order.line_items">
-  	<h3>Service: {{line_item.service_label}}</h3>
-
-  	<md-form-field>
-	    <input mdInput [(ngModel)]="line_item.quantity" placeholder="quantity" type="number">
-	  </md-form-field>
-
-	  <md-form-field>
-	    <input mdInput [(ngModel)]="line_item.total" placeholder="total" type="number">
-	  </md-form-field>
-
-	  <div>
-	  	<md-form-field class="fullwidth">
-		    <textarea mdInput [(ngModel)]="line_item.notes" placeholder="notes"></textarea>
-		  </md-form-field>
-		</div>
-
-	  <h4 *ngIf="items">Items ({{items.length}})</h4>
-	  <div *ngFor="let item of items">
-	  	{{item}}
-	  </div>
-  </div>
+  
 
 </div>

@@ -1,56 +1,80 @@
-<md-toolbar color="primary">
-	
-  <h1>Vendor Goods Import</h1>
+<md-accordion class="headers-align">
+  <md-expansion-panel expanded="true" hideToggle="true">
+    <md-expansion-panel-header>
+      <md-panel-title>
+        Google Spreadsheet
+      </md-panel-title>
+      <md-panel-description>
+        Import vendor goods from a Google spreadsheet.
+      </md-panel-description>
+    </md-expansion-panel-header>
 
-  <span class="flexfill"></span>
+    <i *ngIf="loading">loadng...</i>
 
-  <span *ngIf="isSignedIn">
-  	<button md-icon-button [mdMenuTriggerFor]="acct">
-	    <md-icon class="example-icon">more_vert</md-icon>
-	  </button>
-	  <md-menu #acct="mdMenu">
-	    <button md-menu-item (click)="signOut()" title="Sign Out">
-	      <md-icon>delete</md-icon>
-	      <span>Google sign out</span>
-	    </button>
-	  </md-menu>
-  </span>
-</md-toolbar>
+		<div class="center" *ngIf="!isSignedIn">
+			<button md-button (click)="signIn()" title="Authorize">
+			  <md-icon>account_circle</md-icon>
+			  <span>Authorize with Google</span>
+			</button>
+		</div>
 
-<i *ngIf="loading">loadng...</i>
+		<div *ngIf="isSignedIn">
+			<div class="center">
+				<md-form-field class="fullwidth">
+				  <input mdInput [(ngModel)]="gsheetId" placeholder="Google Sheet ID">
+				</md-form-field>
 
-<div class="center" *ngIf="!isSignedIn">
-	<button md-button (click)="signIn()" title="Authorize">
-	  <md-icon>account_circle</md-icon>
-	  <span>Authorize with Google</span>
-	</button>
-</div>
+				<md-select [placeholder]="gsheetIds.length > 0 ? 'Select Sheet' : 'loading sheets...'" [(ngModel)]="sheetId" class="halfwidth">
+				  <md-option *ngFor="let sheet of gsheetIds" [value]="sheet.sheetId">
+				    {{ sheet.title }}
+				  </md-option>
+				</md-select>
 
-<div *ngIf="isSignedIn">
-	<div class="center">
-		<md-form-field class="fullwidth">
-		  <input mdInput [(ngModel)]="gsheetId" placeholder="Google Sheet ID">
-		</md-form-field>
+				<md-form-field class="halfwidth">
+				  <input mdInput [(ngModel)]="gsheetRange" placeholder="Google Sheet Range">
+				</md-form-field>
+			</div>
+			
+		</div>
 
-		<md-select [placeholder]="gsheetIds.length > 0 ? 'Select Sheet' : 'loading sheets...'" [(ngModel)]="sheetId" class="halfwidth">
-		  <md-option *ngFor="let sheet of gsheetIds" [value]="sheet.sheetId">
-		    {{ sheet.title }}
-		  </md-option>
-		</md-select>
+		<pre *ngFor="let item of pre">
+			{{item}}
+		</pre>
 
-		<md-form-field class="halfwidth">
-		  <input mdInput [(ngModel)]="gsheetRange" placeholder="Google Sheet Range">
-		</md-form-field>
-	</div>
-	<button md-button (click)="getVendorGoodsFromGsheet(gsheetId)" [disabled]="sheetId == undefined">
-	  <md-icon>import_export</md-icon> Import Vendor Goods
-	</button>
-</div>
+    <md-action-row>
+    	<button md-button (click)="getVendorGoodsFromGsheet(gsheetId)" [disabled]="sheetId == undefined">
+			  <md-icon>import_export</md-icon> Import Vendor Goods
+			</button>
+    	<span class="flexfill"></span>
+    	<span *ngIf="isSignedIn">
+		  	<button md-icon-button [mdMenuTriggerFor]="acct">
+			    <md-icon class="icon">more_vert</md-icon>
+			  </button>
+			  <md-menu #acct="mdMenu">
+			    <button md-menu-item (click)="signOut()" title="Sign Out">
+			      <md-icon>delete</md-icon>
+			      <span>Google sign out</span>
+			    </button>
+			  </md-menu>
+		  </span>
+    </md-action-row>
+  </md-expansion-panel>
+
+<!--   <md-expansion-panel hideToggle="true">
+    <md-expansion-panel-header>
+      <md-panel-title>
+        Title
+      </md-panel-title>
+      <md-panel-description>
+        description
+        <md-icon>icon</md-icon>
+      </md-panel-description>
+    </md-expansion-panel-header>
+
+    <md-action-row>
+    	
+    </md-action-row>
+  </md-expan sion-panel> -->
 
 
-
-<!-- <h1 *ngIf="zomg">zomg!</h1> -->
-
-<pre *ngFor="let item of pre">
-	{{item}}
-</pre>
+</md-accordion>

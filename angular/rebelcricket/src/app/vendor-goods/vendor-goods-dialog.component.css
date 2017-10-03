@@ -3,6 +3,10 @@
   flex-direction: row;
 }
 
+.color-size-prices{
+  align-items: center;
+}
+
 @media (max-width: 599px) {
   .row{
     flex-direction: column;
