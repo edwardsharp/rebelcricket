@@ -16,20 +16,20 @@
 
 // @Injectable()  //???
 export class Order {
-  id: string;
+  id?: string;
   name: string;
   email: string;
   phone: string;
   org: string;
 
-  submitted: boolean;
+  submitted?: boolean ;
   
-  notes: string;
-  need_by_date: boolean;
-  date_needed: string;
-  wants_mail: boolean;
+  notes?: string;
+  need_by_date?: boolean;
+  date_needed?: string;
+  wants_mail?: boolean;
 
-  created_at: Date;
+  created_at?: Date;
   constructor(
     // public order_services: OrderService[],
     // public line_items: LineItem[]
@@ -38,8 +38,8 @@ export class Order {
     this.created_at = new Date(parseInt(this.id, 36) * 1000);
   }
 
-  order_services: Array<OrderService>;
-  line_items: Array<LineItem>;
+  order_services?: Array<OrderService>;
+  line_items?: Array<LineItem>;
 
 }
 

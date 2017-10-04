@@ -41,36 +41,39 @@
       <span *ngIf="loading">
         <i>loading orders...</i>
       </span> 
-      <md-table #table [dataSource]="dataSource" mdSort>
+      <md-table #table [dataSource]="dataSource" mdSort class="mat-elevation-z2">
 
         <!--- Note that these columns can be defined in any order.
               The actual rendered columns are set as a property on the row definition" -->
 
         <!-- ID Column -->
-        <ng-container mdColumnDef="userId">
+        <ng-container mdColumnDef="orderId">
           <md-header-cell *mdHeaderCellDef md-sort-header> ID </md-header-cell>
           <md-cell *mdCellDef="let row"> {{row.id}} </md-cell>
         </ng-container>
 
-        <!-- Progress Column -->
-        <ng-container mdColumnDef="progress">
-          <md-header-cell *mdHeaderCellDef md-sort-header> Progress </md-header-cell>
-          <md-cell *mdCellDef="let row"> {{row.progress}}% </md-cell>
-        </ng-container>
-
-        <!-- Name Column -->
-        <ng-container mdColumnDef="userName">
+        <ng-container mdColumnDef="orderName">
           <md-header-cell *mdHeaderCellDef md-sort-header> Name </md-header-cell>
-          <md-cell *mdCellDef="let row"> {{row.name}} </md-cell>
+          <md-cell *mdCellDef="let row"> {{row.name}}% </md-cell>
         </ng-container>
 
-        <!-- Color Column -->
-        <ng-container mdColumnDef="color">
-          <md-header-cell *mdHeaderCellDef md-sort-header> Color </md-header-cell>
-          <md-cell *mdCellDef="let row" [style.color]="row.color"> {{row.color}} </md-cell>
+        <ng-container mdColumnDef="orderEmail">
+          <md-header-cell *mdHeaderCellDef md-sort-header> Email </md-header-cell>
+          <md-cell *mdCellDef="let row"> {{row.email}} </md-cell>
+        </ng-container>
+
+        <ng-container mdColumnDef="orderOrg">
+          <md-header-cell *mdHeaderCellDef md-sort-header> Org </md-header-cell>
+          <md-cell *mdCellDef="let row"> {{row.org}} </md-cell>
+        </ng-container>
+
+        <ng-container mdColumnDef="orderPhone">
+          <md-header-cell *mdHeaderCellDef md-sort-header> Phone </md-header-cell>
+          <md-cell *mdCellDef="let row"> {{row.phone}} </md-cell>
         </ng-container>
 
         <md-header-row class="stickyTableHeader" *mdHeaderRowDef="displayedColumns"></md-header-row>
+
         <md-row *mdRowDef="let row; columns: displayedColumns;"></md-row>
       </md-table>
     </div>
