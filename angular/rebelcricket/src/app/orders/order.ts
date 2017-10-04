@@ -20,7 +20,8 @@ export class Order {
   name: string;
   email: string;
   phone: string;
-  org: string;
+  
+  org?: string;
 
   submitted?: boolean ;
   
@@ -34,8 +35,8 @@ export class Order {
     // public order_services: OrderService[],
     // public line_items: LineItem[]
   ) { 
-    this.id = this.id || Math.floor(Date.now() / 1000).toString(36); 
-    this.created_at = new Date(parseInt(this.id, 36) * 1000);
+    this.id = this.id || Math.floor(Date.now()).toString(36); 
+    this.created_at = new Date(parseInt(this.id, 36));
   }
 
   order_services?: Array<OrderService>;

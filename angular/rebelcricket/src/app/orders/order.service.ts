@@ -12,6 +12,11 @@ const NAMES = ['Maia', 'Asher', 'Olivia', 'Atticus', 'Amelia', 'Jack',
   'Charlotte', 'Theodore', 'Isla', 'Oliver', 'Isabella', 'Jasper',
   'Cora', 'Levi', 'Violet', 'Arthur', 'Mia', 'Thomas', 'Elizabeth'];
 
+let IDZ = [];
+for (let i = 0; i < 1000; i++) { 
+  IDZ.push( Math.floor(new Date(1507096743342 - (1000000000 * i) ).getTime()).toString(36) );
+}
+
 @Injectable()
 export class OrderService {
 
@@ -21,8 +26,13 @@ export class OrderService {
 
   constructor() {
     // Fill up the database with 100 users.
-    for (let i = 0; i < 50; i++) { this.addOrder(); }
-    // setTimeout(()=>{for (let i = 0; i < 50; i++) { this.addUser(); }}, 5000);
+    let startDate = 1507096743342;
+    let offset = 1000000000; // ~1.6week
+    for (let i = 0; i < 10; i++) { 
+      this.addOrder(); 
+      setTimeout(()=>{for (let i = 0; i < 50; i++) { this.addOrder(); }}, 5000);
+    }
+    
   }
 
   addOrder() {
@@ -35,13 +45,14 @@ export class OrderService {
   private createNewOrder() {
     const name =
         NAMES[Math.round(Math.random() * (NAMES.length - 1))] + ' ' +
-        NAMES[Math.round(Math.random() * (NAMES.length - 1))].charAt(0) + '.';
+        NAMES[Math.round(Math.random() * (NAMES.length - 1))];
+    const id = IDZ[Math.round(Math.random() * (IDZ.length - 1))]
 
     return {
-      id: Math.floor(Date.now() / 1000).toString(36),
+      id: id,
       name: name,
       email: `${name}@example.org`,
-      org: `Testing ${Math.round(Math.random() * 100000).toString(36)}`,
+      org: `Testing ${IDZ.indexOf(id)}`,
       phone: Math.floor(100000 + Math.random() * 9000000000).toString(),
       notes: 'testing'
     };

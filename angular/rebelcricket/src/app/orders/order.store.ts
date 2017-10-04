@@ -1,6 +1,6 @@
 import {ViewChild} from '@angular/core';
 import {DataSource} from '@angular/cdk/collections';
-import {MdSort} from '@angular/material';
+import {MdSort, MdPaginator} from '@angular/material';
 // import {BehaviorSubject} from 'rxjs/BehaviorSubject';
 import {Observable} from 'rxjs/Observable';
 // import 'rxjs/add/operator/startWith';
@@ -19,7 +19,9 @@ import { OrderService } from './order.service';
  * should be rendered.
  */
 export class OrderStore extends DataSource<any> {
-  constructor(private _orderService: OrderService, private _sort: MdSort) {
+  constructor( private _orderService: OrderService, 
+  						 private _sort: MdSort, 
+  						 private _paginator: MdPaginator ) {
     super();
   }
 
@@ -28,18 +30,22 @@ export class OrderStore extends DataSource<any> {
     const displayDataChanges = [
       this._orderService.dataChange,
       this._sort.sortChange,
+      this._paginator.page
     ];
 
     return Observable.merge(...displayDataChanges).map(() => {
-      return this.getSortedData();
+    	const data = this._orderService.data.slice();
+	    // Grab the page's slice of data.
+	    const startIndex = this._paginator.pageIndex * this._paginator.pageSize;
+      return this.getSortedData(data.splice(startIndex, this._paginator.pageSize));
     });
   }
 
   disconnect() {}
 
   /** Returns a sorted copy of the database data. */
-  getSortedData(): Order[] {
-    const data = this._orderService.data.slice();
+  getSortedData(data:any): Order[] {
+
     if (!this._sort.active || this._sort.direction == '') { return data; }
 
     return data.sort((a, b) => {
@@ -47,7 +53,7 @@ export class OrderStore extends DataSource<any> {
       let propertyB: number|string = '';
 
       switch (this._sort.active) {
-        case 'orderId': [propertyA, propertyB] = [a.id, b.id]; break;
+        case 'orderId': [propertyA, propertyB] = [parseInt(a.id, 36),parseInt(b.id, 36)]; break;
         case 'orderName': [propertyA, propertyB] = [a.name, b.name]; break;
         case 'orderEmail': [propertyA, propertyB] = [a.email, b.email]; break;
         case 'orderOrg': [propertyA, propertyB] = [a.org, b.org]; break;

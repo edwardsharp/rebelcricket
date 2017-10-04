@@ -1,6 +1,6 @@
 import {Component, ViewChild, OnInit} from '@angular/core';
 import {DataSource} from '@angular/cdk/collections';
-import {MdSort} from '@angular/material';
+import {MdSort,MdPaginator} from '@angular/material';
 import {BehaviorSubject} from 'rxjs/BehaviorSubject';
 import {Observable} from 'rxjs/Observable';
 import 'rxjs/add/operator/startWith';
@@ -47,13 +47,18 @@ export class OrdersComponent implements OnInit {
   dataSource: OrderStore | null;
 
   @ViewChild(MdSort) sort: MdSort;
+  @ViewChild(MdPaginator) paginator: MdPaginator;
 
   ngOnInit() {
     this.loading = true;
     this.getOrders();
-    this.dataSource = new OrderStore(this.orderService, this.sort);
+    this.dataSource = new OrderStore(this.orderService, this.sort, this.paginator);
   }
 
+
+  createdAtDate(id:string){
+    return new Date(parseInt(id, 36));
+  }
 
   onSelect(order: Order): void {
     this.selectedOrder = order;
