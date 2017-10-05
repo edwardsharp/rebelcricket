@@ -34,19 +34,23 @@ export class OrderStore extends DataSource<any> {
     ];
 
     return Observable.merge(...displayDataChanges).map(() => {
-    	const data = this._orderService.data.slice();
-	    // Grab the page's slice of data.
-	    const startIndex = this._paginator.pageIndex * this._paginator.pageSize;
-      return this.getSortedData(data.splice(startIndex, this._paginator.pageSize));
+      //pagniator 
+  		const startIndex = this._paginator.pageIndex * this._paginator.pageSize;
+      return this.getSortedData().splice(startIndex, this._paginator.pageSize);
     });
   }
 
   disconnect() {}
 
   /** Returns a sorted copy of the database data. */
-  getSortedData(data:any): Order[] {
+  getSortedData(): Order[] {
 
-    if (!this._sort.active || this._sort.direction == '') { return data; }
+    const data = this._orderService.data.slice();
+    if (!this._sort.active || this._sort.direction == '') { 
+    	//default sort by ID/Created
+    	this._sort.active = 'orderId';
+    	this._sort.direction = 'desc';
+    }
 
     return data.sort((a, b) => {
       let propertyA: number|string = '';
