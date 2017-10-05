@@ -98,15 +98,6 @@ export class OrderDetailComponent  { //implements OnInit
   // Enter, comma
   separatorKeysCodes = [ENTER, COMMA];
 
-  fruits = [
-    { name: 'Lemon' },
-    { name: 'Lime' },
-    { name: 'Apple' },
-    { name: 'Zomg A really really long title with space' },
-    { name: 'zomdgfajsdhfkdsjhfdskhsdfkjdhfkjshfkasdfjhgkdfsjhdkfjhdgkjdfhgkfgjhfgkjhdfgkjhsfgkjhsdfkjghfdkgjhfdkfjhgkfdjhgfkghsdkgdhfgfjgksdfhgkjfhgd kdjfhgksdfjhgfkdjg dfgkjhdfg ' },
-    { name: 'a long one ds fkjsdfadskjfhsdfkjdshfksadjhfdkjfhdskjfhdkjfhdsfkhfkdjfhdskjfdkfjhdkfjhsdkfjhdfkjshfdkjfhsdkjfhdkfjhdkfhdskjhdfkjshfkdhfdksjfhkjdhfdksjhfdkjf sdfkjd' },
-  ];
-
 
   add(event: MdChipInputEvent): void {
     let input = event.input;
@@ -114,7 +105,10 @@ export class OrderDetailComponent  { //implements OnInit
 
     // Add our person
     if ((value || '').trim()) {
-      this.fruits.push({ name: value.trim() });
+      if(this.order.tags == undefined){
+        this.order.tags = [];
+      }
+      this.order.tags.push(value.trim());
     }
 
     // Reset the input value
@@ -123,11 +117,11 @@ export class OrderDetailComponent  { //implements OnInit
     }
   }
 
-  remove(fruit: any): void {
-    let index = this.fruits.indexOf(fruit);
+  remove(tag: any): void {
+    let index = this.order.tags.indexOf(tag);
 
     if (index >= 0) {
-      this.fruits.splice(index, 1);
+      this.order.tags.splice(index, 1);
     }
   }
 

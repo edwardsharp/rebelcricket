@@ -51,7 +51,9 @@ export class OrderService {
       email: `${name}@example.org`,
       org: `Testing ${IDZ.indexOf(id)}`,
       phone: Math.floor(100000 + Math.random() * 9000000000).toString(),
-      notes: 'testing'
+      notes: 'testing',
+      status: 'new',
+      tags: []
     };
   }
 

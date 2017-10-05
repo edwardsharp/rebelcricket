@@ -67,9 +67,9 @@
           <md-cell *mdCellDef="let row"> {{row.org}} </md-cell>
         </ng-container>
 
-        <ng-container mdColumnDef="orderPhone">
-          <md-header-cell *mdHeaderCellDef md-sort-header> Phone </md-header-cell>
-          <md-cell *mdCellDef="let row"> {{row.phone}} </md-cell>
+        <ng-container mdColumnDef="orderStatus">
+          <md-header-cell *mdHeaderCellDef md-sort-header> Status </md-header-cell>
+          <md-cell *mdCellDef="let row"> {{row.status}} </md-cell>
         </ng-container>
 
         <md-header-row class="stickyTableHeader" *mdHeaderRowDef="displayedColumns"></md-header-row>

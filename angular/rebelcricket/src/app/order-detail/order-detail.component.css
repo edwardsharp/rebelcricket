@@ -39,7 +39,10 @@ md-chip{
 	z-index: 2;
 }
 
-
+.tags {
+	margin-top: 0.5em;
+	margin-bottom: 0.25em;
+}
 
 @media (max-width: 599px) {
 	md-form-field{

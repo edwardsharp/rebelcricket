@@ -61,7 +61,7 @@ export class OrderStore extends DataSource<any> {
         case 'orderName': [propertyA, propertyB] = [a.name, b.name]; break;
         case 'orderEmail': [propertyA, propertyB] = [a.email, b.email]; break;
         case 'orderOrg': [propertyA, propertyB] = [a.org, b.org]; break;
-        case 'orderPhone': [propertyA, propertyB] = [a.phone, b.phone]; break;
+        case 'orderStatus': [propertyA, propertyB] = [a.status, b.status]; break;
       }
 
       let valueA = isNaN(+propertyA) ? propertyA : +propertyA;

@@ -45,7 +45,7 @@ export class OrdersComponent implements OnInit {
   }
 
   //table sorting stuff
-  displayedColumns = ['orderId', 'orderName', 'orderEmail', 'orderOrg', 'orderPhone'];
+  displayedColumns = ['orderId', 'orderName', 'orderEmail', 'orderOrg', 'orderStatus'];
   // exampleDatabase = new ExampleDatabase();
   dataSource: OrderStore | null;
 

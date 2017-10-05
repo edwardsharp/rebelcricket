@@ -31,16 +31,19 @@ export class Order {
   wants_mail?: boolean;
 
   created_at?: Date;
+  status?: string;
+  tags?: Array<string>;
+  order_services?: Array<OrderService>;
+  line_items?: Array<LineItem>;
+
   constructor(
     // public order_services: OrderService[],
     // public line_items: LineItem[]
   ) { 
     this.id = this.id || Math.floor(Date.now()).toString(36); 
     this.created_at = new Date(parseInt(this.id, 36));
+    this.status = this.status || 'new';
   }
-
-  order_services?: Array<OrderService>;
-  line_items?: Array<LineItem>;
 
 }
 
