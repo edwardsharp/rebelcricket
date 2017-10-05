@@ -1,12 +1,14 @@
 import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute, ParamMap, Router } from '@angular/router';
 import { Observable }           from 'rxjs/Observable';
-
 // import 'rxjs/add/operator/map';
 import 'rxjs/add/operator/switchMap';
+import {MdChipInputEvent, ENTER} from '@angular/material';
 
 import { Order } from '../orders/order';
 import { OrderService } from '../orders/order.service';
+
+const COMMA = 188;
 
 @Component({
   selector: 'app-order-detail',
@@ -86,5 +88,47 @@ export class OrderDetailComponent  { //implements OnInit
   // }
 
   // @Input() order: Order;
+
+  //chip input for tagz
+  visible: boolean = true;
+  selectable: boolean = true;
+  removable: boolean = true;
+  addOnBlur: boolean = true;
+
+  // Enter, comma
+  separatorKeysCodes = [ENTER, COMMA];
+
+  fruits = [
+    { name: 'Lemon' },
+    { name: 'Lime' },
+    { name: 'Apple' },
+    { name: 'Zomg A really really long title with space' },
+    { name: 'zomdgfajsdhfkdsjhfdskhsdfkjdhfkjshfkasdfjhgkdfsjhdkfjhdgkjdfhgkfgjhfgkjhdfgkjhsfgkjhsdfkjghfdkgjhfdkfjhgkfdjhgfkghsdkgdhfgfjgksdfhgkjfhgd kdjfhgksdfjhgfkdjg dfgkjhdfg ' },
+    { name: 'a long one ds fkjsdfadskjfhsdfkjdshfksadjhfdkjfhdskjfhdkjfhdsfkhfkdjfhdskjfdkfjhdkfjhsdkfjhdfkjshfdkjfhsdkjfhdkfjhdkfhdskjhdfkjshfkdhfdksjfhkjdhfdksjhfdkjf sdfkjd' },
+  ];
+
+
+  add(event: MdChipInputEvent): void {
+    let input = event.input;
+    let value = event.value;
+
+    // Add our person
+    if ((value || '').trim()) {
+      this.fruits.push({ name: value.trim() });
+    }
+
+    // Reset the input value
+    if (input) {
+      input.value = '';
+    }
+  }
+
+  remove(fruit: any): void {
+    let index = this.fruits.indexOf(fruit);
+
+    if (index >= 0) {
+      this.fruits.splice(index, 1);
+    }
+  }
 
 }

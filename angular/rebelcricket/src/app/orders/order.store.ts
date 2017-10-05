@@ -46,7 +46,7 @@ export class OrderStore extends DataSource<any> {
   getSortedData(): Order[] {
 
     const data = this._orderService.data.slice();
-    if (!this._sort.active || this._sort.direction == '') { 
+    if (!this._sort.active && this._sort.direction == '') { 
     	//default sort by ID/Created
     	this._sort.active = 'orderId';
     	this._sort.direction = 'desc';

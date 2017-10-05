@@ -2,6 +2,17 @@ md-form-field{
 	min-width: 49%;
 }
 
+md-chip{
+	/*white-space: pre-wrap;*/
+  text-overflow: ellipsis;
+  max-width: 200px;
+  overflow: hidden;
+}
+
+.mat-chip-remove{
+	margin-left: -4px;
+  margin-right: 6px;
+}
 .content{
 	padding: 1em;
 }

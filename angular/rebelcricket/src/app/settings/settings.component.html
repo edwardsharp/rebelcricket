@@ -1,0 +1,62 @@
+<md-accordion class="headers-align">
+  <md-expansion-panel expanded="true" hideToggle="true">
+    <md-expansion-panel-header>
+      <md-panel-title>
+        Orders
+      </md-panel-title>
+      <md-panel-description>
+        Order form configuration
+      </md-panel-description>
+    </md-expansion-panel-header>
+
+    <div *ngIf="settings?.order_statuses">
+	   	<h3>Order Statuses</h3>
+	    <md-chip-list mdPrefix #chipList> 
+	      <md-chip *ngFor="let item of settings.order_statuses" [selectable]="selectable"
+	               [removable]="removable" (remove)="remove(item)">
+	        <md-icon mdChipRemove *ngIf="removable">cancel</md-icon>
+	        {{item.name}}
+	      </md-chip>
+	    </md-chip-list>
+	    <md-form-field class="demo-chip-list fullwidth">
+	      <input mdInput placeholder="New status..."
+	             [mdChipInputFor]="chipList"
+	             [mdChipInputSeparatorKeyCodes]="separatorKeysCodes"
+	             [mdChipInputAddOnBlur]="addOnBlur"
+	             (mdChipInputTokenEnd)="add($event)" />
+	    </md-form-field>
+
+		</div>
+
+
+ <!--    <md-action-row>
+    	
+    </md-action-row> -->
+  </md-expansion-panel>
+
+  <md-expansion-panel hideToggle="true" *ngIf="settings?.google_api">
+    <md-expansion-panel-header>
+      <md-panel-title>
+        Google
+      </md-panel-title>
+      <md-panel-description>
+        API keys for Google services
+      </md-panel-description>
+    </md-expansion-panel-header>
+
+    <div>
+		  <md-form-field>
+		    <input mdInput [(ngModel)]="settings.google_api.client_id" placeholder="Client ID">
+		  </md-form-field>
+		  <md-form-field>
+		    <input mdInput [(ngModel)]="settings.google_api.api_key" placeholder="API Key">
+		  </md-form-field>
+		</div>
+
+    <!-- <md-action-row>
+    	
+    </md-action-row> -->
+  </md-expansion-panel>
+
+
+</md-accordion>

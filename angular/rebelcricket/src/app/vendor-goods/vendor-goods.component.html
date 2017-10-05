@@ -18,14 +18,44 @@
     </md-expansion-panel> -->
 
 <div id="vendorGoodsContainer">
-  <div id="vendorGoodsIndex">
-    <h3 mdLine>Categories ({{vendorGoodsCategories.length}})</h3>
-    <md-selection-list #vendorGoodsIndex dense>
-      <md-list-option *ngFor="let idx of vendorGoodsCategories" (click)="toggleVendorGoodCategory(idx.name)" >
+  <div id="vendorGoodsIndexNarrow" *ngIf="isNarrowLayout">
+
+    <button class="vendorGoodsCategories" md-button [mdMenuTriggerFor]="vendorGoodsCategoriesMenu">
+      <md-icon>more_vert</md-icon>
+      Categories ({{vendorGoodsCategories.length}})
+    </button>
+
+    <md-menu #vendorGoodsCategoriesMenu="mdMenu">
+      <md-selection-list #vendorGoodsIndex dense>
+        <md-list-option *ngFor="let idx of vendorGoodsCategories" (click)="$event.stopPropagation();toggleVendorGoodCategory(idx.name)">
+          <span class="truncate">{{idx.name}} ({{idx.count}})</span>
+        </md-list-option>
+      </md-selection-list>
+    </md-menu>
+  </div>
+
+
+  <div id="vendorGoodsIndex" *ngIf="!isNarrowLayout">
+
+
+    <md-selection-list class="vendorGoodsCategories" #vendorGoodsIndex dense>
+      <md-list-option *ngFor="let idx of vendorGoodsCategories" (click)="$event.stopPropagation();toggleVendorGoodCategory(idx.name)">
         <span class="truncate">{{idx.name}} ({{idx.count}})</span>
       </md-list-option>
     </md-selection-list>
 
+      <!--   <button md-menu-item [mdMenuTriggerFor]="subMenu">Power</button>
+      <md-menu #subMenu="mdMenu">
+        <button md-menu-item>Shut down</button>
+        <button md-menu-item>Restart</button>
+        <button md-menu-item>Hibernate</button>
+      </md-menu> -->
+
+   <!--     -->
+  
+   <!--  <h3 mdLine>Categories ({{vendorGoodsCategories.length}})</h3>
+    
+ -->
   </div>
 
   <div id="vendorGoodsContent">

@@ -1,11 +1,10 @@
-import { Component, OnInit, ElementRef } from '@angular/core';
-import { Input, OnChanges } from '@angular/core';
+import { Component, OnInit, ElementRef, HostListener, Input, OnChanges } from '@angular/core';
 import { Observable } from 'rxjs/Observable';
 import {MdDialog, MdDialogRef, MD_DIALOG_DATA, MdDatepickerInputEvent} from '@angular/material';
 
 import { VendorGood } from './vendor-good';
 import { VendorGoodsService } from './vendor-goods.service';
-import {VendorGoodsDialogComponent} from './vendor-goods-dialog.component';
+import { VendorGoodsDialogComponent } from './vendor-goods-dialog.component';
 
 @Component({
   selector: 'app-vendor-goods',
@@ -19,6 +18,14 @@ export class VendorGoodsComponent implements OnInit {
   vendorGoodsCategories: Array<{name:string,count:number}> = [];
 
 	vendorGoodsIndexSelected: Array<string> = [];
+
+  isNarrowLayout: boolean = window.innerWidth < 600;
+
+  @HostListener('window:resize', ['$event'])
+  onResize(event) {
+    this.isNarrowLayout = event.target.innerWidth < 600;
+    this.vendorGoodsIndexSelected = [];
+  }
 
   constructor(
   	private vendorGoodsService: VendorGoodsService,

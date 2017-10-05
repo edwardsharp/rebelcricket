@@ -1,0 +1,39 @@
+:host{
+	min-width: 60vw;
+	max-width: 85vw;
+	margin-top: 1.5em;
+}
+
+.fullwidth {
+	width: 98%;
+	margin-left: 1%;
+	margin-right: 1%;
+	margin-top: 0.5em;
+}
+.halfwidth {
+	width: 46%;
+	margin-left: 1%;
+	margin-right: 1%;
+}
+
+.headers-align .mat-expansion-panel-header-title, 
+.headers-align .mat-expansion-panel-header-description {
+  flex-basis: 0;
+}
+
+.headers-align .mat-expansion-panel-header-description {
+  justify-content: space-between;
+  align-items: center;
+}
+
+md-chip{
+	/*white-space: pre-wrap;*/
+  text-overflow: ellipsis;
+  max-width: 200px;
+  overflow: hidden;
+}
+
+.mat-chip-remove{
+	margin-left: -4px;
+  margin-right: 6px;
+}

@@ -35,6 +35,23 @@
 
 	<md-tab-group class="order-details">
 	  <md-tab label="Details">
+	  	<div class="fullwidth">
+	  		<md-chip-list mdPrefix #chipList> <!-- class="mat-chip-list-stacked" aria-orientation="vertical" -->
+	        <md-chip *ngFor="let fruit of fruits" [selectable]="selectable"
+	                 [removable]="removable" (remove)="remove(fruit)">
+	          <md-icon mdChipRemove *ngIf="removable">cancel</md-icon>
+	          {{fruit.name}}
+	        </md-chip>
+	      </md-chip-list>
+	    </div>
+	  	<md-form-field class="demo-chip-list fullwidth">
+	      <input mdInput placeholder="New fruit..."
+	             [mdChipInputFor]="chipList"
+	             [mdChipInputSeparatorKeyCodes]="separatorKeysCodes"
+	             [mdChipInputAddOnBlur]="addOnBlur"
+	             (mdChipInputTokenEnd)="add($event)" />
+	    </md-form-field>
+
 	  	<div>
 			  <md-form-field>
 			    <input mdInput [(ngModel)]="order.name" placeholder="name">

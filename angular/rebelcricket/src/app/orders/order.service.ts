@@ -14,7 +14,7 @@ const NAMES = ['Maia', 'Asher', 'Olivia', 'Atticus', 'Amelia', 'Jack',
 
 let IDZ = [];
 for (let i = 0; i < 1000; i++) { 
-  IDZ.push( Math.floor(new Date(1507096743342 - (1000000000 * i) ).getTime()).toString(36) );
+  IDZ.push( Math.floor(new Date(1507096743342 - (100000000 * i) ).getTime()).toString(36) );
 }
 
 @Injectable()
@@ -25,9 +25,6 @@ export class OrderService {
   get data(): Order[] { return this.dataChange.value; }
 
   constructor() {
-    // Fill up the database with 100 users.
-    let startDate = 1507096743342;
-    let offset = 1000000000; // ~1.6week
     for (let i = 0; i < 10; i++) { 
       this.addOrder(); 
       setTimeout(()=>{for (let i = 0; i < 50; i++) { this.addOrder(); }}, 5000);

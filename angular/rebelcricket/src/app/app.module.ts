@@ -20,6 +20,8 @@ import { VendorGoodsDialogComponent } from './vendor-goods/vendor-goods-dialog.c
 import { VendorGoodsImportComponent } from './vendor-goods-import/vendor-goods-import.component';
 import { GsheetService } from './gsheet.service';
 import { SearchBoxComponent } from './search/search-box.component';
+import { SettingsComponent } from './settings/settings.component';
+import { SettingsService } from './settings/settings.service';
 import { 
   SliceVendorFilenamePipe, 
   SliceVendorFilenameDatePipe, 
@@ -48,6 +50,10 @@ const appRoutes: Routes = [
     path: 'dashboard/vendor_goods/import',
     component: VendorGoodsImportComponent
   },
+  {
+    path: 'dashboard/settings',
+    component: SettingsComponent
+  },
   { 
   	path: '',
     redirectTo: '/dashboard',
@@ -68,6 +74,7 @@ const appRoutes: Routes = [
     VendorGoodsDialogComponent,
     VendorGoodsImportComponent,
     SearchBoxComponent,
+    SettingsComponent,
     SliceVendorFilenamePipe,
     SliceVendorFilenameDatePipe,
     SliceVendorFilenameCategoryPipe,
@@ -89,7 +96,7 @@ const appRoutes: Routes = [
     VendorGoodsDialogComponent
   	// DashboardComponent, OrdersComponent
   ],
-  providers: [OrderService, VendorGoodsService, GsheetService],
+  providers: [OrderService, VendorGoodsService, GsheetService, SettingsService],
   bootstrap: [AppComponent]
 })
 export class AppModule { }
