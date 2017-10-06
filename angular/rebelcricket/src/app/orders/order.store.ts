@@ -52,15 +52,19 @@ export class OrderStore extends DataSource<any> {
     	this._sort.direction = 'desc';
     }
 
-    return data.sort((a, b) => {
+    return data
+    .sort((a,b) => {
+    	return (parseInt(a.id, 36) < parseInt(b.id, 36) ? -1 : 1); //start with id/created sorted decending -1
+    })
+    .sort((a, b) => {
       let propertyA: number|string = '';
       let propertyB: number|string = '';
 
       switch (this._sort.active) {
         case 'orderId': [propertyA, propertyB] = [parseInt(a.id, 36),parseInt(b.id, 36)]; break;
-        case 'orderName': [propertyA, propertyB] = [a.name, b.name]; break;
-        case 'orderEmail': [propertyA, propertyB] = [a.email, b.email]; break;
-        case 'orderOrg': [propertyA, propertyB] = [a.org, b.org]; break;
+        case 'orderName': [propertyA, propertyB] = [a.name.toLowerCase(), b.name.toLowerCase()]; break;
+        case 'orderEmail': [propertyA, propertyB] = [a.email.toLowerCase(), b.email.toLowerCase()]; break;
+        case 'orderOrg': [propertyA, propertyB] = [a.org.toLowerCase(), b.org.toLowerCase()]; break;
         case 'orderStatus': [propertyA, propertyB] = [a.status, b.status]; break;
       }
 
@@ -71,88 +75,3 @@ export class OrderStore extends DataSource<any> {
     });
   }
 }
-
-
-/*
-import {Injectable} from "@angular/core";
-import {Observable} from "rxjs/Observable";
-import {Subject} from "rxjs/Subject";
-import {BehaviorSubject} from "rxjs/Rx";
-
-import {OrderService} from "./order.service";
-import {Order} from "./order";
-// import {List} from 'immutable';
-
-@Injectable()
-export class OrderStore {
-
-    private _orders: BehaviorSubject<List<Order>> = new BehaviorSubject(List([]));
-
-    constructor(private orderService: OrderService) {
-        this.loadInitialData();
-    }
-
-    get orders() {
-        return asObservable(this._orders);
-    }
-
-    loadInitialData() {
-        this.orderService.getAllOrders()
-            .subscribe(
-                res => {
-                    let orders = (<Object[]>res.json()).map((order: any) =>
-                        new Order({id:order.id, description:order.description,completed: order.completed}));
-
-                    this._orders.next(List(orders));
-                },
-                err => console.log("Error retrieving Orders")
-            );
-
-    }
-
-    addOrder(newOrder:Order):Observable {
-
-        let obs = this.orderService.saveOrder(newOrder);
-
-        obs.subscribe(
-                res => {
-                    this._orders.next(this._orders.getValue().push(newOrder));
-                });
-
-        return obs;
-    }
-
-    toggleOrder(toggled:Order): Observable {
-        let obs: Observable = this.orderService.toggleOrder(toggled);
-
-        obs.subscribe(
-            res => {
-                let orders = this._orders.getValue();
-                let index = orders.findIndex((order: Order) => order.id === toggled.id);
-                let order:Order = orders.get(index);
-                this._orders.next(orders.set(index, new Order({id:toggled.id, description:toggled.description, completed:!toggled.completed}) ));
-            }
-        );
-
-        return obs;
-    }
-
-
-    deleteOrder(deleted:Order): Observable {
-        let obs: Observable = this.orderService.deleteOrder(deleted);
-
-        obs.subscribe(
-                res => {
-                    let orders: List<Order> = this._orders.getValue();
-                    let index = orders.findIndex((order) => order.id === deleted.id);
-                    this._orders.next(orders.delete(index));
-
-                }
-            );
-
-        return obs;
-    }
-
-
-}
-*/

@@ -7,6 +7,8 @@ import {MdChipInputEvent, ENTER} from '@angular/material';
 
 import { Order } from '../orders/order';
 import { OrderService } from '../orders/order.service';
+import { SettingsService } from '../settings/settings.service';
+import { Settings } from '../settings/settings';
 
 const COMMA = 188;
 
@@ -20,15 +22,19 @@ export class OrderDetailComponent  { //implements OnInit
 	// id: string;
 	order: Order;
 	// private orderSub: any;
+  settings: Settings;
+
 
   constructor(
   	private orderService: OrderService,
   	private route: ActivatedRoute,
-    private router: Router
+    private router: Router,
+    private settingsService: SettingsService
   ) { }
 
 
   ngOnInit() {
+    this.getSettings();
   	// this.id = this.route.paramMap
    //  	.switchMap((params: ParamMap) => params.get('id') );
       // this.service.getHero(params.get('id')));
@@ -86,6 +92,14 @@ export class OrderDetailComponent  { //implements OnInit
   // ngOnDestroy() {
   //   this.orderSub.unsubscribe();
   // }
+
+  getSettings(): void {
+    this.settingsService.getSettings().then(settings => {
+      this.settings = settings;
+    }, err => {
+      console.log('o noz! settingsService.getSettings() err:',err);
+    });
+  }
 
   // @Input() order: Order;
 

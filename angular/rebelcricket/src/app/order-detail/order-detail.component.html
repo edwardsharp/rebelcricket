@@ -11,8 +11,22 @@
     	<md-icon class="md-24" aria-label="Back to orders" routerLink="/dashboard/orders" mdTooltip="Back to orders">arrow_back</md-icon>
   	</button>
   	
-	  <h2 class="name"><small>{{order.created_at | date:'short' }}</small> {{order.name}} <span *ngIf="order.org">-- {{order.org}}</span></h2>  
+	  <h2 class="name"><small>{{order.created_at | date:'short' }}</small></h2>  
+	  
 	  <span class="flexfill"></span>
+
+	  <span *ngIf="settings?.order_statuses; else elseBlock">
+		  <md-chip [mdMenuTriggerFor]="orderStatusMenu">{{order.status}}</md-chip>
+		  <md-menu #orderStatusMenu="mdMenu">
+		    <button md-menu-item 
+		    	*ngFor="let status of settings.order_statuses"
+		    	(click)="order.status = status.name">
+		      <span>{{status.name}}</span>
+		    </button>
+		  </md-menu>
+	  </span>
+    <ng-template #elseBlock><md-chip>{{order.status}}</md-chip></ng-template>
+
 		<button md-icon-button [mdMenuTriggerFor]="orderDetailMenu">
 	    <md-icon class="example-icon">more_vert</md-icon>
 	  </button>
