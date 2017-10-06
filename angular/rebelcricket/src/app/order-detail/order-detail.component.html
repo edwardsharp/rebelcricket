@@ -126,7 +126,7 @@
 		  </div>
 	  </md-tab>
 
-	  <md-tab label="Attachments ({{attachmentKeysForOrder().length}})">
+	  <md-tab label="Attachments ({{attachmentItemsForOrder().length}})">
 
 	  	<div id="new-attachment">
 		  	<label for="quoteDesignFile"><md-icon>add</md-icon>Upload Image Files</label>
@@ -140,17 +140,17 @@
 	      </div>
 	    </div>
 
-	    <div *ngIf="order._attachments" class="attachment-cards">
-			  <md-card *ngFor="let itemKey of attachmentKeysForOrder()">
+	    <div *ngFor="let item of attachmentItemsForOrder()" class="attachment-cards">
+			  <md-card>
 		
-					  <img md-card-image class="attachment-img" alt="{{itemKey}}" [src]="sanitizer.bypassSecurityTrustUrl(attachmentSrcFor(order, itemKey))" />
+					  <img md-card-image class="attachment-img" alt="{{item}}" [src]="sanitizer.bypassSecurityTrustUrl(attachmentSrcFor(order, item))" />
 					  <!-- <md-card-content>
 					    <p></p>
 					  </md-card-content> -->
 					  <md-card-actions>
-					  	<span class="item-key" title="{{itemKey}}">{{itemKey}}</span>
+					  	<span class="item-key" title="{{item}}">{{item}}</span>
 					    <span class="flexfill"></span>
-					    <button md-icon-button (click)="deleteAttachmentFor(itemKey)"><md-icon>delete</md-icon></button>
+					    <button md-icon-button (click)="deleteAttachmentFor(item);"><md-icon>delete</md-icon></button>
 					  </md-card-actions>
 					</md-card>
 			

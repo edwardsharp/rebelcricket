@@ -77,14 +77,7 @@ export class OrderService {
 
   addAttachment(docId:string, attachmentId:string, rev: string, attachment: Blob,type:string){
     // var attachment = new Blob(['Is there life on Mars?'], {type: 'text/plain'});
-    this.db.putAttachment(docId, attachmentId, rev, attachment, type).then(function (result) {
-      // handle result
-      console.log('great! added attachment! result:',result);
-      return result;
-    }).catch(function (err) {
-      console.log('o noz! putAttachment err:',err);
-      return err;
-    });
+    return this.db.putAttachment(docId, attachmentId, rev, attachment, type);
 
   }
 

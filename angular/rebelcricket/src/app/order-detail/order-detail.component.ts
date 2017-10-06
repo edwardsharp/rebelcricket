@@ -13,6 +13,7 @@ import { Settings } from '../settings/settings';
 
 const COMMA = 188;
 
+
 @Component({
   selector: 'app-order-detail',
   templateUrl: './order-detail.component.html',
@@ -27,6 +28,7 @@ export class OrderDetailComponent implements OnInit  {
   needsSave: boolean = false;
   quoteDesingUploading: boolean = false;
   gfxError: boolean = false;
+  // serializedPanes: Array<string>;
 
   constructor(
   	private orderService: OrderService,
@@ -39,25 +41,6 @@ export class OrderDetailComponent implements OnInit  {
 
   ngOnInit() {
     this.getSettings();
-  	// this.id = this.route.paramMap
-   //  	.switchMap((params: ParamMap) => params.get('id') );
-      // this.service.getHero(params.get('id')));
-
-    // let id = this.route.snapshot.paramMap.get('id');
-
-    // this.sub = this.route.params.subscribe(params => {
-    //    this.id = params['id']; 
-    // });
-
-    // okay
-    // this.route.params
-    // 	.switchMap((params: ParamMap) => this.orderService.getOrder( params.get('id') ))
-    // 	.subscribe((order: Order) => this.order = order);
-
-    // this.order = this.route.paramMap
-    // 	.switchMap( (params: ParamMap) =>
-    //   	this.orderService.getOrder( params.get('id') )
-    //   );
 
     // .switchMap() is a debounced observable; rad!
     this.route.paramMap
@@ -72,26 +55,6 @@ export class OrderDetailComponent implements OnInit  {
         } 
        
       });
-    
-   //  setTimeout( () => {    //use ()=> syntax
-   //    console.log('zomg, this this!',this.order);
-		 // }, 3000);
-
-  //   this.orderSub.subscribe(
-		//    value => this.obj = value,
-		//    (errData) => { this.renderErrors() },
-		//    () => {
-		//        this.variableFilledWhenDone = true;
-		//    }
-		// );
-
-    // console.log('zomg this.route.paramMap:',this.id);
-
-    // this.route.params
-	   //  .map(params => params['id'])
-	   //  .switchMap(id => this.contactsService.getContact(id))
-	   //  .subscribe(contact => this.contact = contact);
-
 
   }
 
@@ -187,7 +150,23 @@ export class OrderDetailComponent implements OnInit  {
       // e.target.disabled = true;
       var file = e.target.files[0]; // file is a Blob
       try{
-        this.orderService.addAttachment(this.order._id, file.name, this.order._rev, file, file.type);
+        this.orderService.addAttachment(this.order._id, file.name, this.order._rev, file, file.type).then(result => {
+          // handle result
+          // console.log('great! added attachment! result:',result);
+          if(result["rev"]){
+            this.order._rev = result["rev"];
+            console.log('quoteFileChnaged()! addAttachment ok, now this.order._attachments',this.order._attachments);
+            this.orderService.getOrder( this.order._id ).then((order: Order) => {
+              if(order && order._id){
+                this.order = order;
+              }
+            });
+
+          }
+        }).catch(function (err) {
+          console.log('o noz! putAttachment err:',err);
+          // return err;
+        });
         // this.saveOrder();
       }catch(err){
         this.gfxError = true;
@@ -196,12 +175,10 @@ export class OrderDetailComponent implements OnInit  {
       
     }
 
-
   }
 
-  attachmentKeysForOrder(){
-    // console.log('aaaarg attachmentKeysFor keyz:',order._attachments ? Object.keys(order._attachments) : []);
-    // console.log('order:',order);
+  attachmentItemsForOrder(){
+    //.map(i => { return {key:i,disabled:true} })
     return this.order._attachments ? Object.keys(this.order._attachments) : [];
   }
   
@@ -228,6 +205,7 @@ export class OrderDetailComponent implements OnInit  {
       try{
         delete this.order._attachments[itemKey];
       }catch(err){
+        // e.target.disabled = false;
         console.log('o noz! delete _attachments err:',err);
       }
       
