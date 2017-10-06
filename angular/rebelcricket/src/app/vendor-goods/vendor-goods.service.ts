@@ -36,7 +36,8 @@ export class VendorGoodsService {
 	vendorGoods: Array<VendorGood>;
 	db: any;
 
-  constructor(private http: Http) {
+	//private http: Http
+  constructor() {
   	this.db = new PouchDB('vendor_goods');
   }
 

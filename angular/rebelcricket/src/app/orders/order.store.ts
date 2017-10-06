@@ -54,14 +54,14 @@ export class OrderStore extends DataSource<any> {
 
     return data
     .sort((a,b) => {
-    	return (parseInt(a.id, 36) < parseInt(b.id, 36) ? -1 : 1); //start with id/created sorted decending -1
+    	return (parseInt(a._id, 36) < parseInt(b._id, 36) ? -1 : 1); //start with id/created sorted decending -1
     })
     .sort((a, b) => {
       let propertyA: number|string = '';
       let propertyB: number|string = '';
 
       switch (this._sort.active) {
-        case 'orderId': [propertyA, propertyB] = [parseInt(a.id, 36),parseInt(b.id, 36)]; break;
+        case 'orderId': [propertyA, propertyB] = [parseInt(a._id, 36),parseInt(b._id, 36)]; break;
         case 'orderName': [propertyA, propertyB] = [a.name.toLowerCase(), b.name.toLowerCase()]; break;
         case 'orderEmail': [propertyA, propertyB] = [a.email.toLowerCase(), b.email.toLowerCase()]; break;
         case 'orderOrg': [propertyA, propertyB] = [a.org.toLowerCase(), b.org.toLowerCase()]; break;

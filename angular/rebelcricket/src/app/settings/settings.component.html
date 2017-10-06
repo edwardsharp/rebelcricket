@@ -29,9 +29,11 @@
 		</div>
 
 
- <!--    <md-action-row>
-    	
-    </md-action-row> -->
+    <md-action-row>
+    	<button type="button" md-button (click)="saveSettings()" [disabled]="disableSave">
+    		<md-icon>save</md-icon>Save Settings
+    	</button>
+    </md-action-row>
   </md-expansion-panel>
 
   <md-expansion-panel hideToggle="true" *ngIf="settings?.google_api">
@@ -45,17 +47,25 @@
     </md-expansion-panel-header>
 
     <div>
-		  <md-form-field>
-		    <input mdInput [(ngModel)]="settings.google_api.client_id" placeholder="Client ID">
+		  <md-form-field class="halfwidth">
+		    <input mdInput 
+		    	[(ngModel)]="settings.google_api.client_id" 
+		    	(change)="onChange()"
+		    	placeholder="Client ID">
 		  </md-form-field>
-		  <md-form-field>
-		    <input mdInput [(ngModel)]="settings.google_api.api_key" placeholder="API Key">
+		  <md-form-field class="halfwidth">
+		    <input mdInput 
+		    	[(ngModel)]="settings.google_api.api_key" 
+		    	(change)="onChange()"
+		    	placeholder="API Key">
 		  </md-form-field>
 		</div>
 
-    <!-- <md-action-row>
-    	
-    </md-action-row> -->
+    <md-action-row>
+    	<button type="button" md-button (click)="saveSettings()" [disabled]="disableSave">
+    		<md-icon>save</md-icon>Save Settings
+    	</button>
+    </md-action-row>
   </md-expansion-panel>
 
 

@@ -7,31 +7,37 @@
 
 <div *ngIf="order" class="content">
   <md-toolbar color="primary" class="sticky">
-	  <button md-icon-button>
+		<button md-icon-button>
     	<md-icon class="md-24" aria-label="Back to orders" routerLink="/dashboard/orders" mdTooltip="Back to orders">arrow_back</md-icon>
   	</button>
-  	
-	  <h2 class="name"><small>{{order.created_at | date:'short' }}</small></h2>  
+
+	  <h2 class="name" *ngIf="!needsSave"><small>{{order.created_at | date:'short' }}</small></h2> <button *ngIf="needsSave" class="fullwidth" md-button (click)="saveOrder()">
+  		<md-icon>save</md-icon>
+  		Save Order
+  	</button> 
 	  
 	  <span class="flexfill"></span>
 
-	  <span *ngIf="settings?.order_statuses; else elseBlock">
-		  <md-chip [mdMenuTriggerFor]="orderStatusMenu">{{order.status}}</md-chip>
-		  <md-menu #orderStatusMenu="mdMenu">
-		    <button md-menu-item 
-		    	*ngFor="let status of settings.order_statuses"
-		    	(click)="order.status = status.name">
-		      <span>{{status.name}}</span>
-		    </button>
-		  </md-menu>
+	  <span *ngIf="!needsSave">
+		  <span *ngIf="settings?.order_statuses; else elseBlock">
+			  <md-chip [mdMenuTriggerFor]="orderStatusMenu">{{order.status}}</md-chip>
+			  <md-menu #orderStatusMenu="mdMenu">
+			    <button md-menu-item 
+			    	*ngFor="let status of settings.order_statuses"
+			    	(click)="order.status = status.name; saveOrder()">
+			      <span>{{status.name}}</span>
+			    </button>
+			  </md-menu>
+		  </span>
+	    <ng-template #elseBlock><md-chip>{{order.status}}</md-chip></ng-template>
 	  </span>
-    <ng-template #elseBlock><md-chip>{{order.status}}</md-chip></ng-template>
+    
 
 		<button md-icon-button [mdMenuTriggerFor]="orderDetailMenu">
 	    <md-icon class="example-icon">more_vert</md-icon>
 	  </button>
 	  <md-menu #orderDetailMenu="mdMenu">
-	    <button md-menu-item disabled>
+	    <button md-menu-item (click)="deleteOrder()">
 	      <md-icon>delete</md-icon>
 	      <span>delete</span>
 	    </button>
@@ -44,6 +50,7 @@
 	      <span><small>madewithlove</small></span>
 	    </button>
 	  </md-menu>
+
 
 	</md-toolbar>
 
@@ -69,24 +76,24 @@
 		  </div>
 	  	<div>
 			  <md-form-field>
-			    <input mdInput [(ngModel)]="order.name" placeholder="name">
+			    <input mdInput [(ngModel)]="order.name" (change)="onChange($event)" placeholder="name">
 			  </md-form-field>
 			  <md-form-field>
-			    <input mdInput [(ngModel)]="order.org" placeholder="org">
+			    <input mdInput [(ngModel)]="order.org" (change)="onChange($event)" placeholder="org">
 			  </md-form-field>
 			  
 			</div>
 			<div>
 				<md-form-field>
-			    <input mdInput [(ngModel)]="order.email" placeholder="email">
+			    <input mdInput [(ngModel)]="order.email" (change)="onChange($event)" placeholder="email">
 			  </md-form-field>
 			  <md-form-field>
-			    <input mdInput [(ngModel)]="order.phone" placeholder="phone">
+			    <input mdInput [(ngModel)]="order.phone" (change)="onChange($event)" placeholder="phone">
 			  </md-form-field>
 			</div>
 		  <div>
 			  <md-form-field class="fullwidth">
-			    <textarea mdInput [(ngModel)]="order.notes" placeholder="notes"></textarea>
+			    <textarea mdInput [(ngModel)]="order.notes" (change)="onChange($event)" placeholder="notes"></textarea>
 			  </md-form-field>
 			</div>
 
@@ -99,16 +106,16 @@
 		  	<h3>Service: {{line_item.service_label}}</h3>
 
 		  	<md-form-field>
-			    <input mdInput [(ngModel)]="line_item.quantity" placeholder="quantity" type="number">
+			    <input mdInput [(ngModel)]="line_item.quantity" (change)="onChange($event)" placeholder="quantity" type="number">
 			  </md-form-field>
 
 			  <md-form-field>
-			    <input mdInput [(ngModel)]="line_item.total" placeholder="total" type="number">
+			    <input mdInput [(ngModel)]="line_item.total" (change)="onChange($event)" placeholder="total" type="number">
 			  </md-form-field>
 
 			  <div>
 			  	<md-form-field class="fullwidth">
-				    <textarea mdInput [(ngModel)]="line_item.notes" placeholder="notes"></textarea>
+				    <textarea mdInput [(ngModel)]="line_item.notes" (change)="onChange($event)" placeholder="notes"></textarea>
 				  </md-form-field>
 				</div>
 
@@ -119,16 +126,42 @@
 		  </div>
 	  </md-tab>
 
-	  <md-tab label="Attachments (0)">
-	  	<md-list>
-			  <md-list-item>List of order attachments will go here...</md-list-item>
-			</md-list>
+	  <md-tab label="Attachments ({{attachmentKeysForOrder().length}})">
+
+	  	<div id="new-attachment">
+		  	<label for="quoteDesignFile"><md-icon>add</md-icon>Upload Image Files</label>
+	      <input id="quoteDesignFile" type="file" (change)="quoteFileChnaged($event)" (disabled)="quoteDesingUploading" />
+
+	      <span id="quoteDesignUploadFeedback" [hidden]="!gfxError">
+	        ERROR! Could not upload that file. Please try again or choose a different file. If this form does not work for you please email your graphics to <a href="mailto: rebelcricket@gmail.com">rebelcricket@gmail.com</a>.
+	      </span>
+	      <div>
+	        <small>Graphic files can be sent as ai, eps, pdf, psd, svg, jpeg, or tiff. They should be sized to the desired print size at 300 dpi. If you have a physical copy of the art let us know, we’ll schedule a time for you to bring it in and discuss the options. </small>
+	      </div>
+	    </div>
+
+	    <div *ngIf="order._attachments" class="attachment-cards">
+			  <md-card *ngFor="let itemKey of attachmentKeysForOrder()">
+		
+					  <img md-card-image class="attachment-img" alt="{{itemKey}}" [src]="sanitizer.bypassSecurityTrustUrl(attachmentSrcFor(order, itemKey))" />
+					  <!-- <md-card-content>
+					    <p></p>
+					  </md-card-content> -->
+					  <md-card-actions>
+					  	<span class="item-key" title="{{itemKey}}">{{itemKey}}</span>
+					    <span class="flexfill"></span>
+					    <button md-icon-button (click)="deleteAttachmentFor(itemKey)"><md-icon>delete</md-icon></button>
+					  </md-card-actions>
+					</md-card>
+			
+			</div>
+	  	
 	  </md-tab>
 	  
-	  <md-tab label="Updates (1)">
+	  <md-tab label="History (1)">
 	  	<md-list>
 			  <md-list-item>
-	  			List of order history &amp; conversational message thread stuff will go here...
+	  			List of order history will go here...
 	  		</md-list-item>
 	  	</md-list>
 	  </md-tab>

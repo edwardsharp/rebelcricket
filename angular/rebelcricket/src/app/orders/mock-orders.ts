@@ -28,7 +28,7 @@ export const LINE_ITEMS: LineItem[] = [{
 
 
 export const ORDERS: Order[] = [
-  { id: '1506309041-zij621', 
+  { _id: '1506309041-zij621', 
     name: 'Foo Bar',
     email: 'foo@b.ar',
     phone: '666-666-6666',
@@ -41,7 +41,7 @@ export const ORDERS: Order[] = [
     order_services: ORDER_SERVICES,
     line_items: LINE_ITEMS
   },
-  { id: '1506312654-h10t23', 
+  { _id: '1506312654-h10t23', 
     name: 'Zomg D00d',
     email: 'z@omg.d00d',
     phone: '999-666-9999',
@@ -68,7 +68,7 @@ export const ORDERS: Order[] = [
       items: []
     })
   },
-  { id: '1506406224-tsnr3y', 
+  { _id: '1506406224-tsnr3y', 
     name: 'Some Body',
     email: 'so@me.body',
     phone: '999-666-9999',

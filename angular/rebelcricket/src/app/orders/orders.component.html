@@ -49,7 +49,7 @@
         <!-- ID/Created Column -->
         <ng-container mdColumnDef="orderId">
           <md-header-cell *mdHeaderCellDef md-sort-header mdSortActive="true"> Created </md-header-cell>
-          <md-cell *mdCellDef="let row"> {{createdAtDate(row.id) | date:'shortDate' }} </md-cell>
+          <md-cell *mdCellDef="let row"> {{createdAtDate(row._id) | date:'shortDate' }} </md-cell>
         </ng-container>
 
         <ng-container mdColumnDef="orderName">
@@ -76,7 +76,7 @@
 
         <md-row 
           *mdRowDef="let row; columns: displayedColumns;" 
-          routerLink="/dashboard/order/{{row.id}}" 
+          routerLink="/dashboard/order/{{row._id}}" 
           class="row-hover"
         ></md-row>
       </md-table>

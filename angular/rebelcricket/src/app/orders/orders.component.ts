@@ -30,8 +30,10 @@ export class OrdersComponent implements OnInit {
   constructor(private orderService: OrderService) { }
 
   getOrders(): void {
- 		// 												 SLOWLY!
-    this.orderService.getOrdersSlowly().then(orders => {
+    const limit = this.paginator.pageSize;
+ 		const skip = this.paginator.pageIndex * this.paginator.pageSize;
+
+    this.orderService.getOrders(limit, skip).then(orders => {
     	this.orders = orders;
     	this.loading = false;
     }, err => {
@@ -54,13 +56,13 @@ export class OrdersComponent implements OnInit {
 
   ngOnInit() {
     this.loading = true;
-    this.getOrders();
     this.dataSource = new OrderStore(this.orderService, this.sort, this.paginator);
+    this.getOrders();
   }
 
 
-  createdAtDate(id:string){
-    return new Date(parseInt(id, 36));
+  createdAtDate(_id:string){
+    return new Date(parseInt(_id, 36));
   }
 
   onSelect(order: Order): void {

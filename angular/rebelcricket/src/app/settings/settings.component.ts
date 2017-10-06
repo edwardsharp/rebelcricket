@@ -3,6 +3,7 @@ import {MdSort,MdPaginator,MdChipInputEvent, ENTER} from '@angular/material';
 
 import { SettingsService } from './settings.service';
 import { Settings, OrderStatus } from './settings';
+
 const COMMA = 188;
 
 @Component({
@@ -13,7 +14,7 @@ const COMMA = 188;
 export class SettingsComponent implements OnInit {
 
 	settings: Settings;
-	// order_settings: Array<OrderSetting>;
+	disableSave: boolean = true;
 
   constructor(private settingsService: SettingsService) { }
 
@@ -31,6 +32,21 @@ export class SettingsComponent implements OnInit {
     });
   }
 
+  onChange(){
+  	this.disableSave = false;
+  }
+
+  saveSettings(): void {
+  	this.settingsService
+  	.saveSettings(this.settings)
+  	.then(resp => {
+  		this.settings["_rev"] = resp["rev"];
+  		this.disableSave = true;
+  	}, err => {
+  		console.log('o noz, error saving settings! err:',err);
+  	});
+  }
+
   //chip input for tagz
   visible: boolean = false;
   selectable: boolean = true;
@@ -40,19 +56,13 @@ export class SettingsComponent implements OnInit {
   // Enter, comma
   separatorKeysCodes = [ENTER, COMMA];
 
-  // fruits = [
-  //   { name: 'Lemon' },
-  //   { name: 'Lime' },
-  //   { name: 'Apple' },
-  // ];
-
-
   add(event: MdChipInputEvent): void {
     let input = event.input;
     let value = event.value;
 
     // Add our person
     if ((value || '').trim()) {
+    	this.disableSave = false;
       this.settings.order_statuses.push(new OrderStatus(value.trim()));
     }
 
@@ -65,6 +75,7 @@ export class SettingsComponent implements OnInit {
   remove(fruit: any): void {
     let index = this.settings.order_statuses.indexOf(fruit);
     if (index >= 0) {
+    	this.disableSave = false;
       this.settings.order_statuses.splice(index, 1);
     }
   }

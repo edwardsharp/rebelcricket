@@ -16,7 +16,10 @@
 
 // @Injectable()  //???
 export class Order {
-  id?: string;
+  _id?: string;
+  _rev?: string;
+  _attachments?: any;
+  attachments?: Array<any>;
   name: string;
   email: string;
   phone: string;
@@ -40,8 +43,8 @@ export class Order {
     // public order_services: OrderService[],
     // public line_items: LineItem[]
   ) { 
-    this.id = this.id || Math.floor(Date.now()).toString(36); 
-    this.created_at = new Date(parseInt(this.id, 36));
+    this._id = this._id || Math.floor(Date.now()).toString(36); 
+    this.created_at = new Date(parseInt(this._id, 36));
     this.status = this.status || 'new';
   }
 
@@ -226,7 +229,7 @@ export class LineItem {
 // export class GraphicItemProto {
 //   colors: Array<string>;
 //   price: number;
-//   attachment_id: string;
+//   attachment__id: string;
 //   position: string;
 //   size_inches: string;
 // }
@@ -447,7 +450,7 @@ export class LineItem {
 //   graphic_item_proto: {
 //     colors: [],
 //     price: 0,
-//     attachment_id: '',
+//     attachment__id: '',
 //     position: '',
 //     size_inches: '',
 //   },

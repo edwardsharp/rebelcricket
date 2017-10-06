@@ -26,17 +26,20 @@ export class SettingsService {
 		return this.db.get('settings');
  	}
 
-  addSettings(settings){
-  	let retPromises = [];
-  	for(let setting of settings){
-  		retPromises.push(this.addSetting(setting));
-  	}
-  	return retPromises;
-  }
+ 	saveSettings(settings:Settings){
+ 		return this.db.put(settings);
+ 	}
+  // addSettings(settings){
+  // 	let retPromises = [];
+  // 	for(let setting of settings){
+  // 		retPromises.push(this.addSetting(setting));
+  // 	}
+  // 	return retPromises;
+  // }
 
-  addSetting(setting){
-  	return this.db.put(setting);
-  }
+  // addSetting(setting){
+  // 	return this.db.put(setting);
+  // }
 
 
 
