@@ -4,7 +4,7 @@ import { DomSanitizer } from '@angular/platform-browser';
 import { Observable }           from 'rxjs/Observable';
 // import 'rxjs/add/operator/map';
 import 'rxjs/add/operator/switchMap';
-import {MdChipInputEvent, ENTER} from '@angular/material';
+import {MdChipInputEvent, ENTER, MdSnackBar} from '@angular/material';
 
 import { Order } from '../orders/order';
 import { OrderService } from '../orders/order.service';
@@ -35,7 +35,8 @@ export class OrderDetailComponent implements OnInit  {
   	private route: ActivatedRoute,
     private router: Router,
     private settingsService: SettingsService,
-    private sanitizer: DomSanitizer
+    private sanitizer: DomSanitizer,
+    public snackBar: MdSnackBar
   ) { }
 
 
@@ -46,16 +47,16 @@ export class OrderDetailComponent implements OnInit  {
     this.route.paramMap
     	.switchMap((params: ParamMap) => this.orderService.getOrder( params.get('id') ))
     	.subscribe((order: Order) => {
-        if(order && order._id){
+        if(order && order._id && this.route.snapshot.params.id != 'new'){
           this.order = order;
         }else{
-
           this.order = new Order;
-          console.log('a new order:',this.order);
+          this.router.navigate(['/dashboard/order/', this.order._id]);
+          this.snackBar.open('New Order Created!', '', {
+            duration: 2000,
+          });          
         } 
-       
       });
-
   }
 
   // ngOnDestroy() {
@@ -80,11 +81,17 @@ export class OrderDetailComponent implements OnInit  {
     // console.log('gonna save this.order:',this.order);
     this.orderService.saveOrder(this.order).then(resp => {
       // console.log('zomg, resp:',resp);
+      this.snackBar.open('Order Saved!', '', {
+        duration: 2000,
+      });
       if(resp["rev"]){
         this.order["_rev"] = resp["rev"];
       }
       this.needsSave = false;
     }, err =>{
+      this.snackBar.open('Error: Could not save order!', '', {
+        duration: 3000,
+      });
       console.log('o noz! saveOrder err:',err);
     });
   }
@@ -94,6 +101,9 @@ export class OrderDetailComponent implements OnInit  {
       this.orderService.removeOrder(this.order).then(resp => {
         if(resp["ok"]){
           this.router.navigate(['/dashboard/orders']);
+          this.snackBar.open('Order removed', '', {
+            duration: 2000,
+          });
         }
       });
     }
@@ -146,34 +156,52 @@ export class OrderDetailComponent implements OnInit  {
 
     console.log('quoteFileChnaged()! e.target:',e.target);
 
-    if(e.target.files[0] != undefined){
-      // e.target.disabled = true;
-      var file = e.target.files[0]; // file is a Blob
-      try{
-        this.orderService.addAttachment(this.order._id, file.name, this.order._rev, file, file.type).then(result => {
-          // handle result
-          // console.log('great! added attachment! result:',result);
-          if(result["rev"]){
-            this.order._rev = result["rev"];
-            console.log('quoteFileChnaged()! addAttachment ok, now this.order._attachments',this.order._attachments);
-            this.orderService.getOrder( this.order._id ).then((order: Order) => {
-              if(order && order._id){
-                this.order = order;
-              }
-            });
+    // "att.txt": {
+    //   "content_type": "text/plain",
+    //   "data": new Blob(
+    //     ["And she's hooked to the silver screen"], 
+    //     {type: 'text/plain'})
+    // }
 
-          }
-        }).catch(function (err) {
-          console.log('o noz! putAttachment err:',err);
-          // return err;
-        });
-        // this.saveOrder();
-      }catch(err){
-        this.gfxError = true;
-        console.log('o noz! quoteFileChnaged err:',err);
+
+    this.order._attachments = this.order._attachments || {};
+    for(let file of e.target.files){
+      console.log('quoteFileChnaged()! file:',file);
+      this.order._attachments[file.name] = {
+        "content_type": file.type,
+        "data": file
       }
-      
     }
+
+    this.orderService.saveOrder(this.order).then(resp => {
+      // console.log('zomg, resp:',resp);
+      if(resp["rev"]){
+        this.order._rev = resp["rev"];
+      }
+
+      this.orderService.getOrder( this.order._id ).then((order: Order) => {
+        if(order && order._id){
+          this.order = order;
+        }
+      });
+
+      let msg = '';
+      if(e.target.files.length == 0){
+        msg = `Attachment ${e.target.files[0].file.name} Saved!`;
+      }else{
+        msg = `${e.target.files.length} Attachments Saved!`
+      }
+      this.quoteDesingUploading = false;
+      this.snackBar.open(msg, '', {
+        duration: 2000,
+      });
+
+    }, err =>{
+      this.snackBar.open('Error! Could not save attachment(s).', '', {
+        duration: 3000,
+      });
+      console.log('o noz! saveOrder err:',err);
+    });
 
   }
 
@@ -199,6 +227,9 @@ export class OrderDetailComponent implements OnInit  {
     this.orderService.removeAttachment(this.order._id, itemKey, this.order._rev).then(result => {
       // handle result
       console.log('great! removeAttachment()! result:',result);
+      this.snackBar.open('Attachment removed', '', {
+        duration: 2000,
+      });
       if(result["rev"]){
         this.order._rev = result["rev"];
       }

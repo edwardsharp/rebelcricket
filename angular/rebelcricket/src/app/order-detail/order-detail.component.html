@@ -1,7 +1,7 @@
 <div *ngIf="!order" class="content">
 	<div class="header">
-	  <h2 class="name">Order Not Found!</h2>
-	  <small>:(</small>
+	  <h2 class="name">Loading Order...</h2>
+	  <md-spinner></md-spinner>
 	</div>
 </div>
 
@@ -130,8 +130,9 @@
 
 	  	<div id="new-attachment">
 		  	<label for="quoteDesignFile"><md-icon>add</md-icon>Upload Image Files</label>
-	      <input id="quoteDesignFile" type="file" (change)="quoteFileChnaged($event)" (disabled)="quoteDesingUploading" />
-
+	      <input id="quoteDesignFile" type="file" multiple="multiple" (change)="quoteFileChnaged($event)" (disabled)="quoteDesingUploading" />
+	      <md-progress-bar mode="indeterminate" [hidden]="!quoteDesingUploading"></md-progress-bar>
+	      
 	      <span id="quoteDesignUploadFeedback" [hidden]="!gfxError">
 	        ERROR! Could not upload that file. Please try again or choose a different file. If this form does not work for you please email your graphics to <a href="mailto: rebelcricket@gmail.com">rebelcricket@gmail.com</a>.
 	      </span>

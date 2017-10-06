@@ -117,9 +117,12 @@ export class OrderService {
       include_docs: true,
       attachments: true,
       descending: true,
+      // revs: true,
+      // revs_info: true,
+      // open_revs: 'all',
       key: id
     }).then(response => {
-      console.log('order.service getOrder return response.rows[0]:',response.rows[0]);
+      console.log('order.service getOrder return response:',response);
       if(response.rows && response.rows[0] && response.rows[0].doc){
         return response.rows[0].doc as Order;
       }else{
