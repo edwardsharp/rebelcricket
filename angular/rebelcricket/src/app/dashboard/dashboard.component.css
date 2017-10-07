@@ -32,8 +32,8 @@
   overflow-y: scroll;
   overflow-x: hidden;
   overflow-wrap: break-word;
-  border-left: 1px solid #cccccc;
-  border-right: 1px solid #cccccc;
+  border-left: 1px solid rgba(0,0,0,0.1);
+  border-right: 1px solid rgba(0,0,0,0.1);
 }
 
 md-toolbar {
@@ -57,7 +57,7 @@ md-card{
 }
 
 md-expansion-panel, md-card{
-  background-color: #e0e0e0;
+  background-color: #ebebeb;
 }
 
 md-card:hover{
@@ -70,7 +70,7 @@ md-card-actions{
 }
 
 md-card-header{
-  background-color: #cccccc;
+  background-color: #e0e0e0;
   padding: 0.5em 0.5em 0 0.5em;
 }
 
