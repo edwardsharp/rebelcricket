@@ -1,4 +1,4 @@
-import { BrowserModule } from '@angular/platform-browser';
+import { BrowserModule, Title } from '@angular/platform-browser';
 import { NgModule } from '@angular/core';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { RouterModule, Routes }   from '@angular/router';
@@ -22,6 +22,7 @@ import { GsheetService } from './gsheet.service';
 import { SearchBoxComponent } from './search/search-box.component';
 import { SettingsComponent } from './settings/settings.component';
 import { SettingsService } from './settings/settings.service';
+import { AppTitleService } from './app-title.service';
 import { 
   SliceVendorFilenamePipe, 
   SliceVendorFilenameDatePipe, 
@@ -96,7 +97,7 @@ const appRoutes: Routes = [
     VendorGoodsDialogComponent
   	// DashboardComponent, OrdersComponent
   ],
-  providers: [OrderService, VendorGoodsService, GsheetService, SettingsService],
+  providers: [OrderService, VendorGoodsService, GsheetService, SettingsService, Title, AppTitleService],
   bootstrap: [AppComponent]
 })
 export class AppModule { }

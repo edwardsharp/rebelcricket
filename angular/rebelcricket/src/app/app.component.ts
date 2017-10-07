@@ -1,6 +1,8 @@
 import { Component } from '@angular/core';
 import { Location } from '@angular/common';
 
+import { AppTitleService } from './app-title.service';
+
 @Component({
   selector: 'app-root',
   templateUrl: './app.component.html',
@@ -15,9 +17,17 @@ export class AppComponent {
     this.searchHidden = !this.searchHidden;
   }
 
-  constructor(private location: Location) { }
+  constructor(
+    private location: Location,
+    appTitleService: AppTitleService 
+  ) { 
+    appTitleService.title.subscribe( t => {
+      console.log('title now t:',t);
+      this.title = t;
+    });
+  }
 
-  
+
   back() {
     this.location.back();
   }

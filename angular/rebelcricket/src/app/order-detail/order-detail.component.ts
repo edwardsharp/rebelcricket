@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, OnDestroy } from '@angular/core';
 import { ActivatedRoute, ParamMap, Router } from '@angular/router';
 import { DomSanitizer } from '@angular/platform-browser';
 import { Observable }           from 'rxjs/Observable';
@@ -10,6 +10,7 @@ import { Order } from '../orders/order';
 import { OrderService } from '../orders/order.service';
 import { SettingsService } from '../settings/settings.service';
 import { Settings } from '../settings/settings';
+import { AppTitleService } from '../app-title.service';
 
 const COMMA = 188;
 
@@ -19,7 +20,7 @@ const COMMA = 188;
   templateUrl: './order-detail.component.html',
   styleUrls: ['./order-detail.component.css']
 })
-export class OrderDetailComponent implements OnInit  { 
+export class OrderDetailComponent implements OnInit, OnDestroy  { 
 
 	// id: string;
   order: Order;
@@ -36,7 +37,8 @@ export class OrderDetailComponent implements OnInit  {
     private router: Router,
     private settingsService: SettingsService,
     private sanitizer: DomSanitizer,
-    public snackBar: MdSnackBar
+    private snackBar: MdSnackBar,
+    private appTitleService: AppTitleService 
   ) { }
 
 
@@ -49,6 +51,7 @@ export class OrderDetailComponent implements OnInit  {
     	.subscribe((order: Order) => {
         if(order && order._id && this.route.snapshot.params.id != 'new'){
           this.order = order;
+          this.setTitle();
         }else{
           this.order = new Order;
           this.router.navigate(['/dashboard/order/', this.order._id]);
@@ -59,15 +62,17 @@ export class OrderDetailComponent implements OnInit  {
       });
   }
 
-  // ngOnDestroy() {
-  //   this.orderSub.unsubscribe();
-  // }
+  ngOnDestroy() {
+    // this.orderSub.unsubscribe();
+    this.appTitleService.resetTitle();
+  }
 
   onChange(event: any) {
     // changes.prop contains the old and the new value...
     console.log('order-detail.component ngOnChanges event:',event);
     this.needsSave = true;
   }
+
 
   getSettings(): void {
     this.settingsService.getSettings().then(settings => {
@@ -78,6 +83,7 @@ export class OrderDetailComponent implements OnInit  {
   }
 
   saveOrder() {
+    this.setTitle();
     // console.log('gonna save this.order:',this.order);
     this.orderService.saveOrder(this.order).then(resp => {
       // console.log('zomg, resp:',resp);
@@ -243,6 +249,13 @@ export class OrderDetailComponent implements OnInit  {
     }).catch(function (err) {
       console.log('o noz! removeAttachment err:',err);
     });
+  }
+
+  setTitle(): void {
+    let _t = '';
+    _t += this.order.name;
+    _t += this.order.org ? ` (${this.order.org})` : ''; 
+    this.appTitleService.setTitle(_t);
   }
   
           
