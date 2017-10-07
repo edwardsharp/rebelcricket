@@ -32,6 +32,14 @@ export class DashboardComponent implements OnInit {
   	this.getSettings();
   }
 
+  cardDropped(e:any,widget:any,container:any){
+  	console.log('DashboardComponent cardDropped e,widget,container:',e,widget,container);
+  }
+
+  containerDropped(i:any,container:any){
+  	console.log('DashboardComponent containerDropped i,container:',i,container);
+  }
+
   getSettings(): void {
     this.settingsService.getSettings().then(settings => {
     	this.settings = settings;

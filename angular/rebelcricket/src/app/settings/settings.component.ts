@@ -63,7 +63,7 @@ export class SettingsComponent implements OnInit {
     // Add our person
     if ((value || '').trim()) {
     	this.disableSave = false;
-      this.settings.order_statuses.push(new OrderStatus(value.trim()));
+      this.settings.order_statuses.push(new OrderStatus(value.trim(), this.settings.order_statuses.length));
     }
 
     // Reset the input value

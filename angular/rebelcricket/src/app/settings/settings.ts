@@ -7,7 +7,7 @@ export class Settings {
 }
 
 export class OrderStatus {
-  constructor(public name: string) { }
+  constructor(public name: string, public position: number) { }
 }
 
 export class GoogleApi {

@@ -1,15 +1,35 @@
-<div id="container" dnd-sortable-container [sortableData]="containers" [dropZones]="['container-dropZone']">
-  <div *ngFor="let container of containers; let i = index" dnd-sortable [sortableIndex]="i" [dragEnabled]="dragOperation">
+<div dnd-sortable-container 
+  id="container"
+  [sortableData]="containers" 
+  [dropZones]="['container-dropZone']">
+  <div *ngFor="let container of containers; let i = index" dnd-sortable [sortableIndex]="i" 
+    [dragEnabled]="dragOperation"
+    (onDropSuccess)="containerDropped(i, container)">
     <md-toolbar color="secondary">
       <h1>{{container.name}}</h1>
-      <button md-icon-button (mousedown)="dragOperation=true;" (mouseup)="dragOperation=false;" (mouseout)="dragOperation=false;"><md-icon>drag_handle</md-icon></button>
+      <button md-icon-button 
+        (mousedown)="dragOperation=true;" 
+        (mouseup)="dragOperation=false;" 
+        (mouseout)="dragOperation=false;">
+        <md-icon>drag_handle</md-icon>
+      </button>
     </md-toolbar>
-    <div dnd-sortable-container [sortableData]="container.widgets" [dropZones]="['widget-dropZone']" class="status-container">
-      <md-card class="example-card" *ngFor="let widget of container.widgets; let x = index" class="list-group-item" dnd-sortable [sortableIndex]="x" [dragEnabled]="!dragOperation" [dragData]="widget">
-        <md-card-header>
-          <div md-card-avatar dnd-sortable-handle class="example-header-image">
-            <md-icon>drag_handle</md-icon>
-          </div>
+    <div dnd-sortable-container
+      class="status-container" 
+      [sortableData]="container.widgets" 
+      [dropZones]="['widget-dropZone']">
+      <md-card dnd-sortable
+        class="mat-elevation-z0" 
+        *ngFor="let widget of container.widgets; let x = index" 
+        [sortableIndex]="x" 
+        [dragEnabled]="!dragOperation" 
+        [dragData]="widget"
+        (onDropSuccess)="cardDropped($event, widget, container)">
+        <md-card-header dnd-sortable-handle>
+          <!-- <div md-card-avatar class="example-header-image">
+            &nbsp;
+          </div> -->
+
           <md-card-title>#{{widget.name}}</md-card-title>
           <md-card-subtitle>{{container.id}} {{container.name}}</md-card-subtitle>
         </md-card-header>
@@ -24,18 +44,7 @@
             <p>
             Loremipsumdolorsitamet,consecteturadipiscingelit.Fusceliberorisus,hendreritsitametarcuac,tempuscommodomauris.Proinplacerateratetmassainterdum,inpulvinarmagnafermentum.Sednuncsapien,ultricesvitaevehiculasitamet,aliquetinnisi.Praesentrutrumquislacusatmollis.Vestibulumnuncvelit,imperdietsedurnasitamet,ornareimperdietnulla.Etiamquissuscipitleo,eutemporipsum.Etiamutcursusnulla. Aliquam sagittis lorem non accumsan hendrerit. Etiam varius non tellus vel pretium. Integer rhoncus malesuada ex auctor finibus. Nulla erat ligula, feugiat ac est laoreet, pulvinar tincidunt nulla. Maecenas cursus pharetra nibh et elementum.
             </p>
-            <p>
-            Sed finibus quis massa non sodales. Sed purus eros, aliquam tempor dolor a, tristique pulvinar turpis. Nulla lobortis sed elit sit amet euismod. Etiam dignissim dictum facilisis. Nunc vehicula ullamcorper sodales. Sed ut magna ligula. Mauris bibendum accumsan vehicula. Mauris vitae tortor mi. Duis ac dolor convallis, condimentum metus euismod, vulputate odio.
-            </p>
-            <p>
-            Donec vitae tempor massa, interdum pellentesque tellus. Sed pellentesque lorem ut diam scelerisque, in fermentum leo tincidunt. Suspendisse vitae ligula at mauris porta molestie. Donec luctus ligula ut est molestie consectetur. Nullam arcu velit, egestas eu ipsum ac, fringilla tincidunt turpis. Proin sollicitudin odio at turpis tincidunt varius. Pellentesque auctor nisl eget diam iaculis sagittis. Ut non leo at arcu fermentum aliquam. Ut dictum mauris ac eros tincidunt imperdiet. Sed aliquet euismod purus vel cursus. Praesent gravida, nisi vitae suscipit facilisis, turpis nulla porta turpis, in mattis lacus leo ut justo. Mauris et sollicitudin ligula, mollis dignissim metus. Proin placerat diam purus, vitae consectetur tellus iaculis et. Cras vitae arcu lobortis, interdum leo ut, placerat massa. Etiam sed odio mauris.
-            </p>
-            <p>
-            Mauris viverra ultricies placerat. Donec dictum in velit et tempor. Praesent faucibus malesuada imperdiet. Curabitur congue lobortis mauris et ornare. In sit amet pellentesque arcu, eu pellentesque dui. Aenean luctus, turpis vel semper bibendum, lectus massa aliquet massa, vitae viverra quam metus nec dui. Phasellus nisl urna, laoreet sed malesuada sit amet, lacinia et quam. Aliquam tristique est dui, ut maximus turpis tempus vel. Aenean eu feugiat risus. Quisque sed massa nibh. Morbi sodales dictum lectus et ornare. Cras sed commodo est, eu dignissim nisi. Etiam vel elit quis mauris ornare congue id et justo. Pellentesque sagittis aliquam euismod. Cras accumsan cursus magna vel sollicitudin. Pellentesque volutpat aliquam orci, a dictum nulla maximus vel.
-            </p>
-            <p>
-            Donec urna sapien, blandit non tempor eu, sagittis a justo. Proin laoreet metus magna. Orci varius natoque penatibus et magnis dis parturient montes, nascetur ridiculus mus. Pellentesque id magna magna. Nunc pharetra vel tortor vel suscipit. Ut non leo eget tellus rutrum aliquam sit amet malesuada felis. Nunc cursus porttitor sollicitudin. Vivamus purus magna, tempus sit amet magna at, condimentum lobortis lectus. Phasellus ut commodo neque. Maecenas vestibulum erat quam, et egestas sem maximus nec.
-            </p>
+            
 
             <md-action-row>
               <span clas="flexfill"></span>
@@ -46,11 +55,22 @@
           
         </md-card-content>
         <md-card-actions>
-          <span clas="flexfill"></span>
           <button md-button>FOO</button>
-          <span clas="flexfill"></span>
           <button md-button>BAR</button>
-          <span clas="flexfill"></span>
+          <span class="flexfill"></span>
+          <button md-icon-button [mdMenuTriggerFor]="cardMenu">
+            <md-icon class="icon">more_vert</md-icon>
+          </button>
+          <md-menu #cardMenu="mdMenu">
+            <button md-menu-item title="Move Up">
+              <md-icon>arrow_upward</md-icon>
+              <span>Move Up</span>
+            </button>
+            <button md-menu-item title="Move Down">
+              <md-icon>arrow_downward</md-icon>
+              <span>Move Down</span>
+            </button>
+          </md-menu>
         </md-card-actions>
       </md-card>
     </div>

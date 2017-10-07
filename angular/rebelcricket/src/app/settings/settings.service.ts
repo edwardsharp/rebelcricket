@@ -19,16 +19,16 @@ export class SettingsService {
   	this.db.get('settings').then(result=>{
 
       console.log('HEY!!!!!!! settings result:',result);
-
+     
     }).catch(err =>{
 
       const defaultOrderStatuses = [
-        new OrderStatus('New'),
-        new OrderStatus('Backlog'),
-        new OrderStatus('Ready'),
-        new OrderStatus('In Progress'),
-        new OrderStatus('Needs Review'),
-        new OrderStatus('Done')
+        new OrderStatus('Inbox',0),
+        new OrderStatus('Needs Review',1),
+        new OrderStatus('Backlog',2),
+        new OrderStatus('In Progress',3),
+        new OrderStatus('Ready',4),
+        new OrderStatus('Done',5),
       ]
 
   		this.db.put(new Settings(defaultOrderStatuses, new GoogleApi('',''))).then(function (response) {
