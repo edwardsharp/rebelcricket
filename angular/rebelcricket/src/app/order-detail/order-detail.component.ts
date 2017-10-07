@@ -49,7 +49,7 @@ export class OrderDetailComponent implements OnInit, OnDestroy  {
   ngOnInit() {
     this.getSettings();
 
-    setTimeout(()=>{this.getOrderRevs()},3000);
+    // setTimeout(()=>{this.getOrderRevs()},3000);
     // .switchMap() is a debounced observable; rad!
     this.route.paramMap
     	.switchMap((params: ParamMap) => this.orderService.getOrder( params.get('id') ))
