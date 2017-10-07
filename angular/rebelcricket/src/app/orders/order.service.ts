@@ -98,7 +98,6 @@ export class OrderService {
   addAttachment(docId:string, attachmentId:string, rev: string, attachment: Blob,type:string){
     // var attachment = new Blob(['Is there life on Mars?'], {type: 'text/plain'});
     return this.db.putAttachment(docId, attachmentId, rev, attachment, type);
-
   }
 
   removeAttachment(docId:string, attachmentId:string, rev: string){
@@ -216,4 +215,33 @@ export class OrderService {
   //   // });
   // }
 
+  getOrderRevs(id:string): Promise<any> {
+    return this.db.get(id, {
+      revs: true, 
+      open_revs: 'all' // this allows me to also get the removed "docs"
+    });
+  }
+
+  getOrderHistory(docId: string, revision_ids:Array<string>): Promise<any> {
+    // let optz = { docs: [] };
+    // for(let revId of revision_ids){
+    //   optz.docs.push({ id: docId, _rev: revId});
+    // }
+    // console.log('zomg optz:',optz);
+    // return this.db.bulkGet(optz);
+
+    return this.db.changes({
+      doc_ids: [docId],
+      limit: 50,
+      since: 0,
+      revs: true, 
+      open_revs: 'all'
+    });
+  }
+
+  getRevsDiff(docId:string, revA:string, revB:string): Promise<any> {
+    let optz = {}
+    optz[docId] = [revA, revB];
+    return this.db.revsDiff(optz);
+  }
 }

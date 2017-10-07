@@ -12,6 +12,8 @@ import { SettingsService } from '../settings/settings.service';
 import { Settings } from '../settings/settings';
 import { AppTitleService } from '../app-title.service';
 
+import * as _ from 'underscore';
+
 const COMMA = 188;
 
 
@@ -22,6 +24,7 @@ const COMMA = 188;
 })
 export class OrderDetailComponent implements OnInit, OnDestroy  { 
 
+  origOrder: Order;
 	// id: string;
   order: Order;
 	// private orderSub: any;
@@ -29,6 +32,7 @@ export class OrderDetailComponent implements OnInit, OnDestroy  {
   needsSave: boolean = false;
   quoteDesingUploading: boolean = false;
   gfxError: boolean = false;
+  revisionIds: Array<string> = [];
   // serializedPanes: Array<string>;
 
   constructor(
@@ -45,15 +49,18 @@ export class OrderDetailComponent implements OnInit, OnDestroy  {
   ngOnInit() {
     this.getSettings();
 
+    setTimeout(()=>{this.getOrderRevs()},3000);
     // .switchMap() is a debounced observable; rad!
     this.route.paramMap
     	.switchMap((params: ParamMap) => this.orderService.getOrder( params.get('id') ))
     	.subscribe((order: Order) => {
         if(order && order._id && this.route.snapshot.params.id != 'new'){
           this.order = order;
+          this.origOrder = JSON.parse(JSON.stringify(order));
           this.setTitle();
         }else{
           this.order = new Order;
+          this.origOrder = new Order;
           this.router.navigate(['/dashboard/order/', this.order._id]);
           this.snackBar.open('New Order Created!', '', {
             duration: 2000,
@@ -83,6 +90,26 @@ export class OrderDetailComponent implements OnInit, OnDestroy  {
   }
 
   saveOrder() {
+
+    let description = '';
+    const orderDiff = _.omit(this.origOrder, (v,k) => { return this.order[k] === v; });
+    if(orderDiff){
+      let orderDiffKeys = Object.keys(orderDiff);
+      if(orderDiffKeys.indexOf("history") > 0){
+        orderDiffKeys.splice(orderDiffKeys.indexOf("history"),1);
+      }
+      description = `Fields: ${orderDiffKeys.join(', ')}`;
+    }
+    
+    if(this.order.history){
+      this.order.history.push({date: new Date, title: 'Updated', description: description});
+    }else{
+      this.order.history = [{date: new Date, title: 'Created', description: description}];
+    }
+    
+    // console.log('SAVE ORDER DIFF:',);
+    console.log('SAVE ORDER orig and now:',this.origOrder, this.order);
+    
     this.setTitle();
     // console.log('gonna save this.order:',this.order);
     this.orderService.saveOrder(this.order).then(resp => {
@@ -179,6 +206,9 @@ export class OrderDetailComponent implements OnInit, OnDestroy  {
       }
     }
 
+    this.order.history = this.order.history || [];
+    this.order.history.push({date: new Date, title: `Added ${e.target.files.length} Attachment${e.target.files.length > 1 ? 's' : ''}`, description: e.target.files.map(f => f.name).join(', ')});
+
     this.orderService.saveOrder(this.order).then(resp => {
       // console.log('zomg, resp:',resp);
       if(resp["rev"]){
@@ -188,6 +218,7 @@ export class OrderDetailComponent implements OnInit, OnDestroy  {
       this.orderService.getOrder( this.order._id ).then((order: Order) => {
         if(order && order._id){
           this.order = order;
+          this.origOrder = JSON.parse(JSON.stringify(order)); //clone
         }
       });
 
@@ -258,5 +289,41 @@ export class OrderDetailComponent implements OnInit, OnDestroy  {
     this.appTitleService.setTitle(_t);
   }
   
+  getOrderRevs(): void {
+    this.orderService.getOrderRevs(this.order._id).then(history => {
+      try{
+        console.log('getOrderRevs() revisions:',history["0"].ok._revisions.ids);
+        this.revisionIds = history["0"].ok._revisions.ids;
+
+        this.getOrderHistory(this.revisionIds);
+       
+        this.getRevsDiff(this.revisionIds[this.revisionIds.length -1], this.revisionIds[this.revisionIds.length -2]);
+
+      }catch(e){
+        // eh.
+      }
+      
+    });
+  }
+
+  getOrderHistory(revision_ids:Array<string>): void {
+    console.log('getOrderHistory for revision_ids:',revision_ids);
+    this.orderService.getOrderHistory(this.order._id, revision_ids).then(function(response) {
+      console.log('getOrderHistory() response:',response);
+    });
+
+  }
+
+  getRevsDiff(revA:string, revB:string): void {
+    console.log('getRevsDiff for revision_ids:', revA, revB);
+    this.orderService.getRevsDiff(this.order._id, revA, revB).then(function(response) {
+      console.log('getRevsDiff() response:',response);
+    });
+
+  }
+
+  historyLabel(): string {
+    return `History (${this.order.history && this.order.history.length ? this.order.history.length : 0})`;
+  }
           
 }

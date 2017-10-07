@@ -28,6 +28,7 @@ import {
   SliceVendorFilenameDatePipe, 
   SliceVendorFilenameCategoryPipe,
   InspectorPipe } from './vendor-goods/slice-vendor-filename.pipe';
+import { ReversePipe } from './orders/reverse.pipe';
 
 const appRoutes: Routes = [
   { 
@@ -79,7 +80,8 @@ const appRoutes: Routes = [
     SliceVendorFilenamePipe,
     SliceVendorFilenameDatePipe,
     SliceVendorFilenameCategoryPipe,
-    InspectorPipe
+    InspectorPipe,
+    ReversePipe
   ],
   imports: [
   	RouterModule.forRoot(

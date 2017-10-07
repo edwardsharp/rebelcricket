@@ -19,7 +19,9 @@ export class Order {
   _id?: string;
   _rev?: string;
   _attachments?: any;
-  attachments?: Array<any>;
+  attachments?: Array<any>; //in the future, probz better to not use _attachments...
+
+  history?: Array<{date:Date, title:string, description:string}>;
   name: string;
   email: string;
   phone: string;

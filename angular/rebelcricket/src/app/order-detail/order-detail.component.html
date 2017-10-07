@@ -160,10 +160,12 @@
 	  	
 	  </md-tab>
 	  
-	  <md-tab label="History (1)">
+	  <md-tab label="{{historyLabel()}}">
 	  	<md-list>
-			  <md-list-item>
-	  			List of order history will go here...
+			  <md-list-item *ngFor="let item of order.history | reverse">
+	  			{{item.date | date:'short' }} 
+					{{item.title}} 
+					{{item.description}} 
 	  		</md-list-item>
 	  	</md-list>
 	  </md-tab>
