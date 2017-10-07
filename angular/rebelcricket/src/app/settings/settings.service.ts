@@ -9,7 +9,12 @@ export class SettingsService {
 	db: any;
 
   constructor() {
-  	this.db = new PouchDB('settings');
+    if(navigator.vendor && navigator.vendor.indexOf('Apple') > -1){
+      console.log("LOADING FRUITDONW DB!");
+      this.db = new PouchDB('settings', {adapter: 'fruitdown'});
+    }else{
+      this.db = new PouchDB('settings');
+    }
 
   	this.db.get('settings').then(result=>{}).catch(err =>{
   		this.db.put(new Settings([new OrderStatus('default')], new GoogleApi('',''))).then(function (response) {

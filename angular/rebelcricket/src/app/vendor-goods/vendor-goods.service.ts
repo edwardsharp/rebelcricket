@@ -38,7 +38,12 @@ export class VendorGoodsService {
 
 	//private http: Http
   constructor() {
-  	this.db = new PouchDB('vendor_goods');
+  	if(navigator.vendor && navigator.vendor.indexOf('Apple') > -1){
+  		console.log("LOADING FRUITDONW DB!");
+      this.db = new PouchDB('vendor_goods', {adapter: 'fruitdown'});
+    }else{
+      this.db = new PouchDB('vendor_goods');
+    }
   }
 
  	getVendorGoods(){

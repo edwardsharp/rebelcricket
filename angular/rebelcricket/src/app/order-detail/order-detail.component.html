@@ -7,11 +7,11 @@
 
 <div *ngIf="order" class="content">
   <md-toolbar color="primary" class="sticky">
-		<button md-icon-button>
-    	<md-icon class="md-24" aria-label="Back to orders" routerLink="/dashboard/orders" mdTooltip="Back to orders">arrow_back</md-icon>
+		<button md-icon-button aria-label="Back to orders" routerLink="/dashboard/orders" mdTooltip="Back to orders">
+    	<md-icon class="md-24">arrow_back</md-icon>
   	</button>
 
-	  <h2 class="name" *ngIf="!needsSave"><small>{{order.created_at | date:'short' }}</small></h2> <button *ngIf="needsSave" class="fullwidth" md-button (click)="saveOrder()">
+	  <h2 class="name order-toolbar" *ngIf="!needsSave"><small>created at:</small><br>{{order.created_at | date:'short' }}</h2> <button *ngIf="needsSave" class="fullwidth" md-button (click)="saveOrder()">
   		<md-icon>save</md-icon>
   		Save Order
   	</button> 
@@ -149,6 +149,7 @@
 					    <p></p>
 					  </md-card-content> -->
 					  <md-card-actions>
+					  	<span class="flexfill"></span>
 					  	<span class="item-key" title="{{item}}">{{item}}</span>
 					    <span class="flexfill"></span>
 					    <button md-icon-button (click)="deleteAttachmentFor(item);"><md-icon>delete</md-icon></button>

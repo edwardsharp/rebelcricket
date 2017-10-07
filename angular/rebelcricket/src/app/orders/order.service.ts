@@ -32,7 +32,13 @@ export class OrderService {
   get data(): Order[] { return this.dataChange.value; }
 
   constructor() {
-    this.db = new PouchDB('orders');
+    if(navigator.vendor && navigator.vendor.indexOf('Apple') > -1){
+      console.log("LOADING FRUITDONW DB!");
+      this.db = new PouchDB('orders', {adapter: 'fruitdown'});
+    }else{
+      this.db = new PouchDB('orders');
+    }
+    
     // PouchDB.plugin(require('pouchdb-find'));
 
     this.db.createIndex({
