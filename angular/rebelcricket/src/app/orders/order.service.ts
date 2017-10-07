@@ -1,4 +1,6 @@
 import { Injectable } from '@angular/core';
+import { Observable } from 'rxjs/Observable';
+import 'rxjs/add/operator/map';
 import {BehaviorSubject} from 'rxjs/BehaviorSubject';
 
 import { Order } from './order';
@@ -31,6 +33,18 @@ export class OrderService {
 
   constructor() {
     this.db = new PouchDB('orders');
+    // PouchDB.plugin(require('pouchdb-find'));
+
+    this.db.createIndex({
+      index: {
+        fields: ['_id','name']
+      }
+    }).then(result => {
+      console.log('index created! result',result);
+    }).catch(err => {
+      console.log('o noz! this.db.createIndex err:',err);
+    });
+
     // for (let i = 0; i < 10; i++) { 
     //   this.addOrder(); 
     //   setTimeout(()=>{for (let i = 0; i < 50; i++) { this.addOrder(); }}, 5000);
@@ -144,14 +158,56 @@ export class OrderService {
       limit: limit,
       skip: skip
     }).then(response => {
-      this.total_rows = response["total_rows"];
       console.log('order.service getOrders returning response.rows:',response.rows);
-      this.dataChange.next(response.rows.map(row => row.doc as Order));
+      const retItems = response.rows
+        .filter(row => !row["id"].startsWith('_design'))
+        .map(row => row.doc as Order);
+      this.total_rows = retItems.length;
+      console.log('order.service getOrders returning retItems:',retItems);
+      this.dataChange.next(retItems);
+
     });
   }
 
   removeOrder(order: Order): Promise<any>{
     return this.db.remove(order._id, order._rev);
   }
+
+
+  find(q:string): Observable<any[]> {
+    // return this.http.get('url')
+    //   .map(res => res.json())
+
+    let regexp = new RegExp(q, 'i');
+    return this.db.find({
+      // selector: {name: q},
+      // var regexp = new RegExp(keyword, 'i');
+      // {name: {'$regex': regexp}};
+      selector: {name: {$regex: regexp}},
+      fields: ['_id', 'name'],
+      // sort: [{_id: 'desc'}],
+      // limit: 25,
+      // skip: 0,
+    }).then(res => res["docs"]);
+  }
+
+  // find(q:string) {
+  //   let regexp = new RegExp(q, 'i');
+  //   return this.db.find({
+  //     // selector: {name: q},
+  //     // var regexp = new RegExp(keyword, 'i');
+  //     // {name: {'$regex': regexp}};
+  //     selector: {name: {$regex: regexp}},
+  //     fields: ['_id', 'name'],
+  //     // sort: [{_id: 'desc'}],
+  //     // limit: 25,
+  //     // skip: 0,
+  //   });
+  //   // .then(function (result) {
+  //   //   // handle result
+  //   // }).catch(function (err) {
+  //   //   console.log(err);
+  //   // });
+  // }
 
 }

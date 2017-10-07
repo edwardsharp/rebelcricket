@@ -3,7 +3,7 @@ import { FormControl } from '@angular/forms';
 import { Observable } from 'rxjs/Observable';
 import 'rxjs/add/operator/startWith';
 import 'rxjs/add/operator/map';
-
+import 'rxjs/add/observable/from';
 
 import {MdDialog, MdDialogRef, MD_DIALOG_DATA, MdDatepickerInputEvent} from '@angular/material';
 
@@ -15,6 +15,10 @@ import { Component, OnInit, ViewChild, ElementRef, EventEmitter, Output, Input }
 import { Subject } from 'rxjs/Subject';
 import "rxjs/add/operator/debounceTime";
 import 'rxjs/add/operator/distinctUntilChanged';
+
+import { Order } from '../orders/order';
+import { OrderService } from '../orders/order.service';
+
 
 /**
  * This component provides a text box to type a search query that will be sent to the SearchService.
@@ -47,10 +51,12 @@ import 'rxjs/add/operator/distinctUntilChanged';
     [formControl]="stateCtrl"
     [(ngModel)]="destination">
   <md-autocomplete #auto="mdAutocomplete">
-    <md-option *ngFor="let state of filteredStates | async" [value]="state.name">
-      <img style="vertical-align:middle;" aria-hidden src="{{state.flag}}" height="25" />
-      <span>{{ state.name }}</span> |
-      <small>population: {{state.population}}</small>
+    <md-option 
+      *ngFor="let order of filteredOrders | async" 
+      [value]="order.name"
+      routerLink="/dashboard/order/{{order._id}}">
+      <span>{{ order.name }}</span> |
+      <small>{{createdAtDate(order._id) | date:'short' }}</small>
     </md-option>
   </md-autocomplete>`,
   styleUrls: ['./search-box.component.css']
@@ -73,6 +79,10 @@ export class SearchBoxComponent implements OnInit {
     //   this.query = query;
     //   this.doSearch();
     // }
+
+    // setInterval(()=>{
+    //   console.log('this.filteredOrders:',this.filteredOrders);
+    // },2000);
   }
 
   doSearch() {
@@ -95,46 +105,130 @@ export class SearchBoxComponent implements OnInit {
   destination: string;
 //autocomplete
   stateCtrl: FormControl;
-  filteredStates: Observable<any[]>;
+  filteredOrders: Observable<any[]>;
+  // filteredOrders: Array<any>;
 
-  states: any[] = [
-    {
-      name: 'Arkansas',
-      population: '2.978M',
-      // https://commons.wikimedia.org/wiki/File:Flag_of_Arkansas.svg
-      flag: 'https://upload.wikimedia.org/wikipedia/commons/9/9d/Flag_of_Arkansas.svg'
-    },
-    {
-      name: 'California',
-      population: '39.14M',
-      // https://commons.wikimedia.org/wiki/File:Flag_of_California.svg
-      flag: 'https://upload.wikimedia.org/wikipedia/commons/0/01/Flag_of_California.svg'
-    },
-    {
-      name: 'New York',
-      population: '19.8M',
-      // https://commons.wikimedia.org/wiki/File:Flag_of_New_York.svg
-      flag: 'https://upload.wikimedia.org/wikipedia/commons/1/1a/Flag_of_New_York.svg'
-    },
-    {
-      name: 'Oregon',
-      population: '4.09M',
-      // https://commons.wikimedia.org/wiki/File:Flag_of_Oregon.svg
-      flag: 'https://upload.wikimedia.org/wikipedia/commons/b/b9/Flag_of_Oregon.svg'
-    }
-  ];
+  // states: any[] = [
+  //   {
+  //     name: 'Arkansas',
+  //     population: '2.978M',
+  //     // https://commons.wikimedia.org/wiki/File:Flag_of_Arkansas.svg
+  //     flag: 'https://upload.wikimedia.org/wikipedia/commons/9/9d/Flag_of_Arkansas.svg'
+  //   },
+  //   {
+  //     name: 'California',
+  //     population: '39.14M',
+  //     // https://commons.wikimedia.org/wiki/File:Flag_of_California.svg
+  //     flag: 'https://upload.wikimedia.org/wikipedia/commons/0/01/Flag_of_California.svg'
+  //   },
+  //   {
+  //     name: 'New York',
+  //     population: '19.8M',
+  //     // https://commons.wikimedia.org/wiki/File:Flag_of_New_York.svg
+  //     flag: 'https://upload.wikimedia.org/wikipedia/commons/1/1a/Flag_of_New_York.svg'
+  //   },
+  //   {
+  //     name: 'Oregon',
+  //     population: '4.09M',
+  //     // https://commons.wikimedia.org/wiki/File:Flag_of_Oregon.svg
+  //     flag: 'https://upload.wikimedia.org/wikipedia/commons/b/b9/Flag_of_Oregon.svg'
+  //   }
+  // ];
 
-  constructor(public dialog: MdDialog) {
+  constructor(
+    public dialog: MdDialog, 
+    private orderService: OrderService
+  ) {
+
     this.stateCtrl = new FormControl();
-    this.filteredStates = this.stateCtrl.valueChanges
-        .startWith(null)
-        // .map(state => state ? this.filterStates(state) : this.states.slice());
-        .map(state => state ? this.filterStates(state) : []);
+    // this.stateCtrl.valueChanges.switchMap( (q: any) => {
+    //   return this.orderService.find(q);
+    // }).subscribe(result => { this.filteredOrders = result["docs"] });
+
+
+    // this.filteredOrders = this.stateCtrl.valueChanges.subscribe( q => {
+
+    // });
+
+    // w00t!
+    this.filteredOrders = this.stateCtrl.valueChanges
+      .switchMap(q => this.orderService.find(q) );
+
+    // this.filteredOrders = 
+//Observable.from(orders)
+//
+
+  //   .map(res => res.json().products)
+  // .switchMap(products => Observable.from(products))
+  // .subscribe(product => console.log(product))
+
+      // .startWith(null)
+      // // .map(state => state ? this.filterStates(state) : this.states.slice());
+      // .map(q => { return q ? this.filterOrders(q) : [] });
+
+
+
+// .switchMap((params: ParamMap) => this.orderService.getOrder( params.get('id') ))
+//       .subscribe((order: Order) => {
+//         if(order && order._id && this.route.snapshot.params.id != 'new'){
+//           this.order = order;
+//         }else{
+//           this.order = new Order;
+//           this.router.navigate(['/dashboard/order/', this.order._id]);
+//           this.snackBar.open('New Order Created!', '', {
+//             duration: 2000,
+//           });          
+//         } 
+//       });
+
+      // .map(q => q ? this.filterOrders(q) : []);
+
+      // .debounceTime(400)
+      // .distinctUntilChanged()
+      // .toPromise()
+      // .then( (q:string) => {return this.filterOrders(q)});
+
+    // this.filteredOrders = this.stateCtrl.valueChanges
+    //   .debounceTime(400)
+    //   .distinctUntilChanged()
+    //   .map((q:string) => { 
+    //     return this.filterOrders(q);
+    //   });
+
+      // .subscribe(result => {
+      //    return result["docs"] as any[];
+      // }, err => {
+      //     return [];
+      // });
+
+
+        // .startWith(null)
+        // // .map(state => state ? this.filterStates(state) : this.states.slice());
+        // //.map(q => {console.log('thisfilterStates',this.filteredOrders); return q ? this.filterOrders(q) : []});
+        // // .map(state => state ? this.filterStates(state) : []);
+        // .map(q => q ? this.filterOrders(q) : []);
   }
 
-  filterStates(name: string) {
-    return this.states.filter(state =>
-      state.name.toLowerCase().indexOf(name.toLowerCase()) === 0);
+  // filterOrders(q: string): Array<any>{
+  //   console.log('zomg search-box gonna filterOrders for q:',q);
+  //   this.orderService.find(q)
+  //     .then(result => {
+  //       // handle result
+  //       console.log('this.orderService.find(q) result:',result["docs"]);
+  //       // return result["docs"];
+  //       // return Promise.resolve(result["docs"]);
+  //       return result["docs"];
+  //     }).catch(err => {
+  //       console.log(err);
+  //       return [];
+  //     });
+  // }
+  // filterStates(name: string) {
+  //   return this.states.filter(state =>
+  //     state.name.toLowerCase().indexOf(name.toLowerCase()) === 0);
+  // }
+  createdAtDate(_id:string){
+    return new Date(parseInt(_id, 36));
   }
 
 }
