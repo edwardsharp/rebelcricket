@@ -16,8 +16,22 @@ export class SettingsService {
       this.db = new PouchDB('settings');
     }
 
-  	this.db.get('settings').then(result=>{}).catch(err =>{
-  		this.db.put(new Settings([new OrderStatus('default')], new GoogleApi('',''))).then(function (response) {
+  	this.db.get('settings').then(result=>{
+
+      console.log('HEY!!!!!!! settings result:',result);
+
+    }).catch(err =>{
+
+      const defaultOrderStatuses = [
+        new OrderStatus('New'),
+        new OrderStatus('Backlog'),
+        new OrderStatus('Ready'),
+        new OrderStatus('In Progress'),
+        new OrderStatus('Needs Review'),
+        new OrderStatus('Done')
+      ]
+
+  		this.db.put(new Settings(defaultOrderStatuses, new GoogleApi('',''))).then(function (response) {
 			  // handle response
 			}).catch(function (err) {
 			  console.log(err);

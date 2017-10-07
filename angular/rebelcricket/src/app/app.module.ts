@@ -7,6 +7,8 @@ import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { HttpModule } from '@angular/http';
 
 import { AppMaterialModule } from './app-material.module';
+import {DndModule} from 'ng2-dnd';
+
 
 import { OrderService } from './orders/order.service';
 import { VendorGoodsService } from './vendor-goods/vendor-goods.service';
@@ -93,7 +95,8 @@ const appRoutes: Routes = [
     FormsModule,
     ReactiveFormsModule,
     HttpModule,  
-    AppMaterialModule
+    AppMaterialModule,
+    DndModule.forRoot()
   ],
   entryComponents: [
     VendorGoodsDialogComponent

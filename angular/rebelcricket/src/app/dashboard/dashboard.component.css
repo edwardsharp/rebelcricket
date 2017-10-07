@@ -1,0 +1,74 @@
+/* flex essentialz */
+#container {
+  width: 100vw;
+  height: calc(100vh - 64px);
+  display: flex;
+  flex-direction: row;
+  overflow-y: hidden;
+  overflow-x: scroll;
+
+  /*justify-content: center;
+  align-content: center;
+  align-items: center;*/
+}
+#container::-webkit-scrollbar {
+  -webkit-appearance: none;
+}
+
+#container::-webkit-scrollbar:horizontal {
+  height: 10px;
+}
+
+#container::-webkit-scrollbar-thumb {
+  border-radius: 8px;
+  border: 1px solid white;
+  background-color: rgba(0, 0, 0, .5);
+}
+#container::-webkit-scrollbar-track { 
+  background-color: rgba(0, 0, 0, .0); 
+  border-radius: 8px; 
+}
+
+#container > div {
+  flex: 0 1 auto;
+  min-width: 300px;
+  transition: all 0.1s ease-out;
+  overflow-y: scroll;
+  overflow-x: hidden;
+  overflow-wrap: break-word;
+  
+}
+
+md-toolbar {
+  position: sticky;
+  top: 0;
+  z-index: 2;
+  margin-left: 0.25em;
+  margin-right: 0.25em;
+}
+
+md-toolbar h1 {
+  text-align: center;
+  width: 100%;
+}
+
+md-card{
+  padding: 0;
+  margin-top: 1em;
+  margin-left:0.5em;
+  margin-right:0.5em;
+  margin-bottom: 3em;
+}
+
+md-card-header, md-card-actions{
+  padding: 1em;
+}
+
+md-card-actions, md-action-row{
+  display: flex;
+  align-items: center;
+}
+
+.status-container{
+  min-height: calc(100vh - 64px - 64px);
+}
