@@ -122,7 +122,7 @@ export class DashboardComponent implements OnInit, OnDestroy {
 
 	  	});
 
-	  	const limit = 10; //this.paginator.pageSize;
+	  	const limit = 100; //this.paginator.pageSize;
 	 		const skip = 0; //this.paginator.pageIndex * this.paginator.pageSize;
 
 	    this.orderService.getOrders(limit, skip);
