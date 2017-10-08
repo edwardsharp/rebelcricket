@@ -1,3 +1,12 @@
+/* fix ng2-dnd littering "cursor:pointer" all over the place... */
+#container, #container > div, .status-container, md-card {
+  cursor: default!important;
+}
+
+md-card-header{
+  cursor: move!important;
+}
+
 /* flex essentialz */
 #container {
   width: 100vw;
@@ -34,6 +43,7 @@
   overflow-wrap: break-word;
   border-left: 1px solid rgba(0,0,0,0.1);
   border-right: 1px solid rgba(0,0,0,0.1);
+
 }
 
 md-toolbar {
