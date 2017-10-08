@@ -4,17 +4,32 @@
   [dropZones]="['container-dropZone']">
   <div *ngFor="let container of containers; let i = index" dnd-sortable [sortableIndex]="i" 
     [dragEnabled]="dragOperation"
-    (onDropSuccess)="containerDropped(i, container)">
-    <md-toolbar color="secondary">
-      <h1>{{container.name}}</h1>
-      <button md-icon-button 
+    (onDropSuccess)="containerDropped(i, container)"
+    [@containerState]="container.collapsed">
+    <md-toolbar [@containerHeadingState]="container.collapsed" color="secondary">
+<!--       <button md-icon-button 
         (mousedown)="dragOperation=true;" 
         (mouseup)="dragOperation=false;" 
-        (mouseout)="dragOperation=false;">
+        (mouseout)="dragOperation=false;"
+        tabindex="-1"
+        class="drag-handle">
         <md-icon>drag_handle</md-icon>
+      </button> -->
+      <button md-icon-button 
+        tabindex="-1"
+        [@containerButtonState]="container.collapsed"
+        (click)="container.toggleCollapse()">
+        <md-icon>chevron_left</md-icon>
+      </button>
+      <h1>{{container.name}}</h1>
+      <button *ngIf="container.collapsed === 'active'"
+        md-icon-button 
+        tabindex="-1">
+        <md-icon>filter_list</md-icon>
       </button>
     </md-toolbar>
-    <div dnd-sortable-container
+    <div *ngIf="container.collapsed === 'active'"
+      dnd-sortable-container
       class="status-container" 
       [sortableData]="container.widgets" 
       [dropZones]="['widget-dropZone']">
@@ -46,22 +61,27 @@
             </p>
             
 
-            <md-action-row>
+            <!-- <md-action-row>
               <span clas="flexfill"></span>
-              <button md-icon-button><md-icon>edit</md-icon></button>
-            </md-action-row>
+              
+            </md-action-row> -->
           </md-expansion-panel>
 
           
         </md-card-content>
         <md-card-actions>
-          <button md-button>FOO</button>
-          <button md-button>BAR</button>
+          <md-icon>schedule</md-icon>
+          <small>12h</small>
           <span class="flexfill"></span>
+          <button md-icon-button mdTooltip="Edit" mdTooltipPosition="above"><md-icon>edit</md-icon></button>
           <button md-icon-button [mdMenuTriggerFor]="cardMenu">
             <md-icon class="icon">more_vert</md-icon>
           </button>
           <md-menu #cardMenu="mdMenu">
+            <button md-menu-item [mdMenuTriggerFor]="status" title="Status">
+              <md-icon>inbox</md-icon>
+              <span>Status</span>
+            </button>
             <button md-menu-item title="Move Up">
               <md-icon>arrow_upward</md-icon>
               <span>Move Up</span>
@@ -70,7 +90,19 @@
               <md-icon>arrow_downward</md-icon>
               <span>Move Down</span>
             </button>
+            <hr>
+            <button md-menu-item title="Delete">
+              <md-icon>delete</md-icon>
+              <span>Delete</span>
+            </button>
           </md-menu>
+
+          <md-menu #status="mdMenu">
+            <button md-menu-item *ngFor="let item of settings.order_statuses">
+              {{item.name}}
+            </button>
+          </md-menu>
+
         </md-card-actions>
       </md-card>
     </div>

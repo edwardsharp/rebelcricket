@@ -1,6 +1,13 @@
 import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute, ParamMap, Router } from '@angular/router';
 import { MdSnackBar } from '@angular/material';
+import {
+  trigger,
+  state,
+  style,
+  animate,
+  transition
+} from '@angular/animations';
 
 import { OrderService } from '../orders/order.service';
 import { SettingsService } from '../settings/settings.service';
@@ -11,7 +18,43 @@ import { AppTitleService } from '../app-title.service';
 @Component({
   selector: 'app-dashboard',
   templateUrl: './dashboard.component.html',
-  styleUrls: ['./dashboard.component.css']
+  styleUrls: ['./dashboard.component.css'],
+  animations: [
+	  trigger('containerButtonState', [
+	    state('inactive', style({
+	      transform: 'rotate(90deg)',
+	      'margin-right': '1em'
+	    })),
+	    state('active',   style({
+	      transform: 'rotate(0deg)',
+	      'margin-right': '0'
+	    })),
+	    transition('inactive => active', animate('200ms ease-in')),
+	    transition('active => inactive', animate('200ms ease-out'))
+	  ]),
+	  trigger('containerHeadingState', [
+	    state('inactive', style({
+	      transform: 'rotate(90deg)'
+	    })),
+	    state('active',   style({
+	      transform: 'rotate(0deg)'
+	    })),
+	    transition('inactive => active', animate('200ms ease-in')),
+	    transition('active => inactive', animate('200ms ease-out'))
+	  ]),
+	  trigger('containerState', [
+	    state('inactive', style({
+	      'min-width': '64px',
+	      'max-width': '64px'
+	    })),
+	    state('active',   style({
+	      'min-width': '300px',
+	      'max-width': 'none'
+	    })),
+	    transition('inactive => active', animate('200ms ease-in')),
+	    transition('active => inactive', animate('200ms ease-out'))
+	  ])
+	]
 })
 export class DashboardComponent implements OnInit {
 
@@ -47,7 +90,7 @@ export class DashboardComponent implements OnInit {
 
     	let i = 1;
     	for(let status of this.settings.order_statuses){
-    		this.containers.push( new Container(i, status.name, [new Widget('1'), new Widget('2')]) )
+    		this.containers.push( new Container(i, status.name, 'active', [new Widget('1'), new Widget('2')]) )
     		i += 1;
     	}
     }, err => {
@@ -69,7 +112,15 @@ export class DashboardComponent implements OnInit {
 }
 
 class Container {
-  constructor(public id: number, public name: string, public widgets: Array<Widget>) {}
+  constructor(
+  	public id: number, 
+  	public name: string, 
+  	public collapsed: string, 
+  	public widgets: Array<Widget>
+  ) {}
+  public toggleCollapse(): void {
+    this.collapsed = this.collapsed === 'active' ? 'inactive' : 'active';
+  }
 }
 
 class Widget {
