@@ -179,7 +179,7 @@ export class DashboardComponent implements OnInit, OnDestroy {
 
   saveOrder(order: Order) {
 
-    let description = '';
+    let description = 'via Dashboard';
     // const orderDiff = _.omit(this.origOrder, (v,k) => { return this.order[k] === v; });
     // if(orderDiff){
     //   let orderDiffKeys = Object.keys(orderDiff);
@@ -218,6 +218,14 @@ export class DashboardComponent implements OnInit, OnDestroy {
   updateOrderStatus(order:Order,status:string): void{
   	order.status = status;
   	this.saveOrder(order);
+  }
+
+  removeOrderTag(order: Order, tag: any): void {
+    let index = order.tags.indexOf(tag);
+    if (index >= 0) {
+      order.tags.splice(index, 1);
+      this.saveOrder(order);
+    }
   }
 
   moveOrder(order: Order, direction:string): void{

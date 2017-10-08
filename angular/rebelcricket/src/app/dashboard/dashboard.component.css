@@ -92,6 +92,22 @@ md-card-actions, md-action-row{
 
 }
 
+md-chip:first-child{
+  margin: 0.5em;
+}
+
+md-chip{
+  /*white-space: pre-wrap;*/
+  text-overflow: ellipsis;
+  max-width: 200px;
+  overflow: hidden;
+}
+
+.mat-chip-remove{
+  margin-left: -4px;
+  margin-right: 6px;
+}
+
 .status-container{
   min-height: calc(100vh - 64px - 64px);
 }

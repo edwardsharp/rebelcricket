@@ -45,7 +45,7 @@
           </div> -->
 
           <md-card-title>{{order.name}} <span *ngIf="order.org">({{order.org}})</span></md-card-title>
-          <md-card-subtitle>#{{order.status}} </md-card-subtitle>
+          <md-card-subtitle>{{order.created_at | date:'short'}} </md-card-subtitle>
         </md-card-header>
         <!-- <img md-card-image src="assets/img/examples/shiba2.jpg" alt="Photo of a Shiba Inu"> -->
         <md-card-content>
@@ -66,11 +66,25 @@
             </md-action-row> -->
           </md-expansion-panel>
 
+
+          <md-chip-list mdPrefix #chipList> 
+            <md-chip *ngFor="let tag of order.tags" 
+              selectable="false"
+              removable="true" 
+              (remove)="removeOrderTag(order,tag)">
+              <md-icon mdChipRemove>cancel</md-icon>
+              {{tag}}
+            </md-chip>
+          </md-chip-list>
+
+        
           
+
         </md-card-content>
         <md-card-actions>
-          <md-icon>schedule</md-icon>
-          <small>{{order.created_at | date:'shortDate'}}</small>
+       <!--    <md-icon>schedule</md-icon>
+           -->
+          
           <span class="flexfill"></span>
           <button md-icon-button 
             mdTooltip="Edit" 
@@ -111,7 +125,7 @@
             <button md-menu-item 
               *ngFor="let item of settings.order_statuses"
               (click)="updateOrderStatus(order,item.name)"
-              [disabled]="order.status == item">
+              [disabled]="order.status == item.name">
               {{item.name}}
             </button>
           </md-menu>
