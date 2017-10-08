@@ -21,7 +21,7 @@
         (click)="container.toggleCollapse()">
         <md-icon>chevron_left</md-icon>
       </button>
-      <h1>{{container.name}} (2)</h1>
+      <h1>{{container.name}} ({{ordersForStatus[container.name]?.length}})</h1>
       <button *ngIf="container.collapsed === 'active'"
         md-icon-button 
         tabindex="-1">
@@ -31,22 +31,21 @@
     <div *ngIf="container.collapsed === 'active'"
       dnd-sortable-container
       class="status-container" 
-      [sortableData]="container.widgets" 
+      [sortableData]="ordersForStatus[container.name]" 
       [dropZones]="['widget-dropZone']">
       <md-card dnd-sortable
         class="mat-elevation-z0" 
-        *ngFor="let widget of container.widgets; let x = index" 
+        *ngFor="let order of ordersForStatus[container.name]; let x = index" 
         [sortableIndex]="x" 
         [dragEnabled]="!dragOperation" 
-        [dragData]="widget"
-        (onDropSuccess)="cardDropped($event, widget, container)">
+        (onDropSuccess)="cardDropped(order, container)">
         <md-card-header dnd-sortable-handle>
           <!-- <div md-card-avatar class="example-header-image">
             &nbsp;
           </div> -->
 
-          <md-card-title>#{{widget.name}}</md-card-title>
-          <md-card-subtitle>{{container.id}} {{container.name}}</md-card-subtitle>
+          <md-card-title>{{order.name}} <span *ngIf="order.org">({{order.org}})</span></md-card-title>
+          <md-card-subtitle>#{{order.status}} </md-card-subtitle>
         </md-card-header>
         <!-- <img md-card-image src="assets/img/examples/shiba2.jpg" alt="Photo of a Shiba Inu"> -->
         <md-card-content>
@@ -71,9 +70,14 @@
         </md-card-content>
         <md-card-actions>
           <md-icon>schedule</md-icon>
-          <small>12h</small>
+          <small>{{order.created_at | date:'shortDate'}}</small>
           <span class="flexfill"></span>
-          <button md-icon-button mdTooltip="Edit" mdTooltipPosition="above"><md-icon>edit</md-icon></button>
+          <button md-icon-button 
+            mdTooltip="Edit" 
+            mdTooltipPosition="above"
+            routerLink="/dashboard/order/{{order._id}}">
+            <md-icon>edit</md-icon>
+          </button>
           <button md-icon-button [mdMenuTriggerFor]="cardMenu">
             <md-icon class="icon">more_vert</md-icon>
           </button>
@@ -82,23 +86,32 @@
               <md-icon>inbox</md-icon>
               <span>Status</span>
             </button>
-            <button md-menu-item title="Move Up">
+            <button md-menu-item 
+              title="Move Up"
+              (click)="moveOrder(order,'up')">
               <md-icon>arrow_upward</md-icon>
               <span>Move Up</span>
             </button>
-            <button md-menu-item title="Move Down">
+            <button md-menu-item 
+              title="Move Down"
+              (click)="moveOrder(order,'down')">
               <md-icon>arrow_downward</md-icon>
               <span>Move Down</span>
             </button>
             <hr>
-            <button md-menu-item title="Delete">
+            <button md-menu-item 
+              title="Delete"
+              (click)="removeOrder(order)">
               <md-icon>delete</md-icon>
               <span>Delete</span>
             </button>
           </md-menu>
 
           <md-menu #status="mdMenu">
-            <button md-menu-item *ngFor="let item of settings.order_statuses">
+            <button md-menu-item 
+              *ngFor="let item of settings.order_statuses"
+              (click)="updateOrderStatus(order,item.name)"
+              [disabled]="order.status == item">
               {{item.name}}
             </button>
           </md-menu>

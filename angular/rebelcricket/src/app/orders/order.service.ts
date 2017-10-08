@@ -153,7 +153,7 @@ export class OrderService {
   }
 
 
-  getOrders(limit:number,skip:number): Promise<Order[]> {
+  getOrders(limit:number,skip:number): void {
     //environment.couch_host
     // return Promise.resolve(ORDERS);
     return this.db.allDocs({

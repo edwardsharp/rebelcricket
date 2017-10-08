@@ -29,23 +29,6 @@ export class OrdersComponent implements OnInit {
 
   constructor(private orderService: OrderService) { }
 
-  getOrders(): void {
-    const limit = this.paginator.pageSize;
- 		const skip = this.paginator.pageIndex * this.paginator.pageSize;
-
-    this.orderService.getOrders(limit, skip).then(orders => {
-    	this.orders = orders;
-    	this.loading = false;
-    }, err => {
-    	console.log('o noz! orderService.getOrdersSlowly() err:',err);
-    	this.loading = false;
-    });
-    // this.orderService.getOrdersSlowly().then(function(orders){
-    // 	this.orders = orders;
-    // 	this.loading = false;
-    // });
-  }
-
   //table sorting stuff
   displayedColumns = ['orderId', 'orderName', 'orderEmail', 'orderOrg', 'orderStatus'];
   // exampleDatabase = new ExampleDatabase();
@@ -57,7 +40,8 @@ export class OrdersComponent implements OnInit {
   ngOnInit() {
     this.loading = true;
     this.dataSource = new OrderStore(this.orderService, this.sort, this.paginator);
-    this.getOrders();
+
+    this.orderService.getOrders(this.paginator.pageSize, this.paginator.pageIndex * this.paginator.pageSize);
   }
 
 
