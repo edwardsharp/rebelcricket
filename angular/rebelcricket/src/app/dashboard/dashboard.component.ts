@@ -29,8 +29,8 @@ import { AppTitleService } from '../app-title.service';
 	      transform: 'rotate(0deg)',
 	      'margin-right': '0'
 	    })),
-	    transition('inactive => active', animate('200ms ease-in')),
-	    transition('active => inactive', animate('200ms ease-out'))
+	    transition('inactive => active', animate('350ms ease-in')),
+	    transition('active => inactive', animate('350ms ease-out'))
 	  ]),
 	  trigger('containerHeadingState', [
 	    state('inactive', style({
@@ -39,8 +39,8 @@ import { AppTitleService } from '../app-title.service';
 	    state('active',   style({
 	      transform: 'rotate(0deg)'
 	    })),
-	    transition('inactive => active', animate('200ms ease-in')),
-	    transition('active => inactive', animate('200ms ease-out'))
+	    transition('inactive => active', animate('150ms ease-in')),
+	    transition('active => inactive', animate('150ms ease-out'))
 	  ]),
 	  trigger('containerState', [
 	    state('inactive', style({
@@ -51,8 +51,8 @@ import { AppTitleService } from '../app-title.service';
 	      'min-width': '300px',
 	      'max-width': 'none'
 	    })),
-	    transition('inactive => active', animate('200ms ease-in')),
-	    transition('active => inactive', animate('200ms ease-out'))
+	    transition('inactive => active', animate('100ms ease-in')),
+	    transition('active => inactive', animate('100ms ease-out'))
 	  ])
 	]
 })
