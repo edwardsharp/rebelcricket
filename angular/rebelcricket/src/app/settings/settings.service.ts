@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { Settings, OrderStatus, GoogleApi } from './settings';
+import { Settings, OrderStatus, Service, GoogleApi } from './settings';
 
 declare var PouchDB:any;
 
@@ -7,6 +7,7 @@ declare var PouchDB:any;
 export class SettingsService {
 
 	db: any;
+
 
   constructor() {
     if(navigator.vendor && navigator.vendor.indexOf('Apple') > -1){
@@ -19,7 +20,7 @@ export class SettingsService {
   	this.db.get('settings').then(result=>{
 
       console.log('HEY!!!!!!! settings result:',result);
-     
+
     }).catch(err =>{
 
       const defaultOrderStatuses = [
@@ -31,7 +32,7 @@ export class SettingsService {
         new OrderStatus('Done',5),
       ]
 
-  		this.db.put(new Settings(defaultOrderStatuses, new GoogleApi('',''))).then(function (response) {
+  		this.db.put(new Settings(defaultOrderStatuses, new GoogleApi('',''), [] )).then(function (response) {
 			  // handle response
 			}).catch(function (err) {
 			  console.log(err);
