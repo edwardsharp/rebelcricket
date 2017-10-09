@@ -1,0 +1,30 @@
+<div class="fullwidth">
+	<md-chip-list mdPrefix #chipList> <!-- class="mat-chip-list-stacked" aria-orientation="vertical" -->
+    <md-chip *ngFor="let tag of tags" 
+    	[selectable]="selectable"
+      (click)="tagClick(tag)"
+      (blur)="chipBlur()"
+			[removable]="removable" 
+			(remove)="remove(tag)">
+	  	<md-icon mdChipRemove>cancel</md-icon>
+      {{tag}}
+    </md-chip>
+    <md-chip (click)="addTag()" (blur)="chipBlur()">
+    	<md-icon class="add-tag">add</md-icon>
+    	New Tag
+    </md-chip>
+  </md-chip-list>
+</div>
+<div>
+	<md-form-field [hidden]="inputHidden" class="fullwidth">
+		<input #tagInput mdInput
+			[placeholder]="selectedTag ? 'Edit Tag...' : 'New tag...'"
+			[(ngModel)]="selectedTag"
+			[mdChipInputFor]="chipList"
+			[mdChipInputSeparatorKeyCodes]="separatorKeysCodes"
+			[mdChipInputAddOnBlur]="addOnBlur"
+			(focus)="focusInput()"
+			(blur)="blurInput()"
+			(mdChipInputTokenEnd)="add($event)" />
+	</md-form-field>
+</div>

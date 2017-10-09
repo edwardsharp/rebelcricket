@@ -16,6 +16,7 @@ import { AppComponent } from './app.component';
 import { SidebarComponent } from './sidebar/sidebar.component';
 import { OrdersComponent } from './orders/orders.component';
 import { OrderDetailComponent } from './order-detail/order-detail.component';
+import { OrderTagsComponent } from './orders/order-tags.component';
 import { DashboardComponent } from './dashboard/dashboard.component';
 import { VendorGoodsComponent } from './vendor-goods/vendor-goods.component';
 import { VendorGoodsDialogComponent } from './vendor-goods/vendor-goods-dialog.component';
@@ -47,6 +48,10 @@ const appRoutes: Routes = [
     data: { title: 'Orders List' }
   },
   {
+    path: 'dashboard/order_tags',
+    component: OrderTagsComponent
+  },
+  {
     path: 'dashboard/vendor_goods',
     component: VendorGoodsComponent
   },
@@ -73,6 +78,7 @@ const appRoutes: Routes = [
     SidebarComponent,
     OrdersComponent,
     OrderDetailComponent,
+    OrderTagsComponent,
     DashboardComponent,
     VendorGoodsComponent,
     VendorGoodsDialogComponent,

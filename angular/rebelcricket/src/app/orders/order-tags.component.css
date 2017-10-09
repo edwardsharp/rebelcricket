@@ -1,0 +1,23 @@
+md-chip{
+	/*white-space: pre-wrap;*/
+  text-overflow: ellipsis;
+  max-width: 200px;
+  overflow: hidden;
+}
+
+.fullwidth {
+	width: 100%;
+}
+
+.add-tag{
+  max-height: 18px;
+  max-width: 18px;
+  margin-top: -7px;
+  margin-left: -4px;
+  margin-right: 5px;
+}
+
+.mat-chip-remove{
+	margin-left: -4px;
+  margin-right: 6px;
+}
