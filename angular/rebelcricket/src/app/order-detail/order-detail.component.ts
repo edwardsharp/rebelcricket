@@ -6,7 +6,7 @@ import { Observable }           from 'rxjs/Observable';
 import 'rxjs/add/operator/switchMap';
 import {MdChipInputEvent, ENTER, MdSnackBar} from '@angular/material';
 
-import { Order } from '../orders/order';
+import { Order, LineItem } from '../orders/order';
 import { OrderService } from '../orders/order.service';
 import { SettingsService } from '../settings/settings.service';
 import { Settings } from '../settings/settings';
@@ -324,6 +324,11 @@ export class OrderDetailComponent implements OnInit, OnDestroy  {
 
   historyLabel(): string {
     return `History (${this.order.history && this.order.history.length ? this.order.history.length : 0})`;
+  }
+
+  addOrderLineItem(): void {
+    this.order.line_items = this.order.line_items || [];
+    this.order.line_items.push(new LineItem);
   }
           
 }

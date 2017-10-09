@@ -36,7 +36,7 @@ export const ORDERS: Order[] = [
     submitted: false,
     notes: 'zomg!',
     need_by_date: false,
-    date_needed: '',
+    date_needed: new Date,
     wants_mail: false,
     order_services: ORDER_SERVICES,
     line_items: LINE_ITEMS
@@ -49,7 +49,7 @@ export const ORDERS: Order[] = [
     submitted: true,
     notes: '',
     need_by_date: true,
-    date_needed: '1506312654',
+    date_needed: new Date, //'1506312654'
     wants_mail: true,
     order_services: ORDER_SERVICES,
     line_items: new Array<LineItem>({
@@ -76,7 +76,7 @@ export const ORDERS: Order[] = [
     submitted: true,
     notes: 'beep beep',
     need_by_date: true,
-    date_needed: '1506406224',
+    date_needed: new Date, //'1506406224'
     wants_mail: true,
     order_services: ORDER_SERVICES,
     line_items: new Array<LineItem>({

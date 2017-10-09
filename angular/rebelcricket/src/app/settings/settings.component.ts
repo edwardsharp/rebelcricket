@@ -34,9 +34,12 @@ export class SettingsComponent implements OnInit {
     this.settingsService.getSettings().then(settings => {
     	this.settings = settings;
 
-      //sort of a migrationz thing, here...
+      //sort of a migrationz/init thing, here...
       this.settings.order_statuses = this.settings.order_statuses || [];
       this.settings.services = this.settings.services || [];
+      this.settings.about_page_items = this.settings.about_page_items || [];
+      this.settings.landing_page_items = this.settings.landing_page_items || [];
+      this.settings.landing_page_social_items = this.settings.landing_page_social_items || [];
 
     	// console.log('settings:',settings);
     	this.visible = true;
@@ -97,7 +100,6 @@ export class SettingsComponent implements OnInit {
     this.selectedService = this.settings.services[this.settings.services.length -1];
     this.onChange();
   }
-
   removeService(service: Service): void {
     this.settings.services = this.settings.services || [];
     let index = this.settings.services.indexOf(service);
@@ -108,7 +110,6 @@ export class SettingsComponent implements OnInit {
       }else{
         this.selectedService = undefined;
       }
-      
       this.onChange();
     }
   }
@@ -133,7 +134,6 @@ export class SettingsComponent implements OnInit {
     this.selectedService.detail_items.push({heading: '', detail: ''});
     this.onChange();
   }
-
   removeServiceDetailItem(item: any): void {
     let index = this.selectedService.detail_items.indexOf(item);
     if(index >= 0){
@@ -141,5 +141,45 @@ export class SettingsComponent implements OnInit {
       this.onChange();
     }
   }
+
+  addAboutPageItem(): void {
+    this.settings.about_page_items = this.settings.about_page_items || [];
+    this.settings.about_page_items.push({heading: '', detail: ''});
+    this.onChange();
+  }
+  removeAboutPageItem(item): void {
+    let index = this.settings.about_page_items.indexOf(item);
+    if(index >= 0){
+      this.settings.about_page_items.splice(index, 1);
+      this.onChange();
+    }
+  }
+  
+  addLandingPageItem(): void {
+    this.settings.landing_page_items = this.settings.landing_page_items || [];
+    this.settings.landing_page_items.push({url: '', href: ''});
+    this.onChange();
+  }
+  removeLandingPageItem(item): void {
+    let index = this.settings.landing_page_items.indexOf(item);
+    if(index >= 0){
+      this.settings.landing_page_items.splice(index, 1);
+      this.onChange();
+    }
+  }
+
+  addLandingSocialItem(): void {
+    this.settings.landing_page_social_items = this.settings.landing_page_social_items || [];
+    this.settings.landing_page_social_items.push({url: '', name: ''});
+    this.onChange();
+  }
+  removeLandingSocialItem(item): void {
+    let index = this.settings.landing_page_social_items.indexOf(item);
+    if(index >= 0){
+      this.settings.landing_page_social_items.splice(index, 1);
+      this.onChange();
+    }
+  }
+  
 
 }

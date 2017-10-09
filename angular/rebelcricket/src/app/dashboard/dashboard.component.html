@@ -1,3 +1,11 @@
+<div id="new-order-fab">
+  <button md-fab color="accent" routerLink="/dashboard/order/new"
+    mdTooltip="Create a New Order" mdTooltipPosition="left">
+    <md-icon class="md-24" 
+      aria-label="Create a New Order">add</md-icon>
+  </button>
+</div>
+
 <div dnd-sortable-container 
   id="container"
   [sortableData]="containers" 
@@ -7,7 +15,8 @@
     (onDropSuccess)="containerDropped(i, container)"
     [@containerState]="container.collapsed">
     <md-toolbar [@containerHeadingState]="container.collapsed" color="secondary">
-<!--       <button md-icon-button 
+      <!-- <button md-icon-button 
+        *ngIf="container.collapsed === 'inactive'"
         (mousedown)="dragOperation=true;" 
         (mouseup)="dragOperation=false;" 
         (mouseout)="dragOperation=false;"
@@ -18,15 +27,39 @@
       <button md-icon-button 
         tabindex="-1"
         [@containerButtonState]="container.collapsed"
-        (click)="container.toggleCollapse()">
+        (click)="toggleCollapse(container)">
         <md-icon>chevron_left</md-icon>
       </button>
-      <h1>{{container.name}} ({{ordersForStatus[container.name]?.length}})</h1>
+      <h1>{{container.name}}({{ordersForStatus[container.name]?.length}})</h1>
       <button *ngIf="container.collapsed === 'active'"
         md-icon-button 
-        tabindex="-1">
+        tabindex="-1"
+        [mdMenuTriggerFor]="filterList">
         <md-icon>filter_list</md-icon>
       </button>
+      <md-menu #filterList="mdMenu">
+        <h4 class="center">Sort By:</h4>
+        <hr>
+        <button md-menu-item 
+          title="Priority"
+          (click)="sortContainerBy('Priority')">
+          <md-icon>priority_high</md-icon>
+          <span>Priority</span>
+        </button>
+        <button md-menu-item 
+          title="Date Created"
+          (click)="sortContainerBy('Date Created')">
+          <md-icon>event</md-icon>
+          <span>Date Created</span>
+        </button>
+        <button md-menu-item 
+          title="Date Due"
+          (click)="sortContainerBy('Date Due')">
+          <md-icon>alarm</md-icon>
+          <span>Date Due</span>
+        </button>
+      </md-menu>
+
     </md-toolbar>
     <div *ngIf="container.collapsed === 'active'"
       dnd-sortable-container
@@ -45,27 +78,31 @@
           </div> -->
 
           <md-card-title>{{order.name}} <span *ngIf="order.org">({{order.org}})</span></md-card-title>
-          <md-card-subtitle>{{order.created_at | date:'short'}} </md-card-subtitle>
+          <md-card-subtitle><md-icon class="card-subtitle-icon">event</md-icon>{{order.created_at | date:'short'}} </md-card-subtitle>
         </md-card-header>
         <!-- <img md-card-image src="assets/img/examples/shiba2.jpg" alt="Photo of a Shiba Inu"> -->
         <md-card-content>
 
-          <md-expansion-panel class="mat-elevation-z0">
+          <button md-button 
+            *ngIf="order.phone"
+            mdTooltip="Call">
+            <md-icon class="icon">phone</md-icon>
+            {{order.phone}}
+          </button>
+
+          <button md-button 
+            *ngIf="order.email"
+            mdTooltip="Email">
+            <md-icon class="icon">mail_outline</md-icon>
+            {{order.email}}
+          </button>
+
+          <md-expansion-panel *ngIf="order.notes" class="mat-elevation-z0">
             <md-expansion-panel-header>
-              Description 
+              Notes 
             </md-expansion-panel-header>
-
-            <p>
-            Loremipsumdolorsitamet,consecteturadipiscingelit.Fusceliberorisus,hendreritsitametarcuac,tempuscommodomauris.Proinplacerateratetmassainterdum,inpulvinarmagnafermentum.Sednuncsapien,ultricesvitaevehiculasitamet,aliquetinnisi.Praesentrutrumquislacusatmollis.Vestibulumnuncvelit,imperdietsedurnasitamet,ornareimperdietnulla.Etiamquissuscipitleo,eutemporipsum.Etiamutcursusnulla. Aliquam sagittis lorem non accumsan hendrerit. Etiam varius non tellus vel pretium. Integer rhoncus malesuada ex auctor finibus. Nulla erat ligula, feugiat ac est laoreet, pulvinar tincidunt nulla. Maecenas cursus pharetra nibh et elementum.
-            </p>
-            
-
-            <!-- <md-action-row>
-              <span clas="flexfill"></span>
-              
-            </md-action-row> -->
+            <p>{{order.notes}}</p>
           </md-expansion-panel>
-
 
           <md-chip-list mdPrefix #chipList> 
             <md-chip *ngFor="let tag of order.tags" 
@@ -77,40 +114,59 @@
             </md-chip>
           </md-chip-list>
 
-        
-          
 
         </md-card-content>
         <md-card-actions>
-       <!--    <md-icon>schedule</md-icon>
-           -->
           
+          
+
+          <!-- <md-basic-chip> -->
+            <span 
+            *ngIf="order.need_by_date; else needByDateElse" 
+            mdTooltip="Due Date"
+            mdTooltipPosition="above">
+              {{order.date_needed | date:'MMMd y'}}
+            </span>
+            <ng-template #needByDateElse>
+              <md-icon mdTooltip="No Due Date" mdTooltipPosition="above">alarm_off</md-icon>
+            </ng-template>
+          <!-- </md-basic-chip> -->
+
+
+          <md-basic-chip [mdMenuTriggerFor]="priority" mdTooltip="Priority" mdTooltipPosition="above">
+            <md-icon>priority_high</md-icon>0
+          </md-basic-chip>
+
+          <md-basic-chip mdTooltip="Attachments" mdTooltipPosition="above">
+            <md-icon>attachment</md-icon>{{orderAttachmentCount(order)}}
+          </md-basic-chip>
+
+          <md-basic-chip mdTooltip="Line Items" mdTooltipPosition="above">
+            <md-icon>shopping_cart</md-icon>{{order?.line_items?.length || 0}}
+          </md-basic-chip>
+
           <span class="flexfill"></span>
+          
           <button md-icon-button 
-            mdTooltip="Edit" 
-            mdTooltipPosition="above"
-            routerLink="/dashboard/order/{{order._id}}">
-            <md-icon>edit</md-icon>
-          </button>
-          <button md-icon-button [mdMenuTriggerFor]="cardMenu">
+            [mdMenuTriggerFor]="cardMenu" 
+            mdTooltip="More..." 
+            mdTooltipPosition="above">
             <md-icon class="icon">more_vert</md-icon>
           </button>
           <md-menu #cardMenu="mdMenu">
+            <button md-menu-item
+              routerLink="/dashboard/order/{{order._id}}">
+              <md-icon>edit</md-icon>
+              <span>Edit</span>
+            </button>
+            <hr>
             <button md-menu-item [mdMenuTriggerFor]="status" title="Status">
               <md-icon>inbox</md-icon>
               <span>Status</span>
             </button>
-            <button md-menu-item 
-              title="Move Up"
-              (click)="moveOrder(order,'up')">
-              <md-icon>arrow_upward</md-icon>
-              <span>Move Up</span>
-            </button>
-            <button md-menu-item 
-              title="Move Down"
-              (click)="moveOrder(order,'down')">
-              <md-icon>arrow_downward</md-icon>
-              <span>Move Down</span>
+            <button md-menu-item [mdMenuTriggerFor]="priority" title="Priority">
+              <md-icon>sort</md-icon>
+              <span>Priority</span>
             </button>
             <hr>
             <button md-menu-item 
@@ -127,6 +183,33 @@
               (click)="updateOrderStatus(order,item.name)"
               [disabled]="order.status == item.name">
               {{item.name}}
+            </button>
+          </md-menu>
+
+          <md-menu #priority="mdMenu">
+            <button md-menu-item 
+              title="Move To Top"
+              (click)="moveOrder(order,'top')">
+              <md-icon>vertical_align_top</md-icon>
+              <span>Move To Top</span>
+            </button>
+            <button md-menu-item 
+              title="Move Up"
+              (click)="moveOrder(order,'up')">
+              <md-icon>arrow_upward</md-icon>
+              <span>Move Up</span>
+            </button>
+            <button md-menu-item 
+              title="Move Down"
+              (click)="moveOrder(order,'down')">
+              <md-icon>arrow_downward</md-icon>
+              <span>Move Down</span>
+            </button>
+            <button md-menu-item 
+              title="Move To Bottom"
+              (click)="moveOrder(order,'bottom')">
+              <md-icon>vertical_align_bottom</md-icon>
+              <span>Move To Bottom</span>
             </button>
           </md-menu>
 

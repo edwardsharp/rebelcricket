@@ -1,3 +1,10 @@
+#new-order-fab {
+  position: absolute;
+  bottom: 1.5em;
+  right: 1.5em;
+  z-index: 6; 
+}
+
 /* fix ng2-dnd littering "cursor:pointer" all over the place... */
 #container, #container > div, .status-container, md-card {
   cursor: default!important;
@@ -86,10 +93,14 @@ md-card-header{
   padding: 0.5em 0.5em 0 0.5em;
 }
 
+md-card-subtitle{
+  align-items: center;
+  display: flex;
+}
+
 md-card-actions, md-action-row{
   display: flex;
-  align-items: center;
-
+  align-items: baseline;
 }
 
 md-chip:first-child{
@@ -101,6 +112,12 @@ md-chip{
   text-overflow: ellipsis;
   max-width: 200px;
   overflow: hidden;
+}
+
+md-card-actions md-basic-chip{
+  padding: 4px 10px;
+  margin-bottom: 3px;
+  margin-left: 5px;
 }
 
 .mat-chip-remove{

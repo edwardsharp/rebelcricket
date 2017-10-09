@@ -32,7 +32,7 @@ export class Order {
   
   notes?: string;
   need_by_date?: boolean;
-  date_needed?: string;
+  date_needed?: Date;
   wants_mail?: boolean;
 
   created_at?: Date;

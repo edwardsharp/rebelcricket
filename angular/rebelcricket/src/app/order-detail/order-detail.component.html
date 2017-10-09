@@ -7,14 +7,16 @@
 
 <div *ngIf="order" class="content">
   <md-toolbar color="primary" class="sticky">
-		<button md-icon-button aria-label="Back to orders" routerLink="/dashboard/orders" mdTooltip="Back to orders">
+		<button md-icon-button aria-label="Back to dasboard" routerLink="/dashboard/" mdTooltip="Back to Dashboard">
     	<md-icon class="md-24">arrow_back</md-icon>
   	</button>
 
-	  <h2 class="name order-toolbar" *ngIf="!needsSave"><small>created at:</small><br>{{order.created_at | date:'short' }}</h2> <button *ngIf="needsSave" class="fullwidth" md-button (click)="saveOrder()">
-  		<md-icon>save</md-icon>
-  		Save Order
-  	</button> 
+  	<!-- this is a oneliner mess cuz the stylez for this h2 care about \n -->
+	  <h2 class="order-toolbar"><small mdTooltip="Created At"><md-icon>event</md-icon>{{order.created_at | date:'short' }}</small><br><span 
+        *ngIf="order.need_by_date; else needByDateElse" 
+        mdTooltip="Due Date"
+        mdTooltipPosition="below"
+        class="order-due"><md-icon>alarm</md-icon>{{order.date_needed | date:'short'}}</span><ng-template #needByDateElse><md-icon mdTooltip="No Due Date" mdTooltipPosition="above">alarm_off</md-icon></ng-template></h2>  
 	  
 	  <span class="flexfill"></span>
 
@@ -41,14 +43,11 @@
 	      <md-icon>delete</md-icon>
 	      <span>delete</span>
 	    </button>
-	    <button md-menu-item disabled>
+	    <!-- <button md-menu-item disabled>
 	      <md-icon>notifications_off</md-icon>
 	      <span>disable alerts</span>
 	    </button>
-	    <button md-menu-item>
-	      <md-icon>favorite_border</md-icon>
-	      <span><small>madewithlove</small></span>
-	    </button>
+	     -->
 	  </md-menu>
 
 
@@ -84,12 +83,22 @@
 			  
 			</div>
 			<div>
-				<md-form-field>
+				<md-form-field class="with-button">
 			    <input mdInput [(ngModel)]="order.email" (change)="onChange($event)" placeholder="email">
 			  </md-form-field>
-			  <md-form-field>
+			  <button md-icon-button 
+          *ngIf="order.email"
+          mdTooltip="Email {{order.email}}">
+          <md-icon class="icon">mail_outline</md-icon>
+        </button>
+			  <md-form-field class="with-button">
 			    <input mdInput [(ngModel)]="order.phone" (change)="onChange($event)" placeholder="phone">
 			  </md-form-field>
+			  <button md-icon-button 
+          *ngIf="order.phone"
+          mdTooltip="Call {{order.phone}}">
+          <md-icon class="icon">phone</md-icon>
+        </button>
 			</div>
 		  <div>
 			  <md-form-field class="fullwidth">
@@ -171,7 +180,20 @@
 	  </md-tab>
 	  
 	</md-tab-group>
+	<md-action-row>
+    <button md-button 
+      (click)="addOrderLineItem()" 
+      mdTooltip="Add a new line item">
+      <md-icon>add</md-icon> Line Item
+    </button>
 
+    <span class="flexfill"></span>
+    <!-- [disabled]="needsSave" -->
+    <button md-button (click)="saveOrder()">
+  		<md-icon>save</md-icon>
+  		Save Order
+  	</button>
+  </md-action-row>
   
 
 </div>

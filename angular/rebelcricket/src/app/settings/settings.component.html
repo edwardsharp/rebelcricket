@@ -1,6 +1,182 @@
-<md-accordion class="headers-align">
+<md-accordion id="settings" class="headers-align" *ngIf="settings">
   
-  <md-expansion-panel expanded="true" hideToggle="true" *ngIf="settings?.services">
+  <md-expansion-panel expanded="true">
+    <md-expansion-panel-header>
+      <md-panel-title>
+        General
+      </md-panel-title>
+      <md-panel-description>
+        Site information &amp; landing page carousel images
+      </md-panel-description>
+    </md-expansion-panel-header>
+
+    <md-form-field class="halfwidth">
+      <input mdInput 
+        [(ngModel)]="settings.site_title" 
+        (change)="onChange()"
+        placeholder="Site Title">
+    </md-form-field>
+    <md-form-field class="halfwidth">
+      <input mdInput 
+        [(ngModel)]="settings.logo_image" 
+        (change)="onChange()"
+        placeholder="Site Logo URL">
+    </md-form-field>
+
+    <md-form-field class="fullwidth">
+      <textarea mdInput 
+        [(ngModel)]="settings.site_description" 
+        (change)="onChange()"
+        placeholder="Site Description"></textarea>
+    </md-form-field>
+
+    <md-form-field class="fullwidth">
+      <input mdInput 
+        [(ngModel)]="settings.phone" 
+        (change)="onChange()"
+        placeholder="Phone #">
+    </md-form-field>
+
+    <div>
+      <div *ngIf="settings?.landing_page_social_items.length == 0; else elseBlock" class="center">
+        <h3>No landing page social media linkz yet...</h3>
+      </div>
+      <ng-template #elseBlock><h4>Social Media Linkz</h4></ng-template>
+      
+      <div class="detail-item" *ngFor="let item of settings.landing_page_social_items">
+        <md-form-field class="detail-item-heading halfwidthbtn">
+          <input mdInput 
+            [(ngModel)]="item.url" 
+            (change)="onChange()"
+            placeholder="URL">
+        </md-form-field>
+        <md-form-field class="halfwidthbtn">
+          <input mdInput 
+            [(ngModel)]="item.name" 
+            (change)="onChange()"
+            placeholder="Name (optional)">
+        </md-form-field>
+        <button md-icon-button 
+          (click)="removeLandingSocialItem(item)" 
+          mdTooltip="Delete {{item.name}}"
+          class="delete-service">
+          <md-icon>delete</md-icon>
+        </button>
+      </div>
+    </div>
+
+    <div>
+      <div *ngIf="settings?.landing_page_items.length == 0; else landingElseBlock" class="center">
+        <h3>No landing page carousel images yet...</h3>
+      </div>
+      <ng-template #landingElseBlock><h4>Carousel Images</h4></ng-template>
+      
+      <div class="detail-item" *ngFor="let item of settings.landing_page_items">
+        <md-form-field class="detail-item-heading halfwidthbtn">
+          <input mdInput 
+            [(ngModel)]="item.url" 
+            (change)="onChange()"
+            placeholder="Image URL">
+        </md-form-field>
+        <md-form-field class="halfwidthbtn">
+          <input mdInput 
+            [(ngModel)]="item.href" 
+            (change)="onChange()"
+            placeholder="Image Link (optional)">
+        </md-form-field>
+        <button md-icon-button 
+          (click)="removeLandingPageItem(item)" 
+          mdTooltip="Delete Image"
+          class="delete-service">
+          <md-icon>delete</md-icon>
+        </button>
+      </div>
+        
+    </div>
+
+    <md-action-row>
+      
+      <button md-button 
+        (click)="addLandingSocialItem()" 
+        mdTooltip="Add a new social media link">
+        <md-icon>add</md-icon> SocialMedia Link
+      </button>
+
+      <button md-button 
+        (click)="addLandingPageItem()" 
+        mdTooltip="Add a new landing page image">
+        <md-icon>add</md-icon> Carousel Image
+      </button>
+
+      <span class="flexfill"></span>
+      <button type="button" md-button (click)="saveSettings()" [disabled]="disableSave">
+        <md-icon>save</md-icon>Save Settings
+      </button>
+    </md-action-row>
+  </md-expansion-panel>
+
+  <md-expansion-panel>
+    <md-expansion-panel-header>
+      <md-panel-title>
+        About
+      </md-panel-title>
+      <md-panel-description>
+        Page text items
+      </md-panel-description>
+    </md-expansion-panel-header>
+
+    <md-form-field class="halfwidth">
+      <input mdInput 
+        [(ngModel)]="settings.about_page_heading" 
+        (change)="onChange()"
+        placeholder="About Page Heading">
+    </md-form-field>
+    <div>
+      <div *ngIf="settings?.about_page_items.length == 0" class="center">
+        <h3>No details yet...</h3>
+      </div>
+
+      <div class="detail-item" *ngFor="let item of settings.about_page_items">
+        <md-form-field class="detail-item-heading">
+          <input mdInput 
+            [(ngModel)]="item.heading" 
+            (change)="onChange()"
+            placeholder="Item Heading Text">
+        </md-form-field>
+        <button md-icon-button 
+          (click)="removeAboutPageItem(item)" 
+          mdTooltip="Delete {{item.heading}}"
+          class="delete-service">
+          <md-icon>delete</md-icon>
+        </button>
+        <div>
+          <md-form-field class="fullwidth">
+            <textarea mdInput 
+              [(ngModel)]="item.detail" 
+              (change)="onChange()"
+              placeholder="Item Detail Text"></textarea>
+          </md-form-field>
+        </div>
+      </div>
+        
+    </div>
+
+    <md-action-row>
+      
+      <button md-button 
+        (click)="addAboutPageItem()" 
+        mdTooltip="Add a new detail item">
+        <md-icon>add</md-icon> Detail Item
+      </button>
+
+      <span class="flexfill"></span>
+      <button type="button" md-button (click)="saveSettings()" [disabled]="disableSave">
+        <md-icon>save</md-icon>Save Settings
+      </button>
+    </md-action-row>
+  </md-expansion-panel>
+
+  <md-expansion-panel *ngIf="settings?.services">
     <md-expansion-panel-header>
       <md-panel-title>
         Services
@@ -54,17 +230,14 @@
           </md-form-field>
         </div>
 
-
-        <md-list>
-          <md-list-item>
-            <md-form-field class="fullwidth">
-              <input mdInput 
-                [(ngModel)]="selectedService.image" 
-                (change)="onChange()"
-                placeholder="Main Image URL">
-            </md-form-field>
-          </md-list-item>
-          <md-list-item *ngFor="let detail_image of selectedService.detail_images">
+        <md-form-field class="fullwidth">
+          <input mdInput 
+            [(ngModel)]="selectedService.image" 
+            (change)="onChange()"
+            placeholder="Main Image URL">
+        </md-form-field>
+        <div class="detail-item">
+          <div *ngFor="let detail_image of selectedService.detail_images">
             <md-form-field class="halfwidth">
               <input mdInput 
                 [(ngModel)]="detail_image.url" 
@@ -77,8 +250,8 @@
               class="delete-service">
               <md-icon>delete</md-icon>
             </button>
-          </md-list-item>
-        </md-list>
+          </div>
+        </div>
 
 
         <div class="detail-item">
@@ -139,13 +312,13 @@
     </md-action-row>
   </md-expansion-panel>
 
-  <md-expansion-panel hideToggle="true">
+  <md-expansion-panel>
     <md-expansion-panel-header>
       <md-panel-title>
-        Orders
+        Dashboard
       </md-panel-title>
       <md-panel-description>
-        Order form configuration
+        Order category lanes
       </md-panel-description>
     </md-expansion-panel-header>
 
@@ -177,7 +350,7 @@
   </md-expansion-panel>
 
 
-  <md-expansion-panel hideToggle="true" *ngIf="settings?.google_api">
+  <md-expansion-panel *ngIf="settings?.google_api">
     <md-expansion-panel-header>
       <md-panel-title>
         Google

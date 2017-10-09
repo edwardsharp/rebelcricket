@@ -92,7 +92,7 @@ export class DashboardComponent implements OnInit, OnDestroy {
 	    // }
 	    if(this.settings && this.settings.order_statuses){
   			for(let status of this.settings.order_statuses){
-	  			this.containers.push( new Container(this.containers.length, status.name, 'active') );
+	  			this.containers.push( new Container(this.containers.length, status.name, (status.collapsed ? 'inactive' : 'active') ) );
 	  		}
   		}
 
@@ -251,6 +251,34 @@ export class DashboardComponent implements OnInit, OnDestroy {
     
   }
 
+  sortContainerBy(key: string){
+  	console.log('filterContainerBy key:',key);
+  }
+
+  orderAttachmentCount(order: Order): number {
+  	return order._attachments ? Object.keys(order._attachments).length : 0;
+  }
+
+  toggleCollapse(container: Container): void {
+  	container.toggleCollapse();
+  	let status = this.settings.order_statuses.find( os => os.name == container.name);
+  	if(status){
+  		status.collapsed = !status.collapsed;
+  		this.saveSettings();
+  	}
+  }
+
+  saveSettings(): void {
+  	this.settingsService
+  	.saveSettings(this.settings)
+  	.then(resp => {
+  		this.settings["_rev"] = resp["rev"];
+  		console.log('seeeeeeetingz sssssaaaaaaaaaaaved!');
+  	}, err => {
+  		console.log('o noz, error saving settings! err:',err);
+  	});
+  }
+
 }
 
 class Container {
@@ -261,8 +289,9 @@ class Container {
   	// , 
   	// public widgets: Array<Widget>
   ) {}
-  public toggleCollapse(): void {
+  public toggleCollapse(): boolean {
     this.collapsed = this.collapsed === 'active' ? 'inactive' : 'active';
+    return this.collapsed === 'active';
   }
 }
 
