@@ -30,7 +30,7 @@
         (click)="toggleCollapse(container)">
         <md-icon>chevron_left</md-icon>
       </button>
-      <h1>{{container.name}}({{ordersForStatus[container.name]?.length}})</h1>
+      <h1>{{container.name}} ({{ordersForStatus[container.name]?.length}})</h1>
       <button *ngIf="container.collapsed === 'active'"
         md-icon-button 
         tabindex="-1"

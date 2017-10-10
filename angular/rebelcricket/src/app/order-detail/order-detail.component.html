@@ -12,11 +12,13 @@
   	</button>
 
   	<!-- this is a oneliner mess cuz the stylez for this h2 care about \n -->
-	  <h2 class="order-toolbar"><small mdTooltip="Created At"><md-icon>event</md-icon>{{order.created_at | date:'short' }}</small><br><span 
-        *ngIf="order.need_by_date; else needByDateElse" 
-        mdTooltip="Due Date"
-        mdTooltipPosition="below"
-        class="order-due"><md-icon>alarm</md-icon>{{order.date_needed | date:'short'}}</span><ng-template #needByDateElse><md-icon mdTooltip="No Due Date" mdTooltipPosition="above">alarm_off</md-icon></ng-template></h2>  
+	  <h2 class="order-toolbar">
+	  	<button md-button mdTooltip="Created At"><md-icon>event</md-icon> {{order.created_at | date:'short' }}</button>
+	  	<button md-button 
+	  		*ngIf="order.need_by_date; else needByDateElse" 
+        mdTooltip="Due Date"><md-icon>alarm</md-icon>{{order.date_needed | date:'short'}}</button>
+	  	<ng-template #needByDateElse><button md-button><md-icon mdTooltip="No Due Date">alarm_off</md-icon> No Due Date</button></ng-template>
+      </h2>  
 	  
 	  <span class="flexfill"></span>
 
