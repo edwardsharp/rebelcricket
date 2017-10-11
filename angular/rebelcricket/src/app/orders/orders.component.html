@@ -1,47 +1,20 @@
 <div id="orders-container">
   <div id="orders-nav">
-    <md-toolbar color="primary" class="sticky">
-      <h1>Orders</h1>
-      <span class="flexfill"></span>
-      <button md-icon-button aria-label="Create a new order" mdTooltip="Create a new order" mdTooltipPosition="left" routerLink="/dashboard/order/new">
-        <md-icon class="md-24">add</md-icon>
-      </button>
-    </md-toolbar>
-
-    <div *ngIf="orderTags?.length">
-      <h3 mdLine class="center">Tags <span>({{orderTags.length}})</span></h3>
-      <md-selection-list class="sticky" #selectedOrderTags>
-        <md-list-option *ngFor="let tag of orderTags">
-          {{tag}}
-        </md-list-option>
-      </md-selection-list>
-    </div>
-    <!-- <md-nav-list>
-      <span *ngIf="loading">
-        <i>loading orders...</i>
-      </span> 
-      <md-list-item *ngFor="let order of orders" 
-        [class.selected]="order === selectedOrder"
-        routerLink="/dashboard/order/{{order.id}}" 
-        routerLinkActive="active">
-        {{order.name}} <span *ngIf="order.org" class="badge">&nbsp;({{order.org}})</span>
-
-        <span class="flexfill"></span>
-        <md-icon>navigate_next</md-icon>
-      </md-list-item>
-    </md-nav-list> -->
-
+ 
+    <button md-fab color="accent" routerLink="/dashboard/order/new"
+      mdTooltip="Create a New Order" mdTooltipPosition="right" class="new-order-fab">
+      <md-icon class="md-24" 
+        aria-label="Create a New Order">add</md-icon>
+    </button>
+  
   </div>
   <div id="orders-content">
 
-    
-
-
-    <div class="example-container">
+    <div class="orders-table-container">
       <!-- <span *ngIf="loading">
         <i>loading orders...</i>
       </span>  -->
-      <md-table #table [dataSource]="dataSource" mdSort class="mat-elevation-z2">
+      <md-table #table [dataSource]="dataSource" mdSort class="mat-elevation-z4">
 
         <!--- Note that these columns can be defined in any order.
               The actual rendered columns are set as a property on the row definition" -->
@@ -80,28 +53,15 @@
           class="row-hover"
         ></md-row>
       </md-table>
+
       <md-paginator #paginator
         [length]="orderService.data.length"
         [pageIndex]="0"
         [pageSize]="50"
         [pageSizeOptions]="[50, 100, 500]">
       </md-paginator>
-      
+
     </div>
-
-   <!--  <md-nav-list>
-      
-      <md-list-item *ngFor="let order of orders" 
-        [class.selected]="order === selectedOrder"
-        routerLink="/dashboard/order/{{order.id}}" 
-        routerLinkActive="active">
-        {{order.name}} <span *ngIf="order.org" class="badge">&nbsp;({{order.org}})</span>
-
-        <span class="flexfill"></span>
-        <md-icon>navigate_next</md-icon>
-      </md-list-item>
-    </md-nav-list> -->
 
   </div>
 </div>
-<!-- <app-order-detail [order]="selectedOrder"></app-order-detail> -->
