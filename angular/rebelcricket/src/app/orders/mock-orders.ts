@@ -35,7 +35,6 @@ export const ORDERS: Order[] = [
     org: 'Devel Corp',
     submitted: false,
     notes: 'zomg!',
-    need_by_date: false,
     date_needed: new Date,
     wants_mail: false,
     order_services: ORDER_SERVICES,
@@ -48,7 +47,6 @@ export const ORDERS: Order[] = [
     org: 'Devel Corp',
     submitted: true,
     notes: '',
-    need_by_date: true,
     date_needed: new Date, //'1506312654'
     wants_mail: true,
     order_services: ORDER_SERVICES,
@@ -75,7 +73,6 @@ export const ORDERS: Order[] = [
     org: '',
     submitted: true,
     notes: 'beep beep',
-    need_by_date: true,
     date_needed: new Date, //'1506406224'
     wants_mail: true,
     order_services: ORDER_SERVICES,

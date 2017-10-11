@@ -31,11 +31,12 @@ export class Order {
   submitted?: boolean ;
   
   notes?: string;
-  need_by_date?: boolean;
   date_needed?: Date;
   wants_mail?: boolean;
 
+  position?: number;
   created_at?: Date;
+  archived_at?: Date;
   status?: string;
   tags?: Array<string>;
   order_services?: Array<OrderService>;

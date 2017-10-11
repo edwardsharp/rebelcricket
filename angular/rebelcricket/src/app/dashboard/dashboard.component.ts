@@ -62,8 +62,6 @@ import { Order } from '../orders/order';
 })
 export class DashboardComponent implements OnInit, OnDestroy {
 
-	listOne: Array<string> = ['Coffee', 'Orange Juice', 'Red Wine', 'Unhealty drink!', 'Water'];
-
   settings: Settings;
 
   needsTimeout: boolean = false;
@@ -138,20 +136,38 @@ export class DashboardComponent implements OnInit, OnDestroy {
   }
 
   getOrdersFor(status:string, orderData:Order[]): Order[] {
-    if(status.match(/inbox/i)){
-    	// console.log('getOrdersFor INBOX FILTER!!!!');
-    	return orderData.filter(order => order.status === status || !this.settings.order_statuses.map(s => s.name).includes(order.status));
-    }else{
-    	// console.log('getOrdersFor '+status+' FILTER!!!!');
-    	return orderData.filter( order => order.status === status);
-    }
+    return orderData.filter( order => {
+      if(status.match(/inbox/i)){
+        return order.status === status || !this.settings.order_statuses.map(s => s.name).includes(order.status);
+      }else{
+        return order.status === status;
+      }
+    })
+    .sort((a,b) => {
+      return (a.position < b.position ? -1 : 1);
+    })
+    .map( (order, idx) => { order.position = idx; return order; });
   }
 
   cardDropped(order:Order,container:Container){
-  	this.needsTimeout = true;
-  	// console.log('DashboardComponent cardDropped order,container:',order,container);
+
+  	console.log('DashboardComponent cardDropped order,container:',order,container);
+    console.log('DashboardComponent cardDropped this.ordersForStatus[container.name]:',this.ordersForStatus[container.name]);
   	//trying to avoid DashboardComponent.html:36 ERROR Error: ViewDestroyedError: Attempt to use a destroyed view: detectChanges
-  	if(order.status != container.name){
+  	
+    this.ordersForStatus[container.name]
+    .map( (order, idx) => {
+      if(order.position != idx){
+        order.position = idx; 
+        setTimeout(() => this.saveOrderQuietly(order), 500); 
+      }
+    })
+    .sort((a,b) => {
+      return (a.position < b.position ? -1 : 1);
+    });
+
+    if(order.status != container.name){
+      this.needsTimeout = true;
   		order.status = container.name;
 	  	this.saveOrder(order);
   	}
@@ -162,20 +178,18 @@ export class DashboardComponent implements OnInit, OnDestroy {
   	console.log('DashboardComponent containerDropped i,container:',i,container);
   }
 
-
   dragOperation: boolean = false;
-
   containers: Array<Container> = [];
 
-  // widgets: Array<Widget> = [];
-  // addTo($event: any) {
-  //   if ($event) {
-  //     this.widgets.push($event.dragData);
-  //   }
-  // }
-
-
-
+  saveOrderQuietly(order: Order): void {
+    console.log('gonna saveOrderQuietly... order._id:',order._id);
+    this.orderService.saveOrder(order).then(resp => { }, err =>{
+      this.snackBar.open('Error: Could not save order!', '', {
+        duration: 3000,
+      });
+      console.log('o noz! saveOrder err:',err);
+    });
+  }
 
   saveOrder(order: Order) {
 
@@ -195,8 +209,6 @@ export class DashboardComponent implements OnInit, OnDestroy {
       order.history = [{date: new Date, title: 'Created', description: description}];
     }
     
-    
-
     // console.log('gonna save this.order:',this.order);
     this.orderService.saveOrder(order).then(resp => {
       // console.log('zomg, resp:',resp);
@@ -230,11 +242,44 @@ export class DashboardComponent implements OnInit, OnDestroy {
 
   moveOrder(order: Order, direction:string): void{
   	console.log('moveOrder  order,direction:',order,direction);
-  	if(direction == 'up'){
+    let idx = this.ordersForStatus[order.status].indexOf(order);
+    if(idx > -1){
+      let newIdx;
 
-  	}else{
+      switch (direction) {
+        case 'top':
+          newIdx = 0
+          break;
+        case 'up':
+          newIdx = order.position - 1;
+          break;
+        case 'down':
+          newIdx = order.position + 1;
+          break;
+        case 'bottom':
+          newIdx = this.ordersForStatus[order.status].length;
+          break;
+      }
+      // order.position = newIdx;
+      this.ordersForStatus[order.status].splice(newIdx, 0, this.ordersForStatus[order.status].splice(idx, 1)[0]);
+      
+      this.ordersForStatus[order.status]
+        .map( (order, idx) => {
+          if(order.position != idx){
+            order.position = idx; 
+            setTimeout(() => this.saveOrderQuietly(order), 100); 
+          }
+        })
+        .sort((a,b) => {
+          return (a.position < b.position ? -1 : 1);
+        });
 
-  	}
+      
+      // // this.needsTimeout = true;
+      // this.saveOrderQuietly(order);
+      
+
+    }
   }
 
   deleteOrder(order: Order) {
@@ -251,8 +296,26 @@ export class DashboardComponent implements OnInit, OnDestroy {
     
   }
 
-  sortContainerBy(key: string){
-  	console.log('filterContainerBy key:',key);
+  sortContainerBy(container_name: string, key: string){
+  	// console.log('filterContainerBy key:',key);
+    switch (key) {
+      case 'position':
+        this.ordersForStatus[container_name].sort((a,b) => {
+          return ( a.position < b.position ? 1 : -1); //desc
+        });
+        break;
+      case 'created_at':
+        this.ordersForStatus[container_name].sort((a,b) => {
+          return ( parseInt(a._id, 36) < parseInt(b._id, 36) ? 1 : -1); //desc
+        });
+        break;
+      case 'date_needed':
+        console.log('sort by date_needed!');
+        this.ordersForStatus[container_name].sort((a,b) => {
+          return (b.date_needed ? new Date(b.date_needed).getTime() : 0) - (a.date_needed ? new Date(a.date_needed).getTime() : 0);
+        });
+        break;
+    }
   }
 
   orderAttachmentCount(order: Order): number {
@@ -282,7 +345,6 @@ export class DashboardComponent implements OnInit, OnDestroy {
   //   console.log('onDateChange e:',e);
   // }
   clearDueDateFor(order:Order): void {
-    order.need_by_date = false;
     order.date_needed = undefined;
     this.saveOrder(order);
   }

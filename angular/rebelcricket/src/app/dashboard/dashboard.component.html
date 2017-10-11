@@ -42,19 +42,19 @@
         <hr>
         <button md-menu-item 
           title="Priority"
-          (click)="sortContainerBy('Priority')">
+          (click)="sortContainerBy(container.name,'position')">
           <md-icon>priority_high</md-icon>
           <span>Priority</span>
         </button>
         <button md-menu-item 
           title="Date Created"
-          (click)="sortContainerBy('Date Created')">
+          (click)="sortContainerBy(container.name,'created_at')">
           <md-icon>event</md-icon>
           <span>Date Created</span>
         </button>
         <button md-menu-item 
           title="Date Due"
-          (click)="sortContainerBy('Date Due')">
+          (click)="sortContainerBy(container.name,'date_needed')">
           <md-icon>alarm</md-icon>
           <span>Date Due</span>
         </button>
@@ -136,8 +136,8 @@
           <!-- </md-basic-chip> -->
 
 
-          <md-basic-chip [mdMenuTriggerFor]="priority" mdTooltip="Priority" mdTooltipPosition="above">
-            <md-icon>priority_high</md-icon>0
+          <md-basic-chip *ngIf="ordersForStatus[container.name]?.length > 1" [mdMenuTriggerFor]="priority" mdTooltip="Priority" mdTooltipPosition="above">
+            <md-icon>priority_high</md-icon> {{order.position}}
           </md-basic-chip>
 
           <md-basic-chip mdTooltip="Attachments" mdTooltipPosition="above">
@@ -167,7 +167,7 @@
               <md-icon>inbox</md-icon>
               <span>Status</span>
             </button>
-            <button md-menu-item [mdMenuTriggerFor]="priority" title="Priority">
+            <button md-menu-item [mdMenuTriggerFor]="priority" title="Priority" [disabled]="ordersForStatus[container.name]?.length < 2">
               <md-icon>sort</md-icon>
               <span>Priority</span>
             </button>

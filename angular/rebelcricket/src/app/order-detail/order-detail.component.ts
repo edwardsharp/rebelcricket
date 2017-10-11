@@ -332,7 +332,6 @@ export class OrderDetailComponent implements OnInit, OnDestroy  {
   }
 
   clearDueDate(): void {
-    this.order.need_by_date = false;
     this.order.date_needed = undefined;
     this.needsSave = true;
   }
