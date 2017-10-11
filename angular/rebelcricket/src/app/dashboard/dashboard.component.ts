@@ -303,7 +303,7 @@ export class DashboardComponent implements OnInit, OnDestroy {
         this.ordersForStatus[container_name].sort((a,b) => {
           let aVal = dir == 'asc' ? b : a;
           let bVal = dir == 'asc' ? a : b;
-          return ( aVal < bVal ? 1 : -1);
+          return ( aVal.position < bVal.position ? 1 : -1);
         });
         break;
       case 'created_at':
