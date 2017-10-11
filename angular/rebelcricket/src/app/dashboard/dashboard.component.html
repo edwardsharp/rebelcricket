@@ -40,14 +40,14 @@
       <md-menu #filterList="mdMenu">
         <div class="center"><b>Sort By:</b></div>
         <hr>
-        <div style="display: flex">
+        <div class="filter-menu-item">
           <button 
             md-button 
             mdTooltip="Priority Descending"
             (click)="sortContainerBy(container.name,'position','desc')">
             <md-icon>keyboard_arrow_down</md-icon>
           </button>
-          <span class="flexfill"><md-icon>priority_high</md-icon> Priority</span>
+          <span class="flexfill filter-menu-item-name"><md-icon>priority_high</md-icon> Priority</span>
           <button  
             md-button
             mdTooltip="Priority Ascending"
@@ -55,26 +55,26 @@
             <md-icon>keyboard_arrow_up</md-icon>
           </button>
         </div>
-        <div style="display: flex">
+        <div class="filter-menu-item">
           <button md-button
             mdTooltip="Newest first"
             (click)="sortContainerBy(container.name,'created_at','desc')">
             <md-icon>keyboard_arrow_down</md-icon>
           </button>
-          <span class="flexfill"><md-icon>event</md-icon> Created</span>
+          <span class="flexfill filter-menu-item-name"><md-icon>event</md-icon> Created</span>
           <button md-button
             mdTooltip="Oldest First"
             (click)="sortContainerBy(container.name,'created_at','asc')">
             <md-icon>keyboard_arrow_up</md-icon>
           </button>
         </div>
-        <div style="display: flex">
+        <div class="filter-menu-item">
           <button md-button
             mdTooltip="Newest first"
             (click)="sortContainerBy(container.name,'date_needed','desc')">
             <md-icon>keyboard_arrow_down</md-icon>
           </button>
-          <span class="flexfill"><md-icon>alarm</md-icon> Date Due</span>
+          <span class="flexfill filter-menu-item-name"><md-icon>alarm</md-icon> Date Due</span>
           <button md-button
             mdTooltip="Oldest first"
             (click)="sortContainerBy(container.name,'date_needed','asc')">

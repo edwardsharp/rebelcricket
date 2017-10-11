@@ -52,7 +52,7 @@ import { Order } from '../orders/order';
 	      'max-width': '64px'
 	    })),
 	    state('active',   style({
-	      'min-width': '300px',
+	      'min-width': '284px',
 	      'max-width': 'none'
 	    })),
 	    transition('inactive => active', animate('100ms ease-in')),
