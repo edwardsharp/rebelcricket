@@ -61,10 +61,6 @@ md-action-row{
 	font-size: large;
 }
 
-.mat-chip-remove{
-	margin-left: -4px;
-  margin-right: 6px;
-}
 .content{
 	padding: 1em;
 }
@@ -96,10 +92,6 @@ md-action-row{
 
 }
 
-.tags {
-	margin-top: 0.5em;
-	margin-bottom: 0.25em;
-}
 
 .attachment-cards{
 	display: flex;

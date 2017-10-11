@@ -61,24 +61,8 @@
 
 	<md-tab-group class="order-details">
 	  <md-tab label="Details">
-	  	<div class="tags">
-		  	<div class="fullwidth">
-		  		<md-chip-list mdPrefix #chipList> <!-- class="mat-chip-list-stacked" aria-orientation="vertical" -->
-		        <md-chip *ngFor="let tag of order.tags" [selectable]="selectable"
-		                 [removable]="removable" (remove)="remove(tag)">
-		          <md-icon mdChipRemove *ngIf="removable">cancel</md-icon>
-		          {{tag}}
-		        </md-chip>
-		      </md-chip-list>
-		    </div>
-		  	<md-form-field class="demo-chip-list fullwidth">
-		      <input mdInput placeholder="New tag..."
-		             [mdChipInputFor]="chipList"
-		             [mdChipInputSeparatorKeyCodes]="separatorKeysCodes"
-		             [mdChipInputAddOnBlur]="addOnBlur"
-		             (mdChipInputTokenEnd)="add($event)" />
-		    </md-form-field>
-		  </div>
+	  	<app-order-tags [tags]="order.tags" (tagsChanged)="tagsChanged($event)"></app-order-tags>
+	  	
 	  	<div>
 			  <md-form-field>
 			    <input mdInput [(ngModel)]="order.name" (change)="onChange($event)" placeholder="name">

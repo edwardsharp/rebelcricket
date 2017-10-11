@@ -1,4 +1,4 @@
-import { Component, ViewChild, OnInit } from '@angular/core';
+import { Component, ViewChild, OnInit, Input, Output, EventEmitter } from '@angular/core';
 import {MdChipInputEvent, ENTER, MdSnackBar} from '@angular/material';
 
 const COMMA = 188;
@@ -12,8 +12,8 @@ export class OrderTagsComponent implements OnInit {
 
 	@ViewChild('tagInput') tagInput; 
 
-	tags: Array<string> = [];
-	
+	@Input() tags: Array<string> = [];
+  @Output() tagsChanged = new EventEmitter<string[]>();
 	selectedTag: string;
 
 //chip input for tagz
@@ -42,12 +42,6 @@ export class OrderTagsComponent implements OnInit {
     let value = (event.value || '').trim();
 
     if (value && this.tags.indexOf(value) < 0) {
-      // if(this.order.tags == undefined){
-      //   this.order.tags = [];
-      // }
-      // this.needsSave = true;
-      // this.order.tags.push(value.trim());
-
       if(this.willEditTag){
       	let index = this.tags.indexOf(this.willEditTag);
 		    if (index >= 0) {
@@ -56,9 +50,9 @@ export class OrderTagsComponent implements OnInit {
       }
       this.tags.push(value);
       this.willAddTag = false;
+      this.tagsChanged.emit(this.tags);
     }
 
-    // Reset the input value
     if (input) {
       input.value = '';
       this.inputHidden = true;
@@ -68,19 +62,13 @@ export class OrderTagsComponent implements OnInit {
   }
 
   remove(tag: any): void {
-  	console.log('REMOVE!');
-    // let index = this.order.tags.indexOf(tag);
-
-    // if (index >= 0) {
-    //   this.needsSave = true;
-    //   this.order.tags.splice(index, 1);
-    // }
-
+  	// console.log('REMOVE!');
     let index = this.tags.indexOf(tag);
 
     if (index >= 0) {
       this.tags.splice(index, 1);
       this.selectedTag = undefined;
+      this.tagsChanged.emit(this.tags);
     }
   }
 
@@ -117,6 +105,7 @@ export class OrderTagsComponent implements OnInit {
   constructor() { }
 
   ngOnInit() {
+    this.tags = this.tags || [];
   }
 
 }

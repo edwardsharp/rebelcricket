@@ -336,5 +336,10 @@ export class OrderDetailComponent implements OnInit, OnDestroy  {
     this.order.date_needed = undefined;
     this.needsSave = true;
   }
+
+  tagsChanged(tags:string[]): void {
+    this.order.tags = tags;
+    this.needsSave = true;
+  }
           
 }

@@ -73,6 +73,10 @@ md-sidenav-container,
 	background-color: white;
 }
 
+app-order-tags .mat-chip-list-wrapper{
+  align-items: flex-start!important;
+}
+
 @media (max-width: 599px) {
 	.order-details mat-tab-header{
 		top: 	112px;

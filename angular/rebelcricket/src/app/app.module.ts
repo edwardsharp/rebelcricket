@@ -48,10 +48,6 @@ const appRoutes: Routes = [
     data: { title: 'Orders List' }
   },
   {
-    path: 'dashboard/order_tags',
-    component: OrderTagsComponent
-  },
-  {
     path: 'dashboard/vendor_goods',
     component: VendorGoodsComponent
   },

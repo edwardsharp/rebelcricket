@@ -111,11 +111,11 @@ export class DashboardComponent implements OnInit, OnDestroy {
 	  		if(this.needsTimeout){
 	  			this.needsTimeout = false;
 	  			setTimeout(() => {
-		  			console.log('zomg setTimeout gonna set ordersForStatus newOrdersForStatus:',newOrdersForStatus);
+		  			// console.log('zomg setTimeout gonna set ordersForStatus newOrdersForStatus:',newOrdersForStatus);
 		  			this.ordersForStatus = newOrdersForStatus;
 		  		}, 1000);
 	  		}else{
-	  			console.log('!!! NO !!!! TIMEOUT OUT !!!! NEEDED !!!!!!')
+	  			// console.log('!!! NO !!!! TIMEOUT OUT !!!! NEEDED !!!!!!')
 	  			this.ordersForStatus = newOrdersForStatus;
 	  		}
 	  		
@@ -149,7 +149,7 @@ export class DashboardComponent implements OnInit, OnDestroy {
 
   cardDropped(order:Order,container:Container){
   	this.needsTimeout = true;
-  	console.log('DashboardComponent cardDropped order,container:',order,container);
+  	// console.log('DashboardComponent cardDropped order,container:',order,container);
   	//trying to avoid DashboardComponent.html:36 ERROR Error: ViewDestroyedError: Attempt to use a destroyed view: detectChanges
   	if(order.status != container.name){
   		order.status = container.name;
@@ -273,7 +273,6 @@ export class DashboardComponent implements OnInit, OnDestroy {
   	.saveSettings(this.settings)
   	.then(resp => {
   		this.settings["_rev"] = resp["rev"];
-  		console.log('seeeeeeetingz sssssaaaaaaaaaaaved!');
   	}, err => {
   		console.log('o noz, error saving settings! err:',err);
   	});
@@ -285,6 +284,11 @@ export class DashboardComponent implements OnInit, OnDestroy {
   clearDueDateFor(order:Order): void {
     order.need_by_date = false;
     order.date_needed = undefined;
+    this.saveOrder(order);
+  }
+
+  tagsChanged(order: Order, tags:string[]): void {
+    order.tags = tags;
     this.saveOrder(order);
   }
 }

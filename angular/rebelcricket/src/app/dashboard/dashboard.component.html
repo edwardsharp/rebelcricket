@@ -114,16 +114,7 @@
             <p>{{order.notes}}</p>
           </md-expansion-panel>
 
-          <md-chip-list mdPrefix #chipList> 
-            <md-chip *ngFor="let tag of order.tags" 
-              selectable="false"
-              removable="true" 
-              (remove)="removeOrderTag(order,tag)">
-              <md-icon mdChipRemove>cancel</md-icon>
-              {{tag}}
-            </md-chip>
-          </md-chip-list>
-
+          <app-order-tags [tags]="order.tags" (tagsChanged)="tagsChanged(order,$event)"></app-order-tags>
 
         </md-card-content>
         <md-card-actions>
@@ -153,8 +144,8 @@
             <md-icon>attachment</md-icon>{{orderAttachmentCount(order)}}
           </md-basic-chip>
 
-          <md-basic-chip mdTooltip="Line Items" mdTooltipPosition="above">
-            <md-icon>shopping_cart</md-icon>{{order?.line_items?.length || 0}}
+          <md-basic-chip *ngIf="order?.line_items" mdTooltip="Line Items" mdTooltipPosition="above">
+            <md-icon>shopping_cart</md-icon>{{order.line_items?.length || 0}}
           </md-basic-chip>
 
           <span class="flexfill"></span>
