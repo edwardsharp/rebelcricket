@@ -63,8 +63,8 @@ import { Order } from '../orders/order';
 export class DashboardComponent implements OnInit, OnDestroy {
 
   settings: Settings;
-
   needsTimeout: boolean = false;
+  needsReloadAfterInit: boolean = false;
 
   // orderDataChange: BehaviorSubject<Order[]> = new BehaviorSubject<Order[]>([]);
   // get orderData(): Order[] { return this.orderDataChange.value; }
@@ -124,9 +124,11 @@ export class DashboardComponent implements OnInit, OnDestroy {
 	 		const skip = 0; //this.paginator.pageIndex * this.paginator.pageSize;
 
 	    this.orderService.getOrders(limit, skip);
+      this.needsReloadAfterInit = false;
 
     }, err => {
     	console.log('o noz! settingsService.getSettings() err:',err);
+      this.needsReloadAfterInit = true;
     });
 
   }
@@ -359,6 +361,10 @@ export class DashboardComponent implements OnInit, OnDestroy {
     order.tags = tags;
     this.saveOrder(order);
   }
+
+  reload(): void{
+    window.location.reload();
+  }
 }
 
 class Container {
@@ -366,8 +372,6 @@ class Container {
   	public id: number, 
   	public name: string, 
   	public collapsed: string
-  	// , 
-  	// public widgets: Array<Widget>
   ) {}
   public toggleCollapse(): boolean {
     this.collapsed = this.collapsed === 'active' ? 'inactive' : 'active';
@@ -375,6 +379,3 @@ class Container {
   }
 }
 
-// class Widget {
-//   constructor(public name: string) {}
-// }

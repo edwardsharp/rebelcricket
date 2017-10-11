@@ -6,6 +6,11 @@
   </button>
 </div>
 
+<div *ngIf="needsReloadAfterInit" class="needs-reload">
+  <h2>Loading settings...</h2>
+  <a (click)="reload()">Click here to reload</a>
+</div>
+
 <div dnd-sortable-container 
   id="container"
   [sortableData]="containers" 

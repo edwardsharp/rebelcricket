@@ -1,3 +1,12 @@
+.needs-reload{
+  width: 70vw;
+  margin: 5em 10vw;
+  text-align: center;
+}
+.needs-reload a:hover{
+  text-decoration: underline;
+}
+
 #new-order-fab {
   position: absolute;
   bottom: 1.5em;
