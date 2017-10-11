@@ -12,13 +12,18 @@
   	</button>
 
   	<!-- this is a oneliner mess cuz the stylez for this h2 care about \n -->
+	  <md-form-field class="hidden" >
+      <input mdInput [mdDatepicker]="picker" [(ngModel)]="order.date_needed" placeholder="Due Date" readonly="true">
+      <md-datepicker touchUi="true" #picker></md-datepicker>
+    </md-form-field>
 	  <h2 class="order-toolbar">
 	  	<button md-button mdTooltip="Created At"><md-icon>event</md-icon> {{order.created_at | date:'short' }}</button>
 	  	<button md-button 
-	  		*ngIf="order.need_by_date; else needByDateElse" 
-        mdTooltip="Due Date"><md-icon>alarm</md-icon>{{order.date_needed | date:'short'}}</button>
-	  	<ng-template #needByDateElse><button md-button><md-icon mdTooltip="No Due Date">alarm_off</md-icon> No Due Date</button></ng-template>
-      </h2>  
+	  		*ngIf="order.date_needed; else needByDateElse" 
+	  		(click)="picker.open()"
+        mdTooltip="Due Date"><md-icon>alarm</md-icon> {{order.date_needed | date:'shortDate'}}</button>
+	  	<ng-template #needByDateElse><button md-button (click)="picker.open()"><md-icon mdTooltip="No Due Date">alarm_off</md-icon> No Due Date</button></ng-template>
+    </h2>  
 	  
 	  <span class="flexfill"></span>
 

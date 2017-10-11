@@ -128,3 +128,7 @@ md-card-actions md-basic-chip{
 .status-container{
   min-height: calc(100vh - 64px - 64px);
 }
+
+.fullwidth{
+  width: 100%;
+}

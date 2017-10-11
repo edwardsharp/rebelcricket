@@ -44,8 +44,10 @@ h1,h2,h3,h4,h5,h6{
 .flexfill {
   flex: 1 1 auto;
 }
-
-[hidden] {
+.invisible{
+  visibility: hidden!important;
+}
+[hidden], .hidden {
   display: none!important;
 }
 

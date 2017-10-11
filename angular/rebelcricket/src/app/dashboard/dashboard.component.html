@@ -97,6 +97,16 @@
             {{order.email}}
           </button>
 
+          <!-- <div> -->
+            <!-- [ngClass]="{'invisible' : !order.date_needed}" -->
+          <md-form-field class="hidden" >
+            <input mdInput [mdDatepicker]="picker" 
+              [(ngModel)]="order.date_needed" 
+              (dateChange)="saveOrder(order)"
+              placeholder="Due Date" readonly="true">
+            <md-datepicker touchUi="true" #picker></md-datepicker>
+          </md-form-field>
+
           <md-expansion-panel *ngIf="order.notes" class="mat-elevation-z0">
             <md-expansion-panel-header>
               Notes 
@@ -122,13 +132,15 @@
 
           <!-- <md-basic-chip> -->
             <span 
-            *ngIf="order.need_by_date; else needByDateElse" 
+            *ngIf="order.date_needed; else needByDateElse" 
             mdTooltip="Due Date"
-            mdTooltipPosition="above">
-              {{order.date_needed | date:'MMMd y'}}
+            mdTooltipPosition="above"
+            (click)="picker.open()">
+              {{order.date_needed | date:'MMM d'}}
             </span>
             <ng-template #needByDateElse>
-              <md-icon mdTooltip="No Due Date" mdTooltipPosition="above">alarm_off</md-icon>
+              <md-icon (click)="picker.open()" 
+                mdTooltip="No Due Date" mdTooltipPosition="above">alarm_off</md-icon>
             </ng-template>
           <!-- </md-basic-chip> -->
 
