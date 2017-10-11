@@ -31,33 +31,56 @@
         <md-icon>chevron_left</md-icon>
       </button>
       <h1>{{container.name}} ({{ordersForStatus[container.name]?.length}})</h1>
-      <button *ngIf="container.collapsed === 'active'"
+      <button *ngIf="container.collapsed === 'active' && ordersForStatus[container.name]?.length > 2"
         md-icon-button 
         tabindex="-1"
         [mdMenuTriggerFor]="filterList">
         <md-icon>filter_list</md-icon>
       </button>
       <md-menu #filterList="mdMenu">
-        <h4 class="center">Sort By:</h4>
+        <div class="center"><b>Sort By:</b></div>
         <hr>
-        <button md-menu-item 
-          title="Priority"
-          (click)="sortContainerBy(container.name,'position')">
-          <md-icon>priority_high</md-icon>
-          <span>Priority</span>
-        </button>
-        <button md-menu-item 
-          title="Date Created"
-          (click)="sortContainerBy(container.name,'created_at')">
-          <md-icon>event</md-icon>
-          <span>Date Created</span>
-        </button>
-        <button md-menu-item 
-          title="Date Due"
-          (click)="sortContainerBy(container.name,'date_needed')">
-          <md-icon>alarm</md-icon>
-          <span>Date Due</span>
-        </button>
+        <div style="display: flex">
+          <button 
+            md-button 
+            mdTooltip="Priority Descending"
+            (click)="sortContainerBy(container.name,'position','desc')">
+            <md-icon>keyboard_arrow_down</md-icon>
+          </button>
+          <span class="flexfill"><md-icon>priority_high</md-icon> Priority</span>
+          <button  
+            md-button
+            mdTooltip="Priority Ascending"
+            (click)="sortContainerBy(container.name,'position','asc')">
+            <md-icon>keyboard_arrow_up</md-icon>
+          </button>
+        </div>
+        <div style="display: flex">
+          <button md-button
+            mdTooltip="Newest first"
+            (click)="sortContainerBy(container.name,'created_at','desc')">
+            <md-icon>keyboard_arrow_down</md-icon>
+          </button>
+          <span class="flexfill"><md-icon>event</md-icon> Created</span>
+          <button md-button
+            mdTooltip="Oldest First"
+            (click)="sortContainerBy(container.name,'created_at','asc')">
+            <md-icon>keyboard_arrow_up</md-icon>
+          </button>
+        </div>
+        <div style="display: flex">
+          <button md-button
+            mdTooltip="Newest first"
+            (click)="sortContainerBy(container.name,'date_needed','desc')">
+            <md-icon>keyboard_arrow_down</md-icon>
+          </button>
+          <span class="flexfill"><md-icon>alarm</md-icon> Date Due</span>
+          <button md-button
+            mdTooltip="Oldest first"
+            (click)="sortContainerBy(container.name,'date_needed','asc')">
+            <md-icon>keyboard_arrow_up</md-icon>
+          </button>
+        </div>
       </md-menu>
 
     </md-toolbar>

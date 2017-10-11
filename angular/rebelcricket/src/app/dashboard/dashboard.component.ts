@@ -296,23 +296,29 @@ export class DashboardComponent implements OnInit, OnDestroy {
     
   }
 
-  sortContainerBy(container_name: string, key: string){
+  sortContainerBy(container_name: string, key: string, dir: string){
   	// console.log('filterContainerBy key:',key);
     switch (key) {
       case 'position':
         this.ordersForStatus[container_name].sort((a,b) => {
-          return ( a.position < b.position ? 1 : -1); //desc
+          let aVal = dir == 'asc' ? b : a;
+          let bVal = dir == 'asc' ? a : b;
+          return ( aVal < bVal ? 1 : -1);
         });
         break;
       case 'created_at':
         this.ordersForStatus[container_name].sort((a,b) => {
-          return ( parseInt(a._id, 36) < parseInt(b._id, 36) ? 1 : -1); //desc
+          let aVal = dir == 'asc' ? b : a;
+          let bVal = dir == 'asc' ? a : b;
+          return ( parseInt(aVal._id, 36) < parseInt(bVal._id, 36) ? 1 : -1); 
         });
         break;
       case 'date_needed':
         console.log('sort by date_needed!');
         this.ordersForStatus[container_name].sort((a,b) => {
-          return (b.date_needed ? new Date(b.date_needed).getTime() : 0) - (a.date_needed ? new Date(a.date_needed).getTime() : 0);
+          let aVal = dir == 'asc' ? b : a;
+          let bVal = dir == 'asc' ? a : b;
+          return (bVal.date_needed ? new Date(bVal.date_needed).getTime() : 0) - (aVal.date_needed ? new Date(aVal.date_needed).getTime() : 0);
         });
         break;
     }

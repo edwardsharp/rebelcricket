@@ -27,20 +27,17 @@
 	  
 	  <span class="flexfill"></span>
 
-	  <span *ngIf="!needsSave">
-		  <span *ngIf="settings?.order_statuses; else elseBlock">
-			  <md-chip [mdMenuTriggerFor]="orderStatusMenu">{{order.status}}</md-chip>
-			  <md-menu #orderStatusMenu="mdMenu">
-			    <button md-menu-item 
-			    	*ngFor="let status of settings.order_statuses"
-			    	(click)="order.status = status.name; saveOrder()">
-			      <span>{{status.name}}</span>
-			    </button>
-			  </md-menu>
-		  </span>
-	    <ng-template #elseBlock><md-chip>{{order.status}}</md-chip></ng-template>
+	  <span *ngIf="settings?.order_statuses; else elseBlock">
+		  <md-chip [mdMenuTriggerFor]="orderStatusMenu">{{order.status}}</md-chip>
+		  <md-menu #orderStatusMenu="mdMenu">
+		    <button md-menu-item 
+		    	*ngFor="let status of settings.order_statuses"
+		    	(click)="order.status = status.name; saveOrder()">
+		      <span>{{status.name}}</span>
+		    </button>
+		  </md-menu>
 	  </span>
-    
+    <ng-template #elseBlock><md-chip>{{order.status}}</md-chip></ng-template>
 
 		<button md-icon-button [mdMenuTriggerFor]="orderDetailMenu">
 	    <md-icon class="example-icon">more_vert</md-icon>
