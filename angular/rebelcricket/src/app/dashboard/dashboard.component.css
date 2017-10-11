@@ -72,7 +72,7 @@ md-card{
   padding: 0;
   margin-left:0.5em;
   margin-right:0.5em;
-  margin-bottom: 3em;
+  margin-bottom: 2em;
 }
 
 md-expansion-panel, md-card{
@@ -126,7 +126,7 @@ md-card-actions md-basic-chip{
 }
 
 .status-container{
-  min-height: calc(100vh - 64px - 64px);
+  /*height: 100%;*/
 }
 
 .fullwidth{

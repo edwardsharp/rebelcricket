@@ -17,12 +17,12 @@
       <md-datepicker touchUi="true" #picker></md-datepicker>
     </md-form-field>
 	  <h2 class="order-toolbar">
-	  	<button md-button mdTooltip="Created At"><md-icon>event</md-icon> {{order.created_at | date:'short' }}</button>
-	  	<button md-button 
+	  	<small mdTooltip="Created At"><md-icon>event</md-icon> <span>{{order.created_at | date:'short' }}</span></small>
+	  	<small 
 	  		*ngIf="order.date_needed; else needByDateElse" 
 	  		(click)="picker.open()"
-        mdTooltip="Due Date"><md-icon>alarm</md-icon> {{order.date_needed | date:'shortDate'}}</button>
-	  	<ng-template #needByDateElse><button md-button (click)="picker.open()"><md-icon mdTooltip="No Due Date">alarm_off</md-icon> No Due Date</button></ng-template>
+        mdTooltip="Due Date"><md-icon>alarm</md-icon> <span>{{order.date_needed | date:'shortDate'}}</span></small>
+	  	<ng-template #needByDateElse><small (click)="picker.open()"><md-icon mdTooltip="No Due Date">alarm_off</md-icon> <span>No Due Date</span></small></ng-template>
     </h2>  
 	  
 	  <span class="flexfill"></span>
@@ -46,15 +46,14 @@
 	    <md-icon class="example-icon">more_vert</md-icon>
 	  </button>
 	  <md-menu #orderDetailMenu="mdMenu">
+	  	<button md-menu-item (click)="clearDueDate()" [disabled]="!order.date_needed">
+	      <md-icon>alarm_off</md-icon>
+	      <span>Clear Due Date</span>
+	    </button>
 	    <button md-menu-item (click)="deleteOrder()">
 	      <md-icon>delete</md-icon>
 	      <span>delete</span>
 	    </button>
-	    <!-- <button md-menu-item disabled>
-	      <md-icon>notifications_off</md-icon>
-	      <span>disable alerts</span>
-	    </button>
-	     -->
 	  </md-menu>
 
 

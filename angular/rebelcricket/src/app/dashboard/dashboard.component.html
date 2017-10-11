@@ -166,11 +166,11 @@
             <md-icon class="icon">more_vert</md-icon>
           </button>
           <md-menu #cardMenu="mdMenu">
-            <button md-menu-item
+            <a md-menu-item
               routerLink="/dashboard/order/{{order._id}}">
               <md-icon>edit</md-icon>
               <span>Edit</span>
-            </button>
+            </a>
             <hr>
             <button md-menu-item [mdMenuTriggerFor]="status" title="Status">
               <md-icon>inbox</md-icon>
@@ -179,6 +179,10 @@
             <button md-menu-item [mdMenuTriggerFor]="priority" title="Priority">
               <md-icon>sort</md-icon>
               <span>Priority</span>
+            </button>
+            <button md-menu-item (click)="clearDueDateFor(order)" [disabled]="!order.date_needed">
+              <md-icon>alarm_off</md-icon>
+              <span>Clear Due Date</span>
             </button>
             <hr>
             <button md-menu-item 

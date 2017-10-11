@@ -44,8 +44,16 @@ md-action-row{
 }
 
 .order-toolbar small{
+	height: 50%;
 	font-size: small;
+	display: flex;
+	align-content: center;
+	align-items: center;
 }
+.order-toolbar small span{
+	margin-left: 0.5em;
+}
+
 
 #new-attachment{
 	max-width: 33vw;

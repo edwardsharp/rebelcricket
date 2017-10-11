@@ -330,5 +330,11 @@ export class OrderDetailComponent implements OnInit, OnDestroy  {
     this.order.line_items = this.order.line_items || [];
     this.order.line_items.push(new LineItem);
   }
+
+  clearDueDate(): void {
+    this.order.need_by_date = false;
+    this.order.date_needed = undefined;
+    this.needsSave = true;
+  }
           
 }

@@ -282,7 +282,11 @@ export class DashboardComponent implements OnInit, OnDestroy {
   // onDateChange(e:any): void{
   //   console.log('onDateChange e:',e);
   // }
-
+  clearDueDateFor(order:Order): void {
+    order.need_by_date = false;
+    order.date_needed = undefined;
+    this.saveOrder(order);
+  }
 }
 
 class Container {
