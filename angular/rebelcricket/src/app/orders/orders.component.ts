@@ -38,6 +38,9 @@ export class OrdersComponent implements OnInit {
   @ViewChild(MdPaginator) paginator: MdPaginator;
 
   ngOnInit() {
+
+    this.paginator._intl.itemsPerPageLabel = ''; //a lil'hack-y
+
     this.loading = true;
     this.dataSource = new OrderStore(this.orderService, this.sort, this.paginator);
 

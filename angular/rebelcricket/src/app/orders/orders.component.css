@@ -47,6 +47,10 @@ md-cell{
   text-overflow: ellipsis;
 }
 
+md-slide-toggle{
+	height: 100%;
+}
+
 md-chip-list{
 	padding: 0.25em;
 }
@@ -97,11 +101,10 @@ md-chip{
   margin-bottom: 1em;
 }
 
-
-
 .mat-header-cell .mat-sort-header-sorted {
   color: black;
 }
+
 
 @media (max-width: 599px) {
   #orders-container{
@@ -132,6 +135,13 @@ md-chip{
 	}
 	.stickyTableHeader{
 		top: 56px;	
+	}
+	.hide-narrow{
+		display: none;
+	}
+
+	.sort-active{
+		text-decoration: underline;
 	}
 
 }

@@ -13,32 +13,32 @@
         <!-- ID/Created Column -->
         <ng-container mdColumnDef="orderId">
           <md-header-cell *mdHeaderCellDef md-sort-header mdSortActive="true"> Created </md-header-cell>
-          <md-cell *mdCellDef="let row"> {{createdAtDate(row._id) | date:'shortDate' }} </md-cell>
+          <md-cell *mdCellDef="let row" [ngClass]="{'sort-active' : sort.active == 'orderId'}"> {{createdAtDate(row._id) | date:'short' }} </md-cell>
         </ng-container>
 
         <ng-container mdColumnDef="orderStatus">
           <md-header-cell *mdHeaderCellDef md-sort-header> Status </md-header-cell>
-          <md-cell *mdCellDef="let row"> {{row.status}} </md-cell>
+          <md-cell *mdCellDef="let row" [ngClass]="{'sort-active' : sort.active == 'orderStatus'}"> {{row.status}} </md-cell>
         </ng-container>
 
         <ng-container mdColumnDef="dateNeeded">
           <md-header-cell *mdHeaderCellDef md-sort-header> Due </md-header-cell>
-          <md-cell *mdCellDef="let row"> {{row.date_needed | date:'MMM d'}} </md-cell>
+          <md-cell *mdCellDef="let row" [ngClass]="{'sort-active' : sort.active == 'dateNeeded'}"> {{row.date_needed | date:'MMM d'}} </md-cell>
         </ng-container>
 
         <ng-container mdColumnDef="orderName">
           <md-header-cell *mdHeaderCellDef md-sort-header> Name </md-header-cell>
-          <md-cell *mdCellDef="let row"> {{row.name}} </md-cell>
+          <md-cell *mdCellDef="let row" [ngClass]="{'sort-active' : sort.active == 'orderName'}"> {{row.name}} </md-cell>
         </ng-container>
 
         <ng-container mdColumnDef="orderEmail">
           <md-header-cell *mdHeaderCellDef md-sort-header> Email </md-header-cell>
-          <md-cell *mdCellDef="let row"> {{row.email}} </md-cell>
+          <md-cell *mdCellDef="let row" [ngClass]="{'sort-active' : sort.active == 'orderEmail'}"> {{row.email}} </md-cell>
         </ng-container>
 
         <ng-container mdColumnDef="orderOrg">
           <md-header-cell *mdHeaderCellDef md-sort-header> Org </md-header-cell>
-          <md-cell *mdCellDef="let row"> {{row.org}} </md-cell>
+          <md-cell *mdCellDef="let row" [ngClass]="{'sort-active' : sort.active == 'orderOrg'}"> {{row.org}} </md-cell>
         </ng-container>
 
         <md-header-row class="stickyTableHeader" *mdHeaderRowDef="displayedColumns"></md-header-row>
@@ -56,6 +56,11 @@
           <md-icon class="md-24" 
             aria-label="Create a New Order">add</md-icon>
         </button>
+       <!--  <span class="flexfill"></span>
+        <md-slide-toggle mdTooltip="Show Archived Orders" mdTooltipPosition="above">
+          <span class="hide-narrow">Archived Orders</span>
+        </md-slide-toggle> -->
+
         <span class="flexfill"></span>
         <md-paginator #paginator
           [length]="orderService.data.length"
