@@ -1,6 +1,6 @@
 <md-accordion id="settings" class="headers-align" *ngIf="settings">
   
-  <md-expansion-panel expanded="true">
+  <md-expansion-panel >
     <md-expansion-panel-header>
       <md-panel-title>
         General
@@ -335,6 +335,21 @@
         class="delete-service">
         <md-icon>delete</md-icon>
       </button>
+
+      <span class="flexfill"></span>
+      <md-form-field class="" *ngIf="selectedService">
+        <input mdInput 
+          [(ngModel)]="selectedService.name" 
+          (change)="onChange()"
+          placeholder="Name">
+      </md-form-field>
+      <span class="flexfill"></span>
+      <md-form-field class="" *ngIf="selectedService">
+        <input mdInput 
+          [(ngModel)]="selectedService.slug" 
+          (change)="onChange()"
+          placeholder="Slug">
+      </md-form-field>
     </div>
     <div>
       <div *ngIf="settings?.services.length == 0" class="center">
@@ -342,21 +357,6 @@
       </div>
 
       <div *ngIf="selectedService" class="service-panel">
-        
-        <div>
-          <md-form-field class="halfwidth">
-            <input mdInput 
-              [(ngModel)]="selectedService.name" 
-              (change)="onChange()"
-              placeholder="Name">
-          </md-form-field>
-          <md-form-field class="halfwidth">
-            <input mdInput 
-              [(ngModel)]="selectedService.slug" 
-              (change)="onChange()"
-              placeholder="Slug">
-          </md-form-field>
-        </div>
 
         <div class="detail-item">
           <div *ngFor="let item of selectedService.order_configuration">
