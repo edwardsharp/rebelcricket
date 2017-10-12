@@ -49,7 +49,7 @@ export class OrderField {
   required: boolean;
   internal: boolean;
   sum: boolean;
-  select_items: Array<string>;
+  select_items: Array<{name:string}>;
 }
 
 

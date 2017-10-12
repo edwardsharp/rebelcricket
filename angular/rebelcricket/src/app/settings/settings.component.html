@@ -366,7 +366,7 @@
         <div class="detail-item">
           <div *ngFor="let field of selectedService.order_fields">
             <section>
-              <md-form-field class="">
+              <md-form-field>
                 <input mdInput 
                   [(ngModel)]="field.name" 
                   (change)="onChange()"
@@ -390,8 +390,29 @@
                   {{ type.name }}
                 </md-option>
               </md-select>
-
+              <button md-button 
+                *ngIf="field.type == SelectFieldType"
+                (click)="addOrderFieldSelectItem(field)" 
+                mdTooltip="Add a Select field option">
+                <md-icon>add</md-icon> Select Option
+              </button>
             </section>
+            <div *ngIf="field.type == SelectFieldType">
+              <section *ngFor="let select_item of field.select_items">
+                <md-form-field>
+                  <input mdInput 
+                    [(ngModel)]="select_item.value" 
+                    (change)="onChange()"
+                    placeholder="Option Value">
+                </md-form-field>
+                <button md-icon-button 
+                  (click)="removeOrderFieldSelectItem(field,select_item)" 
+                  mdTooltip="Delete Select Item"
+                  class="delete-service">
+                  <md-icon>delete</md-icon>
+                </button>
+              </section>
+            </div>
             <hr>
           </div>
         </div>

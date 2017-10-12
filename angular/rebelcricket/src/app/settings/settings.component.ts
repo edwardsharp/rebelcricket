@@ -21,6 +21,7 @@ export class SettingsComponent implements OnInit {
 	settings: Settings;
 	disableSave: boolean = true;
   order_field_types: Array<{name:string, value:OrderFieldType}>;
+  SelectFieldType: OrderFieldType;
 
   constructor(
     private settingsService: SettingsService,
@@ -34,8 +35,9 @@ export class SettingsComponent implements OnInit {
       {name: 'Textarea', value: OrderFieldType.Textarea},
       {name: 'Checkbox', value:OrderFieldType.Checkbox},
       {name: 'Number',   value: OrderFieldType.Number},
-      {name: 'Select', value: OrderFieldType.Select}
+      {name: 'Select',   value: OrderFieldType.Select}
     ];
+    this.SelectFieldType = OrderFieldType.Select;
   }
 
   getSettings(): void {
@@ -199,6 +201,17 @@ export class SettingsComponent implements OnInit {
     if(idx >= 0){
       this.selectedService.order_fields.splice(idx, 1);
       this.onChange();
+    }
+  }
+
+  addOrderFieldSelectItem(field: OrderField){
+    field.select_items = field.select_items || [];
+    field.select_items.push({name:'New Option'});
+  }
+  removeOrderFieldSelectItem(field: OrderField,item:any){
+    let idx = field.select_items.indexOf(item);
+    if(idx >= 0){
+      field.select_items.splice(idx, 1);
     }
   }
 
