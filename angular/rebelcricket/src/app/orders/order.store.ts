@@ -42,7 +42,7 @@ export class OrderStore extends DataSource<any> {
 
   disconnect() {}
 
-  /** Returns a sorted copy of the database data. */
+  /** return a sorted copy of the database data. */
   getSortedData(): Order[] {
 
     const data = this._orderService.data.slice();
@@ -54,19 +54,25 @@ export class OrderStore extends DataSource<any> {
 
     return data
     .sort((a, b) => {
-      let propertyA: number|string = '';
-      let propertyB: number|string = '';
+      let propA: number|string = '';
+      let propB: number|string = '';
 
       switch (this._sort.active) {
-        case 'orderId': [propertyA, propertyB] = [parseInt(a._id, 36),parseInt(b._id, 36)]; break;
-        case 'orderName': [propertyA, propertyB] = [a.name, b.name]; break;
-        case 'orderEmail': [propertyA, propertyB] = [a.email, b.email]; break;
-        case 'orderOrg': [propertyA, propertyB] = [a.org, b.org]; break;
-        case 'orderStatus': [propertyA, propertyB] = [a.status, b.status]; break;
+        case 'orderId': [propA, propB] = [parseInt(a._id, 36),parseInt(b._id, 36)]; break;
+        case 'orderName': [propA, propB] = [a.name, b.name]; break;
+        case 'orderEmail': [propA, propB] = [a.email, b.email]; break;
+        case 'orderOrg': [propA, propB] = [a.org, b.org]; break;
+        case 'orderStatus': [propA, propB] = [a.status, b.status]; break;
+        case 'dateNeeded': 
+          propA = new Date(a.date_needed).getTime();
+          if(isNaN(propA)){ propA = (this._sort.direction == 'asc' ? Infinity : -Infinity) }
+          propB = new Date(b.date_needed).getTime();
+          if(isNaN(propB)){ propB = (this._sort.direction == 'asc' ? Infinity : -Infinity) }
+          break;
       }
 
-      let valueA = isNaN(+propertyA) ? propertyA : +propertyA;
-      let valueB = isNaN(+propertyB) ? propertyB : +propertyB;
+      let valueA = isNaN(+propA) ? propA : +propA;
+      let valueB = isNaN(+propB) ? propB : +propB;
 
       return (valueA < valueB ? -1 : 1) * (this._sort.direction == 'asc' ? 1 : -1);
     });

@@ -30,7 +30,7 @@ export class OrdersComponent implements OnInit {
   constructor(private orderService: OrderService) { }
 
   //table sorting stuff
-  displayedColumns = ['orderId', 'orderName', 'orderEmail', 'orderOrg', 'orderStatus'];
+  displayedColumns = ['orderId', 'orderStatus', 'dateNeeded', 'orderName', 'orderEmail', 'orderOrg'];
   // exampleDatabase = new ExampleDatabase();
   dataSource: OrderStore | null;
 
