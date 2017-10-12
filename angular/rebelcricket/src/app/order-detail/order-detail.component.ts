@@ -6,7 +6,7 @@ import { Observable }           from 'rxjs/Observable';
 import 'rxjs/add/operator/switchMap';
 import {MdChipInputEvent, ENTER, MdSnackBar} from '@angular/material';
 
-import { Order, LineItem } from '../orders/order';
+import { Order, LineItem, OrderField, OrderFieldType } from '../orders/order';
 import { OrderService } from '../orders/order.service';
 import { SettingsService } from '../settings/settings.service';
 import { Settings, Service } from '../settings/settings';
@@ -36,6 +36,8 @@ export class OrderDetailComponent implements OnInit, OnDestroy  {
   // serializedPanes: Array<string>;
   selectedService: Service;
 
+  order_field_types: any;
+
   constructor(
   	private orderService: OrderService,
   	private route: ActivatedRoute,
@@ -44,7 +46,15 @@ export class OrderDetailComponent implements OnInit, OnDestroy  {
     private sanitizer: DomSanitizer,
     private snackBar: MdSnackBar,
     private appTitleService: AppTitleService 
-  ) { }
+  ) { 
+    this.order_field_types = {
+      'Text':     OrderFieldType.Text,
+      'Textarea': OrderFieldType.Textarea,
+      'Checkbox': OrderFieldType.Checkbox,
+      'Number':   OrderFieldType.Number,
+      'Select':   OrderFieldType.Select
+    };
+  }
 
 
   ngOnInit() {
@@ -333,6 +343,8 @@ export class OrderDetailComponent implements OnInit, OnDestroy  {
       let li = new LineItem;
       li.service_key = this.selectedService.slug;
       li.service_label = this.selectedService.name;
+      li.service = this.selectedService;
+      li.items = this.orderFieldsForService(this.selectedService);
       this.order.line_items.push(li);
      }
      this.selectedService = undefined; 
@@ -351,5 +363,11 @@ export class OrderDetailComponent implements OnInit, OnDestroy  {
   serviceNeedsDisabled(service: Service): boolean{
     return this.order && this.order.line_items && this.order.line_items.some( li => li.service_label == service.name); 
   }
-          
-}
+   
+  orderFieldsForService(service: Service): Array<OrderField> {
+    try{
+      return this.settings.services.find( s => s.name == service.name ).order_fields
+    }catch(e){ return []; }
+    
+  }       
+}  

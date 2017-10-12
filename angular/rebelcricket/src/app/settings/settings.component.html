@@ -344,9 +344,10 @@
           placeholder="Name">
       </md-form-field>
       <span class="flexfill"></span>
-      <md-select placeholder="Vendor Goods Catalog" 
+      <md-select placeholder="Catalog" 
         *ngIf="selectedService"
-        [(ngModel)]="selectedService.vendor_goods_catalog">
+        [(ngModel)]="selectedService.vendor_goods_catalog"
+        (change)="onChange()">
         <md-option value="">
           None
         </md-option>
@@ -354,7 +355,8 @@
           Default
         </md-option>
       </md-select>
-      
+      <md-checkbox *ngIf="selectedService" 
+        [(ngModel)]="selectedService.notes" (change)="onChange()">Notes</md-checkbox>
     </div>
     <div>
       <div *ngIf="settings?.services.length == 0" class="center">
@@ -366,6 +368,12 @@
         <div class="detail-item">
           <div *ngFor="let field of selectedService.order_fields">
             <section>
+              <button md-icon-button 
+                (click)="removeOrderField(field)" 
+                mdTooltip="Delete Order Service Item"
+                class="delete-service">
+                <md-icon>delete</md-icon>
+              </button>
               <md-form-field>
                 <input mdInput 
                   [(ngModel)]="field.name" 
@@ -373,19 +381,12 @@
                   placeholder="Order Field Name">
               </md-form-field>
 
-              <md-checkbox [(ngModel)]="field.internal">Internal</md-checkbox>
-              <md-checkbox [(ngModel)]="field.required">Required</md-checkbox>
-              <md-checkbox [(ngModel)]="field.sum">Sum</md-checkbox>
-
-              <button md-icon-button 
-                (click)="removeOrderField(field)" 
-                mdTooltip="Delete Order Service Item"
-                class="delete-service">
-                <md-icon>delete</md-icon>
-              </button>
+              <md-checkbox [(ngModel)]="field.internal" (change)="onChange()">Internal</md-checkbox>
+              <md-checkbox [(ngModel)]="field.required" (change)="onChange()">Required</md-checkbox>
+ 
             </section>
             <section>
-              <md-select placeholder="Type" [(ngModel)]="field.type">
+              <md-select placeholder="Type" [(ngModel)]="field.type" (change)="onChange()">
                 <md-option *ngFor="let type of order_field_types" [value]="type.value">
                   {{ type.name }}
                 </md-option>
@@ -401,7 +402,7 @@
               <section *ngFor="let select_item of field.select_items">
                 <md-form-field>
                   <input mdInput 
-                    [(ngModel)]="select_item.value" 
+                    [(ngModel)]="select_item.name" 
                     (change)="onChange()"
                     placeholder="Option Value">
                 </md-form-field>

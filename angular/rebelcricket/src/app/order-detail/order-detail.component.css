@@ -113,6 +113,27 @@ md-action-row{
 	/*min-width: 150px;
 	max-width: 200px;*/
 }
+.service-line-items{
+	margin: 0.5em;
+}
+.service-line-item{
+	width: 100%;
+}
+
+section {
+  display: flex;
+  align-content: center;
+  align-items: center;
+  width: 100%;
+}
+
+section > * {
+	margin: 0 0.5em;
+}
+
+.number{
+	min-width: unset;
+}
 
 @media (max-width: 599px) {
 	md-form-field{

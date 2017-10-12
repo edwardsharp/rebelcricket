@@ -37,7 +37,7 @@ export class Service {
 	detail_items?: Array<{heading: string, detail: string}>;
 
   vendor_goods_catalog?: string;
-
+  notes: boolean;
   order_fields?: Array<OrderField>;
 
 	constructor(public name: string) { }

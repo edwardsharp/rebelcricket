@@ -97,28 +97,46 @@
 			  <md-list-item *ngFor="let service of order.services">{{service}}</md-list-item>
 			</md-list>
 
-			<h3 *ngIf="order.line_items">Line Items ({{order.line_items.length}})</h3>
+			<h4 *ngIf="order.line_items">Line Items ({{order.line_items.length}})</h4>
 		  <div *ngFor="let line_item of order.line_items">
-		  	<h3>Service: {{line_item.service_label}}</h3>
+		  	<section>
+			  	<h4>Service: {{line_item.service_label}}</h4>
+			  	
+			  	<md-form-field class="number">
+				    <input mdInput [(ngModel)]="line_item.quantity" (change)="onChange($event)" placeholder="quantity" type="number">
+				  </md-form-field>
 
-		  	<md-form-field>
-			    <input mdInput [(ngModel)]="line_item.quantity" (change)="onChange($event)" placeholder="quantity" type="number">
-			  </md-form-field>
+				  <md-form-field class="number">
+				    <input mdInput [(ngModel)]="line_item.total" (change)="onChange($event)" placeholder="total" type="number" readonly="true">
+				  </md-form-field>
+				 </section>
 
-			  <md-form-field>
-			    <input mdInput [(ngModel)]="line_item.total" (change)="onChange($event)" placeholder="total" type="number">
-			  </md-form-field>
+		  	<div *ngFor="let field of line_item.items" class="service-line-items">
+		  		<md-form-field *ngIf="field.type == order_field_types['Text']" class="service-line-item">
+		  			<input mdInput [(ngModel)]="field.value" (change)="onChange($event)" placeholder="{{field.name}}" type="text">
+		  		</md-form-field>
+		  		<md-form-field *ngIf="field.type == order_field_types['Textarea']" class="service-line-item">
+		  			<textarea mdInput [(ngModel)]="field.value" (change)="onChange($event)" placeholder="{{field.name}}" type="number"></textarea>
+		  		</md-form-field>
+		  		<md-checkbox *ngIf="field.type == order_field_types['Checkbox']" 
+		  			[(ngModel)]="field.value" (change)="onChange($event)">{{field.name}}</md-checkbox>
+		  		<md-form-field *ngIf="field.type == order_field_types['Number']" class="service-line-item">
+		  			<input mdInput [(ngModel)]="field.value" (change)="onChange($event)" placeholder="{{field.name}}" type="number">
+		  		</md-form-field>
+		  		<md-select *ngIf="field.type == order_field_types['Select']" 
+		  			placeholder="{{field.name}}" [(ngModel)]="field.value">
+					  <md-option *ngFor="let item of field.select_items" [value]="item.value">
+					    {{ item.name }}
+					  </md-option>
+					</md-select>
+		  	</div>
 
-			  <div>
+			  <div *ngIf="line_item.service.notes">
 			  	<md-form-field class="fullwidth">
 				    <textarea mdInput [(ngModel)]="line_item.notes" (change)="onChange($event)" placeholder="notes"></textarea>
 				  </md-form-field>
 				</div>
 
-			  <h4 *ngIf="items">Items ({{items.length}})</h4>
-			  <div *ngFor="let item of items">
-			  	{{item}}
-			  </div>
 		  </div>
 	  </md-tab>
 
