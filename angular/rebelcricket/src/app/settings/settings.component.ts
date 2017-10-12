@@ -7,6 +7,7 @@ import { MdSnackBar,
 
 import { SettingsService } from './settings.service';
 import { Settings, OrderStatus, Service } from './settings';
+import { OrderField, OrderFieldType } from '../orders/order';
 
 const COMMA = 188;
 
@@ -19,15 +20,22 @@ export class SettingsComponent implements OnInit {
 
 	settings: Settings;
 	disableSave: boolean = true;
+  order_field_types: Array<{name:string, value:OrderFieldType}>;
 
   constructor(
     private settingsService: SettingsService,
     private snackBar: MdSnackBar
   ) { }
-
  
   ngOnInit() {
   	this.getSettings();
+    this.order_field_types = [
+      {name: 'Text',     value: OrderFieldType.Text},
+      {name: 'Textarea', value: OrderFieldType.Textarea},
+      {name: 'Checkbox', value:OrderFieldType.Checkbox},
+      {name: 'Number',   value: OrderFieldType.Number},
+      {name: 'Select', value: OrderFieldType.Select}
+    ];
   }
 
   getSettings(): void {
@@ -40,6 +48,7 @@ export class SettingsComponent implements OnInit {
       this.settings.about_page_items = this.settings.about_page_items || [];
       this.settings.landing_page_items = this.settings.landing_page_items || [];
       this.settings.landing_page_social_items = this.settings.landing_page_social_items || [];
+
 
     	// console.log('settings:',settings);
     	this.visible = true;
@@ -181,10 +190,14 @@ export class SettingsComponent implements OnInit {
     }
   }
   
-  removeOrderServiceItem(item: any){
-    let idx = this.selectedService.order_configuration.indexOf(item);
+  addOrderField(): void {
+    this.selectedService.order_fields = this.selectedService.order_fields || [];
+    this.selectedService.order_fields.push(new OrderField);
+  }
+  removeOrderField(field: OrderField){
+    let idx = this.selectedService.order_fields.indexOf(field);
     if(idx >= 0){
-      this.selectedService.order_configuration.splice(idx, 1);
+      this.selectedService.order_fields.splice(idx, 1);
       this.onChange();
     }
   }

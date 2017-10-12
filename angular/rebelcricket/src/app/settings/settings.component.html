@@ -337,19 +337,24 @@
       </button>
 
       <span class="flexfill"></span>
-      <md-form-field class="" *ngIf="selectedService">
+      <md-form-field *ngIf="selectedService">
         <input mdInput 
           [(ngModel)]="selectedService.name" 
           (change)="onChange()"
           placeholder="Name">
       </md-form-field>
       <span class="flexfill"></span>
-      <md-form-field class="" *ngIf="selectedService">
-        <input mdInput 
-          [(ngModel)]="selectedService.slug" 
-          (change)="onChange()"
-          placeholder="Slug">
-      </md-form-field>
+      <md-select placeholder="Vendor Goods Catalog" 
+        *ngIf="selectedService"
+        [(ngModel)]="selectedService.vendor_goods_catalog">
+        <md-option value="">
+          None
+        </md-option>
+        <md-option value="default">
+          Default
+        </md-option>
+      </md-select>
+      
     </div>
     <div>
       <div *ngIf="settings?.services.length == 0" class="center">
@@ -357,21 +362,37 @@
       </div>
 
       <div *ngIf="selectedService" class="service-panel">
-
+        <h3 *ngIf="selectedService.order_fields && selectedService.order_fields.length > 0">Order Fields:</h3>
         <div class="detail-item">
-          <div *ngFor="let item of selectedService.order_configuration">
-            <md-form-field class="halfwidth">
-              <input mdInput 
-                [(ngModel)]="item.name" 
-                (change)="onChange()"
-                placeholder="Item Name">
-            </md-form-field>
-            <button md-icon-button 
-              (click)="removeOrderServiceItem(item)" 
-              mdTooltip="Delete Order Service Item"
-              class="delete-service">
-              <md-icon>delete</md-icon>
-            </button>
+          <div *ngFor="let field of selectedService.order_fields">
+            <section>
+              <md-form-field class="">
+                <input mdInput 
+                  [(ngModel)]="field.name" 
+                  (change)="onChange()"
+                  placeholder="Order Field Name">
+              </md-form-field>
+
+              <md-checkbox [(ngModel)]="field.internal">Internal</md-checkbox>
+              <md-checkbox [(ngModel)]="field.required">Required</md-checkbox>
+              <md-checkbox [(ngModel)]="field.sum">Sum</md-checkbox>
+
+              <button md-icon-button 
+                (click)="removeOrderField(field)" 
+                mdTooltip="Delete Order Service Item"
+                class="delete-service">
+                <md-icon>delete</md-icon>
+              </button>
+            </section>
+            <section>
+              <md-select placeholder="Type" [(ngModel)]="field.type">
+                <md-option *ngFor="let type of order_field_types" [value]="type.value">
+                  {{ type.name }}
+                </md-option>
+              </md-select>
+
+            </section>
+            <hr>
           </div>
         </div>
 
@@ -387,12 +408,12 @@
         <md-icon>add</md-icon> Service
       </button>
 
-      <!-- <button md-button 
+      <button md-button 
         *ngIf="selectedService"
-        (click)="addServiceDetailImage()" 
-        mdTooltip="Add a new detail image">
-        <md-icon>add</md-icon> Detail Image
-      </button> -->
+        (click)="addOrderField()" 
+        mdTooltip="Add a new order field">
+        <md-icon>add</md-icon> Field
+      </button>
 
       <span class="flexfill"></span>
       <button type="button" md-button (click)="saveSettings()" [disabled]="disableSave">

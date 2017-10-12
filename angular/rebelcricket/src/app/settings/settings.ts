@@ -1,3 +1,5 @@
+import { OrderField } from '../orders/order';
+
 export class Settings {
   _id: string = 'settings';
 
@@ -34,7 +36,9 @@ export class Service {
 	detail_images?: Array<{url: string}>;
 	detail_items?: Array<{heading: string, detail: string}>;
 
-  order_configuration?: Array<any>;
+  vendor_goods_catalog?: string;
+
+  order_fields?: Array<OrderField>;
 
 	constructor(public name: string) { }
 }

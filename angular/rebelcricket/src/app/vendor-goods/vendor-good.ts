@@ -11,4 +11,8 @@ export class VendorGood {
   href_items: Array<string>;
   colors: Array<{name: string, href: string}>;
   color_size_prices: Array<{color: string, size_prices: Array<[string,string]>}>;
+
+  key?: string;
+  catalog?: string;
+  brand?: string;
 }

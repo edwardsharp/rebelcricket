@@ -79,3 +79,14 @@ md-list-item md-form-field{
   flex-direction: row;
   align-items: center;
 }
+
+section {
+  display: flex;
+  align-content: center;
+  align-items: center;
+  height: 60px;
+}
+
+md-checkbox {
+  margin: 10px;
+}

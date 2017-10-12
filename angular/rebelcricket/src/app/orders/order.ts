@@ -1,25 +1,8 @@
-// class Outer {
-//     constructor(public inner: Outer.Inner) { }
-// }
-
-// namespace Outer {
-//     export class Inner {
-//         inInner: number
-//     };
-// }
-
-// // Spec
-// let outer1 = new Outer({ inInner: 3 });
-
-// let outerInner = new Outer.Inner();
-// let outer2 = new Outer(outerInner);
-
-// @Injectable()  //???
 export class Order {
   _id?: string;
   _rev?: string;
   _attachments?: any;
-  attachments?: Array<any>; //in the future, probz better to not use _attachments...
+  attachments?: Array<any>; //in the future, might not use _attachments...
 
   history?: Array<{date:Date, title:string, description:string}>;
   name: string;
@@ -39,13 +22,10 @@ export class Order {
   archived_at?: Date;
   status?: string;
   tags?: Array<string>;
-  order_services?: Array<OrderService>;
+  // order_services?: Array<OrderService>;
   line_items?: Array<LineItem>;
 
-  constructor(
-    // public order_services: OrderService[],
-    // public line_items: LineItem[]
-  ) { 
+  constructor() { 
     this._id = this._id || Math.floor(Date.now()).toString(36); 
     this.created_at = new Date(parseInt(this._id, 36));
     this.status = this.status || 'new';
@@ -53,22 +33,31 @@ export class Order {
 
 }
 
+export enum OrderFieldType{
+  Text,
+  Textarea,
+  Checkbox,
+  Number,
+  Select
+}
+
 export class OrderField {
   key: string;
   label: string;
-  type: string;
+  type:  OrderFieldType;
   value: string;
   required: boolean;
   internal: boolean;
   sum: boolean;
+  select_items: Array<string>;
 }
 
 
-export class OrderService {
-  key: string;
-  label: string;
-  items: Array<OrderField>;
-}
+// export class OrderService {
+//   key: string;
+//   label: string;
+//   items: Array<OrderField>;
+// }
 
 export class LineItem {
   notes: string;
