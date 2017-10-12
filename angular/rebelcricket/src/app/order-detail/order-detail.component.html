@@ -98,16 +98,23 @@
 			</md-list>
 
 			<h4 *ngIf="order.line_items">Line Items ({{order.line_items.length}})</h4>
-		  <div *ngFor="let line_item of order.line_items">
+		  <div *ngFor="let line_item of order.line_items" class="line-items">
 		  	<section>
-			  	<h4>Service: {{line_item.service_label}}</h4>
-			  	
-			  	<md-form-field class="number">
+		  		<button md-icon-button (click)="removeOrderLineItem(line_item)"
+		  			mdTooltip="Delete Line Item">
+			      <md-icon>delete</md-icon>
+			    </button>
+			  	<md-form-field class="li-service">
+				    <input mdInput value="{{line_item.service_label}}" placeholder="Service" type="text" readonly="true">
+				  </md-form-field>
+
+			  	<span class="flexfill"></span>
+			  	<md-form-field class="quantity">
 				    <input mdInput [(ngModel)]="line_item.quantity" (change)="onChange($event)" placeholder="quantity" type="number">
 				  </md-form-field>
 
-				  <md-form-field class="number">
-				    <input mdInput [(ngModel)]="line_item.total" (change)="onChange($event)" placeholder="total" type="number" readonly="true">
+				  <md-form-field class="total">
+				    <input mdInput [(ngModel)]="line_item.total" (change)="onChange($event)" placeholder="total" type="number" [readonly]="false">
 				  </md-form-field>
 				 </section>
 

@@ -207,10 +207,12 @@ export class OrderDetailComponent implements OnInit, OnDestroy  {
     //     {type: 'text/plain'})
     // }
 
+    let description; 
 
     this.order._attachments = this.order._attachments || {};
     for(let file of e.target.files){
-      console.log('quoteFileChnaged()! file:',file);
+      // console.log('quoteFileChnaged()! file:',file);
+      description = description ? `${description}, ${file.name}` : file.name;
       this.order._attachments[file.name] = {
         "content_type": file.type,
         "data": file
@@ -218,7 +220,7 @@ export class OrderDetailComponent implements OnInit, OnDestroy  {
     }
 
     this.order.history = this.order.history || [];
-    this.order.history.push({date: new Date, title: `Added ${e.target.files.length} Attachment${e.target.files.length > 1 ? 's' : ''}`, description: e.target.files.map(f => f.name).join(', ')});
+    this.order.history.push({date: new Date, title: `Added ${e.target.files.length} Attachment${e.target.files.length > 1 ? 's' : ''}`, description: description});
 
     this.orderService.saveOrder(this.order).then(resp => {
       // console.log('zomg, resp:',resp);
@@ -348,6 +350,13 @@ export class OrderDetailComponent implements OnInit, OnDestroy  {
       this.order.line_items.push(li);
      }
      this.selectedService = undefined; 
+  }
+
+  removeOrderLineItem(item: LineItem): void {
+    let idx = this.order.line_items.indexOf(item);
+    if(idx >= 0){
+      this.order.line_items.splice(idx, 1);
+    }
   }
 
   clearDueDate(): void {
