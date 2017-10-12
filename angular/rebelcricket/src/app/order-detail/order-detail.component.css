@@ -13,6 +13,10 @@ md-chip{
   overflow: hidden;
 }
 
+md-checkbox{
+	margin-left: 1em;
+}
+
 md-toolbar-row{
 	z-index: 3;
 }

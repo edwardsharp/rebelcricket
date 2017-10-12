@@ -315,12 +315,28 @@
   <md-expansion-panel *ngIf="settings?.services">
     <md-expansion-panel-header>
       <md-panel-title>
-        Order
+        Orders
       </md-panel-title>
       <md-panel-description>
-        Order service details
+        Order form details
       </md-panel-description>
     </md-expansion-panel-header>
+
+    <!-- #TODO: setup array of top-level order fields, and grouping thing
+         things like: estimate_number
+invoice_number
+purchase_order_number
+in_hands_date
+job_name
+from_po
+art_notes
+printers_notes
+call_when_complete
+will_call
+ship_via
+ship_via_txt
+ship_to
+     -->
 
     <div class="edit-services-row">
       <md-select placeholder="Edit Service" [(ngModel)]="selectedService" name="service">
@@ -358,69 +374,66 @@
       <md-checkbox *ngIf="selectedService" 
         [(ngModel)]="selectedService.notes" (change)="onChange()">Notes</md-checkbox>
     </div>
-    <div>
-      <div *ngIf="settings?.services.length == 0" class="center">
-        <h3>No services yet...</h3>
-      </div>
+    <div *ngIf="settings?.services.length == 0" class="center">
+      <h3>No services yet...</h3>
+    </div>
+    <div *ngIf="selectedService" class="service-panel">
+      <h3 *ngIf="selectedService.order_fields && selectedService.order_fields.length > 0">Order Fields:</h3>
+      <div class="detail-item">
+        <div *ngFor="let field of selectedService.order_fields">
+          <section>
+            <button md-icon-button 
+              (click)="removeOrderField(field)" 
+              mdTooltip="Delete Order Service Item"
+              class="delete-service">
+              <md-icon>delete</md-icon>
+            </button>
+            <md-form-field>
+              <input mdInput 
+                [(ngModel)]="field.name" 
+                (change)="onChange()"
+                placeholder="Order Field Name">
+            </md-form-field>
 
-      <div *ngIf="selectedService" class="service-panel">
-        <h3 *ngIf="selectedService.order_fields && selectedService.order_fields.length > 0">Order Fields:</h3>
-        <div class="detail-item">
-          <div *ngFor="let field of selectedService.order_fields">
-            <section>
+            <md-checkbox [(ngModel)]="field.internal" (change)="onChange()">Internal</md-checkbox>
+            <md-checkbox [(ngModel)]="field.required" (change)="onChange()">Required</md-checkbox>
+
+          </section>
+          <section>
+            <md-select placeholder="Type" [(ngModel)]="field.type" (change)="onChange()">
+              <md-option *ngFor="let type of order_field_types" [value]="type.value">
+                {{ type.name }}
+              </md-option>
+            </md-select>
+            <button md-button 
+              *ngIf="field.type == SelectFieldType"
+              (click)="addOrderFieldSelectItem(field)" 
+              mdTooltip="Add a Select field option">
+              <md-icon>add</md-icon> Select Option
+            </button>
+          </section>
+          <div *ngIf="field.type == SelectFieldType">
+            <section *ngFor="let select_item of field.select_items">
+              <md-form-field>
+                <input mdInput 
+                  [(ngModel)]="select_item.name" 
+                  (change)="onChange()"
+                  placeholder="Option Value">
+              </md-form-field>
               <button md-icon-button 
-                (click)="removeOrderField(field)" 
-                mdTooltip="Delete Order Service Item"
+                (click)="removeOrderFieldSelectItem(field,select_item)" 
+                mdTooltip="Delete Select Item"
                 class="delete-service">
                 <md-icon>delete</md-icon>
               </button>
-              <md-form-field>
-                <input mdInput 
-                  [(ngModel)]="field.name" 
-                  (change)="onChange()"
-                  placeholder="Order Field Name">
-              </md-form-field>
-
-              <md-checkbox [(ngModel)]="field.internal" (change)="onChange()">Internal</md-checkbox>
-              <md-checkbox [(ngModel)]="field.required" (change)="onChange()">Required</md-checkbox>
- 
             </section>
-            <section>
-              <md-select placeholder="Type" [(ngModel)]="field.type" (change)="onChange()">
-                <md-option *ngFor="let type of order_field_types" [value]="type.value">
-                  {{ type.name }}
-                </md-option>
-              </md-select>
-              <button md-button 
-                *ngIf="field.type == SelectFieldType"
-                (click)="addOrderFieldSelectItem(field)" 
-                mdTooltip="Add a Select field option">
-                <md-icon>add</md-icon> Select Option
-              </button>
-            </section>
-            <div *ngIf="field.type == SelectFieldType">
-              <section *ngFor="let select_item of field.select_items">
-                <md-form-field>
-                  <input mdInput 
-                    [(ngModel)]="select_item.name" 
-                    (change)="onChange()"
-                    placeholder="Option Value">
-                </md-form-field>
-                <button md-icon-button 
-                  (click)="removeOrderFieldSelectItem(field,select_item)" 
-                  mdTooltip="Delete Select Item"
-                  class="delete-service">
-                  <md-icon>delete</md-icon>
-                </button>
-              </section>
-            </div>
-            <hr>
           </div>
+          <hr>
         </div>
-
       </div>
 
     </div>
+
 
     <md-action-row>
       
