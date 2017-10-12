@@ -12,7 +12,6 @@ export class Settings {
   about_page_items?: Array<{heading: string, detail: string}>;
   landing_page_items?: Array<{url:string, href:string}>;
 
-
   constructor(
     public order_statuses: Array<OrderStatus>,
     public google_api: GoogleApi,
@@ -34,5 +33,8 @@ export class Service {
 	image?: string;
 	detail_images?: Array<{url: string}>;
 	detail_items?: Array<{heading: string, detail: string}>;
+
+  order_configuration?: Array<any>;
+
 	constructor(public name: string) { }
 }

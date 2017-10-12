@@ -182,7 +182,7 @@
         Services
       </md-panel-title>
       <md-panel-description>
-        Configuration for order-able services
+        Service page details
       </md-panel-description>
     </md-expansion-panel-header>
 
@@ -311,6 +311,96 @@
       </button>
     </md-action-row>
   </md-expansion-panel>
+
+  <md-expansion-panel *ngIf="settings?.services">
+    <md-expansion-panel-header>
+      <md-panel-title>
+        Order
+      </md-panel-title>
+      <md-panel-description>
+        Order service details
+      </md-panel-description>
+    </md-expansion-panel-header>
+
+    <div class="edit-services-row">
+      <md-select placeholder="Edit Service" [(ngModel)]="selectedService" name="service">
+        <md-option *ngFor="let service of settings.services" [value]="service">
+          {{service.name}}
+        </md-option>
+      </md-select>
+      <button md-icon-button 
+        *ngIf="selectedService"
+        (click)="removeService(selectedService)" 
+        mdTooltip="Delete {{selectedService.name}}"
+        class="delete-service">
+        <md-icon>delete</md-icon>
+      </button>
+    </div>
+    <div>
+      <div *ngIf="settings?.services.length == 0" class="center">
+        <h3>No services yet...</h3>
+      </div>
+
+      <div *ngIf="selectedService" class="service-panel">
+        
+        <div>
+          <md-form-field class="halfwidth">
+            <input mdInput 
+              [(ngModel)]="selectedService.name" 
+              (change)="onChange()"
+              placeholder="Name">
+          </md-form-field>
+          <md-form-field class="halfwidth">
+            <input mdInput 
+              [(ngModel)]="selectedService.slug" 
+              (change)="onChange()"
+              placeholder="Slug">
+          </md-form-field>
+        </div>
+
+        <div class="detail-item">
+          <div *ngFor="let item of selectedService.order_configuration">
+            <md-form-field class="halfwidth">
+              <input mdInput 
+                [(ngModel)]="item.name" 
+                (change)="onChange()"
+                placeholder="Item Name">
+            </md-form-field>
+            <button md-icon-button 
+              (click)="removeOrderServiceItem(item)" 
+              mdTooltip="Delete Order Service Item"
+              class="delete-service">
+              <md-icon>delete</md-icon>
+            </button>
+          </div>
+        </div>
+
+      </div>
+
+    </div>
+
+    <md-action-row>
+      
+      <button md-button 
+        (click)="addService()" 
+        mdTooltip="Add a new service">
+        <md-icon>add</md-icon> Service
+      </button>
+
+      <!-- <button md-button 
+        *ngIf="selectedService"
+        (click)="addServiceDetailImage()" 
+        mdTooltip="Add a new detail image">
+        <md-icon>add</md-icon> Detail Image
+      </button> -->
+
+      <span class="flexfill"></span>
+      <button type="button" md-button (click)="saveSettings()" [disabled]="disableSave">
+        <md-icon>save</md-icon>Save Settings
+      </button>
+    </md-action-row>
+  </md-expansion-panel>
+
 
   <md-expansion-panel>
     <md-expansion-panel-header>

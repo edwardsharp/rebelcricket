@@ -181,5 +181,12 @@ export class SettingsComponent implements OnInit {
     }
   }
   
+  removeOrderServiceItem(item: any){
+    let idx = this.selectedService.order_configuration.indexOf(item);
+    if(idx >= 0){
+      this.selectedService.order_configuration.splice(idx, 1);
+      this.onChange();
+    }
+  }
 
 }

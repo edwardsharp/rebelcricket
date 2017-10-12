@@ -9,7 +9,7 @@ import {MdChipInputEvent, ENTER, MdSnackBar} from '@angular/material';
 import { Order, LineItem } from '../orders/order';
 import { OrderService } from '../orders/order.service';
 import { SettingsService } from '../settings/settings.service';
-import { Settings } from '../settings/settings';
+import { Settings, Service } from '../settings/settings';
 import { AppTitleService } from '../app-title.service';
 
 import * as _ from 'underscore';
@@ -34,6 +34,7 @@ export class OrderDetailComponent implements OnInit, OnDestroy  {
   gfxError: boolean = false;
   revisionIds: Array<string> = [];
   // serializedPanes: Array<string>;
+  selectedService: Service;
 
   constructor(
   	private orderService: OrderService,
@@ -327,8 +328,14 @@ export class OrderDetailComponent implements OnInit, OnDestroy  {
   }
 
   addOrderLineItem(): void {
-    this.order.line_items = this.order.line_items || [];
-    this.order.line_items.push(new LineItem);
+    if(this.selectedService){
+      this.order.line_items = this.order.line_items || [];
+      let li = new LineItem;
+      li.service_key = this.selectedService.slug;
+      li.service_label = this.selectedService.name;
+      this.order.line_items.push(li);
+     }
+     this.selectedService = undefined; 
   }
 
   clearDueDate(): void {
@@ -339,6 +346,10 @@ export class OrderDetailComponent implements OnInit, OnDestroy  {
   tagsChanged(tags:string[]): void {
     this.order.tags = tags;
     this.needsSave = true;
+  }
+
+  serviceNeedsDisabled(service: Service): boolean{
+    return this.order && this.order.line_items && this.order.line_items.some( li => li.service_label == service.name); 
   }
           
 }

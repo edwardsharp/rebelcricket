@@ -28,6 +28,7 @@ md-card-actions{
 
 md-action-row{
 	display: flex;
+	height: 100%;
   align-items: center;
 	position: sticky;
 	bottom: 0;
