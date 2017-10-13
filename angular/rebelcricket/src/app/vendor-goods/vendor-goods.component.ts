@@ -41,7 +41,7 @@ export class VendorGoodsComponent implements OnInit {
         }else{ return []; }
       })
       .subscribe((order: Order) => {
-        if(order && order._id && order.status != 'new'){ 
+        if(order && order._id && order.history){ 
           this.order = order 
         }else{ this.line_item_id = undefined; }
       });
