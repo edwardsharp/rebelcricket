@@ -350,6 +350,7 @@ export class OrderDetailComponent implements OnInit, OnDestroy  {
       li.service = this.selectedService;
       li.items = this.orderFieldsForService(this.selectedService);
       this.order.line_items.push(li);
+      this.saveOrder();
      }
      this.selectedService = undefined; 
 
@@ -389,6 +390,51 @@ export class OrderDetailComponent implements OnInit, OnDestroy  {
       return this.settings.services.find( s => s.name == service.name ).order_fields
     }catch(e){ return []; }
     
+  }
+
+  sizeQtyChanged(sel_item:any, line_item: LineItem): void{
+    // console.log('sizeQtyChanged sel_item:',sel_item);
+
+    sel_item.qty_total = sel_item.size_prices.reduce( (sum, value) => sum + (isNaN(parseInt(value.quantity)) ? 0 : parseInt(value.quantity) ), 0 );
+
+    sel_item.price_total = sel_item.size_prices.reduce( (sum, value) => {
+      if( !isNaN(parseInt(value.quantity))
+        && !isNaN(parseFloat(value.price.replace(/\$/,'').trim())) ){
+        return (sum + (parseFloat(value.price.replace(/\$/,'').trim()) * parseInt(value.quantity)));
+      }else{
+        return sum;
+      }
+    }, 0);
+
+    this.sizeQtyTotalChanged(line_item);
+  }
+
+  sizeQtyTotalChanged(line_item:LineItem): void{
+    console.log('sizeQtyTotalChanged line_item:',line_item);
+    // if(line_item.vendor_goods){
+      line_item.quantity = line_item.vendor_goods.reduce( (sum,value) => {
+        return sum + value.selected_items.reduce( (sum, value) => sum + (isNaN(parseInt(value.qty_total)) ? 0 : parseInt(value.qty_total) ), 0 );
+      }, 0);
+
+      line_item.total = line_item.vendor_goods.reduce( (sum, value) => {
+        return sum + value.selected_items.reduce( (sum,value) => {
+          if( !isNaN(parseInt(value.qty_total))
+            && !isNaN(parseFloat(value.price_total)) ){
+            return (sum + (parseFloat(value.price_total) * parseInt(value.qty_total)));
+          }else{
+            return sum;
+          }
+        }, 0);
+      }, 0);
+    // }
+  }
+
+  deleteVendorGoodItem(selected_items:any, item:any, line_item: LineItem): void{
+    let idx = selected_items.indexOf(item);
+    if(idx >= 0){
+      selected_items.splice(idx, 1);
+      this.sizeQtyTotalChanged(line_item);
+    }
   }
 
 }  

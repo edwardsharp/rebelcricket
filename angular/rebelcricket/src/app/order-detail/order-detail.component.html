@@ -112,24 +112,43 @@
 		  			mdTooltip="Browse Vendor Goods">
 			      <md-icon>shopping_basket</md-icon>
 			    </a>
-			  	<md-form-field class="quantity">
+		<!-- 	  	<md-form-field class="quantity">
 				    <input mdInput [(ngModel)]="line_item.quantity" (change)="onChange($event)" placeholder="quantity" type="number">
 				  </md-form-field>
 
 				  <md-form-field class="total">
 				    <input mdInput [(ngModel)]="line_item.total" (change)="onChange($event)" placeholder="total" type="number" [readonly]="false">
+				  </md-form-field> -->
+
+				  <md-form-field class="total">
+				    <input mdInput [(ngModel)]="line_item.quantity" placeholder="Total" type="number" readonly="true">
+				    ${{line_item?.total?.toFixed(2)}}
 				  </md-form-field>
+
 				</section>
 	  		
 	  		<h5 *ngIf="line_item.vendor_goods">Goods:</h5>
 	  		<div *ngFor="let vendor_good of line_item.vendor_goods">
-	  			{{vendor_good.vendor_title}}
+	  			{{vendor_good.vendor_title}} <button md-icon-button mdTooltip="Remove Vendor Good" (click)="deleteVendorGoodItem(line_item.vendor_goods,vendor_good,line_item)"><md-icon>delete</md-icon></button>
+
 	  			<div *ngFor="let sel_item of vendor_good.selected_items">
 	  				color: {{sel_item.color}}
-	  				<div *ngFor="let size_price of sel_item.size_prices">
-	  					size: {{size_price.size}}
-	  					price: {{size_price.price}}
-	  				</div>
+						
+						<div style="display: flex;">
+	  					<md-form-field class="quantity" *ngFor="let size_price of sel_item.size_prices">
+						    <input mdInput [(ngModel)]="size_price.quantity" (change)="sizeQtyChanged(sel_item, line_item)" placeholder="{{size_price.size}}" type="number">
+						    {{size_price.price}}
+						  </md-form-field>
+
+						  <md-form-field class="total">
+						    <input mdInput [(ngModel)]="sel_item.qty_total" placeholder="Total" type="number" readonly="true">
+						    ${{sel_item?.price_total?.toFixed(2)}}
+						  </md-form-field>
+
+						  <button md-icon-button mdTooltip="Remove {{sel_item.color}}" 
+						  	(click)="deleteVendorGoodItem(vendor_good.selected_items,sel_item,line_item)">
+						  	<md-icon>delete</md-icon></button>
+		  			</div>
 
 	  			</div>
 

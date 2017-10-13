@@ -129,7 +129,7 @@ export class VendorGoodsComponent implements OnInit {
 
     dialogRef.afterClosed().subscribe(result => {
       console.log('!!! dialog closed result:', result);
-      if(result.selectedItems){
+      if(result.selectedItems && this.order.line_items){
         console.log('!!! ok    has selectedItems!')
         let line_item = this.order.line_items.find(li => li.service_label == this.line_item_id);
         if(line_item){
