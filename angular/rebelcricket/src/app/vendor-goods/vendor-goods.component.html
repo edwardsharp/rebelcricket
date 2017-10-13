@@ -1,91 +1,81 @@
-<!-- 
-<md-expansion-panel>
-      <md-expansion-panel-header>
-        <md-panel-title>
-          &nbsp;Categories 
-        </md-panel-title>
-        <md-panel-description>
-          ({{vendorGoods.length}})
-        </md-panel-description>
-      </md-expansion-panel-header>
-      
-      <md-selection-list #vendorGoodsFilenameIndex dense>
-        <md-list-option *ngFor="let vendorGood of vendorGoods" (click)="toggleVendorGoodCategory(vendorGood.filename)" [selected]="vendorGoodsCategories.indexOf(vendorGood.filename) != -1">
-          <span class="truncate">{{vendorGood.filename | sliceVendorFilenameCategory | titlecase }} ({{vendorGood.items?.length}})</span>
-        </md-list-option>
-      </md-selection-list>
 
-    </md-expansion-panel> -->
+<div id="vendorGoodsIndexNarrow">
 
-<div id="vendorGoodsContainer">
-  <div id="vendorGoodsIndexNarrow" *ngIf="isNarrowLayout">
+  <a md-button
+    *ngIf="order && order._id"
+    routerLink="/dashboard/order/{{order._id}}">
+    <md-icon>arrow_back</md-icon>
+    <span>Back to Order</span>
+  </a>
 
-    <button class="vendorGoodsCategories" md-button [mdMenuTriggerFor]="vendorGoodsCategoriesMenu">
-      <md-icon>more_vert</md-icon>
-      Categories ({{vendorGoodsCategories.length}})
-    </button>
+  <button class="vendorGoodsCategories" md-button [mdMenuTriggerFor]="vendorGoodsCategoriesMenu">
+    <md-icon>view_module</md-icon>
+    Categories ({{vendorGoodsCategories.length}})
+  </button>
 
-    <md-menu #vendorGoodsCategoriesMenu="mdMenu">
-      <md-selection-list #vendorGoodsIndex dense>
-        <md-list-option *ngFor="let idx of vendorGoodsCategories" (click)="$event.stopPropagation();toggleVendorGoodCategory(idx.name)">
-          <span class="truncate">{{idx.name}} ({{idx.count}})</span>
-        </md-list-option>
-      </md-selection-list>
-    </md-menu>
-  </div>
-
-
-  <div id="vendorGoodsIndex" *ngIf="!isNarrowLayout">
-
-
-    <md-selection-list class="vendorGoodsCategories" #vendorGoodsIndex dense>
+  <md-menu #vendorGoodsCategoriesMenu="mdMenu">
+    <md-selection-list #vendorGoodsIndex dense>
       <md-list-option *ngFor="let idx of vendorGoodsCategories" (click)="$event.stopPropagation();toggleVendorGoodCategory(idx.name)">
         <span class="truncate">{{idx.name}} ({{idx.count}})</span>
       </md-list-option>
     </md-selection-list>
+  </md-menu>
 
-      <!--   <button md-menu-item [mdMenuTriggerFor]="subMenu">Power</button>
-      <md-menu #subMenu="mdMenu">
-        <button md-menu-item>Shut down</button>
-        <button md-menu-item>Restart</button>
-        <button md-menu-item>Hibernate</button>
-      </md-menu> -->
+  <button class="vendorGoodsBrands" md-button [mdMenuTriggerFor]="vendorGoodsBrandsMenu" disabled>
+    <md-icon>loyalty</md-icon>
+    Brands (0)
+  </button>
+  <md-menu #vendorGoodsBrandsMenu="mdMenu">
+    <md-selection-list #vendorGoodsBrandsIndex dense>
+      
+      <!-- <md-list-option *ngFor="let idx of vendorGoodsCategories" (click)="$event.stopPropagation();toggleVendorGoodCategory(idx.name)">
+        <span class="truncate">{{idx.name}} ({{idx.count}})</span>
+      </md-list-option> -->
+    </md-selection-list>
+  </md-menu>
 
-   <!--     -->
   
-   <!--  <h3 mdLine>Categories ({{vendorGoodsCategories.length}})</h3>
-    
- -->
-  </div>
 
-  <div id="vendorGoodsContent">
-    <i *ngIf="loading">
-      loading vendor goods...
-    </i>
-    <h3 *ngIf="!loading && !vendorGoodsCategories?.length">No Vendor Goods yet...</h3>
-    <md-list>
-
-      <div *ngFor="let item of vendorGoodsIndexSelected">
-        <h3 md-subheader class="sticky center">{{item}}</h3>
-        <a name="{{item}}">&nbsp;</a>
-        <div *ngFor="let subGood of vendorGoodsSubCategories(item)">
-          <h3 md-subheader class="sticky center">{{item}} - {{subGood}}</h3>
-          <a name="{{subGood}}">&nbsp;</a>
-          <md-list-item 
-            *ngFor="let vendorGood of vendorGoodsForCategory(item,subGood)"
-            (click)="openDialog(vendorGood)">
-            <h3 mdLine class="truncate" title="{{vendorGood.title}}"> {{vendorGood.title}} <small class="colorCount">({{vendorGood.colors?.length}} Colors)</small></h3>
-     
-            <button type="button" md-icon-button>
-              <md-icon>shopping_basket</md-icon>
-            </button>
-          </md-list-item>
-          <md-divider></md-divider>
-
-        </div>
-      </div>
-    </md-list>
-
-  </div>
+ <!--  <button class="vendorGoodsSearch" md-button [mdMenuTriggerFor]="vendorGoodsSearchMenu">
+    <md-icon>search</md-icon>
+    Search
+  </button>
+  <md-menu #vendorGoodsSearchMenu="mdMenu">
+    <md-form-field>
+      <input mdInput placeholder="Search" (click)="$event.stopPropagation()">
+    </md-form-field>
+  </md-menu> -->
 
 </div>
+
+<div id="vendorGoodsContent">
+  <i *ngIf="loading">
+    loading vendor goods...
+  </i>
+  <h3 *ngIf="!loading && !vendorGoodsCategories?.length">No Vendor Goods yet...</h3>
+  <md-list>
+
+    <div *ngFor="let item of vendorGoodsIndexSelected">
+      <h3 md-subheader class="sticky center">{{item}}</h3>
+      <a name="{{item}}">&nbsp;</a>
+      <div *ngFor="let subGood of vendorGoodsSubCategories(item)">
+        <h3 md-subheader class="sticky center">{{item}} - {{subGood}}</h3>
+        <a name="{{subGood}}">&nbsp;</a>
+        <md-list-item 
+          *ngFor="let vendorGood of vendorGoodsForCategory(item,subGood)"
+          (click)="openDialog(vendorGood,order)">
+          <h3 mdLine class="truncate" title="{{vendorGood.title}}"> {{vendorGood.title}} <small class="colorCount">({{vendorGood.colors?.length}} Colors)</small></h3>
+   
+          <button type="button" md-icon-button>
+            <md-icon>shopping_basket</md-icon>
+          </button>
+        </md-list-item>
+        <md-divider></md-divider>
+
+      </div>
+    </div>
+  </md-list>
+
+</div>
+
+

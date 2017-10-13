@@ -44,12 +44,12 @@ const appRoutes: Routes = [
   },
   {
     path: 'dashboard/orders',
-    component: OrdersComponent,
-    data: { title: 'Orders List' }
+    component: OrdersComponent
   },
   {
     path: 'dashboard/vendor_goods',
-    component: VendorGoodsComponent
+    component: VendorGoodsComponent,
+    data: { order_id: 'order_id', line_item_id: 'line_item_id' }
   },
   {
     path: 'dashboard/vendor_goods/import',

@@ -1,10 +1,14 @@
-import { Component, OnInit, ElementRef, HostListener, Input, OnChanges } from '@angular/core';
+import { Component, OnInit, ElementRef, Input, OnChanges } from '@angular/core';
+import { ActivatedRoute, ParamMap } from '@angular/router';
 import { Observable } from 'rxjs/Observable';
 import {MdDialog, MdDialogRef, MD_DIALOG_DATA, MdDatepickerInputEvent} from '@angular/material';
 
 import { VendorGood } from './vendor-good';
 import { VendorGoodsService } from './vendor-goods.service';
 import { VendorGoodsDialogComponent } from './vendor-goods-dialog.component';
+import { Order } from '../orders/order';
+import { OrderService } from '../orders/order.service';
+
 
 @Component({
   selector: 'app-vendor-goods',
@@ -16,23 +20,32 @@ export class VendorGoodsComponent implements OnInit {
 	loading: boolean = true;
 	vendorGoods: Array<VendorGood> = [];
   vendorGoodsCategories: Array<{name:string,count:number}> = [];
-
 	vendorGoodsIndexSelected: Array<string> = [];
-
-  isNarrowLayout: boolean = window.innerWidth < 600;
-
-  @HostListener('window:resize', ['$event'])
-  onResize(event) {
-    this.isNarrowLayout = event.target.innerWidth < 600;
-    this.vendorGoodsIndexSelected = [];
-  }
+  order: Order;
+  line_item_id: string;
 
   constructor(
   	private vendorGoodsService: VendorGoodsService,
-  	public dialog: MdDialog ) { }
+  	public dialog: MdDialog,
+    private route: ActivatedRoute,
+    private orderService: OrderService ) { }
 	
 	ngOnInit(): void {
     this.getVendorGoods();
+
+    this.route.paramMap
+      .switchMap((params: ParamMap) => {
+        this.line_item_id = params['line_item_id'];
+        if(params.get('order_id') && params.get('order_id') != ''){
+          return this.orderService.getOrder( params.get('order_id') );
+        }else{ return []; }
+      })
+      .subscribe((order: Order) => {
+        if(order && order._id && order.status != 'new'){ 
+          this.order = order 
+        }else{ this.line_item_id = undefined; }
+      });
+
   }
 
   toggleVendorGoodCategory(category:string){
@@ -40,7 +53,6 @@ export class VendorGoodsComponent implements OnInit {
   		this.vendorGoodsIndexSelected.splice(this.vendorGoodsIndexSelected.indexOf(category), 1);
   	}else{
   		this.vendorGoodsIndexSelected.push(category);	
-  		setTimeout(() => this.goTo(category), 500);
   	}
   }
 
@@ -87,10 +99,6 @@ export class VendorGoodsComponent implements OnInit {
     } 
   }
 
-  goTo(hash: string): void {
-		window.location.hash = hash;
-	}
-
   //dialog stuff 
   animal: string;
   name: string;
@@ -100,10 +108,12 @@ export class VendorGoodsComponent implements OnInit {
 
   // constructor(public dialog: MdDialog) {}
 
-  openDialog(data:any): void {
-    console.log('openDialog data:',data);
+  openDialog(data:any,order:Order): void {
+    // console.log('openDialog data:',data);
+    if(order && order._id){
+      data.order = order;
+    }
     let dialogRef = this.dialog.open(VendorGoodsDialogComponent, {
-      
       data: data
     });
 

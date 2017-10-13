@@ -1,3 +1,8 @@
+:host{
+	min-height: 100vh; 
+	/*hack to keep bottom tab nav sticky bar from creepin up the page. */
+}
+
 md-form-field{
 	min-width: 49%;
 }
@@ -7,7 +12,6 @@ md-form-field.with-button{
 }
 
 md-chip{
-	/*white-space: pre-wrap;*/
   text-overflow: ellipsis;
   max-width: 200px;
   overflow: hidden;
@@ -59,7 +63,6 @@ md-action-row{
 	margin-left: 0.5em;
 }
 
-
 #new-attachment{
 	max-width: 33vw;
 	padding: 1em;
@@ -91,13 +94,6 @@ md-action-row{
 	z-index: 2;
 }
 
-.order-save{
-	position: absolute;
-	bottom:0;
-
-}
-
-
 .attachment-cards{
 	display: flex;
 	flex-direction: column;
@@ -107,15 +103,12 @@ md-action-row{
 .item-key{
 	white-space: pre-wrap;
   text-overflow: ellipsis;
-  
   overflow: hidden;
 }
 .attachment-img{
 	max-height: 80vh;
 	width: auto;
 	max-width: 500px;
-	/*min-width: 150px;
-	max-width: 200px;*/
 }
 
 .line-items{
@@ -141,7 +134,6 @@ section {
 section > * {
 	margin: 0 0.5em;
 }
-
 
 .li-service, .total, .quantity{
 	min-width: unset;

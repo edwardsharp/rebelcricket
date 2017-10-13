@@ -10,6 +10,7 @@ import * as _ from 'underscore';
 })
 export class VendorGoodsDialogComponent implements OnInit {
 
+
   ngOnInit() {
   }
 
@@ -72,6 +73,16 @@ export class VendorGoodsDialogComponent implements OnInit {
       }
     });
     return retArr;
+  }
+
+  closeAndReturnToOrder(vendorItem: any): void{
+    console.log('closeAndReturnToOrder vendorItem:',vendorItem);
+  }
+  closeAndKeepBrowsing(vendorItem: any): void{
+    console.log('closeAndKeepBrowsing vendorItem:',vendorItem);
+  }
+  closeClick(): void{
+
   }
 
 }

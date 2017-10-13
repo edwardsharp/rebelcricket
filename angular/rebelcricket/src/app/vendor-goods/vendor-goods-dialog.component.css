@@ -1,10 +1,23 @@
 .row {
   display: flex;
   flex-direction: row;
+  align-items: center;
 }
 
 .color-size-prices{
   align-items: center;
+}
+
+.mat-dialog-title{
+  margin:0;
+}
+
+[md-dialog-actions]{
+  position: sticky;
+  bottom: 0;
+  padding: 0;
+
+  background-color: white;
 }
 
 @media (max-width: 599px) {
@@ -36,8 +49,6 @@
 }
 
 .color-img{
-  margin-top: 8px;
-  margin-bottom: 1em;
   word-wrap: break-word;
   -webkit-clip-path: polygon(0% 0%, 95% 0, 100% 50%, 95% 100%, 0% 100%);
   clip-path: polygon(0% 0%, 95% 0, 100% 50%, 95% 100%, 0% 100%);

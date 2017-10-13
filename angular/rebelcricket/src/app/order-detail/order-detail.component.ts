@@ -378,5 +378,10 @@ export class OrderDetailComponent implements OnInit, OnDestroy  {
       return this.settings.services.find( s => s.name == service.name ).order_fields
     }catch(e){ return []; }
     
-  }       
+  }
+
+  browseVendorGoods(line_item: LineItem): void {
+    //todo: open vendor goodz modal, process returned data... 
+    
+  }
 }  

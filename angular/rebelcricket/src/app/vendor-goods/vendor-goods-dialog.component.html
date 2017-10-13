@@ -25,15 +25,17 @@
 
   </div>
 
-  <div class="row" *ngFor="let item of vendorItem.colors" (click)="item.selected = !item.selected">
-    <div class="color-img" 
-      [style.background-color]="'none'"
-      [style.background-image]="'url(' + backgroundImgFor(vendorItem.href_items,item.color) + ')'">
-      <div class="subtitle">
-        <md-checkbox [checked]="item.selected" tabindex="-1"></md-checkbox>
-        {{flattenColorName(item.color)}}
+  <div class="row" *ngFor="let item of vendorItem.colors">
+    <!-- (click)="item.selected = !item.selected" -->
+    <md-checkbox [checked]="item.selected" tabindex="-1">
+      <div class="color-img" 
+        [style.background-color]="'none'"
+        [style.background-image]="'url(' + backgroundImgFor(vendorItem.href_items,item.color) + ')'">
+        <div class="subtitle">
+            {{flattenColorName(item.color)}}
+        </div>
       </div>
-    </div>
+    </md-checkbox>
     <div class="flexfill">
       <span class="color-price center" *ngFor="let sizePrices of item.size_prices">
         
@@ -43,9 +45,20 @@
     </div>
   </div>
 
- <div md-dialog-actions>
-    <button md-button [md-dialog-close]="vendorItem" tabindex="-1">close</button>
-    <!-- <button md-button (click)="onNoClick()" tabindex="-1">clear</button> -->
+  <div md-dialog-actions>
+
+    <button md-button tabindex="-1"
+      *ngIf="vendorItem.order"
+      [md-dialog-close]="vendorItem" 
+      (click)="closeAndReturnToOrder(vendorItem)">Add To Order</button>
+    <button md-button tabindex="-1"
+      *ngIf="vendorItem.order"
+      [md-dialog-close]="vendorItem" 
+      (click)="closeAndKeepBrowsing(vendorItem)">Add &amp; Keep Browsing</button>
+    <span *ngIf="vendorItem.order" class="flexfill"></span>
+    <button md-button tabindex="-1"
+      [md-dialog-close]="vendorItem" 
+      (click)="closeClick">Close</button>
   </div>   
 
 </div>

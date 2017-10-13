@@ -4,7 +4,7 @@ import 'rxjs/add/operator/map';
 import {BehaviorSubject} from 'rxjs/BehaviorSubject';
 
 import { Order } from './order';
-import { ORDERS } from './mock-orders';
+// import { ORDERS } from './mock-orders';
 
 import { environment } from '../../environments/environment';
 declare var PouchDB:any;
