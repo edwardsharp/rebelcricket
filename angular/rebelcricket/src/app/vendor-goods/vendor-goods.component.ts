@@ -1,7 +1,7 @@
 import { Component, OnInit, ElementRef, Input, OnChanges } from '@angular/core';
-import { ActivatedRoute, ParamMap } from '@angular/router';
+import { ActivatedRoute, Router, ParamMap } from '@angular/router';
 import { Observable } from 'rxjs/Observable';
-import {MdDialog, MdDialogRef, MD_DIALOG_DATA, MdDatepickerInputEvent} from '@angular/material';
+import {MdDialog, MdDialogRef, MD_DIALOG_DATA, MdDatepickerInputEvent, MdSnackBar} from '@angular/material';
 
 import { VendorGood } from './vendor-good';
 import { VendorGoodsService } from './vendor-goods.service';
@@ -28,21 +28,23 @@ export class VendorGoodsComponent implements OnInit {
   	private vendorGoodsService: VendorGoodsService,
   	public dialog: MdDialog,
     private route: ActivatedRoute,
-    private orderService: OrderService ) { }
+    private router: Router,
+    private orderService: OrderService,
+    private snackBar: MdSnackBar ) { }
 	
 	ngOnInit(): void {
     this.getVendorGoods();
 
     this.route.paramMap
       .switchMap((params: ParamMap) => {
-        this.line_item_id = params['line_item_id'];
+        this.line_item_id = params.get('line_item_id');
         if(params.get('order_id') && params.get('order_id') != ''){
           return this.orderService.getOrder( params.get('order_id') );
         }else{ return []; }
       })
       .subscribe((order: Order) => {
         if(order && order._id && order.history){ 
-          this.order = order 
+          this.order = order;
         }else{ this.line_item_id = undefined; }
       });
 
@@ -99,6 +101,14 @@ export class VendorGoodsComponent implements OnInit {
     } 
   }
 
+  // clearCategories(){
+  //   this.vendorGoodsIndexSelected = [];
+  //   this.vendorGoodsIndex = undefined;
+  //   // this.vendorGoodsIndex = [];
+  //   console.log('clearCategories this.vendorGoodsCategories:', this.vendorGoodsCategories);
+  //   // this.vendorGoodsCategories = [];
+  // }
+
   //dialog stuff 
   animal: string;
   name: string;
@@ -118,8 +128,37 @@ export class VendorGoodsComponent implements OnInit {
     });
 
     dialogRef.afterClosed().subscribe(result => {
-      // console.log('dialog closed');
-      this.animal = result;
+      console.log('!!! dialog closed result:', result);
+      if(result.selectedItems){
+        console.log('!!! ok    has selectedItems!')
+        let line_item = this.order.line_items.find(li => li.service_label == this.line_item_id);
+        if(line_item){
+          console.log('!!! ok   found line_item:',line_item);
+          line_item.vendor_goods = line_item.vendor_goods || [];
+          line_item.vendor_goods.push({
+            selected_items: result.selectedItems, 
+            vendor_title: result.title, 
+            vendor_id: result._id, 
+            vendor_prod_id: result.prod_id, 
+            vendor_category: result.category, 
+            vendor_sub_category: result.sub_category 
+          });
+        }
+        
+        this.orderService.saveOrder(this.order).then(resp => {
+          if(result.return_to_order){
+            this.router.navigate(['/dashboard/order/', this.order._id]);
+          }
+        }, err =>{
+          this.snackBar.open('Error: Could not add items to order!', '', {
+            duration: 3000,
+          });
+          //...maybe try again??
+          console.log('o noz! saveOrder err:',err);
+        });
+        
+      }
+  
     });
   }
 

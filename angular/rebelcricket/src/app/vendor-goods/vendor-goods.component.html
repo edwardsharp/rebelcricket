@@ -14,6 +14,15 @@
   </button>
 
   <md-menu #vendorGoodsCategoriesMenu="mdMenu">
+    <div style="display:flex;align-items:center;">
+      <span class="flexfill"></span>
+      Categories ({{vendorGoodsCategories.length}})
+      <span class="flexfill"></span>
+      <button md-icon-button>
+        <md-icon>clear</md-icon>
+      </button>
+    </div>
+    
     <md-selection-list #vendorGoodsIndex dense>
       <md-list-option *ngFor="let idx of vendorGoodsCategories" (click)="$event.stopPropagation();toggleVendorGoodCategory(idx.name)">
         <span class="truncate">{{idx.name}} ({{idx.count}})</span>

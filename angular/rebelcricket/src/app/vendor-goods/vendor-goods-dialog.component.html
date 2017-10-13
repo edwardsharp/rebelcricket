@@ -25,23 +25,25 @@
 
   </div>
 
-  <div class="row" *ngFor="let item of vendorItem.colors">
-    <!-- (click)="item.selected = !item.selected" -->
-    <md-checkbox [checked]="item.selected" tabindex="-1">
-      <div class="color-img" 
-        [style.background-color]="'none'"
-        [style.background-image]="'url(' + backgroundImgFor(vendorItem.href_items,item.color) + ')'">
-        <div class="subtitle">
-            {{flattenColorName(item.color)}}
+  <div *ngFor="let item of vendorItem.colors">
+    <div *ngIf="flattenColorName(item.color)" class="row">
+      <!-- (click)="item.selected = !item.selected" -->
+      <md-checkbox [checked]="item.selected" tabindex="-1" (change)="itemSelectedChange($event, item)">
+        <div class="color-img" 
+          [style.background-color]="'none'"
+          [style.background-image]="'url(' + backgroundImgFor(vendorItem.href_items,item.color) + ')'">
+          <div class="subtitle">
+              {{flattenColorName(item.color)}}
+          </div>
         </div>
+      </md-checkbox>
+      <div class="flexfill">
+        <span class="color-price center" *ngFor="let sizePrices of item.size_prices">
+          
+          {{sizePrices[0]}}<br>
+          {{flattenSizePrice(sizePrices[1])}}
+        </span>
       </div>
-    </md-checkbox>
-    <div class="flexfill">
-      <span class="color-price center" *ngFor="let sizePrices of item.size_prices">
-        
-        {{sizePrices[0]}}<br>
-        {{flattenSizePrice(sizePrices[1])}}
-      </span>
     </div>
   </div>
 

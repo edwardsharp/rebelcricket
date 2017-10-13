@@ -108,10 +108,10 @@
 				    <input mdInput value="{{line_item.service_label}}" placeholder="Service" type="text" readonly="true">
 				  </md-form-field>
 			  	<span class="flexfill"></span>
-			  	<button md-icon-button [routerLink]="['/dashboard/vendor_goods', { order_id: order._id, line_item_id: line_item.service_label }]"
+			  	<a md-icon-button [routerLink]="['/dashboard/vendor_goods', { order_id: order._id, line_item_id: line_item.service_label }]"
 		  			mdTooltip="Browse Vendor Goods">
 			      <md-icon>shopping_basket</md-icon>
-			    </button>
+			    </a>
 			  	<md-form-field class="quantity">
 				    <input mdInput [(ngModel)]="line_item.quantity" (change)="onChange($event)" placeholder="quantity" type="number">
 				  </md-form-field>
@@ -119,9 +119,26 @@
 				  <md-form-field class="total">
 				    <input mdInput [(ngModel)]="line_item.total" (change)="onChange($event)" placeholder="total" type="number" [readonly]="false">
 				  </md-form-field>
-				 </section>
+				</section>
+	  		
+	  		<h5 *ngIf="line_item.vendor_goods">Goods:</h5>
+	  		<div *ngFor="let vendor_good of line_item.vendor_goods">
+	  			{{vendor_good.vendor_title}}
+	  			<div *ngFor="let sel_item of vendor_good.selected_items">
+	  				color: {{sel_item.color}}
+	  				<div *ngFor="let size_price of sel_item.size_prices">
+	  					size: {{size_price.size}}
+	  					price: {{size_price.price}}
+	  				</div>
+
+	  			</div>
+
+	  			
+	  		</div>
 
 		  	<div *ngFor="let field of line_item.items" class="service-line-items">
+		  		
+		  		
 		  		<md-form-field *ngIf="field.type == order_field_types['Text']" class="service-line-item">
 		  			<input mdInput [(ngModel)]="field.value" (change)="onChange($event)" placeholder="{{field.name}}" type="text">
 		  		</md-form-field>
@@ -198,7 +215,7 @@
 	<md-action-row>
 		<md-select
 			[(ngModel)]="selectedService" placeholder="Add Service">
-		  <md-option *ngFor="let item of settings?.services" [disabled]="serviceNeedsDisabled(item)" [value]="item" (click)="addOrderLineItem()" >
+		  <md-option *ngFor="let item of settings?.services" [disabled]="serviceNeedsDisabled(item)" [value]="item" (click)="addOrderLineItem()">
 		    {{ item.name }}
 		  </md-option>
 		</md-select>

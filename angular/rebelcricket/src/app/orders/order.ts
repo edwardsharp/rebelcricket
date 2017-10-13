@@ -60,4 +60,5 @@ export class LineItem {
   service_label: string;
   service: Service;
   items: Array<any>;
+  vendor_goods: Array<any>; //#todo: model this
 }
