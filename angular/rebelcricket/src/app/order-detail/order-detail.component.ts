@@ -1,4 +1,4 @@
-import { Component, OnInit, OnDestroy } from '@angular/core';
+import { Component, OnInit, OnDestroy, Input } from '@angular/core';
 import { ActivatedRoute, ParamMap, Router } from '@angular/router';
 import { DomSanitizer } from '@angular/platform-browser';
 import { Observable }           from 'rxjs/Observable';
@@ -37,6 +37,7 @@ export class OrderDetailComponent implements OnInit, OnDestroy  {
   selectedService: Service;
 
   order_field_types: any;
+  allServicesNeedHidden: boolean;
 
   constructor(
   	private orderService: OrderService,
@@ -69,6 +70,7 @@ export class OrderDetailComponent implements OnInit, OnDestroy  {
           this.order = order;
           this.origOrder = JSON.parse(JSON.stringify(order));
           this.setTitle();
+          // this.checkAllServicesNeedHidden();
         }else{
           this.order = new Order;
           this.origOrder = new Order;
@@ -350,12 +352,15 @@ export class OrderDetailComponent implements OnInit, OnDestroy  {
       this.order.line_items.push(li);
      }
      this.selectedService = undefined; 
+
+     // this.checkAllServicesNeedHidden();
   }
 
   removeOrderLineItem(item: LineItem): void {
     let idx = this.order.line_items.indexOf(item);
     if(idx >= 0){
       this.order.line_items.splice(idx, 1);
+      // this.checkAllServicesNeedHidden();
     }
   }
 
@@ -372,7 +377,13 @@ export class OrderDetailComponent implements OnInit, OnDestroy  {
   serviceNeedsDisabled(service: Service): boolean{
     return this.order && this.order.line_items && this.order.line_items.some( li => li.service_label == service.name); 
   }
-   
+  
+  // checkAllServicesNeedHidden(): void {
+  //   setTimeout(() => {
+  //     this.allServicesNeedHidden = this.order.line_items.map(li => li.service.name).join() == this.settings.services.map(s => s.name).join(); 
+  //   }, 500);
+  // }
+
   orderFieldsForService(service: Service): Array<OrderField> {
     try{
       return this.settings.services.find( s => s.name == service.name ).order_fields
@@ -380,8 +391,4 @@ export class OrderDetailComponent implements OnInit, OnDestroy  {
     
   }
 
-  browseVendorGoods(line_item: LineItem): void {
-    //todo: open vendor goodz modal, process returned data... 
-    
-  }
 }  

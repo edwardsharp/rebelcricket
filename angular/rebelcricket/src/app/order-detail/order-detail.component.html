@@ -196,19 +196,12 @@
 	  
 	</md-tab-group>
 	<md-action-row>
-		<md-select placeholder="Add Service" [(ngModel)]="selectedService">
-		  <md-option *ngFor="let item of settings?.services" [disabled]="serviceNeedsDisabled(item)" [value]="item">
+		<md-select
+			[(ngModel)]="selectedService" placeholder="Add Service">
+		  <md-option *ngFor="let item of settings?.services" [disabled]="serviceNeedsDisabled(item)" [value]="item" (click)="addOrderLineItem()" >
 		    {{ item.name }}
 		  </md-option>
 		</md-select>
-
-    <button md-icon-button 
-    	*ngIf="selectedService"
-      (click)="addOrderLineItem()" 
-      mdTooltip="Add a new line item"
-      mdTooltipPosition="above">
-      <md-icon>add</md-icon>
-    </button>
 
     <span class="flexfill"></span>
     <!-- [disabled]="needsSave" -->
