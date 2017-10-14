@@ -418,9 +418,8 @@ export class OrderDetailComponent implements OnInit, OnDestroy  {
 
       line_item.total = line_item.vendor_goods.reduce( (sum, value) => {
         return sum + value.selected_items.reduce( (sum,value) => {
-          if( !isNaN(parseInt(value.qty_total))
-            && !isNaN(parseFloat(value.price_total)) ){
-            return (sum + (parseFloat(value.price_total) * parseInt(value.qty_total)));
+          if( !isNaN(parseFloat(value.price_total)) ){
+            return sum + parseFloat(value.price_total);
           }else{
             return sum;
           }
