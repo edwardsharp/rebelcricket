@@ -1,5 +1,5 @@
 :host{
-	min-height: 100vh; 
+	/*min-height: 100vh; */
 	/*hack to keep bottom tab nav sticky bar from creepin up the page. */
 }
 
@@ -94,6 +94,12 @@ md-action-row{
 	z-index: 2;
 }
 
+.sticky-service{
+	top: 128px;
+	background-color: #fafafa;
+	z-index: 1;
+}
+
 .attachment-cards{
 	display: flex;
 	flex-direction: column;
@@ -126,13 +132,19 @@ md-action-row{
 
 section {
   display: flex;
-  align-content: center;
+  align-content: baseline;
   align-items: center;
   width: 100%;
 }
 
 section > * {
 	margin: 0 0.5em;
+}
+
+section h3{
+	width: 100%;
+	margin: 0.5em;
+	text-align: center;
 }
 
 .li-service, .total, .quantity{
@@ -152,14 +164,14 @@ section > * {
 	md-form-field.with-button{
 		width: 85%;
 	}
-	md-tab {
-		max-width: 100vw;
-	}
 	md-card{
 		margin:0.5em;
 	}
 	.sticky{
 		top: 56px;
+	}
+	.sticky-service{
+		top: 112px;
 	}
 	#new-attachment{
 		max-width: 100%;

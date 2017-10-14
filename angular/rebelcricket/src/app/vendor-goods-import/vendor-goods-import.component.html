@@ -19,11 +19,12 @@
 		</div>
 
 		<div *ngIf="isSignedIn">
-			<div class="center">
+			<div class="center" style="display:flex;align-items:center;">
 				<md-form-field class="fullwidth">
 				  <input mdInput [(ngModel)]="gsheetId" placeholder="Google Sheet ID">
 				</md-form-field>
-
+			</div>
+			<div class="center" style="display:flex;align-items:baseline;">
 				<md-select [placeholder]="gsheetIds.length > 0 ? 'Select Sheet' : 'loading sheets...'" [(ngModel)]="sheetId" class="halfwidth">
 				  <md-option *ngFor="let sheet of gsheetIds" [value]="sheet.sheetId">
 				    {{ sheet.title }}
@@ -34,7 +35,15 @@
 				  <input mdInput [(ngModel)]="gsheetRange" placeholder="Google Sheet Range">
 				</md-form-field>
 			</div>
-			
+			<div class="center" style="display:flex;align-items:baseline;">
+				<md-select class="halfwidth" placeholder="Catalog" [(ngModel)]="catalog">
+				  <md-option *ngFor="let item of catalogs" [value]="item">
+				    {{ item.name }}
+				  </md-option>
+				</md-select>
+
+				<md-checkbox class="halfwidth" [(ngModel)]="dropExistingItems">Drop existing items</md-checkbox>
+			</div>
 		</div>
 
 		<pre *ngFor="let item of pre">

@@ -33,12 +33,19 @@ export class VendorGoodsImportComponent implements OnInit, OnDestroy {
   // included, separated by spaces.
   scopes: string = "https://www.googleapis.com/auth/spreadsheets.readonly";
 
+  catalog: {name:string, value: string};
+  catalogs: Array<{name:string, value: string}>;
+  dropExistingItems: boolean;
+
   constructor(private vendorGoodsService: VendorGoodsService) { }
 
   ngOnInit() {
     this.loadGapiScript();
     //these (hackz) are here to bump the view because angular is not tracking the change to isSignedIn from the gapi callbackz...
     this.runLoadingInterval(this.isSignedIn);
+    //#TODO: use SettingsService here...
+    this.catalogs = [{name:'Default',value:'default'}];
+    this.catalog = this.catalogs[0];
   }
   ngOnDestroy() {
   }
@@ -180,6 +187,10 @@ export class VendorGoodsImportComponent implements OnInit, OnDestroy {
       let range = response.result;
       if (range.values.length > 0) {
         this.appendPre(`Processing ${range.values.length} items...`); 
+
+        if(this.dropExistingItems){
+          this.vendorGoodsService.clearVendorGoodsDb();
+        }
 
         let idx:any = range.values[0];
         for (let i = 1; i < range.values.length; i++) {

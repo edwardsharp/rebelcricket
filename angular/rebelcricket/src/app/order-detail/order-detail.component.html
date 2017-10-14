@@ -56,181 +56,202 @@
 
 	</md-toolbar>
 
-	<md-tab-group class="order-details">
+<!-- 	<md-tab-group class="order-details">
 	  <md-tab label="Details">
-	  	<app-order-tags [tags]="order.tags" (tagsChanged)="tagsChanged($event)"></app-order-tags>
+	  </md-tab>
+	  <md-tab label="Attachments ({{attachmentItemsForOrder().length}})">
+	  </md-tab>
+	  <md-tab label="{{historyLabel()}}">
+	  </md-tab>
+	</md-tab-group> -->
+
+	<div id="details">
+		<app-order-tags [tags]="order.tags" (tagsChanged)="tagsChanged($event)"></app-order-tags>
 	  	
-	  	<div>
-			  <md-form-field>
-			    <input mdInput [(ngModel)]="order.name" (change)="onChange($event)" placeholder="name">
+  	<div>
+		  <md-form-field>
+		    <input mdInput [(ngModel)]="order.name" (change)="onChange($event)" placeholder="name">
+		  </md-form-field>
+		  <md-form-field>
+		    <input mdInput [(ngModel)]="order.org" (change)="onChange($event)" placeholder="org">
+		  </md-form-field>
+		  
+		</div>
+		<div>
+			<md-form-field class="with-button">
+		    <input mdInput [(ngModel)]="order.email" (change)="onChange($event)" placeholder="email">
+		  </md-form-field>
+		  <button md-icon-button 
+        *ngIf="order.email"
+        mdTooltip="Email {{order.email}}">
+        <md-icon class="icon">mail_outline</md-icon>
+      </button>
+		  <md-form-field class="with-button">
+		    <input mdInput [(ngModel)]="order.phone" (change)="onChange($event)" placeholder="phone">
+		  </md-form-field>
+		  <button md-icon-button 
+        *ngIf="order.phone"
+        mdTooltip="Call {{order.phone}}">
+        <md-icon class="icon">phone</md-icon>
+      </button>
+		</div>
+	  <div>
+		  <md-form-field class="fullwidth">
+		    <textarea mdInput [(ngModel)]="order.notes" (change)="onChange($event)" placeholder="notes"></textarea>
+		  </md-form-field>
+		</div>
+
+	  <md-list>
+		  <md-list-item *ngFor="let service of order.services">{{service}}</md-list-item>
+		</md-list>
+
+		<!-- <h3 *ngIf="order.line_items">Services ({{order.line_items.length}})</h3> -->
+	  <div *ngFor="let line_item of order.line_items" class="line-items">
+	  	<section class="sticky sticky-service">
+	  		<button md-icon-button (click)="removeOrderLineItem(line_item)"
+	  			mdTooltip="Delete Line Item">
+		      <md-icon>delete</md-icon>
+		    </button>
+		  	<md-form-field class="li-service">
+			    <input mdInput value="{{line_item.service_label}}" placeholder="Service" type="text" readonly="true">
 			  </md-form-field>
-			  <md-form-field>
-			    <input mdInput [(ngModel)]="order.org" (change)="onChange($event)" placeholder="org">
+		  	<span class="flexfill"></span>
+		  	<a md-icon-button [routerLink]="['/dashboard/vendor_goods', { order_id: order._id, line_item_id: line_item.service_label }]"
+	  			mdTooltip="Browse Vendor Goods">
+		      <md-icon>shopping_basket</md-icon>
+		    </a>
+
+			  <md-form-field class="total">
+			    <input mdInput [(ngModel)]="line_item.quantity" placeholder="Total" type="number" readonly="true">
+			    ${{line_item?.total?.toFixed(2)}}
 			  </md-form-field>
-			  
-			</div>
-			<div>
-				<md-form-field class="with-button">
-			    <input mdInput [(ngModel)]="order.email" (change)="onChange($event)" placeholder="email">
-			  </md-form-field>
-			  <button md-icon-button 
-          *ngIf="order.email"
-          mdTooltip="Email {{order.email}}">
-          <md-icon class="icon">mail_outline</md-icon>
-        </button>
-			  <md-form-field class="with-button">
-			    <input mdInput [(ngModel)]="order.phone" (change)="onChange($event)" placeholder="phone">
-			  </md-form-field>
-			  <button md-icon-button 
-          *ngIf="order.phone"
-          mdTooltip="Call {{order.phone}}">
-          <md-icon class="icon">phone</md-icon>
-        </button>
-			</div>
-		  <div>
-			  <md-form-field class="fullwidth">
-			    <textarea mdInput [(ngModel)]="order.notes" (change)="onChange($event)" placeholder="notes"></textarea>
-			  </md-form-field>
-			</div>
 
-		  <md-list>
-			  <md-list-item *ngFor="let service of order.services">{{service}}</md-list-item>
-			</md-list>
-
-			<h4 *ngIf="order.line_items">Line Items ({{order.line_items.length}})</h4>
-		  <div *ngFor="let line_item of order.line_items" class="line-items">
-		  	<section>
-		  		<button md-icon-button (click)="removeOrderLineItem(line_item)"
-		  			mdTooltip="Delete Line Item">
-			      <md-icon>delete</md-icon>
-			    </button>
-			  	<md-form-field class="li-service">
-				    <input mdInput value="{{line_item.service_label}}" placeholder="Service" type="text" readonly="true">
-				  </md-form-field>
-			  	<span class="flexfill"></span>
-			  	<a md-icon-button [routerLink]="['/dashboard/vendor_goods', { order_id: order._id, line_item_id: line_item.service_label }]"
-		  			mdTooltip="Browse Vendor Goods">
-			      <md-icon>shopping_basket</md-icon>
-			    </a>
-		<!-- 	  	<md-form-field class="quantity">
-				    <input mdInput [(ngModel)]="line_item.quantity" (change)="onChange($event)" placeholder="quantity" type="number">
-				  </md-form-field>
-
-				  <md-form-field class="total">
-				    <input mdInput [(ngModel)]="line_item.total" (change)="onChange($event)" placeholder="total" type="number" [readonly]="false">
-				  </md-form-field> -->
-
-				  <md-form-field class="total">
-				    <input mdInput [(ngModel)]="line_item.quantity" placeholder="Total" type="number" readonly="true">
-				    ${{line_item?.total?.toFixed(2)}}
-				  </md-form-field>
-
-				</section>
-	  		
-	  		<h5 *ngIf="line_item.vendor_goods">Goods:</h5>
-	  		<div *ngFor="let vendor_good of line_item.vendor_goods">
-	  			{{vendor_good.vendor_title}} <button md-icon-button mdTooltip="Remove Vendor Good" (click)="deleteVendorGoodItem(line_item.vendor_goods,vendor_good,line_item)"><md-icon>delete</md-icon></button>
-
-	  			<div *ngFor="let sel_item of vendor_good.selected_items">
-	  				color: {{sel_item.color}}
-						
-						<div style="display: flex;">
-	  					<md-form-field class="quantity" *ngFor="let size_price of sel_item.size_prices">
-						    <input mdInput [(ngModel)]="size_price.quantity" (change)="sizeQtyChanged(sel_item, line_item)" placeholder="{{size_price.size}}" type="number">
-						    {{size_price.price}}
-						  </md-form-field>
-
-						  <md-form-field class="total">
-						    <input mdInput [(ngModel)]="sel_item.qty_total" placeholder="Total" type="number" readonly="true">
-						    ${{sel_item?.price_total?.toFixed(2)}}
-						  </md-form-field>
-
-						  <button md-icon-button mdTooltip="Remove {{sel_item.color}}" 
-						  	(click)="deleteVendorGoodItem(vendor_good.selected_items,sel_item,line_item)">
-						  	<md-icon>delete</md-icon></button>
-		  			</div>
-
-	  			</div>
-
+			</section>
+  		
+  		<div *ngFor="let vendor_good of line_item.vendor_goods">
+  			<div style="display:flex;align-items:center;text-align:center;">
 	  			
+	  			<span class="flexfill">{{vendor_good.vendor_title}} </span>
+	  			<button md-icon-button mdTooltip="Remove Vendor Good" 
+	  				(click)="deleteVendorGoodItem(line_item.vendor_goods,vendor_good,line_item)">
+	  				<md-icon>delete</md-icon>
+	  			</button>
 	  		</div>
 
-		  	<div *ngFor="let field of line_item.items" class="service-line-items">
-		  		
-		  		
-		  		<md-form-field *ngIf="field.type == order_field_types['Text']" class="service-line-item">
-		  			<input mdInput [(ngModel)]="field.value" (change)="onChange($event)" placeholder="{{field.name}}" type="text">
-		  		</md-form-field>
-		  		<md-form-field *ngIf="field.type == order_field_types['Textarea']" class="service-line-item">
-		  			<textarea mdInput [(ngModel)]="field.value" (change)="onChange($event)" placeholder="{{field.name}}" type="number"></textarea>
-		  		</md-form-field>
-		  		<md-checkbox *ngIf="field.type == order_field_types['Checkbox']" 
-		  			[(ngModel)]="field.value" (change)="onChange($event)">{{field.name}}</md-checkbox>
-		  		<md-form-field *ngIf="field.type == order_field_types['Number']" class="service-line-item">
-		  			<input mdInput [(ngModel)]="field.value" (change)="onChange($event)" placeholder="{{field.name}}" type="number">
-		  		</md-form-field>
-		  		<md-select *ngIf="field.type == order_field_types['Select']" 
-		  			placeholder="{{field.name}}" [(ngModel)]="field.value">
-					  <md-option *ngFor="let item of field.select_items" [value]="item.value">
-					    {{ item.name }}
-					  </md-option>
-					</md-select>
-		  	</div>
+  			<div *ngFor="let sel_item of vendor_good.selected_items">
+  				color: {{sel_item.color}}
+					
+					<div style="display: flex;">
+  					<md-form-field class="quantity" *ngFor="let size_price of sel_item.size_prices">
+					    <input mdInput [(ngModel)]="size_price.quantity" (change)="sizeQtyChanged(sel_item, line_item)" placeholder="{{size_price.size}}" type="number">
+					    {{size_price.price}}
+					  </md-form-field>
 
-			  <div *ngIf="line_item.service.notes">
-			  	<md-form-field class="fullwidth">
-				    <textarea mdInput [(ngModel)]="line_item.notes" (change)="onChange($event)" placeholder="notes"></textarea>
-				  </md-form-field>
-				</div>
+					  <md-form-field class="total">
+					    <input mdInput [(ngModel)]="sel_item.qty_total" placeholder="Total" type="number" readonly="true">
+					    ${{sel_item?.price_total?.toFixed(2)}}
+					  </md-form-field>
 
-		  </div>
-	  </md-tab>
+					  <button md-icon-button mdTooltip="Remove {{sel_item.color}}" 
+					  	(click)="deleteVendorGoodItem(vendor_good.selected_items,sel_item,line_item)">
+					  	<md-icon>delete</md-icon></button>
+	  			</div>
 
-	  <md-tab label="Attachments ({{attachmentItemsForOrder().length}})">
+  			</div>
 
-	  	<div id="new-attachment">
-		  	<label for="quoteDesignFile"><md-icon>add</md-icon>Upload Image Files</label>
-	      <input id="quoteDesignFile" type="file" multiple="multiple" (change)="quoteFileChnaged($event)" (disabled)="quoteDesingUploading" />
-	      <md-progress-bar mode="indeterminate" [hidden]="!quoteDesingUploading"></md-progress-bar>
-	      
-	      <span id="quoteDesignUploadFeedback" [hidden]="!gfxError">
-	        ERROR! Could not upload that file. Please try again or choose a different file. If this form does not work for you please email your graphics to <a href="mailto: rebelcricket@gmail.com">rebelcricket@gmail.com</a>.
-	      </span>
-	      <div>
-	        <small>Graphic files can be sent as ai, eps, pdf, psd, svg, jpeg, or tiff. They should be sized to the desired print size at 300 dpi. If you have a physical copy of the art let us know, we’ll schedule a time for you to bring it in and discuss the options. </small>
-	      </div>
-	    </div>
+  			
+  		</div>
 
-	    <div *ngFor="let item of attachmentItemsForOrder()" class="attachment-cards">
-			  <md-card>
-		
-					  <img md-card-image class="attachment-img" alt="{{item}}" [src]="sanitizer.bypassSecurityTrustUrl(attachmentSrcFor(order, item))" />
-					  <!-- <md-card-content>
-					    <p></p>
-					  </md-card-content> -->
-					  <md-card-actions>
-					  	<span class="flexfill"></span>
-					  	<span class="item-key" title="{{item}}">{{item}}</span>
-					    <span class="flexfill"></span>
-					    <button md-icon-button (click)="deleteAttachmentFor(item);"><md-icon>delete</md-icon></button>
-					  </md-card-actions>
-					</md-card>
-			
+	  	<div *ngFor="let field of line_item.items" class="service-line-items">
+	  		
+	  		
+	  		<md-form-field *ngIf="field.type == order_field_types['Text']" class="service-line-item">
+	  			<input mdInput [(ngModel)]="field.value" (change)="onChange($event)" placeholder="{{field.name}}" type="text">
+	  		</md-form-field>
+	  		<md-form-field *ngIf="field.type == order_field_types['Textarea']" class="service-line-item">
+	  			<textarea mdInput [(ngModel)]="field.value" (change)="onChange($event)" placeholder="{{field.name}}" type="number"></textarea>
+	  		</md-form-field>
+	  		<md-checkbox *ngIf="field.type == order_field_types['Checkbox']" 
+	  			[(ngModel)]="field.value" (change)="onChange($event)">{{field.name}}</md-checkbox>
+	  		<md-form-field *ngIf="field.type == order_field_types['Number']" class="service-line-item">
+	  			<input mdInput [(ngModel)]="field.value" (change)="onChange($event)" placeholder="{{field.name}}" type="number">
+	  		</md-form-field>
+	  		<md-select *ngIf="field.type == order_field_types['Select']" 
+	  			placeholder="{{field.name}}" [(ngModel)]="field.value">
+				  <md-option *ngFor="let item of field.select_items" [value]="item.value">
+				    {{ item.name }}
+				  </md-option>
+				</md-select>
+	  	</div>
+
+		  <div *ngIf="line_item.service.notes">
+		  	<md-form-field class="fullwidth">
+			    <textarea mdInput [(ngModel)]="line_item.notes" (change)="onChange($event)" placeholder="notes"></textarea>
+			  </md-form-field>
 			</div>
-	  	
-	  </md-tab>
-	  
-	  <md-tab label="{{historyLabel()}}">
-	  	<md-list>
-			  <md-list-item *ngFor="let item of order.history?.reverse() ">
-	  			{{item.date | date:'short' }} 
-					{{item.title}} 
-					{{item.description}} 
-	  		</md-list-item>
-	  	</md-list>
-	  </md-tab>
-	  
-	</md-tab-group>
+
+	  </div>
+	</div>
+
+
+	<div id="attachments">
+
+		<section class="sticky sticky-service">
+			<h3>Graphics ({{attachmentItemsForOrder().length}})</h3>
+		</section>	
+
+		<div id="new-attachment">
+	  	<label for="quoteDesignFile"><md-icon>add</md-icon>Upload Image Files</label>
+      <input id="quoteDesignFile" type="file" multiple="multiple" (change)="quoteFileChnaged($event)" (disabled)="quoteDesingUploading" />
+      <md-progress-bar mode="indeterminate" [hidden]="!quoteDesingUploading"></md-progress-bar>
+      
+      <span id="quoteDesignUploadFeedback" [hidden]="!gfxError">
+        ERROR! Could not upload that file. Please try again or choose a different file. If this form does not work for you please email your graphics to <a href="mailto: rebelcricket@gmail.com">rebelcricket@gmail.com</a>.
+      </span>
+      <div>
+        <small>Graphic files can be sent as ai, eps, pdf, psd, svg, jpeg, or tiff. They should be sized to the desired print size at 300 dpi. If you have a physical copy of the art let us know, we’ll schedule a time for you to bring it in and discuss the options. </small>
+      </div>
+    </div>
+
+    <div *ngFor="let item of attachmentItemsForOrder()" class="attachment-cards">
+		  <md-card>
+	
+				  <img md-card-image class="attachment-img" alt="{{item}}" [src]="sanitizer.bypassSecurityTrustUrl(attachmentSrcFor(order, item))" />
+				  <!-- <md-card-content>
+				    <p></p>
+				  </md-card-content> -->
+				  <md-card-actions>
+				  	<span class="flexfill"></span>
+				  	<span class="item-key" title="{{item}}">{{item}}</span>
+				    <span class="flexfill"></span>
+				    <button md-icon-button (click)="deleteAttachmentFor(item);"><md-icon>delete</md-icon></button>
+				  </md-card-actions>
+				</md-card>
+		
+		</div>
+	</div>
+
+
+	<div id="history">
+		<section class="sticky sticky-service">
+			<h3>History</h3>
+		</section>
+	 <md-expansion-panel class="mat-elevation-z0">
+    <md-expansion-panel-header>
+      {{historyLabel()}}
+    </md-expansion-panel-header>
+    <dl>
+    	<div *ngFor="let item of order.history?.reverse() ">
+		  <dt>{{item.date | date:'short' }}</dt>
+		  <dd>
+		    {{item.title}} 
+				{{item.description}} 
+		  </dd>
+			</div>
+		</dl>
+  </md-expansion-panel>
+	</div>
+
 	<md-action-row>
 		<md-select
 			[(ngModel)]="selectedService" placeholder="Add Service">
