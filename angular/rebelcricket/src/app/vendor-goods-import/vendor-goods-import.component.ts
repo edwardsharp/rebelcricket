@@ -76,6 +76,8 @@ export class VendorGoodsImportComponent implements OnInit, OnDestroy {
         console.log('o noz! gapi load err:',error);
       };
       document.getElementsByTagName('body')[0].appendChild(scriptElement);
+    }else{
+      this.updateSigninStatus(gapi.auth2.getAuthInstance().isSignedIn.get());
     }
     
   }

@@ -1,3 +1,7 @@
+.dialog-content-wrapper{
+  margin-bottom: 3em;
+}
+
 .row {
   display: flex;
   flex-direction: row;

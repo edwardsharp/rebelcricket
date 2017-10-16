@@ -184,9 +184,9 @@
 				</md-select>
 	  	</div>
 
-		  <div *ngIf="line_item.service.notes">
+		  <div *ngIf="line_item.service?.notes">
 		  	<md-form-field class="fullwidth">
-			    <textarea mdInput [(ngModel)]="line_item.notes" (change)="onChange($event)" placeholder="notes"></textarea>
+			    <textarea mdInput [(ngModel)]="line_item.service.notes" (change)="onChange($event)" placeholder="notes"></textarea>
 			  </md-form-field>
 			</div>
 
