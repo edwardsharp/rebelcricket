@@ -19,18 +19,7 @@
   transition-duration: 200ms;
 }
 
-/* fix ng2-dnd littering "cursor:pointer" all over the place... */
-#container, #container > div, .status-container, md-card {
-  cursor: default!important;
-}
 
-md-card-header{
-  cursor: move!important;
-}
-
-.drag-handle{
-  cursor: ew-resize!important;
-}
 
 /* flex essentialz */
 #container {

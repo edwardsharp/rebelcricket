@@ -151,36 +151,10 @@ export class DashboardComponent implements OnInit, OnDestroy {
     .map( (order, idx) => { order.position = idx; return order; });
   }
 
-  cardDropped(order:Order,container:Container){
+  
 
-  	console.log('DashboardComponent cardDropped order,container:',order,container);
-    console.log('DashboardComponent cardDropped this.ordersForStatus[container.name]:',this.ordersForStatus[container.name]);
-  	//trying to avoid DashboardComponent.html:36 ERROR Error: ViewDestroyedError: Attempt to use a destroyed view: detectChanges
-  	
-    this.ordersForStatus[container.name]
-    .map( (order, idx) => {
-      if(order.position != idx){
-        order.position = idx; 
-        setTimeout(() => this.saveOrderQuietly(order), 500); 
-      }
-    })
-    .sort((a,b) => {
-      return (a.position < b.position ? -1 : 1);
-    });
 
-    if(order.status != container.name){
-      this.needsTimeout = true;
-  		order.status = container.name;
-	  	this.saveOrder(order);
-  	}
-  	
-  }
 
-  containerDropped(i:number,container:Container){
-  	console.log('DashboardComponent containerDropped i,container:',i,container);
-  }
-
-  dragOperation: boolean = false;
   containers: Array<Container> = [];
 
   saveOrderQuietly(order: Order): void {

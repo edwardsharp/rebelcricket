@@ -11,24 +11,10 @@
   <a (click)="reload()">Click here to reload</a>
 </div>
 
-<div dnd-sortable-container 
-  id="container"
-  [sortableData]="containers" 
-  [dropZones]="['container-dropZone']">
-  <div *ngFor="let container of containers; let i = index" dnd-sortable [sortableIndex]="i" 
-    [dragEnabled]="dragOperation"
-    (onDropSuccess)="containerDropped(i, container)"
+<div id="container">
+  <div *ngFor="let container of containers"
     [@containerState]="container.collapsed">
     <md-toolbar [@containerHeadingState]="container.collapsed" color="secondary">
-      <!-- <button md-icon-button 
-        *ngIf="container.collapsed === 'inactive'"
-        (mousedown)="dragOperation=true;" 
-        (mouseup)="dragOperation=false;" 
-        (mouseout)="dragOperation=false;"
-        tabindex="-1"
-        class="drag-handle">
-        <md-icon>drag_handle</md-icon>
-      </button> -->
       <button md-icon-button 
         tabindex="-1"
         [@containerButtonState]="container.collapsed"
@@ -89,24 +75,89 @@
       </md-menu>
 
     </md-toolbar>
-    <div *ngIf="container.collapsed === 'active'"
-      dnd-sortable-container
-      class="status-container" 
-      [sortableData]="ordersForStatus[container.name]" 
-      [dropZones]="['widget-dropZone']">
-      <md-card dnd-sortable
+    <div *ngIf="container.collapsed === 'active'" class="status-container">
+      <md-card
         class="mat-elevation-z0" 
-        *ngFor="let order of ordersForStatus[container.name]; let x = index" 
-        [sortableIndex]="x" 
-        [dragEnabled]="!dragOperation" 
-        (onDropSuccess)="cardDropped(order, container)">
-        <md-card-header dnd-sortable-handle>
-          <!-- <div md-card-avatar class="example-header-image">
-            &nbsp;
-          </div> -->
+        *ngFor="let order of ordersForStatus[container.name]">
+        <md-card-header>
+          <div md-card-avatar>
+            <button md-icon-button 
+              [mdMenuTriggerFor]="cardMenu" 
+              mdTooltip="More..." 
+              mdTooltipPosition="above">
+              <md-icon class="icon">more_vert</md-icon>
+            </button>
+
+            <md-menu #cardMenu="mdMenu">
+              <a md-menu-item
+                routerLink="/dashboard/order/{{order._id}}">
+                <md-icon>edit</md-icon>
+                <span>Edit</span>
+              </a>
+              <hr>
+              <button md-menu-item [mdMenuTriggerFor]="status" title="Status">
+                <md-icon>inbox</md-icon>
+                <span>Status</span>
+              </button>
+              <button md-menu-item [mdMenuTriggerFor]="priority" title="Priority" [disabled]="ordersForStatus[container.name]?.length < 2">
+                <md-icon>sort</md-icon>
+                <span>Priority</span>
+              </button>
+              <button md-menu-item (click)="clearDueDateFor(order)" [disabled]="!order.date_needed">
+                <md-icon>alarm_off</md-icon>
+                <span>Clear Due Date</span>
+              </button>
+              <hr>
+              <button md-menu-item 
+                title="Delete"
+                (click)="removeOrder(order)">
+                <md-icon>delete</md-icon>
+                <span>Delete</span>
+              </button>
+            </md-menu>
+
+            <md-menu #status="mdMenu">
+              <button md-menu-item 
+                *ngFor="let item of settings.order_statuses"
+                (click)="updateOrderStatus(order,item.name)"
+                [disabled]="order.status == item.name">
+                {{item.name}}
+              </button>
+            </md-menu>
+
+            <md-menu #priority="mdMenu">
+              <button md-menu-item 
+                title="Move To Top"
+                (click)="moveOrder(order,'top')">
+                <md-icon>vertical_align_top</md-icon>
+                <span>Move To Top</span>
+              </button>
+              <button md-menu-item 
+                title="Move Up"
+                (click)="moveOrder(order,'up')">
+                <md-icon>arrow_upward</md-icon>
+                <span>Move Up</span>
+              </button>
+              <button md-menu-item 
+                title="Move Down"
+                (click)="moveOrder(order,'down')">
+                <md-icon>arrow_downward</md-icon>
+                <span>Move Down</span>
+              </button>
+              <button md-menu-item 
+                title="Move To Bottom"
+                (click)="moveOrder(order,'bottom')">
+                <md-icon>vertical_align_bottom</md-icon>
+                <span>Move To Bottom</span>
+              </button>
+            </md-menu>
+
+          </div>
 
           <md-card-title>{{order.name}} <span *ngIf="order.org">({{order.org}})</span></md-card-title>
-          <md-card-subtitle><md-icon class="card-subtitle-icon">event</md-icon>{{order.created_at | date:'short'}} </md-card-subtitle>
+          <md-card-subtitle>
+            <md-icon class="card-subtitle-icon">event</md-icon>{{order.created_at | date:'shortDate'}} 
+          </md-card-subtitle>
         </md-card-header>
         <!-- <img md-card-image src="assets/img/examples/shiba2.jpg" alt="Photo of a Shiba Inu"> -->
         <md-card-content>
@@ -125,16 +176,6 @@
             {{order.email}}
           </button>
 
-          <!-- <div> -->
-            <!-- [ngClass]="{'invisible' : !order.date_needed}" -->
-          <md-form-field class="hidden" >
-            <input mdInput [mdDatepicker]="picker" 
-              [(ngModel)]="order.date_needed" 
-              (dateChange)="saveOrder(order)"
-              placeholder="Due Date" readonly="true">
-            <md-datepicker touchUi="true" #picker></md-datepicker>
-          </md-form-field>
-
           <md-expansion-panel *ngIf="order.notes" class="mat-elevation-z0">
             <md-expansion-panel-header>
               Notes 
@@ -146,27 +187,28 @@
 
         </md-card-content>
         <md-card-actions>
-          
-          
 
-          <!-- <md-basic-chip> -->
+          <md-basic-chip>
             <span 
             *ngIf="order.date_needed; else needByDateElse" 
             mdTooltip="Due Date"
             mdTooltipPosition="above"
             (click)="picker.open()">
-              {{order.date_needed | date:'MMM d'}}
+              <md-icon>alarm_on</md-icon>
+              {{order.date_needed | date:'MMMd'}}
             </span>
             <ng-template #needByDateElse>
               <md-icon (click)="picker.open()" 
                 mdTooltip="No Due Date" mdTooltipPosition="above">alarm_off</md-icon>
             </ng-template>
-          <!-- </md-basic-chip> -->
-
-
-          <md-basic-chip *ngIf="ordersForStatus[container.name]?.length > 1" [mdMenuTriggerFor]="priority" mdTooltip="Priority" mdTooltipPosition="above">
-            <md-icon>priority_high</md-icon> {{order.position}}
           </md-basic-chip>
+          <md-form-field class="hidden" >
+            <input mdInput [mdDatepicker]="picker" 
+              [(ngModel)]="order.date_needed" 
+              (dateChange)="saveOrder(order)"
+              placeholder="Due Date" readonly="true">
+            <md-datepicker touchUi="true" #picker></md-datepicker>
+          </md-form-field>
 
           <md-basic-chip mdTooltip="Attachments" mdTooltipPosition="above">
             <md-icon>attachment</md-icon>{{orderAttachmentCount(order)}}
@@ -177,76 +219,9 @@
           </md-basic-chip>
 
           <span class="flexfill"></span>
-          
-          <button md-icon-button 
-            [mdMenuTriggerFor]="cardMenu" 
-            mdTooltip="More..." 
-            mdTooltipPosition="above">
-            <md-icon class="icon">more_vert</md-icon>
-          </button>
-          <md-menu #cardMenu="mdMenu">
-            <a md-menu-item
-              routerLink="/dashboard/order/{{order._id}}">
-              <md-icon>edit</md-icon>
-              <span>Edit</span>
-            </a>
-            <hr>
-            <button md-menu-item [mdMenuTriggerFor]="status" title="Status">
-              <md-icon>inbox</md-icon>
-              <span>Status</span>
-            </button>
-            <button md-menu-item [mdMenuTriggerFor]="priority" title="Priority" [disabled]="ordersForStatus[container.name]?.length < 2">
-              <md-icon>sort</md-icon>
-              <span>Priority</span>
-            </button>
-            <button md-menu-item (click)="clearDueDateFor(order)" [disabled]="!order.date_needed">
-              <md-icon>alarm_off</md-icon>
-              <span>Clear Due Date</span>
-            </button>
-            <hr>
-            <button md-menu-item 
-              title="Delete"
-              (click)="removeOrder(order)">
-              <md-icon>delete</md-icon>
-              <span>Delete</span>
-            </button>
-          </md-menu>
-
-          <md-menu #status="mdMenu">
-            <button md-menu-item 
-              *ngFor="let item of settings.order_statuses"
-              (click)="updateOrderStatus(order,item.name)"
-              [disabled]="order.status == item.name">
-              {{item.name}}
-            </button>
-          </md-menu>
-
-          <md-menu #priority="mdMenu">
-            <button md-menu-item 
-              title="Move To Top"
-              (click)="moveOrder(order,'top')">
-              <md-icon>vertical_align_top</md-icon>
-              <span>Move To Top</span>
-            </button>
-            <button md-menu-item 
-              title="Move Up"
-              (click)="moveOrder(order,'up')">
-              <md-icon>arrow_upward</md-icon>
-              <span>Move Up</span>
-            </button>
-            <button md-menu-item 
-              title="Move Down"
-              (click)="moveOrder(order,'down')">
-              <md-icon>arrow_downward</md-icon>
-              <span>Move Down</span>
-            </button>
-            <button md-menu-item 
-              title="Move To Bottom"
-              (click)="moveOrder(order,'bottom')">
-              <md-icon>vertical_align_bottom</md-icon>
-              <span>Move To Bottom</span>
-            </button>
-          </md-menu>
+          <md-basic-chip *ngIf="ordersForStatus[container.name]?.length > 1" [mdMenuTriggerFor]="priority" mdTooltip="Priority" mdTooltipPosition="above">
+            <md-icon>priority_high</md-icon> {{order.position}}
+          </md-basic-chip>
 
         </md-card-actions>
       </md-card>

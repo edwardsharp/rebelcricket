@@ -128,12 +128,12 @@ export class VendorGoodsComponent implements OnInit {
     });
 
     dialogRef.afterClosed().subscribe(result => {
-      console.log('!!! dialog closed result:', result);
-      if(result && result.selectedItems && this.order.line_items){
-        console.log('!!! ok    has selectedItems!')
+      // console.log('!!! dialog closed result:', result);
+      if(result && result.selectedItems && this.order && this.order.line_items){
+        // console.log('!!! ok    has selectedItems!')
         let line_item = this.order.line_items.find(li => li.service_label == this.line_item_id);
         if(line_item){
-          console.log('!!! ok   found line_item:',line_item);
+          // console.log('!!! ok   found line_item:',line_item);
           line_item.vendor_goods = line_item.vendor_goods || [];
           line_item.vendor_goods.push({
             selected_items: result.selectedItems, 
