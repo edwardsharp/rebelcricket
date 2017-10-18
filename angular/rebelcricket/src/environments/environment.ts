@@ -5,5 +5,6 @@
 
 export const environment = {
   production: false,
+  admin_party: true, // Admin Party! 🎉
   couch_host: 'localhost:5984'
 };
