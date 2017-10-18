@@ -16,16 +16,18 @@
     <md-icon class="example-icon">more_vert</md-icon>
   </button>
   <md-menu #menu="mdMenu">
-    <!-- <button md-menu-item disabled>
+
+    <button *ngIf="!environment.admin_party" md-menu-item disabled>
       <md-icon>account_circle</md-icon>
       <span>account</span>
-    </button> -->
-    <button md-menu-item>
+    </button>
+
+    <button *ngIf="environment.admin_party" md-menu-item>
       <span style="margin-left:0.5em;margin-right:1em;">🎉 </span> 
       <span>Admin Party!</span>
     </button>
     
-    <button md-menu-item>
+    <button *ngIf="environment.admin_party" md-menu-item>
       <md-icon>favorite_border</md-icon>
       <span>madewithlove in pdx</span>
     </button>

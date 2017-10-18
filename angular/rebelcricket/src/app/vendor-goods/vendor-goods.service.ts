@@ -54,10 +54,14 @@ export class VendorGoodsService {
   	this.db.destroy().then( resp => this.initDb() );
   }
 
- 	getVendorGoods(){
+ 	getVendorGoods(catalog:string){
+		catalog = catalog || 'default';
+		catalog = catalog.toLowerCase();
 		return this.db.allDocs({
 		  include_docs: true,
-		  attachments: false
+		  attachments: false,
+		  startkey: catalog,
+		  endkey: `${catalog}\ufff0`
 		});
  	}
 

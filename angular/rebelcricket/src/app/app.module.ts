@@ -44,13 +44,18 @@ const appRoutes: Routes = [
     path: 'dashboard/orders',
     component: OrdersComponent
   },
-  {
+  { 
     path: 'dashboard/vendor_goods',
+    redirectTo: '/dashboard/vendor_goods/default',
+    pathMatch: 'full'
+  },
+  {
+    path: 'dashboard/vendor_goods/:catalog',
     component: VendorGoodsComponent,
     data: { order_id: 'order_id', line_item_id: 'line_item_id' }
   },
   {
-    path: 'dashboard/vendor_goods/import',
+    path: 'dashboard/vendor_goods_import',
     component: VendorGoodsImportComponent
   },
   {

@@ -1,8 +1,13 @@
 import { Component, OnInit, OnDestroy } from '@angular/core';
+import {FormControl, Validators} from '@angular/forms';
+
+const NO_SPACE = /^[a-zA-Z]+$/;
 
 // import { VendorGoodsService } from '../vendor-goods/vendor-goods.service';
 import { VendorGoodsService } from '../vendor-goods/vendor-goods.service';
 import { VendorGood } from '../vendor-goods/vendor-good';
+import { SettingsService } from '../settings/settings.service';
+import { Settings } from '../settings/settings';
 
 declare var gapi:any;
 
@@ -14,6 +19,7 @@ declare var gapi:any;
 export class VendorGoodsImportComponent implements OnInit, OnDestroy {
 
   loading: boolean = true;
+  needsCredentials: boolean = true;
   gsheetId: string = '1yJlSC9LtuBJEPmHJE8CQEWjxmuS0z0GqmYf45YZHM_s';
   gsheetRange: string = '!A1:ZZ';
   data: any;
@@ -24,8 +30,8 @@ export class VendorGoodsImportComponent implements OnInit, OnDestroy {
   loadingInterval: any;
   pre: string[] = [];
   // Client ID and API key from the Developer Console
-  client_id: string = '89197182438-ubo90q5tik0pktvh88vcekks34knjcsa.apps.googleusercontent.com';
-  api_key: string = 'AIzaSyCBoUSi-sA5Yofhcu4XRyviiyWJ0E2y9Ig';
+  client_id: string;
+  api_key: string;
   // Array of API discovery doc URLs for APIs used by the quickstart
   discovery_docs: Array<string> = ["https://sheets.googleapis.com/$discovery/rest?version=v4"];
 
@@ -33,23 +39,46 @@ export class VendorGoodsImportComponent implements OnInit, OnDestroy {
   // included, separated by spaces.
   scopes: string = "https://www.googleapis.com/auth/spreadsheets.readonly";
 
-  catalog: {name:string, value: string};
-  catalogs: Array<{name:string, value: string}>;
-  dropExistingItems: boolean;
+  settings: Settings;
 
-  constructor(private vendorGoodsService: VendorGoodsService) { }
+  catalog: string = "Default";
+  catalogFormControl = new FormControl('', [
+    Validators.required,
+    Validators.pattern(NO_SPACE)]);
+
+  
+
+  constructor(
+    private vendorGoodsService: VendorGoodsService,
+    private settingsService: SettingsService ) { }
 
   ngOnInit() {
-    this.loadGapiScript();
-    //these (hackz) are here to bump the view because angular is not tracking the change to isSignedIn from the gapi callbackz...
-    this.runLoadingInterval(this.isSignedIn);
-    //#TODO: use SettingsService here...
-    this.catalogs = [{name:'Default',value:'default'}];
-    this.catalog = this.catalogs[0];
+    this.getSettings();
   }
   ngOnDestroy() {
   }
 
+  getSettings(): void {
+    this.settingsService.getSettings().then(settings => {
+      this.settings = settings;
+      this.api_key = settings.google_api ? settings.google_api.api_key : undefined;
+      this.client_id = settings.google_api ? settings.google_api.client_id : undefined;
+
+      if(this.api_key && this.api_key != '' && this.client_id && this.client_id != ''){
+        this.needsCredentials = false;
+        this.loadGapiScript();
+        //these (hackz) are here to bump the view because angular is not tracking the change to isSignedIn from the gapi callbackz...
+        this.runLoadingInterval(this.isSignedIn);
+      }else{
+        this.needsCredentials = true;
+        this.loading = false;
+      }
+
+    }, err => {
+      console.log('o noz! settingsService.getSettings() err:',err);
+      this.loading = false;
+    });
+  }
 
   runLoadingInterval(e){
     this.loadingInterval = setInterval(()=>{if(e){clearInterval(this.loadingInterval);this.loading=false}}, 100);
@@ -148,10 +177,6 @@ export class VendorGoodsImportComponent implements OnInit, OnDestroy {
     this.pre.push(message);
   }
 
-  /**
-   * Print the names and majors of students in a sample spreadsheet:
-   * https://docs.google.com/spreadsheets/d/1BxiMVs0XRA5nFMdKvBdBZjgmUUqptlbs74OgvE2upms/edit
-   */
   loadSheetIds() {
     this.loading = true;
     gapi.client.sheets.spreadsheets.get({
@@ -190,10 +215,6 @@ export class VendorGoodsImportComponent implements OnInit, OnDestroy {
       if (range.values.length > 0) {
         this.appendPre(`Processing ${range.values.length} items...`); 
 
-        if(this.dropExistingItems){
-          this.vendorGoodsService.clearVendorGoodsDb();
-        }
-
         let idx:any = range.values[0];
         for (let i = 1; i < range.values.length; i++) {
           var row = range.values[i];
@@ -206,9 +227,16 @@ export class VendorGoodsImportComponent implements OnInit, OnDestroy {
               _vendorGood[idx[x]] = row[x];
             }
           }
-          _vendorGood["_id"] = `${_vendorGood.category}__${_vendorGood.sub_category}__${_vendorGood.prod_id}`;
-          this.vendorGoodsService.addVendorGood(_vendorGood);
-          console.log('vendorGoodsService.addVendorGood added _vendorGood:',_vendorGood);
+          _vendorGood.catalog = this.catalog.toLowerCase();
+          _vendorGood._id = `${_vendorGood.catalog}__${_vendorGood.category}__${_vendorGood.sub_category}__${_vendorGood.prod_id}`;
+          _vendorGood.key = `${_vendorGood.title}`;
+          this.vendorGoodsService.addVendorGood(_vendorGood).then( resp => {
+            console.log('vendorGoodsService.addVendorGood added _vendorGood:',_vendorGood);
+          }).catch( err => {
+            console.log('o noz! vendorGoodsService.addVendorGood err:',err);
+            this.appendPre('Warning: ' + _vendorGood.title + ' conflict.');
+          });
+          
         }
         this.appendPre('done!');
       } else {
@@ -234,6 +262,11 @@ export class VendorGoodsImportComponent implements OnInit, OnDestroy {
 
   writeNewSheet() {
     
+  }
+
+  dropExistingVendorGoods(): void{
+    this.vendorGoodsService.clearVendorGoodsDb();
+    this.appendPre('Destroyed all vendor goods.');
   }
 
 }

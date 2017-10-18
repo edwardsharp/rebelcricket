@@ -1,6 +1,7 @@
 import { Component } from '@angular/core';
 import { Location } from '@angular/common';
 
+import { environment } from '../environments/environment';
 import { AppTitleService } from './app-title.service';
 
 @Component({
@@ -11,6 +12,7 @@ import { AppTitleService } from './app-title.service';
 })
 export class AppComponent {
   title: string = 'rebelcricket';
+  environment = environment;
   
   searchHidden: boolean = true;
   toggleSearch(): void {

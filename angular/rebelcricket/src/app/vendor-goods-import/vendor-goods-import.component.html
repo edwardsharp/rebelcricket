@@ -11,7 +11,11 @@
 
     <i *ngIf="loading">loadng...</i>
 
-		<div class="center" *ngIf="!isSignedIn">
+    <div *ngIf="!loading && needsCredentials">
+    	<p>Please add an API key &amp; Client ID to your <a routerLink="/dashboard/settings">Google settings</a> to import vendor goods from a spreadsheet.</p> 
+    </div>
+
+		<div class="center" *ngIf="!isSignedIn && !needsCredentials">
 			<button md-button (click)="signIn()" title="Authorize">
 			  <md-icon>account_circle</md-icon>
 			  <span>Authorize with Google</span>
@@ -19,6 +23,7 @@
 		</div>
 
 		<div *ngIf="isSignedIn">
+
 			<div class="center" style="display:flex;align-items:center;">
 				<md-form-field class="fullwidth">
 				  <input mdInput [(ngModel)]="gsheetId" placeholder="Google Sheet ID">
@@ -36,22 +41,27 @@
 				</md-form-field>
 			</div>
 			<div class="center" style="display:flex;align-items:baseline;">
-				<md-select class="halfwidth" placeholder="Catalog" [(ngModel)]="catalog">
-				  <md-option *ngFor="let item of catalogs" [value]="item">
-				    {{ item.name }}
-				  </md-option>
-				</md-select>
+				
+				<md-form-field class="halfwidth">
+				  <input mdInput [(ngModel)]="catalog" [formControl]="catalogFormControl" placeholder="Catalog">
+				  <md-error *ngIf="catalogFormControl.hasError('pattern')">
+			      Only letters. No spaces or special characters. 
+			    </md-error>
+			    <md-error *ngIf="catalogFormControl.hasError('required')">
+			      Catalog is <strong>required</strong>
+			    </md-error>
+				</md-form-field>
 
-				<md-checkbox class="halfwidth" [(ngModel)]="dropExistingItems">Drop existing items</md-checkbox>
+
 			</div>
 		</div>
 
-		<pre *ngFor="let item of pre">
-			{{item}}
-		</pre>
+		<dl *ngFor="let item of pre">
+			<dd>{{item}}</dd>
+		</dl>
 
     <md-action-row>
-    	<button md-button (click)="getVendorGoodsFromGsheet(gsheetId)" [disabled]="sheetId == undefined">
+    	<button *ngIf="!needsCredentials" md-button (click)="getVendorGoodsFromGsheet(gsheetId)" [disabled]="sheetId == undefined">
 			  <md-icon>import_export</md-icon> Import Vendor Goods
 			</button>
     	<span class="flexfill"></span>
@@ -61,9 +71,15 @@
 			  </button>
 			  <md-menu #acct="mdMenu">
 			    <button md-menu-item (click)="signOut()" title="Sign Out">
-			      <md-icon>delete</md-icon>
+			      <md-icon>account_circle</md-icon>
 			      <span>Google sign out</span>
 			    </button>
+
+			    <button md-menu-item (click)="dropExistingVendorGoods()" title="Delete All Vendor Goods">
+			      <md-icon>delete</md-icon>
+			      <span>Delete <b>ALL</b> Vendor Goods</span>
+			    </button>
+			    
 			  </md-menu>
 		  </span>
     </md-action-row>

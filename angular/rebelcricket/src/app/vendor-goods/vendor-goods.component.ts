@@ -23,6 +23,7 @@ export class VendorGoodsComponent implements OnInit {
 	vendorGoodsIndexSelected: Array<string> = [];
   order: Order;
   line_item_id: string;
+  catalog: string;
 
   constructor(
   	private vendorGoodsService: VendorGoodsService,
@@ -37,6 +38,8 @@ export class VendorGoodsComponent implements OnInit {
 
     this.route.paramMap
       .switchMap((params: ParamMap) => {
+        this.catalog = params.get('catalog') || 'default';
+        console.log('CATALOG:',this.catalog);
         this.line_item_id = params.get('line_item_id');
         if(params.get('order_id') && params.get('order_id') != ''){
           return this.orderService.getOrder( params.get('order_id') );
@@ -65,7 +68,7 @@ export class VendorGoodsComponent implements OnInit {
   getVendorGoods(): void {
 
     this.loading = true;
-    this.vendorGoodsService.getVendorGoods().then((vendorGoods) => {
+    this.vendorGoodsService.getVendorGoods(this.catalog).then((vendorGoods) => {
       
       this.vendorGoods = vendorGoods.rows.map(d=>{return d.doc});
       let catCount = this.vendorGoods
