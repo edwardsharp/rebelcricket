@@ -1,9 +1,6 @@
 import { Component, OnInit, OnDestroy } from '@angular/core';
 import { ActivatedRoute, ParamMap, Router } from '@angular/router';
-// import { Observable } from 'rxjs/Observable';
-// import 'rxjs/add/operator/map';
-import {BehaviorSubject} from 'rxjs/BehaviorSubject';
-
+import { BehaviorSubject } from 'rxjs/BehaviorSubject';
 import { MdSnackBar } from '@angular/material';
 import {
   trigger,
@@ -63,13 +60,7 @@ import { Order } from '../orders/order';
 export class DashboardComponent implements OnInit, OnDestroy {
 
   settings: Settings;
-  needsTimeout: boolean = false;
   needsReloadAfterInit: boolean = false;
-
-  // orderDataChange: BehaviorSubject<Order[]> = new BehaviorSubject<Order[]>([]);
-  // get orderData(): Order[] { return this.orderDataChange.value; }
-
-  // orders: Array<Order>;
   ordersForStatus: object = {};
 
 	constructor(
@@ -85,16 +76,12 @@ export class DashboardComponent implements OnInit, OnDestroy {
   	
   	this.settingsService.getSettings().then(settings => {
     	this.settings = settings;
-  		// if( ! this.containers.find(c => c.name == status) ){
-	    	// this.containers.splice(this.containers.indexOf(container), 1);	    	
-	    // }
 	    if(this.settings && this.settings.order_statuses){
   			for(let status of this.settings.order_statuses){
 	  			this.containers.push( new Container(this.containers.length, status.name, (status.collapsed ? 'inactive' : 'active') ) );
 	  		}
   		}
 
-  		// console.log('GONNA SUBSCRIBE TO ORDER CHANGEZZ!!!!!!');
   		this.orderService.dataChange.subscribe( orderData => {
 
 	  		let newOrdersForStatus = {};
@@ -105,18 +92,7 @@ export class DashboardComponent implements OnInit, OnDestroy {
 		  		}
 	  		}
 
-	  		// :(
-	  		if(this.needsTimeout){
-	  			this.needsTimeout = false;
-	  			setTimeout(() => {
-		  			// console.log('zomg setTimeout gonna set ordersForStatus newOrdersForStatus:',newOrdersForStatus);
-		  			this.ordersForStatus = newOrdersForStatus;
-		  		}, 1000);
-	  		}else{
-	  			// console.log('!!! NO !!!! TIMEOUT OUT !!!! NEEDED !!!!!!')
-	  			this.ordersForStatus = newOrdersForStatus;
-	  		}
-	  		
+	  		this.ordersForStatus = newOrdersForStatus;
 
 	  	});
 
@@ -150,10 +126,6 @@ export class DashboardComponent implements OnInit, OnDestroy {
     })
     .map( (order, idx) => { order.position = idx; return order; });
   }
-
-  
-
-
 
   containers: Array<Container> = [];
 
@@ -217,11 +189,9 @@ export class DashboardComponent implements OnInit, OnDestroy {
   }
 
   moveOrder(order: Order, direction:string): void{
-  	console.log('moveOrder  order,direction:',order,direction);
     let idx = this.ordersForStatus[order.status].indexOf(order);
     if(idx > -1){
       let newIdx;
-
       switch (direction) {
         case 'top':
           newIdx = 0
@@ -250,11 +220,6 @@ export class DashboardComponent implements OnInit, OnDestroy {
           return (a.position < b.position ? -1 : 1);
         });
 
-      
-      // // this.needsTimeout = true;
-      // this.saveOrderQuietly(order);
-      
-
     }
   }
 
@@ -273,7 +238,6 @@ export class DashboardComponent implements OnInit, OnDestroy {
   }
 
   sortContainerBy(container_name: string, key: string, dir: string){
-  	// console.log('filterContainerBy key:',key);
     switch (key) {
       case 'position':
         this.ordersForStatus[container_name].sort((a,b) => {
@@ -290,23 +254,12 @@ export class DashboardComponent implements OnInit, OnDestroy {
         });
         break;
       case 'date_needed':
-        // console.log('sort by date_needed!');
         this.ordersForStatus[container_name].sort((a,b) => {
-          
           let propA = new Date(a.date_needed).getTime();
           if(isNaN(propA)){ propA = (dir == 'asc' ? Infinity : -Infinity) }
           let propB = new Date(b.date_needed).getTime();
           if(isNaN(propB)){ propB = (dir == 'asc' ? Infinity : -Infinity) }
-
           return (propA < propB ? -1 : 1) * (dir == 'asc' ? 1 : -1);
-
-
-          // let aVal = dir == 'asc' ? b : a;
-          // let bVal = dir == 'asc' ? a : b;
-          // return 
-          // (bVal.date_needed ? new Date(bVal.date_needed).getTime() : 0) 
-          // - 
-          // (aVal.date_needed ? new Date(aVal.date_needed).getTime() : 0);
         });
         break;
     }
@@ -335,9 +288,6 @@ export class DashboardComponent implements OnInit, OnDestroy {
   	});
   }
 
-  // onDateChange(e:any): void{
-  //   console.log('onDateChange e:',e);
-  // }
   clearDueDateFor(order:Order): void {
     order.date_needed = undefined;
     this.saveOrder(order);
