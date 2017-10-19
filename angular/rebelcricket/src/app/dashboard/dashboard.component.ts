@@ -290,11 +290,23 @@ export class DashboardComponent implements OnInit, OnDestroy {
         });
         break;
       case 'date_needed':
-        console.log('sort by date_needed!');
+        // console.log('sort by date_needed!');
         this.ordersForStatus[container_name].sort((a,b) => {
-          let aVal = dir == 'asc' ? b : a;
-          let bVal = dir == 'asc' ? a : b;
-          return (bVal.date_needed ? new Date(bVal.date_needed).getTime() : 0) - (aVal.date_needed ? new Date(aVal.date_needed).getTime() : 0);
+          
+          let propA = new Date(a.date_needed).getTime();
+          if(isNaN(propA)){ propA = (dir == 'asc' ? Infinity : -Infinity) }
+          let propB = new Date(b.date_needed).getTime();
+          if(isNaN(propB)){ propB = (dir == 'asc' ? Infinity : -Infinity) }
+
+          return (propA < propB ? -1 : 1) * (dir == 'asc' ? 1 : -1);
+
+
+          // let aVal = dir == 'asc' ? b : a;
+          // let bVal = dir == 'asc' ? a : b;
+          // return 
+          // (bVal.date_needed ? new Date(bVal.date_needed).getTime() : 0) 
+          // - 
+          // (aVal.date_needed ? new Date(aVal.date_needed).getTime() : 0);
         });
         break;
     }
