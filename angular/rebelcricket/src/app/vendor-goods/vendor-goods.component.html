@@ -61,7 +61,7 @@
   <i *ngIf="loading">
     loading vendor goods...
   </i>
-  <h3 *ngIf="!loading && !vendorGoodsCategories?.length">No Vendor Goods yet...</h3>
+  <h3 *ngIf="!loading && !vendorGoodsCategories?.length" class="no-goodz">No Vendor Goods yet...</h3>
   <md-list>
 
     <div *ngFor="let item of vendorGoodsIndexSelected">

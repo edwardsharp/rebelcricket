@@ -5,7 +5,7 @@ import { Title } 			from '@angular/platform-browser';
 @Injectable()
 export class AppTitleService {
 
-	public default: string = 'rebelcricket';
+	public default: string = 'demo-site';
 	public title: Subject<string>;
   title$ = null;
 
@@ -23,34 +23,5 @@ export class AppTitleService {
   	this.titleService.setTitle(this.default);
     this.title.next(this.default);
   }
-
-	// public reset: Subject<any>;
- //  reset$ = null;
-
- //  constructor() {
- //    this.reset = new Subject();
- //    this.reset$ = this.reset.asObservable();
- //  }
-
- //  public logout() {
- //   this.reset.next('logout');
- //  }
-
-
-
-
-
-
-	// title: string = 'rebelcricket';
-
- //  constructor() { }
-
- //  public setTitle(t:string): void {
- //  	this.title = t;
- //  }
-
- //  public getTitle(): string {
- //  	return this.title;
- //  }
 
 }

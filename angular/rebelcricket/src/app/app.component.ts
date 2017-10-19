@@ -1,8 +1,10 @@
-import { Component } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { Location } from '@angular/common';
 
 import { environment } from '../environments/environment';
 import { AppTitleService } from './app-title.service';
+import { SettingsService } from './settings/settings.service';
+import { Settings } from './settings/settings';
 
 @Component({
   selector: 'app-root',
@@ -10,10 +12,10 @@ import { AppTitleService } from './app-title.service';
   styleUrls: ['./app.component.css']
   // directives: [ NavComponent ]
 })
-export class AppComponent {
-  title: string = 'rebelcricket';
+export class AppComponent implements OnInit {
+  title: string = 'demo-site';
   environment = environment;
-  
+
   searchHidden: boolean = true;
   toggleSearch(): void {
     this.searchHidden = !this.searchHidden;
@@ -21,14 +23,21 @@ export class AppComponent {
 
   constructor(
     private location: Location,
-    appTitleService: AppTitleService 
+    appTitleService: AppTitleService,
+    private settingsService: SettingsService
   ) { 
     appTitleService.title.subscribe( t => {
-      console.log('title now t:',t);
       this.title = t;
     });
   }
 
+  ngOnInit() {
+    this.settingsService.getSettings().then(settings => {
+      if(settings.site_title && settings.site_title != ''){
+        this.title = settings.site_title;
+      }
+    });
+  }
 
   back() {
     this.location.back();

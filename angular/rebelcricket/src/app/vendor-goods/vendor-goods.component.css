@@ -58,6 +58,11 @@ md-list-item:hover{
 	background-color: #f0f0f0;
 }
 
+.no-goodz{
+	width: 100%;
+	text-align: center;
+}
+
 @media (max-width: 599px) {
   #vendorGoodsContainer{
   	flex-direction: column;

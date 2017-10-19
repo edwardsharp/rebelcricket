@@ -156,7 +156,7 @@
 
           <md-card-title>{{order.name}} <span *ngIf="order.org">({{order.org}})</span></md-card-title>
           <md-card-subtitle>
-            <md-icon class="card-subtitle-icon">event</md-icon>{{order.created_at | date:'shortDate'}} 
+            <md-icon class="card-subtitle-icon" mdTooltip="Date Created">event</md-icon>{{order.created_at | date:'short'}} 
           </md-card-subtitle>
         </md-card-header>
         <!-- <img md-card-image src="assets/img/examples/shiba2.jpg" alt="Photo of a Shiba Inu"> -->
