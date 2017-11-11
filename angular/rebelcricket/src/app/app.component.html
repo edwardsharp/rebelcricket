@@ -1,9 +1,9 @@
-<md-toolbar color="primary">
-  <button type="button" class="menu-button" md-icon-button (click)="sidenav.toggle()">
-    <md-icon>menu</md-icon>
+<mat-toolbar color="primary">
+  <button type="button" class="menu-button" mat-icon-button (click)="sidenav.toggle()">
+    <mat-icon>menu</mat-icon>
   </button>
-<!--   <button md-icon-button (click)="back()">
-    <md-icon>arrow_back</md-icon>
+<!--   <button mat-icon-button (click)="back()">
+    <mat-icon>arrow_back</mat-icon>
   </button> -->
 
   <span class="flexfill"></span>
@@ -12,32 +12,32 @@
   
   <app-search-box class="search-container" #searchBox (onSearch)="doSearch($event)" (onFocus)="doSearch($event)"></app-search-box>
 
-  <button md-icon-button [mdMenuTriggerFor]="menu">
-    <md-icon class="example-icon">more_vert</md-icon>
+  <button mat-icon-button [matMenuTriggerFor]="menu">
+    <mat-icon class="example-icon">more_vert</mat-icon>
   </button>
-  <md-menu #menu="mdMenu">
+  <mat-menu #menu="matMenu">
 
-    <button *ngIf="!environment.admin_party" md-menu-item disabled>
-      <md-icon>account_circle</md-icon>
+    <button *ngIf="!environment.admin_party" mat-menu-item disabled>
+      <mat-icon>account_circle</mat-icon>
       <span>account</span>
     </button>
 
-    <button *ngIf="environment.admin_party" md-menu-item>
+    <button *ngIf="environment.admin_party" mat-menu-item>
       <span style="margin-left:0.5em;margin-right:1em;">🎉 </span> 
       <span>Admin Party!</span>
     </button>
     
-    <button *ngIf="environment.admin_party" md-menu-item>
-      <md-icon>favorite_border</md-icon>
+    <button *ngIf="environment.admin_party" mat-menu-item>
+      <mat-icon>favorite_border</mat-icon>
       <span>madewithlove in pdx</span>
     </button>
 
-  </md-menu>
+  </mat-menu>
 
-</md-toolbar>
+</mat-toolbar>
 
-<md-sidenav-container class="dashboard-container">
-  <md-sidenav 
+<mat-sidenav-container class="dashboard-container">
+  <mat-sidenav 
     #sidenav 
     mode="push" 
     opened="false"
@@ -45,11 +45,11 @@
 
     <app-sidebar (sidenavEvent)="sidenav.close()"></app-sidebar>
 
-  </md-sidenav>
+  </mat-sidenav>
 
   
   <div class="dashboard-sidenav-content">
     <router-outlet></router-outlet>
   </div>
 
-</md-sidenav-container>
+</mat-sidenav-container>

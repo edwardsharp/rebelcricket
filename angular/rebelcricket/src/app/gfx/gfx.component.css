@@ -1,0 +1,57 @@
+.center{
+  text-align: center;
+}
+
+.flex-wrap {
+  @apply(--layout-horizontal);
+  @apply(--layout-wrap);
+}
+
+.flex-wrap div {
+  min-width: 200px;
+}
+
+#design-controls, #objectTools{
+  padding-left: 2em;
+}
+
+#design-element-container{
+  width: 500px;
+  height: 400px;
+  position: relative;
+}
+
+#design-element-img-container{
+  position: absolute;
+  top: 0;
+  left: 0;
+  z-index: 0;
+}
+#design-element-canvas-container {
+
+  position: absolute;
+  top:115px;
+  left: 165px;
+  z-index: 1;
+}
+
+canvas:hover{
+  border:thin solid #ccc;
+}
+
+.controls label{
+  font-size: 16px;
+
+}
+.controls {
+  margin-top: 16px;
+  line-height: 14px;
+}
+.controls div{
+  margin-top: 10px;
+}
+
+@media (max-width: 767px) {
+
+
+}

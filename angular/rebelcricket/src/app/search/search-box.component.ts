@@ -5,7 +5,7 @@ import 'rxjs/add/operator/startWith';
 import 'rxjs/add/operator/map';
 import 'rxjs/add/observable/from';
 
-import {MdDialog, MdDialogRef, MD_DIALOG_DATA, MdDatepickerInputEvent} from '@angular/material';
+import {MatDialog, MatDialogRef, MAT_DIALOG_DATA, MatDatepickerInputEvent} from '@angular/material';
 
 
 
@@ -47,18 +47,18 @@ import { OrderService } from '../orders/order.service';
     class="search-box"
     placeholder="Search..." 
     aria-label="Search..." 
-    [mdAutocomplete]="auto" 
+    [matAutocomplete]="auto" 
     [formControl]="stateCtrl"
     [(ngModel)]="destination">
-  <md-autocomplete #auto="mdAutocomplete">
-    <md-option 
+  <mat-autocomplete #auto="matAutocomplete">
+    <mat-option 
       *ngFor="let order of filteredOrders | async" 
       [value]="order.name"
       routerLink="/dashboard/order/{{order._id}}">
       <span>{{ order.name }}</span> |
       <small>{{createdAtDate(order._id) | date:'short' }}</small>
-    </md-option>
-  </md-autocomplete>`,
+    </mat-option>
+  </mat-autocomplete>`,
   styleUrls: ['./search-box.component.css']
 })
 export class SearchBoxComponent implements OnInit {
@@ -136,7 +136,7 @@ export class SearchBoxComponent implements OnInit {
   // ];
 
   constructor(
-    public dialog: MdDialog, 
+    public dialog: MatDialog, 
     private orderService: OrderService
   ) {
 

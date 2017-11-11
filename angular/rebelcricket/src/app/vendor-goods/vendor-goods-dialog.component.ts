@@ -1,5 +1,5 @@
 import { Component, OnInit, Inject } from '@angular/core';
-import {MdDialog, MdDialogRef, MD_DIALOG_DATA} from '@angular/material';
+import {MatDialog, MatDialogRef, MAT_DIALOG_DATA} from '@angular/material';
 
 import * as _ from 'underscore';
 
@@ -15,8 +15,8 @@ export class VendorGoodsDialogComponent implements OnInit {
   }
 
   constructor(
-    public dialogRef: MdDialogRef<VendorGoodsDialogComponent>,
-    @Inject(MD_DIALOG_DATA) public vendorItem: any) { }
+    public dialogRef: MatDialogRef<VendorGoodsDialogComponent>,
+    @Inject(MAT_DIALOG_DATA) public vendorItem: any) { }
 
   onNoClick(): void {
     this.dialogRef.close();

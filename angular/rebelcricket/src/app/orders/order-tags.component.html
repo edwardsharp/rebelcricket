@@ -1,30 +1,30 @@
 <div class="tags-container">
-	<md-chip-list mdPrefix #chipList> <!-- class="mat-chip-list-stacked" aria-orientation="vertical" -->
-    <md-chip *ngFor="let tag of tags" 
+	<mat-chip-list matPrefix #chipList> <!-- class="mat-chip-list-stacked" aria-orientation="vertical" -->
+    <mat-chip *ngFor="let tag of tags" 
     	[selectable]="selectable"
       (click)="tagClick(tag)"
       (blur)="chipBlur()"
 			[removable]="removable" 
 			(remove)="remove(tag)">
-	  	<md-icon mdChipRemove>cancel</md-icon>
+	  	<mat-icon matChipRemove>cancel</mat-icon>
       {{tag}}
-    </md-chip>
-    <md-chip (click)="addTag()" (blur)="chipBlur()">
-    	<md-icon class="add-tag">add</md-icon>
+    </mat-chip>
+    <mat-chip (click)="addTag()" (blur)="chipBlur()">
+    	<mat-icon class="add-tag">add</mat-icon>
     	Tag
-    </md-chip>
-  </md-chip-list>
+    </mat-chip>
+  </mat-chip-list>
 </div>
 <div>
-	<md-form-field [hidden]="inputHidden" class="fullwidth">
-		<input #tagInput mdInput
+	<mat-form-field [hidden]="inputHidden" class="fullwidth">
+		<input #tagInput matInput
 			[placeholder]="selectedTag ? 'Edit Tag...' : 'New tag...'"
 			[(ngModel)]="selectedTag"
-			[mdChipInputFor]="chipList"
-			[mdChipInputSeparatorKeyCodes]="separatorKeysCodes"
-			[mdChipInputAddOnBlur]="addOnBlur"
+			[matChipInputFor]="chipList"
+			[matChipInputSeparatorKeyCodes]="separatorKeysCodes"
+			[matChipInputAddOnBlur]="addOnBlur"
 			(focus)="focusInput()"
 			(blur)="blurInput()"
-			(mdChipInputTokenEnd)="add($event)" />
-	</md-form-field>
+			(matChipInputTokenEnd)="add($event)" />
+	</mat-form-field>
 </div>

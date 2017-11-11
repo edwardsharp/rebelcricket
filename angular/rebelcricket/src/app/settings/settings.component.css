@@ -4,10 +4,10 @@
 	margin-top: 1.5em;
 }
 
-/* md-expansion-panel md-expansion-panel-header */
+/* mat-expansion-panel mat-expansion-panel-header */
 
 
-md-action-row{
+mat-action-row{
 	position: sticky;
 	bottom: 0;
 	background-color: white;
@@ -40,7 +40,7 @@ md-action-row{
   align-items: center;
 }
 
-md-chip{
+mat-chip{
 	/*white-space: pre-wrap;*/
   text-overflow: ellipsis;
   max-width: 200px;
@@ -63,7 +63,7 @@ md-chip{
 	margin-left: 1em;
 	margin-right: 1em;
 }
-md-list-item md-form-field{
+mat-list-item mat-form-field{
 	margin-top: 0.5em;
 }
 .detail-item{
@@ -86,6 +86,6 @@ section {
   align-items: center;
 }
 
-md-checkbox {
+mat-checkbox {
   margin: 10px;
 }

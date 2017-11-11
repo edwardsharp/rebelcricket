@@ -1,6 +1,6 @@
-<h1 md-dialog-title class="center">{{vendorItem.title}}</h1>
+<h1 mat-dialog-title class="center">{{vendorItem.title}}</h1>
 
-<div md-dialog-content>     
+<div mat-dialog-content>     
   <div class="dialog-content-wrapper">
     <div class="center">{{vendorItem.prod_id}} {{vendorItem.category}} {{vendorItem.sub_category}}</div>
     <div class="row">
@@ -29,7 +29,7 @@
     <div *ngFor="let item of vendorItem.colors">
       <div *ngIf="flattenColorName(item.color)" class="row">
         <!-- (click)="item.selected = !item.selected" -->
-        <md-checkbox [checked]="item.selected" tabindex="-1" (change)="itemSelectedChange($event, item)">
+        <mat-checkbox [checked]="item.selected" tabindex="-1" (change)="itemSelectedChange($event, item)">
           <div class="color-img" 
             [style.background-color]="'none'"
             [style.background-image]="'url(' + backgroundImgFor(vendorItem.href_items,item.color) + ')'">
@@ -37,7 +37,7 @@
                 {{flattenColorName(item.color)}}
             </div>
           </div>
-        </md-checkbox>
+        </mat-checkbox>
         <div class="flexfill">
           <span class="color-price center" *ngFor="let sizePrices of item.size_prices">
             
@@ -48,19 +48,19 @@
       </div>
     </div>
   </div>
-  <div md-dialog-actions>
+  <div mat-dialog-actions>
 
-    <button md-button tabindex="-1"
+    <button mat-button tabindex="-1"
       *ngIf="vendorItem.order"
-      [md-dialog-close]="vendorItem" 
+      [mat-dialog-close]="vendorItem" 
       (click)="closeAndReturnToOrder(vendorItem)">Add To Order</button>
-    <button md-button tabindex="-1"
+    <button mat-button tabindex="-1"
       *ngIf="vendorItem.order"
-      [md-dialog-close]="vendorItem" 
+      [mat-dialog-close]="vendorItem" 
       (click)="closeAndKeepBrowsing(vendorItem)">Add &amp; Keep Browsing</button>
     <span *ngIf="vendorItem.order" class="flexfill"></span>
-    <button md-button tabindex="-1"
-      [md-dialog-close]="vendorItem" 
+    <button mat-button tabindex="-1"
+      [mat-dialog-close]="vendorItem" 
       (click)="closeClick">Close</button>
   </div>   
 

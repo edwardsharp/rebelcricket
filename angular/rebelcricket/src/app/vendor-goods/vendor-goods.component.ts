@@ -1,7 +1,7 @@
 import { Component, OnInit, ElementRef, Input, OnChanges } from '@angular/core';
 import { ActivatedRoute, Router, ParamMap } from '@angular/router';
 import { Observable } from 'rxjs/Observable';
-import {MdDialog, MdDialogRef, MD_DIALOG_DATA, MdDatepickerInputEvent, MdSnackBar} from '@angular/material';
+import {MatDialog, MatDialogRef, MAT_DIALOG_DATA, MatDatepickerInputEvent, MatSnackBar} from '@angular/material';
 
 import { VendorGood } from './vendor-good';
 import { VendorGoodsService } from './vendor-goods.service';
@@ -27,11 +27,11 @@ export class VendorGoodsComponent implements OnInit {
 
   constructor(
   	private vendorGoodsService: VendorGoodsService,
-  	public dialog: MdDialog,
+  	public dialog: MatDialog,
     private route: ActivatedRoute,
     private router: Router,
     private orderService: OrderService,
-    private snackBar: MdSnackBar ) { }
+    private snackBar: MatSnackBar ) { }
 	
 	ngOnInit(): void {
     this.getVendorGoods();
@@ -119,7 +119,7 @@ export class VendorGoodsComponent implements OnInit {
   date: Date;
   destination: string;
 
-  // constructor(public dialog: MdDialog) {}
+  // constructor(public dialog: MatDialog) {}
 
   openDialog(data:any,order:Order): void {
     // console.log('openDialog data:',data);

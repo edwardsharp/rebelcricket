@@ -4,7 +4,7 @@ import { DomSanitizer } from '@angular/platform-browser';
 import { Observable }           from 'rxjs/Observable';
 // import 'rxjs/add/operator/map';
 import 'rxjs/add/operator/switchMap';
-import {MdChipInputEvent, ENTER, MdSnackBar} from '@angular/material';
+import {MatChipInputEvent, MatSnackBar} from '@angular/material';
 
 import { Order, LineItem, OrderField, OrderFieldType } from '../orders/order';
 import { OrderService } from '../orders/order.service';
@@ -15,7 +15,7 @@ import { AppTitleService } from '../app-title.service';
 import * as _ from 'underscore';
 
 const COMMA = 188;
-
+const ENTER = 13;
 
 @Component({
   selector: 'app-order-detail',
@@ -45,7 +45,7 @@ export class OrderDetailComponent implements OnInit, OnDestroy  {
     private router: Router,
     private settingsService: SettingsService,
     private sanitizer: DomSanitizer,
-    private snackBar: MdSnackBar,
+    private snackBar: MatSnackBar,
     private appTitleService: AppTitleService 
   ) { 
     this.order_field_types = {
@@ -167,7 +167,7 @@ export class OrderDetailComponent implements OnInit, OnDestroy  {
   separatorKeysCodes = [ENTER, COMMA];
 
 
-  add(event: MdChipInputEvent): void {
+  add(event: MatChipInputEvent): void {
     let input = event.input;
     let value = event.value;
 

@@ -1,15 +1,15 @@
 import { Component, OnInit } from '@angular/core';
-import { MdSnackBar, 
-  MdSort,
-  MdPaginator,
-  MdChipInputEvent,
-  ENTER } from '@angular/material';
+import { MatSnackBar, 
+  MatSort,
+  MatPaginator,
+  MatChipInputEvent } from '@angular/material';
 
 import { SettingsService } from './settings.service';
 import { Settings, OrderStatus, Service } from './settings';
 import { OrderField, OrderFieldType } from '../orders/order';
 
 const COMMA = 188;
+const ENTER = 13;
 
 @Component({
   selector: 'app-settings',
@@ -25,7 +25,7 @@ export class SettingsComponent implements OnInit {
 
   constructor(
     private settingsService: SettingsService,
-    private snackBar: MdSnackBar
+    private snackBar: MatSnackBar
   ) { }
  
   ngOnInit() {
@@ -83,7 +83,7 @@ export class SettingsComponent implements OnInit {
   removable: boolean = true;
   addOnBlur: boolean = true;
   separatorKeysCodes = [ENTER, COMMA];
-  addStatus(event: MdChipInputEvent): void {
+  addStatus(event: MatChipInputEvent): void {
     let input = event.input;
     let value = event.value;
     if ((value || '').trim()) {

@@ -2,7 +2,7 @@
 	max-width: 85vw;
 	margin-top: 1.5em;
 }
-md-toolbar {
+mat-toolbar {
 	margin-top: 1em;
 	position: sticky;
 	top: 56px;

@@ -24,6 +24,9 @@ import { SearchBoxComponent } from './search/search-box.component';
 import { SettingsComponent } from './settings/settings.component';
 import { SettingsService } from './settings/settings.service';
 import { AppTitleService } from './app-title.service';
+import { GfxComponent } from './gfx/gfx.component';
+import { GfxService } from './gfx/gfx.service';
+
 import { 
   SliceVendorFilenamePipe, 
   SliceVendorFilenameDatePipe, 
@@ -62,6 +65,10 @@ const appRoutes: Routes = [
     path: 'dashboard/settings',
     component: SettingsComponent
   },
+  {
+    path: 'dashboard/gfx',
+    component: GfxComponent
+  },
   { 
   	path: '',
     redirectTo: '/dashboard',
@@ -84,6 +91,7 @@ const appRoutes: Routes = [
     VendorGoodsImportComponent,
     SearchBoxComponent,
     SettingsComponent,
+    GfxComponent,
     SliceVendorFilenamePipe,
     SliceVendorFilenameDatePipe,
     SliceVendorFilenameCategoryPipe,
@@ -106,7 +114,15 @@ const appRoutes: Routes = [
     VendorGoodsDialogComponent
   	// DashboardComponent, OrdersComponent
   ],
-  providers: [OrderService, VendorGoodsService, GsheetService, SettingsService, Title, AppTitleService],
+  providers: [
+    OrderService, 
+    VendorGoodsService, 
+    GsheetService, 
+    SettingsService, 
+    Title, 
+    AppTitleService,
+    GfxService 
+  ],
   bootstrap: [AppComponent]
 })
 export class AppModule { }

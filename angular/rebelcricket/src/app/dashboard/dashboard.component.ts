@@ -1,7 +1,7 @@
 import { Component, OnInit, OnDestroy } from '@angular/core';
 import { ActivatedRoute, ParamMap, Router } from '@angular/router';
 import { BehaviorSubject } from 'rxjs/BehaviorSubject';
-import { MdSnackBar } from '@angular/material';
+import { MatSnackBar } from '@angular/material';
 import {
   trigger,
   state,
@@ -68,7 +68,7 @@ export class DashboardComponent implements OnInit, OnDestroy {
   	private route: ActivatedRoute,
     private router: Router,
     private settingsService: SettingsService,
-    private snackBar: MdSnackBar,
+    private snackBar: MatSnackBar,
     private appTitleService: AppTitleService 
   ) { }
 

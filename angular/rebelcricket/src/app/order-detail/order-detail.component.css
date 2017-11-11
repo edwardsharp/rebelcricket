@@ -3,38 +3,38 @@
 	/*hack to keep bottom tab nav sticky bar from creepin up the page. */
 }
 
-md-form-field{
+mat-form-field{
 	min-width: 49%;
 }
 
-md-form-field.with-button{
+mat-form-field.with-button{
 	width: 90%;
 }
 
-md-chip{
+mat-chip{
   text-overflow: ellipsis;
   max-width: 200px;
   overflow: hidden;
 }
 
-md-checkbox{
+mat-checkbox{
 	margin-left: 1em;
 }
 
-md-toolbar-row{
+mat-toolbar-row{
 	z-index: 3;
 }
 
-md-card{
+mat-card{
 	margin:0.5em;
 }
 
-md-card-actions{
+mat-card-actions{
 	display: flex;
 	align-items: center;
 }
 
-md-action-row{
+mat-action-row{
 	display: flex;
 	height: 100%;
   align-items: center;
@@ -158,13 +158,13 @@ section h3{
 }
 
 @media (max-width: 599px) {
-	md-form-field{
+	mat-form-field{
 		width: 100%;
 	}
-	md-form-field.with-button{
+	mat-form-field.with-button{
 		width: 85%;
 	}
-	md-card{
+	mat-card{
 		margin:0.5em;
 	}
 	.sticky{

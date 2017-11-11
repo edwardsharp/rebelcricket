@@ -1,59 +1,59 @@
 
 <div id="vendorGoodsIndexNarrow">
 
-  <a md-button
+  <a mat-button
     *ngIf="order && order._id"
     routerLink="/dashboard/order/{{order._id}}">
-    <md-icon>arrow_back</md-icon>
+    <mat-icon>arrow_back</mat-icon>
     <span>Back to Order</span>
   </a>
 
-  <button class="vendorGoodsCategories" md-button [mdMenuTriggerFor]="vendorGoodsCategoriesMenu">
-    <md-icon>view_module</md-icon>
+  <button class="vendorGoodsCategories" mat-button [matMenuTriggerFor]="vendorGoodsCategoriesMenu">
+    <mat-icon>view_module</mat-icon>
     Categories ({{vendorGoodsCategories.length}})
   </button>
 
-  <md-menu #vendorGoodsCategoriesMenu="mdMenu">
+  <mat-menu #vendorGoodsCategoriesMenu="matMenu">
     <div style="display:flex;align-items:center;">
       <span class="flexfill"></span>
       Categories ({{vendorGoodsCategories.length}})
       <span class="flexfill"></span>
-      <button md-icon-button>
-        <md-icon>clear</md-icon>
+      <button mat-icon-button>
+        <mat-icon>clear</mat-icon>
       </button>
     </div>
     
-    <md-selection-list #vendorGoodsIndex dense>
-      <md-list-option *ngFor="let idx of vendorGoodsCategories" (click)="$event.stopPropagation();toggleVendorGoodCategory(idx.name)">
+    <mat-selection-list #vendorGoodsIndex dense>
+      <mat-list-option *ngFor="let idx of vendorGoodsCategories" (click)="$event.stopPropagation();toggleVendorGoodCategory(idx.name)">
         <span class="truncate">{{idx.name}} ({{idx.count}})</span>
-      </md-list-option>
-    </md-selection-list>
-  </md-menu>
+      </mat-list-option>
+    </mat-selection-list>
+  </mat-menu>
 
-  <button class="vendorGoodsBrands" md-button [mdMenuTriggerFor]="vendorGoodsBrandsMenu" disabled>
-    <md-icon>loyalty</md-icon>
+  <button class="vendorGoodsBrands" mat-button [matMenuTriggerFor]="vendorGoodsBrandsMenu" disabled>
+    <mat-icon>loyalty</mat-icon>
     Brands (0)
   </button>
-  <md-menu #vendorGoodsBrandsMenu="mdMenu">
-    <md-selection-list #vendorGoodsBrandsIndex dense>
+  <mat-menu #vendorGoodsBrandsMenu="matMenu">
+    <mat-selection-list #vendorGoodsBrandsIndex dense>
       
-      <!-- <md-list-option *ngFor="let idx of vendorGoodsCategories" (click)="$event.stopPropagation();toggleVendorGoodCategory(idx.name)">
+      <!-- <mat-list-option *ngFor="let idx of vendorGoodsCategories" (click)="$event.stopPropagation();toggleVendorGoodCategory(idx.name)">
         <span class="truncate">{{idx.name}} ({{idx.count}})</span>
-      </md-list-option> -->
-    </md-selection-list>
-  </md-menu>
+      </mat-list-option> -->
+    </mat-selection-list>
+  </mat-menu>
 
   
 
- <!--  <button class="vendorGoodsSearch" md-button [mdMenuTriggerFor]="vendorGoodsSearchMenu">
-    <md-icon>search</md-icon>
+ <!--  <button class="vendorGoodsSearch" mat-button [matMenuTriggerFor]="vendorGoodsSearchMenu">
+    <mat-icon>search</mat-icon>
     Search
   </button>
-  <md-menu #vendorGoodsSearchMenu="mdMenu">
-    <md-form-field>
-      <input mdInput placeholder="Search" (click)="$event.stopPropagation()">
-    </md-form-field>
-  </md-menu> -->
+  <mat-menu #vendorGoodsSearchMenu="matMenu">
+    <mat-form-field>
+      <input matInput placeholder="Search" (click)="$event.stopPropagation()">
+    </mat-form-field>
+  </mat-menu> -->
 
 </div>
 
@@ -62,28 +62,28 @@
     loading vendor goods...
   </i>
   <h3 *ngIf="!loading && !vendorGoodsCategories?.length" class="no-goodz">No Vendor Goods yet...</h3>
-  <md-list>
+  <mat-list>
 
     <div *ngFor="let item of vendorGoodsIndexSelected">
-      <h3 md-subheader class="sticky center">{{item}}</h3>
+      <h3 mat-subheader class="sticky center">{{item}}</h3>
       <a name="{{item}}">&nbsp;</a>
       <div *ngFor="let subGood of vendorGoodsSubCategories(item)">
-        <h3 md-subheader class="sticky center">{{item}} - {{subGood}}</h3>
+        <h3 mat-subheader class="sticky center">{{item}} - {{subGood}}</h3>
         <a name="{{subGood}}">&nbsp;</a>
-        <md-list-item 
+        <mat-list-item 
           *ngFor="let vendorGood of vendorGoodsForCategory(item,subGood)"
           (click)="openDialog(vendorGood,order)">
-          <h3 mdLine class="truncate" title="{{vendorGood.title}}"> {{vendorGood.title}} <small class="colorCount">({{vendorGood.colors?.length}} Colors)</small></h3>
+          <h3 matLine class="truncate" title="{{vendorGood.title}}"> {{vendorGood.title}} <small class="colorCount">({{vendorGood.colors?.length}} Colors)</small></h3>
    
-          <button type="button" md-icon-button>
-            <md-icon>shopping_basket</md-icon>
+          <button type="button" mat-icon-button>
+            <mat-icon>shopping_basket</mat-icon>
           </button>
-        </md-list-item>
-        <md-divider></md-divider>
+        </mat-list-item>
+        <mat-divider></mat-divider>
 
       </div>
     </div>
-  </md-list>
+  </mat-list>
 
 </div>
 

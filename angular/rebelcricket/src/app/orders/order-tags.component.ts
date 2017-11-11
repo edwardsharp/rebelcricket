@@ -1,7 +1,8 @@
 import { Component, ViewChild, OnInit, Input, Output, EventEmitter } from '@angular/core';
-import {MdChipInputEvent, ENTER, MdSnackBar} from '@angular/material';
+import {MatChipInputEvent, MatSnackBar} from '@angular/material';
 
 const COMMA = 188;
+const ENTER = 13;
 
 @Component({
   selector: 'app-order-tags',
@@ -37,7 +38,7 @@ export class OrderTagsComponent implements OnInit {
   	setTimeout(() => this.tagInput.nativeElement.focus(), 100);
   }
 
-  add(event: MdChipInputEvent): void {
+  add(event: MatChipInputEvent): void {
     let input = event.input;
     let value = (event.value || '').trim();
 

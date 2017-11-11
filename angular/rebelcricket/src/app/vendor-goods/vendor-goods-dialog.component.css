@@ -16,7 +16,7 @@
   margin:0;
 }
 
-[md-dialog-actions]{
+[mat-dialog-actions]{
   position: sticky;
   bottom: 0;
   padding: 0;

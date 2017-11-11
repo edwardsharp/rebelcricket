@@ -3,51 +3,51 @@ import { CommonModule } from '@angular/common';
 
 import {CdkTableModule} from '@angular/cdk/table';
 import {
-  MdAutocompleteModule, MdButtonModule, MdButtonToggleModule, MdPaginatorModule,
-  MdCardModule, MdCheckboxModule, MdChipsModule, MdDatepickerModule, MdNativeDateModule, 
-  MdDialogModule, MdGridListModule, MdIconModule, MdInputModule,
-  MdListModule, MdMenuModule, MdProgressBarModule, MdProgressSpinnerModule,
-  MdRadioModule, MdSelectModule, MdSidenavModule, MdSliderModule, MdSortModule,
-  MdSlideToggleModule, MdSnackBarModule, MdTableModule, MdTabsModule, MdToolbarModule,
-  MdTooltipModule, MdFormFieldModule, MdExpansionModule, MdStepperModule
+  MatAutocompleteModule, MatButtonModule, MatButtonToggleModule, MatPaginatorModule,
+  MatCardModule, MatCheckboxModule, MatChipsModule, MatDatepickerModule, MatNativeDateModule, 
+  MatDialogModule, MatGridListModule, MatIconModule, MatInputModule,
+  MatListModule, MatMenuModule, MatProgressBarModule, MatProgressSpinnerModule,
+  MatRadioModule, MatSelectModule, MatSidenavModule, MatSliderModule, MatSortModule,
+  MatSlideToggleModule, MatSnackBarModule, MatTableModule, MatTabsModule, MatToolbarModule,
+  MatTooltipModule, MatFormFieldModule, MatExpansionModule, MatStepperModule
 } from '@angular/material';
 
-// MdDialog, MdDialogRef, MD_DIALOG_DATA, MdDatepickerInputEvent
+// MatDialog, MatDialogRef, MAT_DIALOG_DATA, MatDatepickerInputEvent
 
 @NgModule({
   exports: [
     CdkTableModule,
-    MdAutocompleteModule,
-    MdButtonModule,
-    MdButtonToggleModule,
-    MdCardModule,
-    MdCheckboxModule,
-    MdChipsModule,
-    MdDatepickerModule,
-    MdNativeDateModule,
-    MdDialogModule,
-    MdExpansionModule,
-    MdFormFieldModule,
-    MdGridListModule,
-    MdIconModule,
-    MdInputModule,
-    MdListModule,
-    MdMenuModule,
-    MdProgressBarModule,
-    MdProgressSpinnerModule,
-    MdRadioModule,
-    MdSelectModule,
-    MdSlideToggleModule,
-    MdSliderModule,
-    MdSidenavModule,
-    MdSnackBarModule,
-    MdStepperModule,
-    MdTabsModule,
-    MdToolbarModule,
-    MdTooltipModule,
-    MdPaginatorModule,
-    MdSortModule,
-    MdTableModule
+    MatAutocompleteModule,
+    MatButtonModule,
+    MatButtonToggleModule,
+    MatCardModule,
+    MatCheckboxModule,
+    MatChipsModule,
+    MatDatepickerModule,
+    MatNativeDateModule,
+    MatDialogModule,
+    MatExpansionModule,
+    MatFormFieldModule,
+    MatGridListModule,
+    MatIconModule,
+    MatInputModule,
+    MatListModule,
+    MatMenuModule,
+    MatProgressBarModule,
+    MatProgressSpinnerModule,
+    MatRadioModule,
+    MatSelectModule,
+    MatSlideToggleModule,
+    MatSliderModule,
+    MatSidenavModule,
+    MatSnackBarModule,
+    MatStepperModule,
+    MatTabsModule,
+    MatToolbarModule,
+    MatTooltipModule,
+    MatPaginatorModule,
+    MatSortModule,
+    MatTableModule
   ]
 })
 

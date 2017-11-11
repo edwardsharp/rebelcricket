@@ -1,6 +1,6 @@
 import {Component, ViewChild, OnInit} from '@angular/core';
 import {DataSource} from '@angular/cdk/collections';
-import {MdSort,MdPaginator} from '@angular/material';
+import {MatSort,MatPaginator} from '@angular/material';
 import {BehaviorSubject} from 'rxjs/BehaviorSubject';
 import {Observable} from 'rxjs/Observable';
 import 'rxjs/add/operator/startWith';
@@ -34,8 +34,8 @@ export class OrdersComponent implements OnInit {
   // exampleDatabase = new ExampleDatabase();
   dataSource: OrderStore | null;
 
-  @ViewChild(MdSort) sort: MdSort;
-  @ViewChild(MdPaginator) paginator: MdPaginator;
+  @ViewChild(MatSort) sort: MatSort;
+  @ViewChild(MatPaginator) paginator: MatPaginator;
 
   ngOnInit() {
 

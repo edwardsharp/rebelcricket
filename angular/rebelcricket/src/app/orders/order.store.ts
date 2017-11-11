@@ -1,6 +1,6 @@
 import {ViewChild} from '@angular/core';
 import {DataSource} from '@angular/cdk/collections';
-import {MdSort, MdPaginator} from '@angular/material';
+import {MatSort, MatPaginator} from '@angular/material';
 // import {BehaviorSubject} from 'rxjs/BehaviorSubject';
 import {Observable} from 'rxjs/Observable';
 // import 'rxjs/add/operator/startWith';
@@ -20,8 +20,8 @@ import { OrderService } from './order.service';
  */
 export class OrderStore extends DataSource<any> {
   constructor( private _orderService: OrderService, 
-  						 private _sort: MdSort, 
-  						 private _paginator: MdPaginator ) {
+  						 private _sort: MatSort, 
+  						 private _paginator: MatPaginator ) {
     super();
   }
 
