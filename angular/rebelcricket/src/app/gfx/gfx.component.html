@@ -1,48 +1,34 @@
- <header class="center">
-  <h1 class="rebelcricket-header">Design</h1>
-</header>
-<div class="flex-wrap">
-  <div id="design-controls">
+<nav class="mat-elevation-z4">
 
-    <mat-form-field>
-      <mat-select placeholder="Template" [formControl]="plateControl" [(ngModel)]="plate">
-        <mat-option>-- None --</mat-option>
-        <mat-optgroup *ngFor="let group of plateGroups" [label]="group.name"
-                      [disabled]="group.disabled">
-          <mat-option *ngFor="let plate of group.plates" [value]="plate.value">
-            {{ plate.viewValue }}
-          </mat-option>
-        </mat-optgroup>
-      </mat-select>
-    </mat-form-field>
+  <button id="drawSOMETHING" (click)="drawSomething()">draw</button>
+  <button id="loadSVG" (click)="loadSVG('tshirt-m.svg')">Load SVG</button>
+  -
+  <input id="zoom" (input)="zoom($event)" type="range" min="0.1" max="3" step="0.1" [(ngModel)]="zoomVal">+
+  <button id="zoomReset" (click)="zoomReset()">x</button>
 
 
+  <mat-form-field>
+    <mat-select placeholder="Template" [formControl]="plateControl" [(ngModel)]="plate">
+      <mat-option>-- None --</mat-option>
+      <mat-optgroup *ngFor="let group of plateGroups" [label]="group.name"
+                    [disabled]="group.disabled">
+        <mat-option *ngFor="let plate of group.plates" [value]="plate.value">
+          {{ plate.viewValue }}
+        </mat-option>
+      </mat-optgroup>
+    </mat-select>
+  </mat-form-field>
 
-<!--     <paper-swatch-picker color="[[orderDesign.designElementColor]]" column-count=4 color-list='["#000000", "#65a5f2", "#83be54", "#f0d551", "#e5943c", "#a96ddb", "#B20000", "#ffffff"]'></paper-swatch-picker> -->
 
-    <!-- <mat-slide-toggle [color]="gray" [checked]="toggleDesign" (click)="toggleDesignElementImg">{{toggleDesignTxt}}</mat-slide-toggle> -->
-    <mat-slide-toggle [color]="gray"></mat-slide-toggle>
+  <!--     <paper-swatch-picker color="[[orderDesign.designElementColor]]" column-count=4 color-list='["#000000", "#65a5f2", "#83be54", "#f0d551", "#e5943c", "#a96ddb", "#B20000", "#ffffff"]'></paper-swatch-picker> -->
 
-    <br>
-    <label for="orderDesignFile">Add Image</label>
-    <input #orderDesignFile id="orderDesignFile" type="file">
-    <br><br>
-<!--      <input
-      id="catInput"
-      is="iron-input"
-      bind-value="{{cat.name}}">
--->
-<!-- 
-    <template is="dom-repeat" items="{{orderDesign}}">
-      <template is="dom-repeat" items="{{_attachmentKeys(item._attachments)}}" as="attachment">
-        <img src="http://rebelcricket.lacuna.club:5984/cats/{{item._id}}/{{ attachment }}" height="50" width="50">
-      </template>
-    </template>
-    <br> -->
+  <!-- <mat-slide-toggle [color]="gray" [checked]="toggleDesign" (click)="toggleDesignElementImg">{{toggleDesignTxt}}</mat-slide-toggle> -->
+  <mat-slide-toggle [color]="gray"></mat-slide-toggle>
 
-    
-  </div>
-  
+  <br>
+  <label for="orderDesignFile">Add Image</label>
+  <input #orderDesignFile id="orderDesignFile" type="file">
+  <br><br>
 
 
   <div id="objectTools" [hidden]="objectToolsHidden">
@@ -123,22 +109,7 @@
       </div>
     </div>
   </div> <!-- object-tools -->
-  
 
+</nav>
 
-
-
-  <nav>
-    <button id="drawSOMETHING" (click)="drawSomething()">draw</button>
-    <button id="loadSVG" (click)="loadSVG('tshirt-m.svg')">Load SVG</button>
-    -
-    <input id="zoom" (input)="zoom($event)" type="range" min="0.1" max="3" step="0.1" [(ngModel)]="zoomVal">+
-    <button id="zoomReset" (click)="zoomReset()">x</button>
-  </nav>
-
-  <canvas id="c"></canvas>
-
-
-
-</div>
-
+<canvas id="c"></canvas>

@@ -206,8 +206,8 @@ export class GfxComponent implements AfterViewInit {
   resizeCanvas(event): void {
 
     try{
-      this.canvasHeight = document.documentElement.clientHeight - 40;
-      this.canvasWidth = document.documentElement.clientWidth - 2
+      this.canvasHeight = document.documentElement.clientHeight - 64;
+      this.canvasWidth = document.documentElement.clientWidth;
       this.canvas.setWidth(this.canvasWidth);
       this.canvas.setHeight(this.canvasHeight);
       console.log('gonna try to resizeCanvas w:',this.canvasWidth,' h:',this.canvasHeight);
