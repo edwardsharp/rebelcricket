@@ -28,11 +28,11 @@ export class GfxService {
     }
 
   	this.db.get('gfx').then(result=>{
-      console.log('gfx ctor, result:',result);
+      // console.log('gfx ctor, result:',result);
     }).catch(err =>{
   		this.db.put(new Gfx).then(function (response) {
 			  // handle response
-        console.log('init gfx result:',response);
+        // console.log('init gfx result:',response);
 			}).catch(function (err) {
 			  console.log(err);
 			});
@@ -44,23 +44,23 @@ export class GfxService {
       include_docs: true
     }).on('change', change => {
       // handle change
-      console.log('zomg pouchDB change:',change);
+      // console.log('zomg pouchDB change:',change);
       if(change.doc["_id"]){
         const copiedData = this.data.slice();
         const gfx = change.doc as Gfx;
 
         const idx = copiedData.indexOf(copiedData.find(d=> d._id == change.id));
         if(change.doc["_deleted"]){
-          console.log('GFX CHANGE: SPLICING DELETE idx:',idx,' gfx:',gfx);
+          // console.log('GFX CHANGE: SPLICING DELETE idx:',idx,' gfx:',gfx);
           copiedData.splice(idx, 1);
         }else if(idx > -1){
-          console.log('GFX CHANGE: SPLICING UPDATE! idx:',idx,' gfx:',gfx);
+          // console.log('GFX CHANGE: SPLICING UPDATE! idx:',idx,' gfx:',gfx);
           copiedData.splice(idx, 1, gfx);
         }else{
-          console.log('GFX CHANGE: PUSHING! idx:',idx,' gfx:',gfx);
+          // console.log('GFX CHANGE: PUSHING! idx:',idx,' gfx:',gfx);
           copiedData.push(gfx);
         }
-        console.log('pushing dataChange.next... setTimeout copiedData:',copiedData);
+        // console.log('pushing dataChange.next... setTimeout copiedData:',copiedData);
         this.dataChange.next(copiedData);
       }
     }).on('complete', function(info) {

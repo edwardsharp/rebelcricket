@@ -19,7 +19,7 @@ export class SettingsService {
 
   	this.db.get('settings').then(result=>{
 
-      console.log('HEY!!!!!!! settings result:',result);
+      // console.log('HEY!!!!!!! settings result:',result);
 
     }).catch(err =>{
 

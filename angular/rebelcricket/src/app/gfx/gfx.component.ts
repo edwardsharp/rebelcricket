@@ -1,77 +1,145 @@
-import { Component, OnInit, ViewChild } from '@angular/core';
+import { Component, AfterViewInit, ViewChild } from '@angular/core';
 import {FormControl} from '@angular/forms';
+import { Subject } from 'rxjs/Subject';
+import { Observable } from 'rxjs/Observable';
+import 'rxjs/add/operator/debounceTime';
+import 'rxjs/add/observable/fromEvent';
 
 import { GfxService } from './gfx.service';
-declare var fabric:any;
+
+import { fabric } from 'fabric';
+// declare var fabric:any;
 declare var initFabricFilters:any;
 declare var PouchDB: any;
+
+// declare var addWheelListener: any;
+
+// creates a global "addWheelListener" method (from mdn)
+// example: addWheelListener( elem, function( e ) { console.log( e.deltaY ); e.preventDefault(); } );
+// !function(e,t){function l(t,l,r,d){t[n](o+l,"wheel"==a?r:function(t){!t&&(t=e.event);var l={originalEvent:t,target:t.target||t.srcElement,type:"wheel",deltaMode:"MozMousePixelScroll"==t.type?0:1,deltaX:0,deltaY:0,deltaZ:0,preventDefault:function(){t.preventDefault?t.preventDefault():t.returnValue=!1}};return"mousewheel"==a?(l.deltaY=-.025*t.wheelDelta,t.wheelDeltaX&&(l.deltaX=-.025*t.wheelDeltaX)):l.deltaY=t.deltaY||t.detail,r(l)},d||!1)}var n,a,o="";e.addEventListener?n="addEventListener":(n="attachEvent",o="on"),a="onwheel"in t.createElement("div")?"wheel":void 0!==t.onmousewheel?"mousewheel":"DOMMouseScroll",e.addWheelListener=function(e,t,n){l(e,a,t,n),"DOMMouseScroll"==a&&l(e,"MozMousePixelScroll",t,n)}}(window,document);
 
 @Component({
   selector: 'app-gfx',
   templateUrl: './gfx.component.html',
   styleUrls: ['./gfx.component.css']
 })
-export class GfxComponent implements OnInit {
+export class GfxComponent implements AfterViewInit {
 
+  gfx: string;
 
-  pokemonControl = new FormControl();
-
-  pokemonGroups = [
+  plate: {name: string, value: string};
+  plateControl = new FormControl();
+  plateGroups = [
     {
-      name: 'Grass',
-      pokemon: [
-        { value: 'bulbasaur-0', viewValue: 'Bulbasaur' },
-        { value: 'oddish-1', viewValue: 'Oddish' },
-        { value: 'bellsprout-2', viewValue: 'Bellsprout' }
+      name: 'T-Shirt',
+      plates: [
+        { value: 'tshirt-m', viewValue: 'Medium T-Shirt' }
       ]
     },
     {
-      name: 'Water',
-      pokemon: [
-        { value: 'squirtle-3', viewValue: 'Squirtle' },
-        { value: 'psyduck-4', viewValue: 'Psyduck' },
-        { value: 'horsea-5', viewValue: 'Horsea' }
+      name: 'Hoodie',
+      plates: [
+        { value: 'hoodie-m', viewValue: 'Medium Hoodie' }
       ]
     },
     {
-      name: 'Fire',
-      disabled: true,
-      pokemon: [
-        { value: 'charmander-6', viewValue: 'Charmander' },
-        { value: 'vulpix-7', viewValue: 'Vulpix' },
-        { value: 'flareon-8', viewValue: 'Flareon' }
+      name: 'Long Sleeve',
+      disabled: false,
+      plates: [
+        { value: 'longsleeve-m', viewValue: 'Medium Long Sleeve' }
       ]
     },
     {
-      name: 'Psychic',
-      pokemon: [
-        { value: 'mew-9', viewValue: 'Mew' },
-        { value: 'mewtwo-10', viewValue: 'Mewtwo' },
+      name: 'Tank',
+      plates: [
+        { value: 'tank-m', viewValue: 'Medium Tank' }
       ]
     }
   ];
 
-	gfx: string;
-	style: {name: string, value: string};
-	// gfxStyles: Array<{name: string, value: string}>;
-	gfxStyles = [
-		{name: 'Crew', value: 'crew'},
-		{name: "Women's Crew", value: 'womens_crew'},
-		{name: 'Hoodie', value: 'hoodie'},
-		{name: 'Long Sleeve', value: 'longsleeve'},
-		{name: 'Tank', value: 'tank'}
-	];
-	toggleDesign = false;
-	toggleDesignTxt = 'Show Back';
 	objectToolsHidden = true;
 
 	canvas: any;
-  @ViewChild('c') c; 
+  // @ViewChild('c') c; 
   @ViewChild('orderDesignFile') orderDesignFile;
 
-  constructor(private gfxService: GfxService) { }
+  canvasHeight: number;
+  canvasWidth: number;
+  plateObj: any;
+  zoomVal: number = 0.5;
 
-  ngOnInit() {
+  model: string;
+  modelChanged: Subject<string> = new Subject<string>();
+
+  constructor(private gfxService: GfxService) { 
+    // this.modelChanged
+    //   .debounceTime(300) // wait 300ms after the last event before emitting last event
+    //   .distinctUntilChanged() // only emit if value is different from previous value
+    //   .subscribe(model => this.model = model);
+
+    Observable.fromEvent(window, 'resize')
+      .debounceTime(500)
+      .subscribe((event) => {
+        this.resizeCanvas(event);
+      });
+
+
+
+  }
+
+  
+
+
+  changed(text: string) {
+      this.modelChanged.next(text);
+  }
+
+
+
+
+  ngAfterViewInit() {
+
+
+
+    /* PRINT SIZE'R 
+     * ------------
+     * a little utility to show image scale on real-world
+     * itemz, like apparel (t-shirts, hats, etc.) or posters.
+     * generally assuming print resolution of 300dpi. 
+     *
+     * 3dwardsharp
+     */
+
+    this.canvas = new fabric.Canvas('c', {
+      'selection': false
+    });
+    
+
+    // addWheelListener(document, e => {
+    //   // mouse wheel event
+    //   this.canvas.relativePan(new fabric.Point(-e.deltaX, -e.deltaY));
+    // });
+
+    var panning = false;
+    this.canvas.on('mouse:up', e => {
+      panning = false;
+    });
+
+    this.canvas.on('mouse:down', e => {
+      panning = true;
+    });
+    this.canvas.on('mouse:move', e => {
+      if (panning && e && e.e) {
+        var delta = new fabric.Point(e.e.movementX, e.e.movementY);
+        this.canvas.relativePan(delta);
+      }
+    });
+
+ 
+    this.resizeCanvas('');
+    this.canvas.setZoom(0.5);
+
+
   	this.getGfx();
 
 
@@ -79,16 +147,6 @@ export class GfxComponent implements OnInit {
     // console.log('DESIGN this.orderDesign.canvas?', this.orderDesign.canvas);
     // this.canvas = new fabric.Canvas(this.c);
 
-    // draw something
-    // var rect = new fabric.Rect({
-    //     top : 100,
-    //     left : 100,
-    //     width : 60,
-    //     height : 70,
-    //     fill : 'red'
-    // });
-    // this.canvas.add(rect);
-    
     
     // canvasNeedsInit = true;
     // this._loadCanvas();
@@ -145,17 +203,75 @@ export class GfxComponent implements OnInit {
 
   }
 
+  resizeCanvas(event): void {
+
+    try{
+      this.canvasHeight = document.documentElement.clientHeight - 40;
+      this.canvasWidth = document.documentElement.clientWidth - 2
+      this.canvas.setWidth(this.canvasWidth);
+      this.canvas.setHeight(this.canvasHeight);
+      console.log('gonna try to resizeCanvas w:',this.canvasWidth,' h:',this.canvasHeight);
+    }catch(e){
+      console.log('o noz! caught e in resizeCanvas e:',e);
+    }
+  }
+
+  loadSVG(id):void {
+    
+    // var elem = document.getElementById(id),
+    //   svgStr = elem.innerHTML;
+    // console.log('gonna loadSVG id:',id,' elem:',elem,' svgStr:',svgStr);  
+    
+    fabric.loadSVGFromURL(`/assets/gfx/${id}`, (objects, options) => {
+      // load svg data into a group elem
+      // console.log('uh, fabric?',fabric);
+      this.plateObj = fabric.util.groupSVGElements(objects, options);
+      // this.plateObj.set('sourcePath', elem.getAttribute('data-url'));
+      this.plateObj.selectable = false;
+      this.plateObj.scaleX = 0.1;
+      this.plateObj.scaleY = 0.1;
+     
+      this.plateObj.setCoords();
+
+      this.canvas.add(this.plateObj);
+      //canvas.setBackgroundImage(plateObj, canvas.renderAll.bind(canvas));
+      //plateObj.center().setCoords();
+      this.canvas.renderAll();
+
+      console.log('loadSVG JSON.stringify(this.canvas):',JSON.stringify(this.canvas));
+    });
+  }
+
+  drawSomething(): void{
+    // draw something
+    var rect = new fabric.Rect({
+        top : 100,
+        left : 100,
+        width : 60,
+        height : 70,
+        fill : 'red'
+    });
+    this.canvas.add(rect);
+  }
+
+  zoom(e): void {
+    console.log('zoom e.target.value:',e.target.value);
+    this.canvas.setZoom(e.target.value);
+  }
+
+  zoomReset(e): void {
+    console.log('zoom reset!');
+    this.zoomVal = 0.5;
+    this.canvas.setZoom(0.5);
+    this.canvas.absolutePan(new fabric.Point(0, 0));
+  }
+
   getGfx(): void {
   	this.gfxService.getGfx().then(gfx => {
     	this.gfx = gfx;
     }, err => {
     	console.log('o noz! gfxService.getGfx() err:',err);
     });
-  }
-
-  toggleDesignElementImg(): void {
-  	this.toggleDesign = true;
-  	this.toggleDesignTxt = 'Show Front';
   }
 
   removeImageFromCanvas(): void {

@@ -1,10 +1,22 @@
+.svg {
+  display: none;
+}
+
+nav {
+  height: 26px;
+  padding: 6px;
+}
+
+canvas {
+  border: 1px solid gray;
+}
+
 .center{
   text-align: center;
 }
 
 .flex-wrap {
-  @apply(--layout-horizontal);
-  @apply(--layout-wrap);
+  
 }
 
 .flex-wrap div {
@@ -16,23 +28,14 @@
 }
 
 #design-element-container{
-  width: 500px;
-  height: 400px;
-  position: relative;
+  
 }
 
 #design-element-img-container{
-  position: absolute;
-  top: 0;
-  left: 0;
-  z-index: 0;
+
 }
 #design-element-canvas-container {
 
-  position: absolute;
-  top:115px;
-  left: 165px;
-  z-index: 1;
 }
 
 canvas:hover{

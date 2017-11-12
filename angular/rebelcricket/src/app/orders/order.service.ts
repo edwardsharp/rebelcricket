@@ -46,7 +46,7 @@ export class OrderService {
         fields: ['_id','name']
       }
     }).then(result => {
-      console.log('index created! result',result);
+      //console.log('index created! result',result);
     }).catch(err => {
       console.log('o noz! this.db.createIndex err:',err);
     });
