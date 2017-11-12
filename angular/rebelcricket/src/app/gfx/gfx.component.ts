@@ -67,39 +67,22 @@ export class GfxComponent implements AfterViewInit {
   canvasWidth: number;
   plateObj: any;
   zoomVal: number = 0.5;
+  panning: boolean = false;
+  selecting: boolean = false;
 
   model: string;
   modelChanged: Subject<string> = new Subject<string>();
 
   constructor(private gfxService: GfxService) { 
-    // this.modelChanged
-    //   .debounceTime(300) // wait 300ms after the last event before emitting last event
-    //   .distinctUntilChanged() // only emit if value is different from previous value
-    //   .subscribe(model => this.model = model);
-
     Observable.fromEvent(window, 'resize')
       .debounceTime(500)
       .subscribe((event) => {
         this.resizeCanvas(event);
       });
-
-
-
   }
-
-  
-
-
-  changed(text: string) {
-      this.modelChanged.next(text);
-  }
-
-
 
 
   ngAfterViewInit() {
-
-
 
     /* PRINT SIZE'R 
      * ------------
@@ -120,22 +103,31 @@ export class GfxComponent implements AfterViewInit {
     //   this.canvas.relativePan(new fabric.Point(-e.deltaX, -e.deltaY));
     // });
 
-    var panning = false;
+
     this.canvas.on('mouse:up', e => {
-      panning = false;
+      this.panning = false;
     });
 
     this.canvas.on('mouse:down', e => {
-      panning = true;
+      this.panning = true;
     });
     this.canvas.on('mouse:move', e => {
-      if (panning && e && e.e) {
+      if (!this.selecting && this.panning && e && e.e) {
         var delta = new fabric.Point(e.e.movementX, e.e.movementY);
         this.canvas.relativePan(delta);
       }
     });
 
- 
+    this.canvas.on('object:selected', e => {
+      console.log('object selected! e',e);
+      this.selecting = true;
+    });
+    this.canvas.on('selection:cleared', e => {
+      console.log('object selection:cleared e:',e);
+      this.selecting = false;
+    });
+
+
     this.resizeCanvas('');
     this.canvas.setZoom(0.5);
 
