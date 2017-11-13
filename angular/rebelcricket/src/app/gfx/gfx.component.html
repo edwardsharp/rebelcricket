@@ -1,14 +1,27 @@
 <nav class="mat-elevation-z4">
 
-  <button id="drawSOMETHING" (click)="drawSomething()">draw</button>
-  <button id="loadSVG" (click)="loadSVG('tshirt-m.svg')">Load SVG</button>
-  -
-  <input id="zoom" (input)="zoom($event)" type="range" min="0.1" max="3" step="0.1" [(ngModel)]="zoomVal">+
-  <button id="zoomReset" (click)="zoomReset()">x</button>
+  <div id="zoom">
+  <mat-slider 
+    matTooltip="Zoom"
+    (input)="zoom($event)"
+    [color]="gray"
+    min="0.1" 
+    max="3" 
+    step="0.1"
+    [(ngModel)]="zoomVal"></mat-slider>
+
+    <button mat-icon-button 
+      id="zoomReset" 
+      (click)="zoomReset()" 
+      matTooltip="Reset Zoom">
+      <mat-icon class="mat-24" aria-label="Reset Zoom">all_out</mat-icon>
+    </button>
+  </div>
+  
 
 
   <mat-form-field>
-    <mat-select placeholder="Template" [formControl]="plateControl" [(ngModel)]="plate">
+    <mat-select placeholder="Template" [formControl]="plateControl" [(ngModel)]="plate" (ngModelChange)="plateChange($event)">
       <mat-option>-- None --</mat-option>
       <mat-optgroup *ngFor="let group of plateGroups" [label]="group.name"
                     [disabled]="group.disabled">

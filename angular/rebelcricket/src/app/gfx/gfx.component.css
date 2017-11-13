@@ -33,6 +33,15 @@ canvas {
 
 }
 
+mat-slider{
+  width: 100%;
+}
+
+#zoom{
+  display: flex;
+
+}
+
 .center{
   text-align: center;
 }

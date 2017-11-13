@@ -118,6 +118,8 @@ export class GfxComponent implements AfterViewInit {
       }
     });
 
+    //mouse:wheel ?
+
     this.canvas.on('object:selected', e => {
       console.log('object selected! e',e);
       this.selecting = true;
@@ -208,13 +210,19 @@ export class GfxComponent implements AfterViewInit {
     }
   }
 
+  plateChange(plate): void{
+    if(plate && plate != '' && plate.length > 2){
+      this.loadSVG(plate);
+    }
+  }
+
   loadSVG(id):void {
     
     // var elem = document.getElementById(id),
     //   svgStr = elem.innerHTML;
     // console.log('gonna loadSVG id:',id,' elem:',elem,' svgStr:',svgStr);  
     
-    fabric.loadSVGFromURL(`/assets/gfx/${id}`, (objects, options) => {
+    fabric.loadSVGFromURL(`/assets/gfx/${id}.svg`, (objects, options) => {
       // load svg data into a group elem
       // console.log('uh, fabric?',fabric);
       this.plateObj = fabric.util.groupSVGElements(objects, options);
@@ -237,18 +245,19 @@ export class GfxComponent implements AfterViewInit {
   drawSomething(): void{
     // draw something
     var rect = new fabric.Rect({
-        top : 100,
-        left : 100,
-        width : 60,
-        height : 70,
-        fill : 'red'
+        top: 100,
+        left: 100,
+        width: 60,
+        height: 70,
+        fill: 'red',
+        lockUniScaling: true
     });
     this.canvas.add(rect);
   }
 
   zoom(e): void {
-    console.log('zoom e.target.value:',e.target.value);
-    this.canvas.setZoom(e.target.value);
+    console.log('zoom e.value:',e.value);
+    this.canvas.setZoom(e.value);
   }
 
   zoomReset(e): void {
