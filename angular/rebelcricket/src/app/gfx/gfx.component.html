@@ -41,7 +41,7 @@
     <mat-option>Clear</mat-option>
     <mat-optgroup *ngFor="let group of plateGroups" [label]="group.name"
                   [disabled]="group.disabled">
-      <mat-option *ngFor="let plate of group.plates" (click)="plateChange(plate.value)">
+      <mat-option *ngFor="let plate of group.plates" (click)="plateChange(plate)">
         {{ plate.viewValue }}
       </mat-option>
     </mat-optgroup>

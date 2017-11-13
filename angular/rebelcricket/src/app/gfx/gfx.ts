@@ -14,7 +14,7 @@ export class Gfx {
     this._id = this._id || Math.floor(Date.now()).toString(36); 
     this.created_at = new Date(parseInt(this._id, 36));
     this.modified_at = new Date;
-    this.name = this.name || 'New Graphics';
+    this.name = this.name || '';
     // this.plate = this.plate || {name: '', value: ''};
 
   }

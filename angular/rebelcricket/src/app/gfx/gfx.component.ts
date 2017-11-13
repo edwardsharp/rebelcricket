@@ -239,8 +239,9 @@ export class GfxComponent implements OnInit, AfterContentInit {
   }
 
   plateChange(plate): void{
-    if(plate && plate != '' && plate.length > 2){
-      this.loadSVG(plate);
+    this.gfx.plate = plate;
+    if(plate.value && plate.value != '' && plate.value.length > 2){
+      this.loadSVG(plate.value);
     }
   }
 
@@ -361,7 +362,7 @@ export class GfxComponent implements OnInit, AfterContentInit {
         selectable: false
       }));
       this.canvas.add(new fabric.Text(count.toString(), {
-        left: measurementThickness - (tickSize * 2),
+        left: measurementThickness - (tickSize * 2 + 10),
         top: location1,
         selectable: false,
         fontSize: minorFontSize,
@@ -376,7 +377,7 @@ export class GfxComponent implements OnInit, AfterContentInit {
           selectable: false
         }));
         this.canvas.add(new fabric.Text(footCount + "\'", {
-          left: measurementThickness - (tickSizeFoot),
+          left: measurementThickness - (tickSizeFoot + 10),
           top: location1 + 4,
           selectable: false,
           fontSize: majorFontSize,
