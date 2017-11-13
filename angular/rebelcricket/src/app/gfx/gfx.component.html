@@ -1,27 +1,13 @@
-<nav class="mat-elevation-z4">
-
-  <div id="zoom">
-  <mat-slider 
-    matTooltip="Zoom"
-    (input)="zoom($event)"
-    [color]="gray"
-    min="0.1" 
-    max="3" 
-    step="0.1"
-    [(ngModel)]="zoomVal"></mat-slider>
-
-    <button mat-icon-button 
-      id="zoomReset" 
-      (click)="zoomReset()" 
-      matTooltip="Reset Zoom">
-      <mat-icon class="mat-24" aria-label="Reset Zoom">all_out</mat-icon>
-    </button>
-  </div>
-  
-
+<nav class="mat-elevation-z4" *ngIf="gfx">
 
   <mat-form-field>
-    <mat-select placeholder="Template" [formControl]="plateControl" [(ngModel)]="plate" (ngModelChange)="plateChange($event)">
+    <input matInput placeholder="Name" shouldPlaceholderFloat="true" [(ngModel)]="gfx.name">
+  </mat-form-field>
+
+  <small *ngIf="gfx.created_at">created: {{gfx.created_at | date:'short'}}</small>
+
+  <mat-form-field>
+    <mat-select placeholder="Template" [formControl]="plateControl" [(ngModel)]="gfx.plate" (ngModelChange)="plateChange($event)">
       <mat-option>-- None --</mat-option>
       <mat-optgroup *ngFor="let group of plateGroups" [label]="group.name"
                     [disabled]="group.disabled">
@@ -32,19 +18,35 @@
     </mat-select>
   </mat-form-field>
 
+  <div class="flex">
+    <mat-icon class="mat-24" aria-label="zoom out">zoom_out</mat-icon>
+    <mat-slider 
+      matTooltip="Zoom"
+      (input)="zoom($event)"
+      [color]="gray"
+      min="0.1" 
+      max="3" 
+      step="0.1"
+      [(ngModel)]="zoomVal"></mat-slider>
+    <mat-icon class="mat-24" aria-label="zoom in">zoom_in</mat-icon>
+    <button mat-icon-button 
+      id="zoomReset" 
+      (click)="zoomReset()" 
+      matTooltip="Reset Zoom">
+      <mat-icon class="mat-24" aria-label="Reset Zoom">youtube_searched_for</mat-icon>
+    </button>
+  </div>
+  
+  <!-- <mat-slide-toggle [color]="gray" [(ngModel)]="showRuler">Show Rulers</mat-slide-toggle> -->
 
-  <!--     <paper-swatch-picker color="[[orderDesign.designElementColor]]" column-count=4 color-list='["#000000", "#65a5f2", "#83be54", "#f0d551", "#e5943c", "#a96ddb", "#B20000", "#ffffff"]'></paper-swatch-picker> -->
-
-  <!-- <mat-slide-toggle [color]="gray" [checked]="toggleDesign" (click)="toggleDesignElementImg">{{toggleDesignTxt}}</mat-slide-toggle> -->
-  <mat-slide-toggle [color]="gray"></mat-slide-toggle>
-
-  <br>
   <label for="orderDesignFile">Add Image</label>
   <input #orderDesignFile id="orderDesignFile" type="file">
-  <br><br>
+  
+  <hr>
 
+  <!-- #todo: add list of canvas layers -->
 
-  <div id="objectTools" [hidden]="objectToolsHidden">
+  <!-- <div id="objectTools" [hidden]="objectToolsHidden">
     <button mat-button class="custom" id="removeImage" on-tap="removeImageFromCanvas" raised>remove image</button>
 
     <div class="controls">
@@ -121,7 +123,7 @@
         <input type="color" id="blend-color" value="#00f900">
       </div>
     </div>
-  </div> <!-- object-tools -->
+  </div> --> <!-- object-tools -->
 
 </nav>
 

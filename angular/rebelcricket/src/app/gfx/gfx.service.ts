@@ -72,9 +72,23 @@ export class GfxService {
   	
   }
 
- 	getGfx(){
-		return this.db.get('gfx');
- 	}
+  getGfx(id: string): Promise<Gfx> {
+    return this.db.allDocs({
+      include_docs: true,
+      attachments: true,
+      descending: true,
+      key: id
+    }).then(response => {
+      if(response.rows && response.rows[0] && response.rows[0].doc){
+        return response.rows[0].doc as Gfx;
+      }else{
+        return new Gfx;
+      }
+    }, err => {
+      console.log('o noz! gfx.service getGfx err:',err);
+    });
+  }
+
 
  	saveGfx(gfx:Gfx){
  		return this.db.put(gfx);

@@ -7,13 +7,38 @@ nav {
   position: absolute;
   z-index: 3;
   right: 20px;
-  top: 20px;
+  top: 40px;
   background-color: rgba(255,255,255,0.9);
   max-width: 210px;
   border-radius: 2px;
 }
 
 canvas {
+}
+
+small {
+  position: relative;
+  bottom: 15px;
+}
+
+mat-slider{
+  width: 100%;
+}
+
+mat-slide-toggle, label {
+  margin-left: 0.25em;
+}
+
+.flex{
+  display: flex;
+  align-items: center;
+}
+
+.center{
+  text-align: center;
+}
+
+.checkerz{
   background-image:
     -moz-linear-gradient(45deg, #e6e6e6 25%, transparent 25%), 
     -moz-linear-gradient(-45deg, #e6e6e6 25%, transparent 25%),
@@ -30,61 +55,7 @@ canvas {
   -webkit-background-size:16px 16px; /* override value for shitty webkit */
   
   background-position:0 0, 8px 0, 8px -8px, 0px 8px;
-
 }
-
-mat-slider{
-  width: 100%;
-}
-
-#zoom{
-  display: flex;
-
-}
-
-.center{
-  text-align: center;
-}
-
-.flex-wrap {
-  
-}
-
-.flex-wrap div {
-  min-width: 200px;
-}
-
-#design-controls, #objectTools{
-  padding-left: 2em;
-}
-
-#design-element-container{
-  
-}
-
-#design-element-img-container{
-
-}
-#design-element-canvas-container {
-
-}
-
-canvas:hover{
-  border:thin solid #ccc;
-}
-
-.controls label{
-  font-size: 16px;
-
-}
-.controls {
-  margin-top: 16px;
-  line-height: 14px;
-}
-.controls div{
-  margin-top: 10px;
-}
-
 @media (max-width: 767px) {
 
 

@@ -1,15 +1,19 @@
-import { Component, AfterViewInit, ViewChild } from '@angular/core';
-import {FormControl} from '@angular/forms';
+import { Component, OnInit, AfterContentInit, ViewChild } from '@angular/core';
+import { ActivatedRoute, ParamMap, Router } from '@angular/router';
+import 'rxjs/add/operator/switchMap';
+import { FormControl } from '@angular/forms';
 import { Subject } from 'rxjs/Subject';
 import { Observable } from 'rxjs/Observable';
 import 'rxjs/add/operator/debounceTime';
 import 'rxjs/add/observable/fromEvent';
+import { MatSnackBar } from '@angular/material';
 
 import { GfxService } from './gfx.service';
+import { Gfx } from './gfx';
 
 import { fabric } from 'fabric';
 // declare var fabric:any;
-declare var initFabricFilters:any;
+// declare var initFabricFilters:any;
 declare var PouchDB: any;
 
 // declare var addWheelListener: any;
@@ -23,11 +27,12 @@ declare var PouchDB: any;
   templateUrl: './gfx.component.html',
   styleUrls: ['./gfx.component.css']
 })
-export class GfxComponent implements AfterViewInit {
+export class GfxComponent implements OnInit, AfterContentInit {
 
-  gfx: string;
+  gfx: Gfx;
 
   plate: {name: string, value: string};
+  name: string = "New Plate";
   plateControl = new FormControl();
   plateGroups = [
     {
@@ -60,6 +65,7 @@ export class GfxComponent implements AfterViewInit {
 	objectToolsHidden = true;
 
 	canvas: any;
+
   // @ViewChild('c') c; 
   @ViewChild('orderDesignFile') orderDesignFile;
 
@@ -70,19 +76,34 @@ export class GfxComponent implements AfterViewInit {
   panning: boolean = false;
   selecting: boolean = false;
 
-  model: string;
-  modelChanged: Subject<string> = new Subject<string>();
+  showRuler: boolean = true;
 
-  constructor(private gfxService: GfxService) { 
-    Observable.fromEvent(window, 'resize')
-      .debounceTime(500)
-      .subscribe((event) => {
-        this.resizeCanvas(event);
+  constructor(
+    private gfxService: GfxService,
+    private route: ActivatedRoute,
+    private router: Router,
+    private snackBar: MatSnackBar
+  ){ }
+
+  ngOnInit() {
+    this.route.paramMap
+      .switchMap((params: ParamMap) => this.gfxService.getGfx( params.get('id') ))
+      .subscribe((gfx: Gfx) => {
+        if(gfx && gfx._id && this.route.snapshot.params.id != 'new'){
+          console.log('got gfx:',gfx);
+          this.gfx = gfx;
+        }else{
+          this.gfx = new Gfx;
+          console.log('new gfx:',gfx);
+          this.router.navigate(['/dashboard/gfx/', this.gfx._id]);
+          this.snackBar.open('New Gfx Created!', '', {
+            duration: 2000,
+          });          
+        } 
       });
   }
 
-
-  ngAfterViewInit() {
+  ngAfterContentInit() {
 
     /* PRINT SIZE'R 
      * ------------
@@ -93,10 +114,19 @@ export class GfxComponent implements AfterViewInit {
      * 3dwardsharp
      */
 
+    Observable.fromEvent(window, 'resize')
+      .debounceTime(500)
+      .subscribe((event) => {
+        this.resizeCanvas(event);
+      });
+
     this.canvas = new fabric.Canvas('c', {
-      'selection': false
+      selection: false,
+      renderOnAddRemove: false,
+      stateful: false
     });
     
+    this.drawRulers();
 
     // addWheelListener(document, e => {
     //   // mouse wheel event
@@ -132,10 +162,6 @@ export class GfxComponent implements AfterViewInit {
 
     this.resizeCanvas('');
     this.canvas.setZoom(0.5);
-
-
-  	this.getGfx();
-
 
   	// console.log('designside:',this.designSide);
     // console.log('DESIGN this.orderDesign.canvas?', this.orderDesign.canvas);
@@ -180,7 +206,7 @@ export class GfxComponent implements AfterViewInit {
     // });
 
     //file upload
-    var db = new PouchDB('order_designs');
+    // var db = new PouchDB('gfx');
 
     // var _this = this;
     // this.orderDesignFile.addEventListener('change', function () {
@@ -230,7 +256,9 @@ export class GfxComponent implements AfterViewInit {
       this.plateObj.selectable = false;
       this.plateObj.scaleX = 0.1;
       this.plateObj.scaleY = 0.1;
-     
+      this.plateObj.top = 60;
+      this.plateObj.left = 60;
+
       this.plateObj.setCoords();
 
       this.canvas.add(this.plateObj);
@@ -240,19 +268,6 @@ export class GfxComponent implements AfterViewInit {
 
       console.log('loadSVG JSON.stringify(this.canvas):',JSON.stringify(this.canvas));
     });
-  }
-
-  drawSomething(): void{
-    // draw something
-    var rect = new fabric.Rect({
-        top: 100,
-        left: 100,
-        width: 60,
-        height: 70,
-        fill: 'red',
-        lockUniScaling: true
-    });
-    this.canvas.add(rect);
   }
 
   zoom(e): void {
@@ -267,34 +282,138 @@ export class GfxComponent implements AfterViewInit {
     this.canvas.absolutePan(new fabric.Point(0, 0));
   }
 
-  getGfx(): void {
-  	this.gfxService.getGfx().then(gfx => {
-    	this.gfx = gfx;
-    }, err => {
-    	console.log('o noz! gfxService.getGfx() err:',err);
-    });
-  }
 
-  removeImageFromCanvas(): void {
-  	console.log('_removeImageFromCanvas idx:',this.canvas.getActiveObject());
-    // this.canvas.item(this.$.removeImage.getAttribute('idx')).remove();
-    this.canvas.getActiveObject().remove();
-    // this.canvas.remove(obj);
-    // this._asyncSaveCanvas();
-  }
+  // removeImageFromCanvas(): void {
+  // 	console.log('_removeImageFromCanvas idx:',this.canvas.getActiveObject());
+  //   // this.canvas.item(this.$.removeImage.getAttribute('idx')).remove();
+  //   this.canvas.getActiveObject().remove();
+  //   // this.canvas.remove(obj);
+  //   // this._asyncSaveCanvas();
+  // }
 
-  onObjectSelected(e): void{
-     this.objectToolsHidden = false;
-  }
-  onSelectionCleared(e): void{
-    this.objectToolsHidden = true;
-    // this._asyncSaveCanvas();
-  }
-  onObjectModified(e): void{
-    e.target.opacity = 1;
-    // this._asyncSaveCanvas();
-    // console.log('CANVAS JSON, should match:',JSON.stringify(this.canvas), this.orderDesign.canvas);
-  }
+  // onObjectSelected(e): void{
+  //    this.objectToolsHidden = false;
+  // }
+  // onSelectionCleared(e): void{
+  //   this.objectToolsHidden = true;
+  //   // this._asyncSaveCanvas();
+  // }
+  // onObjectModified(e): void{
+  //   e.target.opacity = 1;
+  //   // this._asyncSaveCanvas();
+  //   // console.log('CANVAS JSON, should match:',JSON.stringify(this.canvas), this.orderDesign.canvas);
+  // }
+
+
+  drawRulers(): void{
+
+    var grid = 30; //e.g. DPI
+    var width = 2600; // ~2x tshirtz 
+    var measurementThickness = 60;
+    var minorFontSize = 20;
+    var majorFontSize = 24;
+
+    this.canvas.add(new fabric.Rect({
+      left: 0,
+      top: 0,
+      fill: '#DDD',
+      selectable: false,
+      width: measurementThickness,
+      height: 2660
+    }));
+
+    this.canvas.add(new fabric.Rect({
+      left: 0,
+      top: 0,
+      fill: '#DDD',
+      width: 2660,
+      selectable: false,
+      height: measurementThickness
+    }));
+
+    var tickSize = 10;
+    var tickSizeFoot = 40;
+    var count = 1;
+    var footCount = 0;
+
+    for (var i = 0; i < (width / grid); i++) {
+      var offset = (i * grid),
+        location1 = offset + measurementThickness,
+        isFoot = ((i + 1) % 12) === 0 && i !== 0;
+
+      // vertical grid
+      this.canvas.add(new fabric.Line([location1, measurementThickness, location1, width], {
+        stroke: isFoot ? '#888' : '#ccc',
+        selectable: false
+      }));
+
+      // horizontal grid
+      this.canvas.add(new fabric.Line([measurementThickness, location1, width, location1], {
+        stroke: isFoot ? '#888' : '#ccc',
+        selectable: false
+      }));
+
+      // left ruler
+      this.canvas.add(new fabric.Line([measurementThickness - tickSize, location1, measurementThickness, location1], {
+        stroke: '#888',
+        selectable: false
+      }));
+      this.canvas.add(new fabric.Text(count.toString(), {
+        left: measurementThickness - (tickSize * 2) - 7,
+        top: location1,
+        selectable: false,
+        fontSize: minorFontSize,
+        fontFamily: 'san-serif'
+      }));
+
+      if (isFoot) {
+        footCount++;
+
+        this.canvas.add(new fabric.Line([measurementThickness - tickSizeFoot, location1, measurementThickness, location1], {
+          stroke: '#222',
+          selectable: false
+        }));
+        this.canvas.add(new fabric.Text(footCount + "\'", {
+          left: measurementThickness - (tickSizeFoot) - 7,
+          top: location1 + 4,
+          selectable: false,
+          fontSize: majorFontSize,
+          fontFamily: 'san-serif'
+        }));
+      }
+
+      // top ruler
+      this.canvas.add(new fabric.Line([location1, measurementThickness - tickSize, location1, measurementThickness], {
+        stroke: '#888',
+        selectable: false
+      }));
+      this.canvas.add(new fabric.Text(count.toString(), {
+        left: location1,
+        top: measurementThickness - (tickSize * 2) - 4,
+        selectable: false,
+        fontSize: minorFontSize,
+        fontFamily: 'san-serif'
+      }));
+
+      if (isFoot) {
+        this.canvas.add(new fabric.Line([location1, measurementThickness - tickSizeFoot, location1, measurementThickness], {
+          stroke: '#222',
+          selectable: false
+        }));
+        this.canvas.add(new fabric.Text(footCount + "\'", {
+          left: location1 + 4,
+          top: measurementThickness - (tickSizeFoot) - 7,
+          selectable: false,
+          fontSize: majorFontSize,
+          fontFamily: 'san-serif'
+        }));
+      }
+
+      count++
+    } //for()
+
+  } //drawRulers()
+
 
 
 }

@@ -65,8 +65,13 @@ const appRoutes: Routes = [
     path: 'dashboard/settings',
     component: SettingsComponent
   },
-  {
+  { 
     path: 'dashboard/gfx',
+    redirectTo: '/dashboard/gfx/new',
+    pathMatch: 'full'
+  },
+  {
+    path: 'dashboard/gfx/:id',
     component: GfxComponent
   },
   { 
