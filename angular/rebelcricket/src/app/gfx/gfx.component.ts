@@ -33,7 +33,7 @@ export class GfxComponent implements OnInit, AfterContentInit {
 
   plate: {name: string, value: string};
   name: string = "New Plate";
-  plateControl = new FormControl();
+  // plateControl = new FormControl();
   plateGroups = [
     {
       name: 'T-Shirt',
@@ -43,19 +43,21 @@ export class GfxComponent implements OnInit, AfterContentInit {
     },
     {
       name: 'Hoodie',
+      disabled: true,
       plates: [
         { value: 'hoodie-m', viewValue: 'Medium Hoodie' }
       ]
     },
     {
       name: 'Long Sleeve',
-      disabled: false,
+      disabled: true,
       plates: [
         { value: 'longsleeve-m', viewValue: 'Medium Long Sleeve' }
       ]
     },
     {
       name: 'Tank',
+      disabled: true,
       plates: [
         { value: 'tank-m', viewValue: 'Medium Tank' }
       ]
@@ -310,8 +312,8 @@ export class GfxComponent implements OnInit, AfterContentInit {
     var grid = 30; //e.g. DPI
     var width = 2600; // ~2x tshirtz 
     var measurementThickness = 60;
-    var minorFontSize = 20;
-    var majorFontSize = 24;
+    var minorFontSize = 24;
+    var majorFontSize = 26;
 
     this.canvas.add(new fabric.Rect({
       left: 0,
@@ -359,7 +361,7 @@ export class GfxComponent implements OnInit, AfterContentInit {
         selectable: false
       }));
       this.canvas.add(new fabric.Text(count.toString(), {
-        left: measurementThickness - (tickSize * 2) - 7,
+        left: measurementThickness - (tickSize * 2),
         top: location1,
         selectable: false,
         fontSize: minorFontSize,
@@ -374,7 +376,7 @@ export class GfxComponent implements OnInit, AfterContentInit {
           selectable: false
         }));
         this.canvas.add(new fabric.Text(footCount + "\'", {
-          left: measurementThickness - (tickSizeFoot) - 7,
+          left: measurementThickness - (tickSizeFoot),
           top: location1 + 4,
           selectable: false,
           fontSize: majorFontSize,
@@ -388,7 +390,7 @@ export class GfxComponent implements OnInit, AfterContentInit {
         selectable: false
       }));
       this.canvas.add(new fabric.Text(count.toString(), {
-        left: location1,
+        left: location1 + 3,
         top: measurementThickness - (tickSize * 2) - 4,
         selectable: false,
         fontSize: minorFontSize,
@@ -401,7 +403,7 @@ export class GfxComponent implements OnInit, AfterContentInit {
           selectable: false
         }));
         this.canvas.add(new fabric.Text(footCount + "\'", {
-          left: location1 + 4,
+          left: location1 + 10,
           top: measurementThickness - (tickSizeFoot) - 7,
           selectable: false,
           fontSize: majorFontSize,
