@@ -7,6 +7,7 @@ import { Observable } from 'rxjs/Observable';
 import 'rxjs/add/operator/debounceTime';
 import 'rxjs/add/observable/fromEvent';
 import { MatSnackBar } from '@angular/material';
+import { DomSanitizer } from '@angular/platform-browser';
 
 import { GfxService } from './gfx.service';
 import { Gfx } from './gfx';
@@ -21,6 +22,7 @@ declare var PouchDB: any;
 // creates a global "addWheelListener" method (from mdn)
 // example: addWheelListener( elem, function( e ) { console.log( e.deltaY ); e.preventDefault(); } );
 // !function(e,t){function l(t,l,r,d){t[n](o+l,"wheel"==a?r:function(t){!t&&(t=e.event);var l={originalEvent:t,target:t.target||t.srcElement,type:"wheel",deltaMode:"MozMousePixelScroll"==t.type?0:1,deltaX:0,deltaY:0,deltaZ:0,preventDefault:function(){t.preventDefault?t.preventDefault():t.returnValue=!1}};return"mousewheel"==a?(l.deltaY=-.025*t.wheelDelta,t.wheelDeltaX&&(l.deltaX=-.025*t.wheelDeltaX)):l.deltaY=t.deltaY||t.detail,r(l)},d||!1)}var n,a,o="";e.addEventListener?n="addEventListener":(n="attachEvent",o="on"),a="onwheel"in t.createElement("div")?"wheel":void 0!==t.onmousewheel?"mousewheel":"DOMMouseScroll",e.addWheelListener=function(e,t,n){l(e,a,t,n),"DOMMouseScroll"==a&&l(e,"MozMousePixelScroll",t,n)}}(window,document);
+
 
 @Component({
   selector: 'app-gfx',
@@ -77,14 +79,15 @@ export class GfxComponent implements OnInit, AfterContentInit {
   zoomVal: number = 0.5;
   panning: boolean = false;
   selecting: boolean = false;
-
+  uploading: boolean = false;
   showRuler: boolean = true;
 
   constructor(
     private gfxService: GfxService,
     private route: ActivatedRoute,
     private router: Router,
-    private snackBar: MatSnackBar
+    private snackBar: MatSnackBar,
+    private sanitizer: DomSanitizer
   ){ }
 
   ngOnInit() {
@@ -418,5 +421,120 @@ export class GfxComponent implements OnInit, AfterContentInit {
   } //drawRulers()
 
 
+  gfxFileChnaged(e:any){
+    this.uploading = true;
+    // this.error = false;
+
+    console.log('gfxFileChnaged()! e.target:',e.target,' this.gfx:',this.gfx);
+
+    // "att.txt": {
+    //   "content_type": "text/plain",
+    //   "data": new Blob(
+    //     ["And she's hooked to the silver screen"], 
+    //     {type: 'text/plain'})
+    // }
+
+    // let description; 
+
+    this.gfx._attachments = this.gfx._attachments || {};
+    for(let file of e.target.files){
+      console.log('gfxFileChnaged()! file:',file);
+
+      // description = description ? `${description}, ${file.name}` : file.name;
+      this.gfx._attachments[file.name] = {
+        "content_type": file.type,
+        "data": file
+      }
+    }
+
+    // this.gfx.history = this.gfx.history || [];
+    // this.gfx.history.push({date: new Date, title: `Added ${e.target.files.length} Attachment${e.target.files.length > 1 ? 's' : ''}`, description: description});
+
+    this.gfxService.saveGfx(this.gfx).then(resp => {
+      console.log('zomg, this.gfxService.saveGfx resp:',resp);
+      if(resp["rev"]){
+        this.gfx._rev = resp["rev"];
+      }
+
+      // this.gfxService.saveGfx( this.gfx._id ).then((gfx: Gfx) => {
+      //   if(gfx && gfx._id){
+      //     this.gfx = gfx;
+      //   }
+      // });
+      this.gfxService.getGfx(this.gfx._id).then( gfx => this.gfx = gfx, err => console.log('o noz, getGfx err:',err));
+
+      let msg = '';
+      if(e.target.files.length == 0){
+        msg = `Attachment ${e.target.files[0].file.name} Saved!`;
+      }else{
+        msg = `${e.target.files.length} Attachments Saved!`
+      }
+      this.uploading = false;
+      this.snackBar.open(msg, '', {
+        duration: 2000,
+      });
+
+    }, err =>{
+      console.log('o noz! saveOrder err:',err);
+      this.snackBar.open('Error! Could not save attachment(s).', '', {
+        duration: 3000,
+      });
+      this.uploading = false;
+    });
+
+  }
+
+  attachmentItemsForGfx(){
+    return this.gfx._attachments ? Object.keys(this.gfx._attachments) : [];
+  }
+  
+  attachmentSrcFor(gfx:Gfx,itemKey:string){
+    try{
+      const content_type = gfx["_attachments"][itemKey]["content_type"];
+      //this.sanitizer.bypassSecurityTrustUrl(
+      const data = gfx["_attachments"][itemKey]["data"];
+      return (data && content_type && content_type.match(/image/i)) ? `data:${content_type};base64,${data}` : ''; 
+    }catch(err){
+      return '';
+    }      
+  }
+
+  dimensionsFor(gfx:Gfx,itemKey:string): string {
+    try{
+      const content_type = gfx["_attachments"][itemKey]["content_type"];
+      const data = gfx["_attachments"][itemKey]["data"];
+      if(data && content_type && content_type.match(/image/i)){
+        var img = new Image();
+        img.src = `data:${content_type};base64,${data}`;
+      }
+      return img ? `${img.height}x${img.width}` : ''; 
+    }catch(err){
+      return '';
+    }      
+  }
+  
+
+  deleteAttachmentFor(itemKey:string){
+
+    this.gfxService.removeAttachment(this.gfx._id, itemKey, this.gfx._rev).then(result => {
+      // handle result
+      console.log('great! removeAttachment()! result:',result);
+      this.snackBar.open('Attachment removed', '', {
+        duration: 2000,
+      });
+      if(result["rev"]){
+        this.gfx._rev = result["rev"];
+      }
+      try{
+        delete this.gfx._attachments[itemKey];
+      }catch(err){
+        // e.target.disabled = false;
+        console.log('o noz! delete _attachments err:',err);
+      }
+      
+    }).catch(function (err) {
+      console.log('o noz! removeAttachment err:',err);
+    });
+  }
 
 }

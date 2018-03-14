@@ -94,4 +94,13 @@ export class GfxService {
  		return this.db.put(gfx);
  	}
 
+  addAttachment(docId:string, attachmentId:string, rev: string, attachment: Blob,type:string){
+    return this.db.putAttachment(docId, attachmentId, rev, attachment, type);
+  }
+
+  removeAttachment(docId:string, attachmentId:string, rev: string){
+    console.log('gonna try an remove an attachment and then, yeah...',docId,attachmentId,rev);
+    return this.db.removeAttachment(docId, attachmentId, rev);
+  }
+
 }

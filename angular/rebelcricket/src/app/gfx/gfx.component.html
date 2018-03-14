@@ -1,4 +1,4 @@
-<nav class="mat-elevation-z4" *ngIf="gfx">
+<nav class="mat-elevation-z4" id="gfx" *ngIf="gfx">
 
   <mat-form-field>
     <input matInput placeholder="Name" shouldPlaceholderFloat="true" [(ngModel)]="gfx.name">
@@ -27,14 +27,17 @@
   
   <!-- <mat-slide-toggle [color]="gray" [(ngModel)]="showRuler">Show Rulers</mat-slide-toggle> -->
 
-  <button mat-icon-button matTooltip="Upload File">
+<!--   <button mat-icon-button matTooltip="Upload File">
     <mat-icon class="mat-24">file_upload</mat-icon>
-  </button>
-  <input #orderDesignFile id="orderDesignFile" type="file" style="display:none;">
-  
-  <button mat-icon-button [matMenuTriggerFor]="plateMenu" matTooltip="Template">
-    <mat-icon class="mat-24">flip_to_back</mat-icon>
-  </button>
+  </button> -->
+  <!-- <input #orderDesignFile id="orderDesignFile" type="file" style="display:none;"> -->
+  <div class="flex" [matMenuTriggerFor]="plateMenu">
+    <button mat-icon-button matTooltip="Template">
+      <mat-icon class="mat-24">flip_to_back</mat-icon>
+    </button>
+    <span *ngIf="gfx.plate; else plateElse">{{gfx.plate.viewValue}}</span>
+    <ng-template #plateElse>No Template</ng-template>
+  </div>
 
   <mat-menu #plateMenu="matMenu">
 
@@ -48,7 +51,37 @@
 
   </mat-menu>
 
-  <hr>
+  <div class="flex">
+    <button mat-icon-button 
+      matTooltip="File Upload" 
+      onclick="document.getElementById('designFile').click();">
+      <mat-icon class="upload-label">file_upload</mat-icon>
+      <span class="upload-label">Upload Image Files</span>
+    </button>
+    <input id="designFile" type="file" multiple="multiple" (change)="gfxFileChnaged($event)" (disabled)="uploading" style="display: none;">
+  </div>
+
+  <div class="flex">
+    <mat-progress-bar mode="indeterminate" [hidden]="!uploading"></mat-progress-bar>
+    <span id="quoteDesignUploadFeedback" [hidden]="!gfxError">
+      ERROR! Could not upload that file. Please try again or choose a different file. If this form does not work for you please email your graphics to <a href="#">foobar@example.com</a>.
+    </span>
+  </div>
+
+  <mat-list>
+    <mat-list-item *ngFor="let item of attachmentItemsForGfx()">
+      <img matListAvatar class="attachment-img" alt="{{item}}" [src]="sanitizer.bypassSecurityTrustUrl(attachmentSrcFor(gfx, item))" />
+      <h3 matLine title="{{item}}">{{item}}</h3>
+      <p matLine>
+        <span> {{dimensionsFor(gfx,item)}} </span>
+        <span class="demo-2">  </span>
+      </p>
+      <button mat-icon-button (click)="deleteAttachmentFor(item);"><mat-icon>delete</mat-icon></button>
+    </mat-list-item>
+  </mat-list>
+
+
+
 
   <!-- #todo: add list of canvas layers -->
 

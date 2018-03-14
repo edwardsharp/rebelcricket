@@ -11,6 +11,9 @@ nav {
   background-color: rgba(255,255,255,0.9);
   max-width: 210px;
   border-radius: 2px;
+  overflow-y: scroll;
+  overflow-x: hidden;
+  max-height: calc(100vh - 130px);
 }
 
 canvas {
@@ -27,6 +30,10 @@ mat-slider{
 
 mat-slide-toggle, label {
   margin-left: 0.25em;
+}
+
+.upload-label{
+  margin-left: 6px;
 }
 
 .flex{
@@ -56,6 +63,7 @@ mat-slide-toggle, label {
   
   background-position:0 0, 8px 0, 8px -8px, 0px 8px;
 }
+
 @media (max-width: 767px) {
 
 
