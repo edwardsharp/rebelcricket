@@ -27,7 +27,7 @@ export class OrdersComponent implements OnInit {
   loading: Boolean = false;
   orderTags: Array<string>=[];
 
-  constructor(private orderService: OrderService) { }
+  constructor(public orderService: OrderService) { }
 
   //table sorting stuff
   displayedColumns = ['orderId', 'orderStatus', 'dateNeeded', 'orderName', 'orderEmail', 'orderOrg'];
