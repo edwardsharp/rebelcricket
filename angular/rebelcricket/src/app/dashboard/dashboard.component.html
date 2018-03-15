@@ -125,6 +125,12 @@
               </button>
             </mat-menu>
 
+            <mat-menu #line_items="matMenu">
+              <button mat-menu-item *ngFor="let item of order.line_items">
+                <span>{{item.quantity}} ${{item.total}} {{item.service_label}}</span>
+              </button>
+            </mat-menu>
+
             <mat-menu #priority="matMenu">
               <button mat-menu-item 
                 title="Move To Top"
@@ -214,7 +220,8 @@
             <mat-icon>attachment</mat-icon>{{orderAttachmentCount(order)}}
           </mat-basic-chip>
 
-          <mat-basic-chip *ngIf="order?.line_items" matTooltip="Line Items" matTooltipPosition="above">
+          <mat-basic-chip *ngIf="order?.line_items" [matMenuTriggerFor]="line_items"
+            matTooltip="Line Items" matTooltipPosition="above">
             <mat-icon>shopping_cart</mat-icon>{{order.line_items?.length || 0}}
           </mat-basic-chip>
 

@@ -70,16 +70,16 @@
 	  	
   	<div>
 		  <mat-form-field>
-		    <input matInput [(ngModel)]="order.name" (change)="onChange($event)" placeholder="name">
+		    <input matInput [(ngModel)]="order.name" (change)="onChange($event)" placeholder="name" required>
 		  </mat-form-field>
 		  <mat-form-field>
 		    <input matInput [(ngModel)]="order.org" (change)="onChange($event)" placeholder="org">
 		  </mat-form-field>
-		  
 		</div>
 		<div>
 			<mat-form-field class="with-button">
-		    <input matInput [(ngModel)]="order.email" (change)="onChange($event)" placeholder="email">
+		    <input matInput [(ngModel)]="order.email" [formControl]="email" (change)="onChange($event)" placeholder="email" required>
+		    <mat-error *ngIf="email.invalid">{{getEmailErrorMessage()}}</mat-error>
 		  </mat-form-field>
 		  <button mat-icon-button 
         *ngIf="order.email"
@@ -165,24 +165,32 @@
 
 	  	<div *ngFor="let field of line_item.items" class="service-line-items">
 	  		
-	  		
-	  		<mat-form-field *ngIf="field.type == order_field_types['Text']" class="service-line-item">
-	  			<input matInput [(ngModel)]="field.value" (change)="onChange($event)" placeholder="{{field.name}}" type="text">
+	  		<mat-form-field *ngIf="field.type == order_field_types['Number'] && (field.name.toLowerCase() == 'qty' || field.name.toLowerCase() == 'total');else not_qty_total" hintLabel="{{hintFor(field)}}">
+	  			<input matInput [(ngModel)]="field.value" (change)="qtyTotalChanged(field, line_item)" placeholder="{{field.name}}" type="number" min="{{field.min}}" max="{{field.max}}" [required]="field.required ? true: null">
 	  		</mat-form-field>
-	  		<mat-form-field *ngIf="field.type == order_field_types['Textarea']" class="service-line-item">
-	  			<textarea matInput [(ngModel)]="field.value" (change)="onChange($event)" placeholder="{{field.name}}" type="number"></textarea>
-	  		</mat-form-field>
-	  		<mat-checkbox *ngIf="field.type == order_field_types['Checkbox']" 
-	  			[(ngModel)]="field.value" (change)="onChange($event)">{{field.name}}</mat-checkbox>
-	  		<mat-form-field *ngIf="field.type == order_field_types['Number']" class="service-line-item">
-	  			<input matInput [(ngModel)]="field.value" (change)="onChange($event)" placeholder="{{field.name}}" type="number">
-	  		</mat-form-field>
-	  		<mat-select *ngIf="field.type == order_field_types['Select']" 
-	  			placeholder="{{field.name}}" [(ngModel)]="field.value">
-				  <mat-option *ngFor="let item of field.select_items" [value]="item.value">
-				    {{ item.name }}
-				  </mat-option>
-				</mat-select>
+				<ng-template #not_qty_total>
+
+		  		<mat-form-field *ngIf="field.type == order_field_types['Text']" class="service-line-item">
+		  			<input matInput [(ngModel)]="field.value" (change)="onChange($event)" placeholder="{{field.name}}" type="text">
+		  		</mat-form-field>
+		  		<mat-form-field *ngIf="field.type == order_field_types['Textarea']" class="service-line-item">
+		  			<textarea matInput [(ngModel)]="field.value" (change)="onChange($event)" placeholder="{{field.name}}"></textarea>
+		  		</mat-form-field>
+		  		<mat-checkbox *ngIf="field.type == order_field_types['Checkbox']" 
+		  			[(ngModel)]="field.value" (change)="onChange($event)">{{field.name}}</mat-checkbox>
+		  		<mat-form-field *ngIf="field.type == order_field_types['Number']" class="service-line-item" hintLabel="{{hintFor(field)}}">
+		  			<input matInput [(ngModel)]="field.value" (change)="numberChange(field)" placeholder="{{field.name}}" type="number" min="{{field.min}}" max="{{field.max}}" [required]="field.required ? true: null">
+		  		</mat-form-field>
+		  		<mat-form-field *ngIf="field.type == order_field_types['Select']">
+			  		<mat-select matInput placeholder="{{field.name}}" [multiple]="field.multiple" [required]="field.required"
+			  			[(ngModel)]="field.value">
+						  <mat-option *ngFor="let item of field.select_items" [value]="item.value">
+						    {{ item.name }}
+						  </mat-option>
+						</mat-select>
+					</mat-form-field>
+
+				</ng-template>
 	  	</div>
 
 		  <div *ngIf="line_item.service?.notes">
@@ -256,7 +264,8 @@
 	<mat-action-row>
 		<mat-select
 			[(ngModel)]="selectedService" placeholder="Add Service">
-		  <mat-option *ngFor="let item of settings?.services" [disabled]="serviceNeedsDisabled(item)" [value]="item" (click)="addOrderLineItem()">
+			<!-- [disabled]="serviceNeedsDisabled(item)" -->
+		  <mat-option *ngFor="let item of settings?.services" [value]="item" (click)="addOrderLineItem($event)">
 		    {{ item.name }}
 		  </mat-option>
 		</mat-select>

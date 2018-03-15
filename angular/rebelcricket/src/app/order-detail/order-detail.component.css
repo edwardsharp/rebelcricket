@@ -95,7 +95,7 @@ mat-action-row{
 }
 
 .sticky-service{
-	top: 128px;
+	top: 127px;
 	background-color: #fafafa;
 	z-index: 1;
 }
@@ -124,10 +124,15 @@ mat-action-row{
 }
 
 .service-line-items{
+	display: inline-flex;
 	margin: 0.5em;
 }
 .service-line-item{
 	width: 100%;
+}
+.service-line-item-half{
+	width: 50%;
+	min-width: unset;
 }
 
 section {

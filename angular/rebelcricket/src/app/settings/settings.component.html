@@ -58,7 +58,7 @@
         </mat-form-field>
         <button mat-icon-button 
           (click)="removeLandingSocialItem(item)" 
-          matTooltip="Delete {{item.name}}"
+          matTooltip="Delete Social Media Item {{item.name}}"
           class="delete-service">
           <mat-icon>delete</mat-icon>
         </button>
@@ -145,7 +145,7 @@
         </mat-form-field>
         <button mat-icon-button 
           (click)="removeAboutPageItem(item)" 
-          matTooltip="Delete {{item.heading}}"
+          matTooltip="Delete Detail Item {{item.heading}}"
           class="delete-service">
           <mat-icon>delete</mat-icon>
         </button>
@@ -187,15 +187,18 @@
     </mat-expansion-panel-header>
 
     <div class="edit-services-row">
-      <mat-select placeholder="Edit Service" [(ngModel)]="selectedService" name="service">
-        <mat-option *ngFor="let service of settings.services" [value]="service">
-          {{service.name}}
-        </mat-option>
-      </mat-select>
+      <mat-form-field>
+        <mat-select matInput placeholder="Edit Service" name="service"
+          [(ngModel)]="selectedService">
+          <mat-option *ngFor="let service of settings.services" [value]="service">
+            {{service.name}}
+          </mat-option>
+        </mat-select>
+      </mat-form-field>
       <button mat-icon-button 
         *ngIf="selectedService"
         (click)="removeService(selectedService)" 
-        matTooltip="Delete {{selectedService.name}}"
+        matTooltip="Delete Service {{selectedService.name}}"
         class="delete-service">
         <mat-icon>delete</mat-icon>
       </button>
@@ -246,7 +249,7 @@
             </mat-form-field>
             <button mat-icon-button 
               (click)="removeServiceDetailImage(detail_image)" 
-              matTooltip="Delete {{detail_image.url}}"
+              matTooltip="Delete Detail Image {{detail_image.url}}"
               class="delete-service">
               <mat-icon>delete</mat-icon>
             </button>
@@ -264,7 +267,7 @@
             </mat-form-field>
             <button mat-icon-button 
               (click)="removeServiceDetailItem(item)" 
-              matTooltip="Delete {{item.heading}}"
+              matTooltip="Delete Detail Item {{item.heading}}"
               class="delete-service">
               <mat-icon>delete</mat-icon>
             </button>
@@ -339,15 +342,17 @@ ship_to
      -->
 
     <div class="edit-services-row">
-      <mat-select placeholder="Edit Service" [(ngModel)]="selectedService" name="service">
-        <mat-option *ngFor="let service of settings.services" [value]="service">
-          {{service.name}}
-        </mat-option>
-      </mat-select>
+      <mat-form-field>
+        <mat-select matInput placeholder="Edit Service" [(ngModel)]="selectedService" name="service">
+          <mat-option *ngFor="let service of settings.services" [value]="service">
+            {{service.name}}
+          </mat-option>
+        </mat-select>
+      </mat-form-field>
       <button mat-icon-button 
         *ngIf="selectedService"
         (click)="removeService(selectedService)" 
-        matTooltip="Delete {{selectedService.name}}"
+        matTooltip="Delete Service {{selectedService.name}}"
         class="delete-service">
         <mat-icon>delete</mat-icon>
       </button>
@@ -360,17 +365,18 @@ ship_to
           placeholder="Name">
       </mat-form-field>
       <span class="flexfill"></span>
-      <mat-select placeholder="Catalog" 
-        *ngIf="selectedService"
-        [(ngModel)]="selectedService.vendor_goods_catalog"
-        (change)="onChange()">
-        <mat-option value="">
-          None
-        </mat-option>
-        <mat-option value="default">
-          Default
-        </mat-option>
-      </mat-select>
+      <mat-form-field *ngIf="selectedService">
+        <mat-select matInput placeholder="Vendor Goods Catalog" 
+          [(ngModel)]="selectedService.vendor_goods_catalog"
+          (change)="onChange()">
+          <mat-option value="">
+            None
+          </mat-option>
+          <mat-option value="default">
+            Default
+          </mat-option>
+        </mat-select>
+      </mat-form-field>
       <mat-checkbox *ngIf="selectedService" 
         [(ngModel)]="selectedService.notes" (change)="onChange()">Notes</mat-checkbox>
     </div>
@@ -400,11 +406,30 @@ ship_to
 
           </section>
           <section>
-            <mat-select placeholder="Type" [(ngModel)]="field.type" (change)="onChange()">
-              <mat-option *ngFor="let type of order_field_types" [value]="type.value">
-                {{ type.name }}
-              </mat-option>
-            </mat-select>
+            <mat-form-field>
+              <mat-select matInput placeholder="Type" 
+                [(ngModel)]="field.type" 
+                (change)="onChange()">
+                <mat-option *ngFor="let type of order_field_types" [value]="type.value">
+                  {{ type.name }}
+                </mat-option>
+              </mat-select>
+            </mat-form-field>
+            <mat-form-field *ngIf="field.type == NumberFieldType">
+              <input matInput 
+                [(ngModel)]="field.min" 
+                (change)="onChange()"
+                placeholder="Minimum">
+            </mat-form-field>
+            <mat-form-field *ngIf="field.type == NumberFieldType">
+              <input matInput 
+                [(ngModel)]="field.max" 
+                (change)="onChange()"
+                placeholder="Maximum">
+            </mat-form-field>
+
+            <mat-checkbox *ngIf="field.type == SelectFieldType"
+              [(ngModel)]="field.multiple" (change)="onChange()">Multiple</mat-checkbox>
             <button mat-button 
               *ngIf="field.type == SelectFieldType"
               (click)="addOrderFieldSelectItem(field)" 
@@ -417,7 +442,7 @@ ship_to
               <mat-form-field>
                 <input matInput 
                   [(ngModel)]="select_item.name" 
-                  (change)="onChange()"
+                  (change)="selectItemChange(select_item)"
                   placeholder="Option Value">
               </mat-form-field>
               <button mat-icon-button 

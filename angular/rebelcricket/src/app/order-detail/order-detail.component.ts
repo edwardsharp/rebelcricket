@@ -5,6 +5,7 @@ import { Observable }           from 'rxjs/Observable';
 // import 'rxjs/add/operator/map';
 import 'rxjs/add/operator/switchMap';
 import {MatChipInputEvent, MatSnackBar} from '@angular/material';
+import {FormControl, Validators} from '@angular/forms';
 
 import { Order, LineItem, OrderField, OrderFieldType } from '../orders/order';
 import { OrderService } from '../orders/order.service';
@@ -38,6 +39,13 @@ export class OrderDetailComponent implements OnInit, OnDestroy  {
 
   order_field_types: any;
   allServicesNeedHidden: boolean;
+
+  email = new FormControl('', [Validators.required, Validators.email]);
+  getEmailErrorMessage() {
+    return this.email.hasError('required') ? 'You must enter a value' :
+        this.email.hasError('email') ? 'Not a valid email' :
+            '';
+  }
 
   constructor(
   	private orderService: OrderService,
@@ -341,7 +349,8 @@ export class OrderDetailComponent implements OnInit, OnDestroy  {
     return `History (${this.order.history && this.order.history.length ? this.order.history.length : 0})`;
   }
 
-  addOrderLineItem(): void {
+  addOrderLineItem(event): void {
+    console.log('addOrderLineItem event:',event);
     if(this.selectedService){
       this.order.line_items = this.order.line_items || [];
       let li = new LineItem;
@@ -351,8 +360,9 @@ export class OrderDetailComponent implements OnInit, OnDestroy  {
       li.items = this.orderFieldsForService(this.selectedService);
       this.order.line_items.push(li);
       this.saveOrder();
+
      }
-     this.selectedService = undefined; 
+     this.selectedService = null; 
 
      // this.checkAllServicesNeedHidden();
   }
@@ -375,9 +385,9 @@ export class OrderDetailComponent implements OnInit, OnDestroy  {
     this.needsSave = true;
   }
 
-  serviceNeedsDisabled(service: Service): boolean{
-    return this.order && this.order.line_items && this.order.line_items.some( li => li.service_label == service.name); 
-  }
+  // serviceNeedsDisabled(service: Service): boolean{
+  //   return this.order && this.order.line_items && this.order.line_items.some( li => li.service_label == service.name); 
+  // }
   
   // checkAllServicesNeedHidden(): void {
   //   setTimeout(() => {
@@ -435,5 +445,60 @@ export class OrderDetailComponent implements OnInit, OnDestroy  {
       this.sizeQtyTotalChanged(line_item);
     }
   }
+
+  qtyTotalChanged(field, line_item): void{
+    if(field && field.name.toLowerCase() == 'qty'){
+      line_item.quantity = parseFloat(field.value);
+    }else if(field && field.name.toLowerCase() == 'total'){
+      line_item.total = parseFloat(field.value);
+    }
+    this.onChange('qtyTotalChanged');
+  }
+
+  hintFor(field){
+    let s = '';
+    if(field && field.min != undefined && !isNaN(parseInt(field.min))){
+      s = 'Minimum: '+field.min;
+    }
+    if(field && field.max != undefined && !isNaN(parseInt(field.max))){
+      if(s.length > 0){
+        s += ', Maxium: '+field.max;
+      }else{
+        s = 'Maxium: '+field.max;
+      }
+    }
+    return s;
+  }
+
+  // numberControl(field){
+  //   let validatorz = [];
+  //   if(field.required){
+  //     validatorz.push(Validators.required)
+  //   }
+  //   if(field.min && !isNaN(parseInt(field.min))){
+  //     validatorz.push(Validators.min(field.min));
+  //   }
+  //   if(field.max && !isNaN(parseInt(field.max))){
+  //     validatorz.push(Validators.max(field.max));
+  //   }
+  //   return new FormControl(field.value, validatorz);
+  // }
+  // getNumberErrorMessage(field) {
+  //   return field.invalid ? 'Invalid.' : '';
+  // }
+  // numberChange(field){
+  //   if(field.required){
+  //     console.log('invalid cuz required!');
+  //     field.invalid = !(field.value == undefined || field.value == '');
+  //   }
+  //   if(field.min && !isNaN(parseInt(field.min))){
+  //     console.log('min invalid?', !(field.value >= parseInt(field.min)));
+  //     field.invalid = !(field.value >= parseInt(field.min));
+  //   }
+  //   if(field.max && !isNaN(parseInt(field.max)) ){
+  //     field.invalid = !(field.value <= parseInt(field.max));
+  //   }
+  //   this.onChange('numberChange');
+  // }
 
 }  

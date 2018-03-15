@@ -22,7 +22,8 @@ export class SettingsComponent implements OnInit {
 	disableSave: boolean = true;
   order_field_types: Array<{name:string, value:OrderFieldType}>;
   SelectFieldType: OrderFieldType;
-
+  NumberFieldType: OrderFieldType;
+  
   constructor(
     private settingsService: SettingsService,
     private snackBar: MatSnackBar
@@ -38,6 +39,7 @@ export class SettingsComponent implements OnInit {
       {name: 'Select',   value: OrderFieldType.Select}
     ];
     this.SelectFieldType = OrderFieldType.Select;
+    this.NumberFieldType = OrderFieldType.Number;
   }
 
   getSettings(): void {
@@ -213,6 +215,10 @@ export class SettingsComponent implements OnInit {
     if(idx >= 0){
       field.select_items.splice(idx, 1);
     }
+  }
+  selectItemChange(item){
+    item.value = item.name;
+    this.onChange();
   }
 
 }

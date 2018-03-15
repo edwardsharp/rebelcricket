@@ -49,6 +49,9 @@ export class OrderField {
   value: string;
   required: boolean;
   internal: boolean;
+  min: number;
+  max: number;
+  multiple: boolean;
   select_items: Array<{name:string}>;
 }
 
