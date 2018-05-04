@@ -1,4 +1,4 @@
-FROM apache/couchdb:2.1.0
+FROM couchdb:2.1.1
 
 RUN apt-get update -y && apt-get install -y nodejs
 

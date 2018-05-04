@@ -253,6 +253,17 @@ class RebelApiController < ApplicationController
 
   end
 
+  def quotes 
+
+    unless has_valid_token
+      render_unauthorized and return
+    end
+
+    quotes = RebelQuote.limit(100)
+
+    render json: quotes.to_json
+  end
+
   protected
   def quote_params
     params.permit(
