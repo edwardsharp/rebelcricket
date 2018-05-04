@@ -1,0 +1,37 @@
+<div id="landing-wrapper">
+  <div class="flex settings" *ngIf="settings">
+    <div class="flex-item" *ngIf="hasLogoImg()">
+      <img [src]="logoAttachmentSrc()" class="logo_image grow" />
+    </div>
+    <div class="flex-item">
+      <h1 class="site_description" *ngIf="settings.site_description">
+        <div *ngFor="let s of settings.site_description.split('\\n')">{{s | replaceNewline}}</div>
+      </h1>
+      <a *ngIf="settings.phone" mat-button href="tel://{{settings.phone}}" class="phone grow" matTooltip="Call {{settings.phone}}">
+        <h1><mat-icon>phone</mat-icon> {{settings.phone}}</h1>
+      </a>
+      <div class="social_items">
+        <a *ngFor="let item of settings.landing_page_social_items" 
+          href="{{item.url}}" target="_blank"><img src="/assets/images/{{item.name}}.png" class="social_item grow" />
+        </a>
+      </div>
+    </div>
+  </div>
+
+  <div *ngIf="carouselBannerLoaded">
+  <ngx-carousel class="banner" [inputs]="carouselBanner">
+      <ngx-item NgxCarouselItem *ngFor="let tile of carouselBannerItems">
+          <div class="bannerStyle" [style.background-image]="tile">
+             
+          </div>
+      </ngx-item>
+      <button NgxCarouselPrev class="leftRs"><mat-icon>keyboard_arrow_left</mat-icon></button>
+      <button NgxCarouselNext class="rightRs"><mat-icon>keyboard_arrow_right</mat-icon></button>
+  </ngx-carousel>
+  </div>
+
+  <app-about></app-about>
+
+  <app-services></app-services>
+</div>
+<div id="madewithlove">made with <mat-icon>favorite</mat-icon> in PDX &amp; NYC</div>

@@ -1,0 +1,111 @@
+<h3 *ngIf="order_fields && order_fields.length > 0">
+  Order Fields 
+  <button mat-button (click)="toggleIsSortingFields()"><mat-icon>sort</mat-icon><span *ngIf="isSortingFields">Done</span> <span>Sort</span><span *ngIf="isSortingFields">ing</span></button>
+</h3>
+<mat-list *ngIf="isSortingFields && order_fields && order_fields.length > 0"
+dnd-sortable-container [sortableData]="order_fields">
+  <mat-list-item class="sortable-item" 
+    *ngFor="let item of order_fields; let i = index" dnd-sortable [sortableIndex]="i">
+    <mat-icon matTooltip="Drag to sort">drag_handle</mat-icon> {{item.name}}
+  </mat-list-item>
+</mat-list>
+
+<div class="detail-item" *ngIf="!isSortingFields">
+  <div *ngFor="let field of order_fields">
+    <hr>
+    <section>
+      <button mat-icon-button 
+        (click)="removeOrderField(field)" 
+        matTooltip="Delete Field {{field.name}}"
+        class="delete-service">
+        <mat-icon>delete</mat-icon>
+      </button>
+
+      <mat-form-field>
+        <input matInput 
+          [(ngModel)]="field.name" 
+          (change)="onChange.emit(true)"
+          placeholder="Order Field Name">
+      </mat-form-field>
+
+      <mat-form-field>
+        <mat-select matInput placeholder="Type" 
+          [(ngModel)]="field.type" 
+          (change)="onChange.emit(true)">
+          <mat-option *ngFor="let type of order_field_types" [value]="type.value">
+            {{ type.name }}
+          </mat-option>
+        </mat-select>
+      </mat-form-field>
+
+      <mat-checkbox [(ngModel)]="field.internal" (change)="onChange.emit(true)" matTooltip="For admins only">Internal</mat-checkbox>
+      <mat-checkbox [(ngModel)]="field.required" (change)="onChange.emit(true)">Required</mat-checkbox>
+        
+      <div class="inline-flex">
+      <mat-form-field>
+        <input matInput 
+          [(ngModel)]="field.text" 
+          (change)="onChange.emit(true)"
+          placeholder="Question Text"
+          matTooltip="Example: 'What's your name?'">
+      </mat-form-field>
+
+      <mat-form-field>
+        <input matInput 
+          [(ngModel)]="field.hintStart" 
+          (change)="onChange.emit(true)"
+          placeholder="Hint Text"
+          matTooltip="Displayed under text input.">
+      </mat-form-field>
+      </div>
+    </section>
+    <section>
+      
+
+      <div class="inline-flex" *ngIf="field.type == NumberFieldType">
+        <h3 class="no-marg">Number Field Options</h3>
+        <mat-form-field>
+          <input matInput 
+            [(ngModel)]="field.min" 
+            (change)="onChange.emit(true)"
+            placeholder="Minimum">
+        </mat-form-field>
+        <mat-form-field>
+          <input matInput 
+            [(ngModel)]="field.max" 
+            (change)="onChange.emit(true)"
+            placeholder="Maximum">
+        </mat-form-field>
+      </div>
+
+      <div class="inline-flex" *ngIf="field.type == SelectFieldType">
+        <h3 class="no-marg">Select Field Options</h3>
+        <mat-checkbox 
+          [(ngModel)]="field.multiple" (change)="onChange.emit(true)">Multiple</mat-checkbox>
+        <button mat-button 
+          (click)="addOrderFieldSelectItem(field)" 
+          matTooltip="Add a Select field option">
+          <mat-icon>add</mat-icon> Option
+        </button>
+      </div>
+    </section>
+    <section class="flex-column" *ngIf="field.type == SelectFieldType">
+      <div class="inline-flex" *ngFor="let select_item of field.select_items">
+        <mat-form-field>
+          <input matInput 
+            [(ngModel)]="select_item.name" 
+            (change)="selectItemChange(select_item)"
+            placeholder="Option Value">
+        </mat-form-field>
+        <button mat-icon-button 
+          (click)="removeOrderFieldSelectItem(field,select_item)" 
+          matTooltip="Delete Select Item {{select_item.name}}"
+          class="delete-service">
+          <mat-icon>clear</mat-icon>
+        </button>
+        
+      </div>
+    </section>
+
+  </div>
+</div>

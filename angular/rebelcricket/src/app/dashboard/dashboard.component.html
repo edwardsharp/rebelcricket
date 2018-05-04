@@ -1,0 +1,243 @@
+<div id="new-order-fab">
+  <button mat-fab color="accent" routerLink="/dashboard/order/new"
+    matTooltip="Create a New Order" matTooltipPosition="left">
+    <mat-icon class="mat-24" 
+      aria-label="Create a New Order">add</mat-icon>
+  </button>
+</div>
+
+<div *ngIf="needsReloadAfterInit" class="needs-reload">
+  <h2>Loading settings...</h2>
+  <a (click)="reload()">Click here to reload</a>
+</div>
+
+<div id="container">
+  <div *ngFor="let container of containers"
+    [@containerState]="container.collapsed">
+    <mat-toolbar [@containerHeadingState]="container.collapsed" color="secondary">
+      <button mat-icon-button 
+        tabindex="-1"
+        [@containerButtonState]="container.collapsed"
+        (click)="toggleCollapse(container)">
+        <mat-icon>chevron_left</mat-icon>
+      </button>
+      <h1>{{container.name}} ({{ordersForStatus[container.name]?.length}})</h1>
+      <button *ngIf="container.collapsed === 'active' && ordersForStatus[container.name]?.length > 2"
+        mat-icon-button 
+        tabindex="-1"
+        [matMenuTriggerFor]="filterList">
+        <mat-icon>filter_list</mat-icon>
+      </button>
+      <mat-menu #filterList="matMenu">
+        <div class="center"><b>Sort By:</b></div>
+        <hr>
+        <div class="filter-menu-item">
+          <button 
+            mat-button 
+            matTooltip="Priority Descending"
+            (click)="sortContainerBy(container.name,'position','desc')">
+            <mat-icon>keyboard_arrow_down</mat-icon>
+          </button>
+          <span class="flexfill filter-menu-item-name"><mat-icon>priority_high</mat-icon> Priority</span>
+          <button  
+            mat-button
+            matTooltip="Priority Ascending"
+            (click)="sortContainerBy(container.name,'position','asc')">
+            <mat-icon>keyboard_arrow_up</mat-icon>
+          </button>
+        </div>
+        <div class="filter-menu-item">
+          <button mat-button
+            matTooltip="Newest first"
+            (click)="sortContainerBy(container.name,'created_at','desc')">
+            <mat-icon>keyboard_arrow_down</mat-icon>
+          </button>
+          <span class="flexfill filter-menu-item-name"><mat-icon>event</mat-icon> Created</span>
+          <button mat-button
+            matTooltip="Oldest First"
+            (click)="sortContainerBy(container.name,'created_at','asc')">
+            <mat-icon>keyboard_arrow_up</mat-icon>
+          </button>
+        </div>
+        <div class="filter-menu-item">
+          <button mat-button
+            matTooltip="Newest first"
+            (click)="sortContainerBy(container.name,'date_needed','desc')">
+            <mat-icon>keyboard_arrow_down</mat-icon>
+          </button>
+          <span class="flexfill filter-menu-item-name"><mat-icon>alarm</mat-icon> Date Due</span>
+          <button mat-button
+            matTooltip="Oldest first"
+            (click)="sortContainerBy(container.name,'date_needed','asc')">
+            <mat-icon>keyboard_arrow_up</mat-icon>
+          </button>
+        </div>
+      </mat-menu>
+
+    </mat-toolbar>
+    <div *ngIf="container.collapsed === 'active'" class="status-container">
+      <mat-card
+        class="mat-elevation-z0" 
+        *ngFor="let order of ordersForStatus[container.name]">
+        <mat-card-header>
+          <div mat-card-avatar>
+            <button mat-icon-button 
+              [matMenuTriggerFor]="cardMenu" 
+              matTooltip="More..." 
+              matTooltipPosition="above">
+              <mat-icon class="icon">more_vert</mat-icon>
+            </button>
+
+            <mat-menu #cardMenu="matMenu">
+              <a mat-menu-item
+                routerLink="/dashboard/order/{{order._id}}">
+                <mat-icon>edit</mat-icon>
+                <span>Edit</span>
+              </a>
+              <hr>
+              <button mat-menu-item [matMenuTriggerFor]="status" title="Status">
+                <mat-icon>inbox</mat-icon>
+                <span>Status</span>
+              </button>
+              <button mat-menu-item [matMenuTriggerFor]="priority" title="Priority" [disabled]="ordersForStatus[container.name]?.length < 2">
+                <mat-icon>priority_high</mat-icon>
+                <span>Priority</span>
+              </button>
+              <button mat-menu-item (click)="clearDueDateFor(order)" [disabled]="!order.date_needed">
+                <mat-icon>alarm_off</mat-icon>
+                <span>Clear Due Date</span>
+              </button>
+              <hr>
+              <button mat-menu-item 
+                title="Delete"
+                (click)="deleteOrder(order)">
+                <mat-icon>delete</mat-icon>
+                <span>Delete</span>
+              </button>
+            </mat-menu>
+
+            <mat-menu #status="matMenu">
+              <button mat-menu-item 
+                *ngFor="let item of settings.order_statuses"
+                (click)="updateOrderStatus(order,item.name)"
+                [disabled]="order.status == item.name">
+                {{item.name}}
+              </button>
+            </mat-menu>
+
+            <mat-menu #line_items="matMenu">
+              <button mat-menu-item *ngFor="let item of order.line_items">
+                <span>{{item.quantity}} ${{item.total}} {{item.service_label}}</span>
+              </button>
+              <mat-divider></mat-divider>
+              <mat-list-item class="line-items-total">
+                <span>Total:</span> {{orderQtyTotal(order)}} <span class="flexfill">&nbsp;</span> ${{orderTotal(order).toFixed(2)}}
+              </mat-list-item>
+            </mat-menu>
+
+            <mat-menu #priority="matMenu">
+              <button mat-menu-item 
+                title="Move To Top"
+                (click)="moveOrder(order,'top')">
+                <mat-icon>vertical_align_top</mat-icon>
+                <span>Move To Top</span>
+              </button>
+              <button mat-menu-item 
+                title="Move Up"
+                (click)="moveOrder(order,'up')">
+                <mat-icon>arrow_upward</mat-icon>
+                <span>Move Up</span>
+              </button>
+              <button mat-menu-item 
+                title="Move Down"
+                (click)="moveOrder(order,'down')">
+                <mat-icon>arrow_downward</mat-icon>
+                <span>Move Down</span>
+              </button>
+              <button mat-menu-item 
+                title="Move To Bottom"
+                (click)="moveOrder(order,'bottom')">
+                <mat-icon>vertical_align_bottom</mat-icon>
+                <span>Move To Bottom</span>
+              </button>
+            </mat-menu>
+
+          </div>
+
+          <mat-card-title>{{order.name}} <span *ngIf="order.org">({{order.org}})</span></mat-card-title>
+          <mat-card-subtitle>
+            <mat-icon class="card-subtitle-icon" matTooltip="Date Created">event</mat-icon>{{order.created_at | date:'short'}} 
+          </mat-card-subtitle>
+        </mat-card-header>
+        <!-- <img mat-card-image src="assets/img/examples/shiba2.jpg" alt="Photo of a Shiba Inu"> -->
+        <mat-card-content>
+
+          <a mat-button 
+            *ngIf="order.phone"
+            href="tel://{{order.phone}}"
+            matTooltip="Call {{order.phone}}">
+            <mat-icon class="icon">phone</mat-icon>
+            {{order.phone}}
+          </a>
+
+          <a mat-button 
+            *ngIf="order.email"
+            href="mailto:{{order.email}}"
+            matTooltip="Email {{order.email}}">
+            <mat-icon class="icon">mail_outline</mat-icon>
+            {{order.email}}
+          </a>
+
+          <mat-expansion-panel *ngIf="order.notes" class="mat-elevation-z0">
+            <mat-expansion-panel-header>
+              Notes 
+            </mat-expansion-panel-header>
+            <p>{{order.notes}}</p>
+          </mat-expansion-panel>
+
+          <app-order-tags [tags]="order.tags" (tagsChanged)="tagsChanged(order,$event)"></app-order-tags>
+
+        </mat-card-content>
+        <mat-card-actions>
+
+          <mat-basic-chip>
+            <span 
+            *ngIf="order.date_needed; else needByDateElse" 
+            matTooltip="Due Date"
+            matTooltipPosition="above"
+            (click)="picker.open()">
+              <mat-icon>alarm_on</mat-icon>
+              {{order.date_needed | date:'MMMd'}}
+            </span>
+            <ng-template #needByDateElse>
+              <mat-icon (click)="picker.open()" 
+                matTooltip="No Due Date" matTooltipPosition="above">alarm_off</mat-icon>
+            </ng-template>
+          </mat-basic-chip>
+          <mat-form-field class="hidden" >
+            <input matInput [matDatepicker]="picker" 
+              [(ngModel)]="order.date_needed" 
+              (dateChange)="saveOrder(order)"
+              placeholder="Due Date" readonly="true">
+            <mat-datepicker touchUi="true" #picker></mat-datepicker>
+          </mat-form-field>
+
+          <mat-basic-chip matTooltip="Attachments" matTooltipPosition="above">
+            <mat-icon>attachment</mat-icon>{{orderAttachmentCount(order)}}
+          </mat-basic-chip>
+
+          <mat-basic-chip *ngIf="order?.line_items" [matMenuTriggerFor]="line_items"
+            matTooltip="Line Items" matTooltipPosition="above">
+            <mat-icon>shopping_cart</mat-icon>{{order.line_items?.length || 0}}
+          </mat-basic-chip>
+
+          <span class="flexfill"></span>
+          <mat-basic-chip *ngIf="ordersForStatus[container.name]?.length > 1" [matMenuTriggerFor]="priority" matTooltip="Priority" matTooltipPosition="above">
+            <mat-icon>priority_high</mat-icon> {{order.position}}
+          </mat-basic-chip>
+
+        </mat-card-actions>
+      </mat-card>
+    </div>
+  </div>
+</div>

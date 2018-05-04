@@ -1,0 +1,22 @@
+#template for api.sked.site & couch.sked.site (staging env)
+version: "2"
+services:
+  couch:
+    image: 3dwardsharp/sched_admin
+    env_file: .env
+    ports:
+      - "5984:5984"
+    # volumes:
+    #   - /storage/couchdata/:/opt/couchdb/data
+    #   - /storage/core/couch/couchdb_local.ini:/opt/couchdb/etc/local.d
+  web:
+    image: nginx
+    volumes:
+      - ./nginx.template:/etc/nginx/conf.d/nginx.template
+    ports:
+      - "8080:80"
+    environment:
+      - COUCH_SERVER=couch.rebel.cricket
+      - COUCH_WS_SERVER=couchws.rebel.cricket
+      - BASE_SERVER=rebel.cricket
+    command: /bin/bash -c "envsubst < /etc/nginx/conf.d/nginx.template > /etc/nginx/conf.d/default.conf && nginx -g 'daemon off;'"

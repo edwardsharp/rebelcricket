@@ -1,0 +1,25 @@
+.search-box{
+  width: 50px;
+  max-width: 350px;
+  height: 10px;
+  border-radius: 20px;
+  padding: 10px;
+  border: thin solid #eeeeee;
+  -webkit-transition: all .25s;
+  -moz-transition: all .25s;
+  transition: all .25s;
+}
+
+.search-box:focus{
+  width: 300px;
+  z-index: 2;
+}
+
+@media (max-width: 599px) {
+  .search-box:focus{
+    position: absolute;
+    top: 12px;
+    right: 10px;
+    width: 300px;
+  }
+}

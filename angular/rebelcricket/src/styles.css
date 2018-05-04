@@ -1,0 +1,117 @@
+/* app stylez */
+body {
+	margin: 0;
+	padding: 0;
+	font-family: 'Roboto', 'Noto', sans-serif;
+}
+
+h1,h2,h3,h4,h5,h6{
+	font-family: 'Open Sans', sans-serif;
+}
+
+hr{
+	border-style: ridge;
+}
+
+:focus {outline:none;}
+
+.flexfill {
+  flex: 1 1 auto;
+}
+.invisible{
+  visibility: hidden!important;
+}
+[hidden], .hidden {
+  display: none!important;
+}
+
+/* mat-tab-group */
+mat-sidenav-container, 
+.mat-drawer-content, 
+#settings .mat-expansion-panel-content{
+  overflow: visible!important;
+}
+
+.center{
+  text-align: center;
+}
+
+.nolist {
+  list-style: none;
+}
+
+.order-details mat-tab-header{
+	position: sticky!important;
+	top: 	128px;
+	z-index: 2;
+	background-color: white;
+}
+
+app-order-tags .mat-chip-list-wrapper{
+  align-items: flex-start!important;
+}
+
+#gfx .attachment-img{
+  border-radius: 0!important;
+}
+
+#gfx .mat-list-item-content{
+  padding: 0!important;
+  justify-content: space-between;
+}
+
+/* ng2-dnd */
+.dnd-drag-start {
+    -moz-transform:scale(0.8);
+    -webkit-transform:scale(0.8);
+    transform:scale(0.8);
+    opacity:0.7;
+    border: 2px dashed #000;
+}
+
+.dnd-drag-enter {
+    opacity:0.7;
+    border: 2px dashed #000;
+}
+
+.dnd-drag-over {
+    border: 2px dashed #000;
+}
+
+.dnd-sortable-drag {
+/*  -moz-transform:scale(0.9);
+  -webkit-transform:scale(0.9);
+  transform:scale(0.9);*/
+  opacity:0.7;
+  border: 1px dashed #000;
+}
+
+/* ngx-carousel*/
+#services-wrapper .tile{
+  box-shadow: none !important;
+}
+#services-wrapper .ngxcarouselPoint li{
+  background-color: rgba(0,0,0,0.5) !important;
+}
+
+@media (max-width: 599px) {
+	.order-details mat-tab-header{
+		top: 	112px;
+	}
+	#orders-container .mat-paginator-range-label{
+		display: none!important;
+	}
+	#settings .mat-chip-list-wrapper{
+		flex-direction: column!important;
+		align-content: left;
+  	align-items: left;
+	}
+
+	#settings .mat-form-field-infix{
+		width: 100%!important;
+	}
+}
+
+.mat-dialog-container{
+  max-height: 100vh;
+}

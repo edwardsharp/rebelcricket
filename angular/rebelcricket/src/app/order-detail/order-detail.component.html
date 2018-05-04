@@ -1,0 +1,393 @@
+<div *ngIf="!order" class="content">
+	<div class="header">
+	  <h2 class="name">Loading Order...</h2>
+	  <mat-spinner></mat-spinner>
+	</div>
+</div>
+
+<div *ngIf="order" class="content">
+  <mat-toolbar color="primary" class="sticky no-quote">
+		<button mat-icon-button aria-label="Back to dasboard" routerLink="/dashboard/" matTooltip="Back to Dashboard">
+    	<mat-icon class="mat-24">arrow_back</mat-icon>
+  	</button>
+
+  	<!-- this is a oneliner mess cuz the stylez for this h2 care about \n -->
+	  <mat-form-field class="hidden" >
+      <input matInput [matDatepicker]="picker" [(ngModel)]="order.date_needed" placeholder="Due Date" readonly="true">
+      <mat-datepicker touchUi="true" #picker></mat-datepicker>
+    </mat-form-field>
+	  <h2 class="order-toolbar">
+	  	<small matTooltip="Created At"><mat-icon>event</mat-icon> <span>{{order.created_at | date:'short' }}</span></small>
+	  	<small 
+	  		*ngIf="order.date_needed; else needByDateElse" 
+	  		(click)="picker.open()"
+        matTooltip="Due Date"><mat-icon>alarm</mat-icon> <span>{{order.date_needed | date:'shortDate'}}</span></small>
+	  	<ng-template #needByDateElse><small (click)="picker.open()"><mat-icon matTooltip="No Due Date">alarm_off</mat-icon> <span>No Due Date</span></small></ng-template>
+    </h2>  
+	  
+	  <span class="flexfill"></span>
+
+	  <span *ngIf="settings?.order_statuses; else elseBlock">
+		  <mat-chip [matMenuTriggerFor]="orderStatusMenu">{{order.status}}</mat-chip>
+		  <mat-menu #orderStatusMenu="matMenu">
+		    <button mat-menu-item 
+		    	*ngFor="let status of settings.order_statuses"
+		    	(click)="order.status = status.name; saveOrder()">
+		      <span>{{status.name}}</span>
+		    </button>
+		  </mat-menu>
+	  </span>
+    <ng-template #elseBlock><mat-chip>{{order.status}}</mat-chip></ng-template>
+
+		<button mat-icon-button [matMenuTriggerFor]="orderDetailMenu">
+	    <mat-icon class="example-icon">more_vert</mat-icon>
+	  </button>
+	  <mat-menu #orderDetailMenu="matMenu">
+	  	<button mat-menu-item (click)="clearDueDate()" [disabled]="!order.date_needed">
+	      <mat-icon>alarm_off</mat-icon>
+	      <span>Clear Due Date</span>
+	    </button>
+	    <button mat-menu-item (click)="deleteOrder()">
+	      <mat-icon>delete</mat-icon>
+	      <span>Delete Order</span>
+	    </button>
+	    <button mat-menu-item *ngIf="order.quote" (click)="router.navigate(['/quote/', order._id])">
+	      <mat-icon>chat</mat-icon>
+	      <span>Show Quote</span>
+	    </button>
+	  </mat-menu>
+
+
+	</mat-toolbar>
+
+	<div id="details">
+		<app-order-tags [tags]="order.tags" (tagsChanged)="tagsChanged($event)" class="no-quote"></app-order-tags>
+	  	
+  	<div>
+		  <mat-form-field>
+		    <input matInput [(ngModel)]="order.name" (change)="onChange($event)" placeholder="name" required>
+		  </mat-form-field>
+		  <mat-form-field>
+		    <input matInput [(ngModel)]="order.org" (change)="onChange($event)" placeholder="org">
+		  </mat-form-field>
+		</div>
+		<div>
+			<a mat-icon-button 
+        *ngIf="order.email"
+        href="mailto:{{order.email}}"
+        matTooltip="Email {{order.email}}"
+        class="no-quote">
+        <mat-icon class="icon">mail_outline</mat-icon>
+      </a>
+			<mat-form-field class="with-button">
+		    <input matInput [(ngModel)]="order.email" [formControl]="email" (change)="onChange($event)" placeholder="email" type="email" required>
+		    <mat-error *ngIf="email.invalid">{{getEmailErrorMessage()}}</mat-error>
+		  </mat-form-field>
+		  
+		  <a mat-icon-button 
+        *ngIf="order.phone"
+        href="tel://{{order.phone}}"
+        matTooltip="Call {{order.phone}}"
+        class="no-quote">
+        <mat-icon class="icon">phone</mat-icon>
+      </a>
+		  <mat-form-field class="with-button">
+		    <input matInput [(ngModel)]="order.phone" (change)="onChange($event)" placeholder="phone" type="number" pattern="[0-9]*">
+		  </mat-form-field>
+		  
+		</div>
+	  <div>
+		  <mat-form-field class="fullwidth">
+		    <textarea matInput [(ngModel)]="order.notes" (change)="onChange($event)" placeholder="notes"></textarea>
+		  </mat-form-field>
+		</div>
+
+
+		<div *ngFor="let field of baseOrderFields()" class="service-line-items">
+	  		
+  		<mat-form-field *ngIf="field.type == order_field_types['Number'] && (field.name.toLowerCase() == 'qty' || field.name.toLowerCase() == 'total');else not_qty_total" hintLabel="{{hintFor(field)}}">
+  			<input matInput [(ngModel)]="field.value" (change)="qtyTotalChanged(field, line_item)" placeholder="{{field.name}}" type="number" min="{{field.min}}" max="{{field.max}}" [required]="field.required ? true: null">
+  		</mat-form-field>
+			<ng-template #not_qty_total>
+
+	  		<mat-form-field *ngIf="field.type == order_field_types['Text']" class="service-line-item">
+	  			<input matInput [(ngModel)]="field.value" (change)="onChange($event)" placeholder="{{field.name}}" type="text">
+	  		</mat-form-field>
+	  		<mat-form-field *ngIf="field.type == order_field_types['Textarea']" class="service-line-item">
+	  			<textarea matInput [(ngModel)]="field.value" (change)="onChange($event)" placeholder="{{field.name}}"></textarea>
+	  		</mat-form-field>
+	  		<mat-checkbox *ngIf="field.type == order_field_types['Checkbox']" 
+	  			[(ngModel)]="field.value" (change)="onChange($event)">{{field.name}}</mat-checkbox>
+	  		<mat-form-field *ngIf="field.type == order_field_types['Number']" class="service-line-item" hintLabel="{{hintFor(field)}}">
+	  			<input matInput [(ngModel)]="field.value" (change)="numberChange(field)" placeholder="{{field.name}}" type="number" min="{{field.min}}" max="{{field.max}}" [required]="field.required ? true: null">
+	  		</mat-form-field>
+	  		<mat-form-field *ngIf="field.type == order_field_types['Select']">
+		  		<mat-select matInput placeholder="{{field.name}}" [multiple]="field.multiple" [required]="field.required"
+		  			[(ngModel)]="field.value">
+					  <mat-option *ngFor="let item of field.select_items" [value]="item.value">
+					    {{ item.name }}
+					  </mat-option>
+					</mat-select>
+				</mat-form-field>
+				<mat-form-field *ngIf="field.type == order_field_types['Date']">
+				  <input matInput [matDatepicker]="datepicker" 
+            [(ngModel)]="field.value" 
+            (dateChange)="onChange($event)"
+            (click)="datepicker.open()" 
+            placeholder="{{field.name}}">
+          <mat-datepicker touchUi="true" #datepicker></mat-datepicker>
+				</mat-form-field>
+
+			</ng-template>
+  	</div>
+
+
+	  <mat-list>
+		  <mat-list-item *ngFor="let service of order.services">{{service}}</mat-list-item>
+		</mat-list>
+
+		<!-- <h3 *ngIf="order.line_items">Services ({{order.line_items.length}})</h3> -->
+	  <div *ngFor="let line_item of order.line_items" class="line-items">
+	  	<section class="sticky sticky-service">
+	  		<button mat-icon-button class="hover-item" (click)="removeOrderLineItem(line_item)"
+	  			matTooltip="Delete Line Item">
+		      <mat-icon>delete</mat-icon>
+		    </button>
+		  	<mat-form-field class="li-service">
+			    <input matInput value="{{line_item.service_label}}" placeholder="Service" type="text" readonly="true">
+			  </mat-form-field>
+		  	<span class="flexfill"></span>
+
+		  	<a *ngIf="line_item.service && line_item.service.vendor_goods_catalog" mat-icon-button [routerLink]="['/vendor_goods/',line_item.service.vendor_goods_catalog, { order_id: order._id, line_item_id: line_item.service_label }]"
+	  			matTooltip="Browse Vendor Goods" class="hover-item">
+		      <mat-icon>shopping_basket</mat-icon>
+		    </a>
+
+			  <mat-form-field class="total no-quote">
+			    <input matInput [(ngModel)]="line_item.quantity" placeholder="Total" type="number" readonly="true">
+			    ${{line_item?.total?.toFixed(2)}}
+			  </mat-form-field>
+
+			</section>
+  		
+  		<div *ngFor="let vendor_good of line_item.vendor_goods">
+  			<div style="display:flex;align-items:center;text-align:center;">
+	  			
+	  			<span class="flexfill">{{vendor_good.vendor_title}}
+	  				<button mat-icon-button class="hover-item" matTooltip="Remove {{vendor_good.vendor_title}}" 
+		  				(click)="deleteVendorGoodItem(line_item.vendor_goods,vendor_good,line_item)">
+		  				<mat-icon>delete</mat-icon>
+		  			</button>
+	  			</span>
+	  			
+	  		</div>
+
+  			<div *ngFor="let sel_item of vendor_good.selected_items">
+  				color: {{sel_item.color}}
+					
+					<div class="color-qty">
+  					<mat-form-field class="quantity" *ngFor="let size_price of sel_item.size_prices" matTooltip="Enter Quantity for {{size_price.size}}">
+					    <input matInput [(ngModel)]="size_price.quantity" (change)="sizeQtyChanged(sel_item, line_item)" placeholder="{{size_price.size}}" type="number">
+					    {{size_price.price}}
+					  </mat-form-field>
+
+					  <mat-form-field class="total">
+					    <input matInput [(ngModel)]="sel_item.qty_total" placeholder="Total" type="number" readonly="true">
+					    ${{sel_item?.price_total?.toFixed(2)}}
+					  </mat-form-field>
+
+					  <button mat-icon-button class="hover-item" matTooltip="Remove {{sel_item.color}}" 
+					  	(click)="deleteVendorGoodItem(vendor_good.selected_items,sel_item,line_item)">
+					  	<mat-icon>clear</mat-icon></button>
+	  			</div>
+
+  			</div>
+
+  			
+  		</div>
+
+	  	<div *ngFor="let field of lineItemsFor(line_item.items)" class="service-line-items">
+	  		
+	  		<mat-form-field *ngIf="field.type == order_field_types['Number'] && (field.name.toLowerCase() == 'qty' || field.name.toLowerCase() == 'total');else not_qty_total" hintLabel="{{hintFor(field)}}">
+	  			<input matInput [(ngModel)]="field.value" (change)="qtyTotalChanged(field, line_item)" placeholder="{{field.name}}" type="number" min="{{field.min}}" max="{{field.max}}" [required]="field.required ? true: null">
+	  		</mat-form-field>
+				<ng-template #not_qty_total>
+
+		  		<mat-form-field *ngIf="field.type == order_field_types['Text']" class="service-line-item">
+		  			<input matInput [(ngModel)]="field.value" (change)="onChange($event)" placeholder="{{field.name}}" type="text">
+		  		</mat-form-field>
+		  		<mat-form-field *ngIf="field.type == order_field_types['Textarea']" class="service-line-item">
+		  			<textarea matInput [(ngModel)]="field.value" (change)="onChange($event)" placeholder="{{field.name}}"></textarea>
+		  		</mat-form-field>
+		  		<mat-checkbox *ngIf="field.type == order_field_types['Checkbox']" 
+		  			[(ngModel)]="field.value" (change)="onChange($event)">{{field.name}}</mat-checkbox>
+		  		<mat-form-field *ngIf="field.type == order_field_types['Number']" class="service-line-item" hintLabel="{{hintFor(field)}}">
+		  			<input matInput [(ngModel)]="field.value" (change)="numberChange(field)" placeholder="{{field.name}}" type="number" min="{{field.min}}" max="{{field.max}}" [required]="field.required ? true: null">
+		  		</mat-form-field>
+		  		<mat-form-field *ngIf="field.type == order_field_types['Select']">
+			  		<mat-select matInput placeholder="{{field.name}}" [multiple]="field.multiple" [required]="field.required"
+			  			[(ngModel)]="field.value">
+						  <mat-option *ngFor="let item of field.select_items" [value]="item.value">
+						    {{ item.name }}
+						  </mat-option>
+						</mat-select>
+					</mat-form-field>
+					<mat-form-field *ngIf="field.type == order_field_types['Date']">
+					  <input matInput [matDatepicker]="datepicker" 
+              [(ngModel)]="field.value" 
+              (dateChange)="onChange($event)"
+              (click)="datepicker.open()" 
+              placeholder="{{field.name}}">
+            <mat-datepicker touchUi="true" #datepicker></mat-datepicker>
+					</mat-form-field>
+
+				</ng-template>
+	  	</div>
+
+		  <div *ngIf="line_item.service?.notes">
+		  	<mat-form-field class="fullwidth">
+			    <textarea matInput [(ngModel)]="line_item.service.notes" (change)="onChange($event)" placeholder="notes"></textarea>
+			  </mat-form-field>
+			</div>
+
+	  </div>
+
+	  <div *ngIf="order.line_items && order.line_items.length > 0" class="no-quote">
+	  	<mat-toolbar color="primary">
+			  <span class="flexfill"></span>
+			  <span>Total: &nbsp;&nbsp;&nbsp;&nbsp;</span>
+			  <span>({{orderQtyTotal(order)}})&nbsp;&nbsp;</span> 
+			  <span>${{orderTotal(order).toFixed(2)}}</span>
+			</mat-toolbar>
+	  </div>
+	</div>
+
+
+	<div id="attachments">
+
+		<section class="sticky sticky-service">
+			<h3>
+				Graphics ({{orderAttachmentCount(order)}})
+				
+				<button mat-button (click)="uploadFile()" [disabled]="quoteDesingUploading" 
+				  matTooltip="Upload: ai, eps, pdf, psd, svg, jpeg, or tiff sized at 300 dpi.">
+		    	<mat-icon>add</mat-icon> Upload Graphics
+		    </button>
+
+				<button mat-button (click)="router.navigate(['/dashboard/gfx/', order._id])" class="no-quote">
+		    	<mat-icon>layers</mat-icon> Graphics Editor
+		    </button>
+			</h3>
+			
+		</section>	
+
+		<div id="new-attachment">
+	  	<!-- <label for="quoteDesignFile"><mat-icon>add</mat-icon>Upload Image Files</label> -->
+      <input #quoteDesignFile id="quoteDesignFile" hidden type="file" multiple="multiple" (change)="quoteFileChnaged($event)" (disabled)="quoteDesingUploading" />
+      <mat-progress-bar mode="indeterminate" [hidden]="!quoteDesingUploading"></mat-progress-bar>
+      
+      <span id="quoteDesignUploadFeedback" [hidden]="!gfxError">
+        ERROR! Could not upload that file. Please try again or choose a different file. If this form does not work for you please email your graphics to <a href="#">foobar@example.com</a>.
+      </span>
+     <!--  <div>
+        <small>Upload: <b>ai, eps, pdf, psd, svg, jpeg, or tiff</b> sized at <b>300 dpi</b>.</small>
+      </div> -->
+    </div>
+
+    <img *ngIf="order.canvasDataImg" class="canvas-data-img" alt="{{canvas-data-img}}" [src]="sanitizer.bypassSecurityTrustUrl(order.canvasDataImg)" />
+    <!-- class="attachment-cards" class="attachment-img" -->
+    <mat-grid-list cols="{{gridCols}}" rowHeight="1:1.5" gutterSize="10px">
+		  <mat-grid-tile *ngFor="let attachment of attachmentItemsForOrder()">
+		  	<mat-grid-tile-header>
+		  		<button mat-icon-button class="hover-item" matTooltip="Delete {{attachment.name}}" (click)="deleteAttachmentFor(attachment.name);"><mat-icon>clear</mat-icon></button>
+		  		{{attachment.name}}
+		  	</mat-grid-tile-header>
+		  	<img class="grid-img" alt="{{attachment.name}}" src="/uploads/{{attachment.thumb}}" />
+
+		  	<mat-grid-tile-footer>
+		  		<mat-expansion-panel>
+			      <mat-expansion-panel-header>
+			        Colors ({{order.canvasLayerColors[attachment.name].length}})
+			      </mat-expansion-panel-header>
+
+			      <ng-template matExpansionPanelContent>
+			        
+			        <mat-list role="list">
+			          <mat-list-item role="listitem" *ngFor="let color of order.canvasLayerColors[attachment.name]">
+			            <span class="color-tile" [style.background]="color">&nbsp;&nbsp;&nbsp;&nbsp;</span>
+			            {{color}}
+			            <button mat-icon-button (click)="deleteColorFor(attachment.name, color);" matTooltip="Remove {{color}}"><mat-icon>clear</mat-icon></button>
+			          </mat-list-item>
+			        </mat-list>
+
+			        <form>
+			          <mat-form-field>
+			            <input matInput #colorInput placeholder="Add Color" aria-label="Add Color" [matAutocomplete]="auto" [formControl]="colorCtrl" (keyup.enter)="addColorFor(attachment.name, $event.target.value)">
+			            <mat-autocomplete #auto="matAutocomplete" (optionSelected)="selectedColor(attachment.name, $event)">
+			              <mat-option *ngFor="let color of filteredColors | async" [value]="color.name">
+			                <span class="color-tile" [style.background]="color.css_val">&nbsp;&nbsp;&nbsp;&nbsp;</span>
+			                {{ color.name }}
+			              </mat-option>
+			            </mat-autocomplete>
+			          </mat-form-field>
+			        </form>
+
+			      </ng-template>
+			    </mat-expansion-panel>
+
+		  	</mat-grid-tile-footer>
+
+
+		  	
+		  	
+		  </mat-grid-tile>
+		</mat-grid-list>
+
+
+
+	<div id="history" class="no-quote">
+		<section class="sticky sticky-service">
+			<h3>History</h3>
+		</section>
+	 <mat-expansion-panel class="mat-elevation-z0">
+    <mat-expansion-panel-header>
+      {{historyLabel()}}
+    </mat-expansion-panel-header>
+    <dl>
+    	<div *ngFor="let item of order.history?.reverse() ">
+		  <dt>{{item.date | date:'short' }}</dt>
+		  <dd>
+		    {{item.title}} 
+				{{item.description}} 
+		  </dd>
+			</div>
+		</dl>
+  </mat-expansion-panel>
+	</div>
+
+	<mat-action-row>
+		<mat-select
+		  class="service-select hover-item" 
+			[(ngModel)]="selectedService" placeholder="Add Service">
+			<!-- [disabled]="serviceNeedsDisabled(item)" -->
+		  <mat-option *ngFor="let item of servicesList()" [value]="item" (click)="addOrderLineItem($event)">
+		    {{ item.name }}
+		  </mat-option>
+		</mat-select>
+
+    <span class="flexfill"></span>
+    <!-- [disabled]="needsSave" -->
+    <button mat-button (click)="saveOrder()" class="no-quote">
+  		<mat-icon>save</mat-icon>
+  		Save
+  	</button>
+
+  	<button mat-button (click)="submitOrder()" class="no-admin">
+  		<mat-icon>check</mat-icon>
+  		Submit
+  	</button>
+  	
+  </mat-action-row>
+  
+
+</div>

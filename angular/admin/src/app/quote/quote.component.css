@@ -1,0 +1,149 @@
+.wrapper{
+  /*min-width: 350px;
+  max-width: 90vw;*/
+  width: 450px;
+  padding: 0 1em;
+  margin-bottom: 1em;
+}
+
+#title{
+  display: flex;
+  justify-content: space-between;
+  position: sticky;
+  top: 63px;
+  background: #fafafa;
+  z-index: 2;
+}
+#actions{
+  display: flex;
+  position: sticky;
+  bottom: 0;
+  padding-bottom: 1em;
+  z-index: 1;
+  background: #fafafa;
+  width: 100%;
+}
+
+#content{
+  height: 100%;
+  display: flex;
+  margin-bottom: 2em;
+}
+
+mat-list{
+  width: 100%;
+}
+
+mat-chip-list{
+  margin-top: 5px;
+}
+
+/*mat-list-item{    
+  background-color: #eeeeee;
+  border-radius: 10px;
+}
+
+mat-list-item.right{
+  margin-left: 2em;
+}
+
+mat-list-item.left{
+  margin-right: 2em;
+}
+*/
+
+
+
+.bubble { 
+  flex: 1 1 auto; 
+  clear: both; } 
+.bubble {
+  border-radius: 5px;
+  padding: 8px; margin: 8px 12px;
+  max-width: 80%; 
+  position: relative; 
+  transition: all 0.5s; 
+}
+.left { 
+  background-color: #eee; 
+  float: left; 
+  border-top-left-radius: 0;
+}
+.right { 
+  background-color: #eee; 
+  float: right; 
+  text-align: right;
+  border-bottom-right-radius: 0;
+} 
+.right:hover{
+  background-color: #ccc
+}
+.left::before {
+  content: ''; position: absolute;
+  width: 0; height: 0; left: -10px; top: 0;
+  border-top: 0 solid transparent;
+  border-right: 10px solid #eee;
+  border-bottom: 12px solid transparent;
+}
+.right::after {
+  content: ''; position: absolute;
+  width: 0; height: 0; right: -10px; bottom: 0;
+  border-top: 12px solid transparent;
+  border-left: 10px solid #eee;
+  border-bottom: 0 solid transparent;
+}
+.right:hover::after {
+  border-left-color: #ccc;
+}
+
+small{
+  font-size: 10px;
+  display: block;
+}
+
+.fullwidth{
+  flex: 1;
+  width: 100%;
+}
+
+mat-grid-tile-header, mat-grid-tile-footer{
+  display: none!important;
+}
+mat-grid-tile:hover mat-grid-tile-header, mat-grid-tile:hover mat-grid-tile-footer{
+  display: flex!important;
+}
+mat-grid-list{
+  min-width: 200px;
+}
+mat-grid-tile{
+  min-height: 100px;
+  min-width: 100px;
+}
+
+.grid-img{
+  max-width: 100%;
+  max-height: 100%;
+}
+
+.sticky {
+  top: 104px;
+}
+
+@media (max-width: 599px) {
+  :host{
+    min-height: calc(100vh - 56px);
+  }
+  .mat-elevation-z4{
+    box-shadow: none;
+  }
+  #title{
+    top: 56px;
+  }
+  #content{
+    min-height: calc(100vh - 250px);
+  }
+  .wrapper{
+    width: 90vw;
+    margin-bottom: 0;
+  }
+}

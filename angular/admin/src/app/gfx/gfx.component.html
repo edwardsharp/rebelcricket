@@ -1,0 +1,297 @@
+<button id="open-nav-btn" mat-icon-button matTooltip="Show Navigation" *ngIf="toggleNav" (click)="toggleNav = false">
+  <mat-icon>menu</mat-icon>
+</button>
+<nav class="mat-elevation-z4" id="gfx" *ngIf="gfx && !toggleNav">
+
+  <!-- <mat-form-field hidden>
+    <input matInput placeholder="Name" shouldPlaceholderFloat="true" [(ngModel)]="gfx.name">
+  </mat-form-field> -->
+  <!-- <small *ngIf="gfx.created_at">created: {{gfx.created_at | date:'short'}}</small> -->
+  <div class="inline-flex space-between">
+    <button mat-icon-button matTooltip="Return to Order" *ngIf="gfx._id" (click)="router.navigate(['/dashboard/order/', gfx._id])">
+      <mat-icon>arrow_back</mat-icon>
+    </button>
+    <button mat-button matTooltip="Save" (click)="saveGfx()">
+      <mat-icon>save</mat-icon> Save
+    </button>
+    <button mat-icon-button matTooltip="Hide Navigation" (click)="toggleNav = true">
+      <mat-icon>clear</mat-icon>
+    </button>
+  </div>
+
+  <div class="flex">
+    <button mat-icon-button 
+      id="zoomReset" 
+      (click)="zoomReset()" 
+      matTooltip="Reset Zoom">
+      <mat-icon class="mat-24" aria-label="Reset Zoom">youtube_searched_for</mat-icon>
+    </button>
+
+    <mat-slider 
+      matTooltip="Zoom"
+      (input)="zoom($event)"
+      [color]="gray"
+      min="0.1" 
+      max="3" 
+      step="0.1"
+      [(ngModel)]="zoomVal"></mat-slider>
+    
+  </div>
+  
+  <!-- <mat-slide-toggle [color]="gray" [(ngModel)]="showRuler">Show Rulers</mat-slide-toggle> -->
+
+  <mat-menu #plateMenu="matMenu">
+    <mat-option (click)="plateChange('clear')">Clear</mat-option>
+    <mat-optgroup *ngFor="let group of plateGroups" [label]="group.name"
+                  [disabled]="group.disabled">
+      <mat-option *ngFor="let plateItem of group.plates" (click)="plateChange(plateItem)" [disabled]="plate == plateItem">
+        {{ plateItem.viewValue }}
+      </mat-option>
+    </mat-optgroup>
+  </mat-menu>
+  <div class="flex hover-item" [matMenuTriggerFor]="plateMenu">
+    <button mat-icon-button matTooltip="Template">
+      <mat-icon class="mat-24">flip_to_back</mat-icon>
+    </button>
+    <span *ngIf="gfx.plate; else plateElse">{{gfx.plate.viewValue}}</span>
+    <ng-template #plateElse>No Template</ng-template>
+  </div>
+
+  <div class="flex hover-item" matTooltip="File Upload" 
+      onclick="document.getElementById('designFile').click();">
+    <button mat-icon-button><mat-icon>file_upload</mat-icon></button>
+    <span>Upload Files</span>
+    <input id="designFile" type="file" multiple="multiple" style="display: none;" 
+      accept="image/x-png,image/gif,image/jpeg,image/svg+xml"
+      (change)="gfxFileChanged($event)" (disabled)="uploading" >
+  </div>
+
+  <div class="flex hover-item" matTooltip="Notes" (click)="openNotesDialog()">
+    <button mat-icon-button><mat-icon>add</mat-icon></button>
+    <span><span *ngIf="!gfx.notes">Add</span><span *ngIf="gfx.notes">Edit</span> Notes</span>
+  </div>
+
+  <div class="flex hover-item">
+    <mat-progress-bar mode="indeterminate" [hidden]="!uploading"></mat-progress-bar>
+    <span id="quoteDesignUploadFeedback" [hidden]="!gfxError">
+      ERROR! Could not upload that file. Please try again or choose a different file. If this form does not work for you please email your graphics to <a href="#">foobar@example.com</a>.
+    </span>
+  </div>
+
+  <mat-list *ngIf="!showLayerPanel">
+    <mat-list-item *ngFor="let item of attachmentItemsForGfx()" (click)="showLayerPanelFor(item);">
+      <img matListAvatar class="attachment-img" alt="{{item}}" [src]="sanitizer.bypassSecurityTrustUrl(attachmentSrcFor(gfx, item))" />
+      <span matLine title="{{item}}">{{item}}</span>
+      <p matLine>
+        <span *ngIf="gfx.attachmentDimensions[item]"> {{gfx.attachmentDimensions[item]}} </span>
+        <span class="demo-2">  </span>
+      </p>
+      <!-- <button mat-icon-button (click)="deleteAttachmentFor(item);"><mat-icon>delete</mat-icon></button> -->
+            <!-- <button mat-icon-button [matMenuTriggerFor]="layerMenu"><mat-icon>more_vert</mat-icon></button> -->
+    </mat-list-item>
+  </mat-list>
+
+  <div *ngIf="showLayerPanel">
+    <hr>
+    <div class="flex hover-item" (click)="hideLayerPanel();" matTooltip="Show All layers">
+      <button mat-icon-button><mat-icon>arrow_back</mat-icon></button>
+      All Layers  
+    </div>
+
+    <div *ngIf="isCanvasLayer(selectedLayer)">
+      <mat-menu #centerMenu="matMenu">
+        <button mat-menu-item [matMenuTriggerFor]="centerFrontMenu">Front</button>
+        <button mat-menu-item [matMenuTriggerFor]="centerBackMenu">Back</button>
+      </mat-menu>
+      <mat-menu #centerFrontMenu="matMenu">
+        <button mat-menu-item (click)="centerObject('frontTop')">
+          Top
+        </button>
+        <button mat-menu-item (click)="centerObject('frontCenter')">
+          Center
+        </button>
+      </mat-menu>
+      <mat-menu #centerBackMenu="matMenu">
+        <button mat-menu-item (click)="centerObject('backTop')">
+          Top
+        </button>
+        <button mat-menu-item (click)="centerObject('backCenter')">
+          Center
+        </button>
+      </mat-menu>
+      
+      <mat-menu #sendObjectMenu="matMenu">
+        <button mat-menu-item (click)="sendObject('front')">
+          <mat-icon>vertical_align_top</mat-icon>
+          Bring to Top
+        </button>
+        <button mat-menu-item (click)="sendObject('forward')">
+          <mat-icon>arrow_upward</mat-icon>
+          Bring Forward
+        </button>
+        <button mat-menu-item (click)="sendObject('backwards')">
+          <mat-icon>arrow_downward</mat-icon>
+          Send Backward
+        </button>
+        <button mat-menu-item (click)="sendObject('back')">
+          <mat-icon>vertical_align_bottom</mat-icon>
+          Send to Bottom
+        </button>
+      </mat-menu>
+      
+      <div class="flex space-evenly">
+        <button mat-icon-button matTooltip="Center" 
+          [matMenuTriggerFor]="centerMenu"
+          *ngIf="plateObj">
+          <mat-icon class="mat-24">vertical_align_center</mat-icon>
+        </button>
+        <button mat-icon-button (click)="rotateObject()" matTooltip="Rotate Layer">
+          <mat-icon>rotate_90_degrees_ccw</mat-icon>
+        </button>
+        <button mat-icon-button matTooltip="Layer Position" [matMenuTriggerFor]="sendObjectMenu">
+          <mat-icon class="mat-24">swap_vert</mat-icon>
+        </button>
+      </div>
+    </div>
+
+    <mat-expansion-panel *ngIf="initCanvasLayerColors(selectedLayer)">
+      <mat-expansion-panel-header>
+        Colors ({{gfx.canvasLayerColors[selectedLayer].length}})
+      </mat-expansion-panel-header>
+
+      <ng-template matExpansionPanelContent>
+        
+        <mat-list role="list">
+          <mat-list-item role="listitem" *ngFor="let color of gfx.canvasLayerColors[selectedLayer]">
+            <span [style.background]="color">&nbsp;&nbsp;&nbsp;&nbsp;</span>
+            {{color}}
+            <button mat-icon-button (click)="deleteColorFor(selectedLayer, color);" matTooltip="Delete Color"><mat-icon>delete</mat-icon></button>
+          </mat-list-item>
+        </mat-list>
+
+        <form>
+          <mat-form-field>
+            <input matInput placeholder="Add Color" aria-label="Add Color" [matAutocomplete]="auto" [formControl]="colorCtrl" (keyup.enter)="addColorFor(selectedLayer, $event.target.value)">
+            <mat-autocomplete #auto="matAutocomplete" (optionSelected)="selectedColor($event)">
+              <mat-option *ngFor="let color of filteredColors | async" [value]="color.name">
+                <span [style.background]="color.css_val">&nbsp;&nbsp;&nbsp;&nbsp;</span>
+                <span>{{ color.name }}</span>
+              </mat-option>
+            </mat-autocomplete>
+          </mat-form-field>
+        </form>
+
+      </ng-template>
+    </mat-expansion-panel>
+
+    <mat-nav-list>
+      <mat-list-item (click)="addLayerToCanvas(selectedLayer)" *ngIf="!isCanvasLayer(selectedLayer)">
+        <span>Show</span>
+        <mat-icon>add</mat-icon>
+      </mat-list-item>
+      <mat-list-item (click)="removeLayer(selectedLayer)" *ngIf="isCanvasLayer(selectedLayer)">
+        <span>Hide</span>
+        <mat-icon>clear</mat-icon>
+      </mat-list-item>
+
+      <mat-list-item (click)="deleteAttachmentFor(selectedLayer)">
+        <span>Delete</span>
+        <mat-icon>delete</mat-icon>
+      </mat-list-item>
+    </mat-nav-list>
+        
+    <div class="right">
+      <div>{{selectedLayer}}</div>
+      <div matTooltip="layer dimensions (height x width)" *ngIf="gfx.attachmentDimensions[selectedLayer]">
+        {{gfx.attachmentDimensions[selectedLayer]}}
+      </div>
+    </div>
+
+  </div>
+
+
+
+  <!-- #todo: add list of canvas layers -->
+
+  <!-- <div id="objectTools" [hidden]="objectToolsHidden">
+    <button mat-button class="custom" id="removeImage" on-tap="removeImageFromCanvas" raised>remove image</button>
+
+    <div class="controls">
+      <div>
+        <label><span>Grayscale:</span> <input type="checkbox" id="grayscale"></label>
+        <label><span>Invert:</span> <input type="checkbox" id="invert"></label>
+      </div>
+      <div>
+        <label><span>Sepia:</span> <input type="checkbox" id="sepia"></label>
+        <label><span>Sepia2:</span> <input type="checkbox" id="sepia2"></label>
+      </div>
+      <div>
+        <label><span>Remove white:</span> <input type="checkbox" id="remove-white"></label>
+        <br>
+        <label>Threshold: <input type="range" id="remove-white-threshold" value="60" min="0" max="255"></label>
+        <br>
+        <label>Distance: <input type="range" id="remove-white-distance" value="10" min="0" max="255"></label>
+      </div>
+      <div>
+        <label><span>Brightness:</span> <input type="checkbox" id="brightness"></label>
+        <br>
+        <label>Value: <input type="range" id="brightness-value" value="100" min="-255" max="255"></label>
+      </div>
+      <div>
+        <label><span>Contrast:</span> <input type="checkbox" id="contrast"></label>
+        <br>
+        <label>Value: <input type="range" id="contrast-value" value="0" min="-255" max="255"></label>
+      </div>
+      <div>
+        <label><span>Saturate:</span> <input type="checkbox" id="saturate"></label>
+        <br>
+        <label>Value: <input type="range" id="saturate-value" value="100" min="-100" max="100"></label>
+      </div>
+      <div>
+        <label><span>Noise:</span> <input type="checkbox" id="noise"></label>
+        <br>
+        <label>Value: <input type="range" id="noise-value" value="100" min="0" max="1000"></label>
+      </div>
+      <div>
+        <label><span>GradientTransparency:</span> <input type="checkbox" id="gradient-transparency"></label>
+        <br>
+        <label>Value: <input type="range" id="gradient-transparency-value" value="100" min="0" max="255"></label>
+      </div>
+      <div>
+        <label><span>Pixelate</span> <input type="checkbox" id="pixelate"></label>
+        <br>
+        <label>Value: <input type="range" id="pixelate-value" value="4" min="2" max="20"></label>
+      </div>
+      <div>
+        <label><span>Blur:</span> <input type="checkbox" id="blur"></label>
+        <label><span>Sharpen:</span> <input type="checkbox" id="sharpen"></label>
+        <label><span>Emboss:</span> <input type="checkbox" id="emboss"></label>
+      </div>
+      <div>
+        <label><span>Tint:</span> <input type="checkbox" id="tint"></label>
+        <input type="color" id="tint-color" value=""><br>
+        <label>Opacity: <input type="range" id="tint-opacity" min="0" max="1" value="1" step="0.1"></label><br>
+      </div>
+      <div>
+        <label><span>Multiply:</span> <input type="checkbox" id="multiply"></label>
+        <input type="color" id="multiply-color" value="">
+      </div>
+      <div>
+      <label><span>Blend:</span> <input type="checkbox" id="blend"></label>
+        <select id="blend-mode" name="blend-mode">
+          <option selected="" value="add">Add</option>
+          <option value="diff">Diff</option>
+          <option value="subtract">Subtract</option>
+          <option value="multiply">Multiply</option>
+          <option value="screen">Screen</option>
+          <option value="lighten">Lighten</option>
+          <option value="darken">Darken</option>
+        </select>
+        <input type="color" id="blend-color" value="#00f900">
+      </div>
+    </div>
+  </div> --> <!-- object-tools -->
+
+</nav>
+
+<canvas id="c"></canvas>

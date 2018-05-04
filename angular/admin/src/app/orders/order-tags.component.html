@@ -1,0 +1,30 @@
+<div class="tags-container">
+	<mat-chip-list matPrefix #chipList> <!-- class="mat-chip-list-stacked" aria-orientation="vertical" -->
+    <mat-chip *ngFor="let tag of tags" 
+    	[selectable]="selectable"
+      (click)="tagClick(tag)"
+      (blur)="chipBlur()"
+			[removable]="removable" 
+			(remove)="remove(tag)">
+	  	<mat-icon matChipRemove>cancel</mat-icon>
+      {{tag}}
+    </mat-chip>
+    <mat-chip (click)="addTag()" (blur)="chipBlur()">
+    	<mat-icon class="add-tag">add</mat-icon>
+    	Tag
+    </mat-chip>
+  </mat-chip-list>
+</div>
+<div>
+	<mat-form-field [hidden]="inputHidden" class="fullwidth">
+		<input #tagInput matInput
+			[placeholder]="selectedTag ? 'Edit Tag...' : 'New tag...'"
+			[(ngModel)]="selectedTag"
+			[matChipInputFor]="chipList"
+			[matChipInputSeparatorKeyCodes]="separatorKeysCodes"
+			[matChipInputAddOnBlur]="addOnBlur"
+			(focus)="focusInput()"
+			(blur)="blurInput()"
+			(matChipInputTokenEnd)="add($event)" />
+	</mat-form-field>
+</div>

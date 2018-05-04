@@ -1,0 +1,13 @@
+<h1 mat-dialog-title>Notes</h1>
+<div mat-dialog-content>
+	<p>Add any notes about your graphics.</p>
+  <mat-form-field>
+	  <textarea matInput placeholder="Notes" 
+	  	[(ngModel)]="data.notes"
+	  	matTextareaAutosize matAutosizeMinRows="2"></textarea>
+	</mat-form-field>
+</div>
+<div mat-dialog-actions>
+  <button mat-button (click)="onNoClick()">Cancel</button>
+  <button mat-button [mat-dialog-close]="data.notes" cdkFocusInitial>Done</button>
+</div>

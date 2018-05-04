@@ -1,0 +1,75 @@
+<div id="orders-container">
+  <div id="orders-content">
+
+    <div class="orders-table-container">
+      <!-- <span *ngIf="loading">
+        <i>loading orders...</i>
+      </span>  -->
+      <mat-table #table [dataSource]="dataSource" matSort class="mat-elevation-z4">
+
+        <!--- Note that these columns can be defined in any order.
+              The actual rendered columns are set as a property on the row definition" -->
+
+        <!-- ID/Created Column -->
+        <ng-container matColumnDef="orderId">
+          <mat-header-cell *matHeaderCellDef mat-sort-header matSortActive="true"> Created </mat-header-cell>
+          <mat-cell *matCellDef="let row" [ngClass]="{'sort-active' : sort.active == 'orderId'}"> {{createdAtDate(row._id) | date:'short' }} </mat-cell>
+        </ng-container>
+
+        <ng-container matColumnDef="orderStatus">
+          <mat-header-cell *matHeaderCellDef mat-sort-header> Status </mat-header-cell>
+          <mat-cell *matCellDef="let row" [ngClass]="{'sort-active' : sort.active == 'orderStatus'}"> {{row.status}} </mat-cell>
+        </ng-container>
+
+        <ng-container matColumnDef="dateNeeded">
+          <mat-header-cell *matHeaderCellDef mat-sort-header> Due </mat-header-cell>
+          <mat-cell *matCellDef="let row" [ngClass]="{'sort-active' : sort.active == 'dateNeeded'}"> {{row.date_needed | date:'MMM d'}} </mat-cell>
+        </ng-container>
+
+        <ng-container matColumnDef="orderName">
+          <mat-header-cell *matHeaderCellDef mat-sort-header> Name </mat-header-cell>
+          <mat-cell *matCellDef="let row" [ngClass]="{'sort-active' : sort.active == 'orderName'}"> {{row.name}} </mat-cell>
+        </ng-container>
+
+        <ng-container matColumnDef="orderEmail">
+          <mat-header-cell *matHeaderCellDef mat-sort-header> Email </mat-header-cell>
+          <mat-cell *matCellDef="let row" [ngClass]="{'sort-active' : sort.active == 'orderEmail'}"> {{row.email}} </mat-cell>
+        </ng-container>
+
+        <ng-container matColumnDef="orderOrg">
+          <mat-header-cell *matHeaderCellDef mat-sort-header> Org </mat-header-cell>
+          <mat-cell *matCellDef="let row" [ngClass]="{'sort-active' : sort.active == 'orderOrg'}"> {{row.org}} </mat-cell>
+        </ng-container>
+
+        <mat-header-row class="stickyTableHeader" *matHeaderRowDef="displayedColumns"></mat-header-row>
+
+        <mat-row 
+          *matRowDef="let row; columns: displayedColumns;" 
+          routerLink="/dashboard/order/{{row._id}}" 
+          class="row-hover"
+        ></mat-row>
+      </mat-table>
+
+      <div class="footer-sticky mat-elevation-z4">
+        <button mat-mini-fab color="accent" routerLink="/dashboard/order/new"
+          matTooltip="Create a New Order" matTooltipPosition="right" class="new-order-fab">
+          <mat-icon class="mat-24" 
+            aria-label="Create a New Order">add</mat-icon>
+        </button>
+       <!--  <span class="flexfill"></span>
+        <mat-slide-toggle matTooltip="Show Archived Orders" matTooltipPosition="above">
+          <span class="hide-narrow">Archived Orders</span>
+        </mat-slide-toggle> -->
+
+        <span class="flexfill"></span>
+        <mat-paginator #paginator
+          [length]="orderService.data.length"
+          [pageIndex]="0"
+          [pageSize]="50"
+          [pageSizeOptions]="[50, 100, 500]">
+        </mat-paginator>
+      </div>
+    </div>
+
+  </div>
+</div>

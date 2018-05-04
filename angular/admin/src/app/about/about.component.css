@@ -1,0 +1,31 @@
+#about{
+  width: 90vw;
+  margin: 2em auto;
+}
+#about-heading{
+  text-align: center;
+  border-bottom: thin solid black;
+  position: sticky;
+  top: 63px;
+  background-color: #fafafa;
+  z-index: 2;
+}
+
+.flex{
+  display: flex;
+}
+.detail{
+  width: 50%;
+}
+
+@media (max-width: 767px) {
+  #about-heading{
+    top: 56px;
+  }
+  .flex{
+    flex-direction: column;
+  }
+  .detail{
+    width: 100%;
+  }
+}

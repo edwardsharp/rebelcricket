@@ -1,0 +1,99 @@
+<div class="wrapper mat-elevation-z4">
+  <h2 id="title">Price Quote 
+    <mat-chip-list *ngIf="order && order.status != 'quote'"><mat-chip>{{orderStatusChip()}}</mat-chip></mat-chip-list>
+    <button mat-icon-button class="hover-item" matTooltip="{{convoForm ? 'Switch to form mode' : 'Switch to conversation mode'}}" (click)="convoForm = !convoForm"><mat-icon *ngIf="convoForm">chat</mat-icon><mat-icon *ngIf="!convoForm">format_list_bulleted</mat-icon></button>
+  </h2>
+
+  <app-order-detail *ngIf="!convoForm && order" [order]="order" [nointernal]="true" class="quote"></app-order-detail>
+
+  <div *ngIf="convoForm">
+    <div id="content">
+      <mat-list *ngIf="quote && quote.items">
+       <mat-list-item *ngFor="let item of quote.items" 
+        (click)="itemClicked(item)"
+        [class]="'bubble ' + item.pos" 
+        matTooltip="{{item.date | date:'short'}}">
+          <small>{{item.name}}</small>
+          {{item.text}}
+
+          <mat-grid-list *ngIf="item.pos == 'right' && item.attachments" cols="2" rowHeight="1:1" gutterSize="5px" rowHeight="150px">
+            <mat-grid-tile *ngFor="let att of item.attachments">
+              <mat-grid-tile-header>
+                <button mat-icon-button class="hover-item" matTooltip="Delete {{att.name}}" (click)="deleteAttachmentFor(item,att.name);"><mat-icon>clear</mat-icon></button>
+                
+              </mat-grid-tile-header>
+              <img class="grid-img" alt="{{att.name}}" src="/uploads/{{att.thumb}}" />
+             
+            </mat-grid-tile>
+          </mat-grid-list>
+        </mat-list-item>
+      </mat-list>
+    </div>
+    <div id="actions" *ngIf="quote && quote.items">
+      <mat-form-field [hidden]="formHidden" class="fullwidth">
+        
+        <mat-select *ngIf="!selectHidden" matInput [placeholder]="inputPlaceholder"
+          [(ngModel)]="selectedItem" (openedChange)="selectionChange($event)" [multiple]="selectMultiple" >
+          <mat-option>None</mat-option>
+          <mat-option *ngFor="let item of selectItems" [value]="item">
+            {{item.name}}
+          </mat-option>
+        </mat-select>
+
+        <span *ngIf="!datePickerHidden">
+          <input matInput [matDatepicker]="picker" [(ngModel)]="inputValue" [placeholder]="inputPlaceholder" (dateChange)="dateChange($event)" readonly="true">
+          <mat-datepicker-toggle [for]="picker"></mat-datepicker-toggle>
+          <mat-datepicker touchUi="true" #picker></mat-datepicker>
+          <button mat-button (click)="skip()"
+              matTooltip="You don't need this by a certin date.">
+            Nope
+          </button>
+        </span>
+
+        <input matInput
+          #inputEl
+          [hidden]="inputHidden"
+          [placeholder]="inputPlaceholder"
+          [formControl]="inputFormControl"
+          [(ngModel)]="inputValue"
+          (keyup.enter)="inputEnter()"
+          (change)="quoteChange()"
+          [type]="inputType" 
+        />
+        <mat-error *ngIf="inputHasErrors">
+          {{inputErrorMsg}}
+        </mat-error>
+        <mat-hint align="start">{{inputHintStart}}</mat-hint>
+        <mat-hint align="end">{{inputHintEnd}}</mat-hint>
+
+      </mat-form-field>
+
+      <span *ngIf="!removeServiceHidden">
+        <button mat-button (click)="removeService(currentItem)">Remove Service {{currentItem.service}}</button>
+        <button mat-button (click)="cancelRemoveService()">Cancel</button>
+      </span>
+
+      <span *ngIf="!gfxHidden" class="fullwidth">
+        <button mat-button (click)="uploadFile()" [disabled]="gfxFileUploading" 
+            matTooltip="Upload: ai, eps, pdf, psd, svg, jpeg, or tiff sized at 300 dpi.">
+          <mat-icon>add</mat-icon> Files
+        </button>
+        <button mat-button (click)="skip()" [disabled]="gfxFileUploading" 
+            matTooltip="Nothing to upload? Skip!">
+          Skip
+        </button>
+        <input #gfxFile id="gfxFile" hidden type="file" multiple="multiple" (change)="gfxFileChanged($event)" (disabled)="gfxFileUploading" />
+        <mat-progress-bar mode="indeterminate" [hidden]="!gfxFileUploading"></mat-progress-bar>
+      </span>
+
+      <button mat-button (click)="addAnotherService()" [hidden]="!quote.doneAsking">
+        <mat-icon>add</mat-icon> Service
+      </button>
+
+      <button mat-button (click)="submitOrder()" [hidden]="!quote.doneAsking">
+        <mat-icon>check</mat-icon> Submit
+      </button>
+
+    </div>
+  </div>
+</div>

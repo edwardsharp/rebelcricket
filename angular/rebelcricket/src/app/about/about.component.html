@@ -1,0 +1,12 @@
+<div *ngIf="settings" id="about">
+  <h1 *ngIf="settings.about_page_heading" id="about-heading">
+  {{settings.about_page_heading}}
+  </h1>
+
+  <div class="flex">
+    <div *ngFor="let item of settings.about_page_items" class="detail">
+      <h2 *ngIf="item.heading.length > 0">{{item.heading}}</h2>
+      <p *ngFor="let s of item.detail.split('\\n')">{{s | replaceNewline}}</p>
+    </div>
+  </div>
+</div>

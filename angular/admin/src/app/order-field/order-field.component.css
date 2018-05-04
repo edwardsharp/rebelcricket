@@ -1,0 +1,9 @@
+.no-marg{
+  margin: 0;
+}
+
+@media (max-width: 599px) {
+  mat-form-field{
+    width: 85%;
+  }
+}

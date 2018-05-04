@@ -1,0 +1,48 @@
+<div id="services-wrapper">
+  <div *ngIf="!service && settings" id="services">
+    <h1 *ngIf="settings.service_heading && settings.service_heading.length > 0" class="services-heading">
+      {{settings.service_heading}}
+    </h1>
+    <mat-grid-list cols="{{gridCols}}" rowHeight="1:1" gutterSize="1em">
+      <mat-grid-tile *ngFor="let serviceItem of publicServices()" (click)="serviceSelected(serviceItem)">
+        <mat-grid-tile-header>
+          <h1>{{serviceItem.name}}</h1>
+        </mat-grid-tile-header>
+        <img  *ngIf="serviceItem.image && serviceItem.image.length > 0" class="grid-img" alt="Service Image" [src]="serviceImageAttachmentSrc(serviceItem)" />
+      </mat-grid-tile>
+    </mat-grid-list>
+  </div>
+
+  <div *ngIf="service">
+    <div class="services-heading" (click)="service = undefined">
+      <button mat-icon-button class="back-btn"><mat-icon>arrow_back</mat-icon></button>
+      <h1 class="service-name">{{service.name}}</h1>
+    </div>
+    <div class="grid">
+      <div *ngIf="service.detail_images; else noDetailImages" class="grid-l">
+        <ngx-carousel class="carousel" [inputs]="serviceImages">
+          <ngx-tile NgxCarouselItem *ngFor="let tile of serviceImageItems">
+            <div class="tile" [style.background-image]="tile">
+                <!-- <h1>{{i}}</h1> -->
+            </div>
+          </ngx-tile>
+          <button NgxCarouselPrev hidden><mat-icon>keyboard_arrow_left</mat-icon></button>
+          <button NgxCarouselNext hidden><mat-icon>keyboard_arrow_right</mat-icon></button>
+        </ngx-carousel>
+      </div>
+      <ng-template #noDetailImages>
+        <div class="grid-l">
+          <img  *ngIf="service.image && service.image.length > 0" class="service-img" alt="Service Image" [src]="serviceImageAttachmentSrc(service)" />
+        </div>
+      </ng-template>
+
+      <div class="grid-r">
+        <div *ngFor="let item of service.detail_items">
+          <h2 *ngIf="item.heading">{{item.heading}}</h2>
+          <p *ngFor="let s of item.detail.split('\\n')">{{s | replaceNewline}}</p>
+        </div>
+
+      </div>
+    </div>
+  </div>
+</div>
