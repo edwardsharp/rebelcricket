@@ -19,10 +19,6 @@ mat-form-field{
 	min-width: 49%;
 }
 
-mat-form-field.with-button{
-	width: 88%;
-}
-
 mat-chip{
   text-overflow: ellipsis;
   max-width: 200px;

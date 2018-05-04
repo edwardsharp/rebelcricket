@@ -421,43 +421,6 @@ export class OrderDetailComponent implements OnInit, OnDestroy  {
     _t += this.order.org ? ` (${this.order.org})` : ''; 
     this.appTitleService.setTitle(_t);
   }
-  
-  getOrderRevs(): void {
-    this.orderService.getOrderRevs(this.order._id).then(history => {
-      try{
-        console.log('getOrderRevs() revisions:',history["0"].ok._revisions.ids);
-        this.revisionIds = history["0"].ok._revisions.ids;
-
-        this.getOrderHistory(this.revisionIds);
-       
-        this.getRevsDiff(this.revisionIds[this.revisionIds.length -1], this.revisionIds[this.revisionIds.length -2]);
-
-      }catch(e){
-        // eh.
-      }
-      
-    });
-  }
-
-  getOrderHistory(revision_ids:Array<string>): void {
-    console.log('getOrderHistory for revision_ids:',revision_ids);
-    this.orderService.getOrderHistory(this.order._id, revision_ids).then(function(response) {
-      console.log('getOrderHistory() response:',response);
-    });
-
-  }
-
-  getRevsDiff(revA:string, revB:string): void {
-    console.log('getRevsDiff for revision_ids:', revA, revB);
-    this.orderService.getRevsDiff(this.order._id, revA, revB).then(function(response) {
-      console.log('getRevsDiff() response:',response);
-    });
-
-  }
-
-  historyLabel(): string {
-    return `History (${this.order.history && this.order.history.length ? this.order.history.length : 0})`;
-  }
 
   addOrderLineItem(event): void {
     console.log('addOrderLineItem event:',event);

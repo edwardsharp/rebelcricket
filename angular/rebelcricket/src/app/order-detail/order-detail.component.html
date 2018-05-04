@@ -18,12 +18,12 @@
 		  </mat-form-field>
 		</div>
 		<div>
-			<mat-form-field class="with-button">
+			<mat-form-field class="fullwidth">
 		    <input matInput [(ngModel)]="order.email" [formControl]="email" (change)="onChange($event)" placeholder="email" type="email" required>
 		    <mat-error *ngIf="email.invalid">{{getEmailErrorMessage()}}</mat-error>
 		  </mat-form-field>
 
-		  <mat-form-field class="with-button">
+		  <mat-form-field class="fullwidth">
 		    <input matInput [(ngModel)]="order.phone" (change)="onChange($event)" placeholder="phone" type="number" pattern="[0-9]*">
 		  </mat-form-field>
 		  
@@ -273,7 +273,7 @@
 
   	<button mat-button (click)="submitOrder()" class="no-admin">
   		<mat-icon>check</mat-icon>
-  		Submit
+  		Submit &nbsp; &nbsp;
   	</button>
   	
   </mat-action-row>

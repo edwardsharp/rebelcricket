@@ -22,7 +22,6 @@ import { OrderField, OrderFieldType } from '../orders/order';
 })
 export class QuoteComponent implements OnInit {
 
-  convoForm: boolean;
   @ViewChild('content') content: ElementRef;
   @ViewChild('inputEl') inputEl: ElementRef;
   @ViewChild('gfxFile') gfxFile:ElementRef;
@@ -93,8 +92,6 @@ export class QuoteComponent implements OnInit {
     this.quoteChangeSubject.debounceTime(1500).subscribe(value => {
       this.saveQuote();
     });
-      
-    this.convoForm = true;
 
     this.formHidden = false;
     this.selectHidden = true;
@@ -109,7 +106,6 @@ export class QuoteComponent implements OnInit {
 
   ngOnDestroy(){
     this.beforeUnload();
-    this.orderService.cancelReplication();
   }
 
   beforeUnload(){
@@ -126,6 +122,7 @@ export class QuoteComponent implements OnInit {
   initQuote(){
 
     this.order.status = 'quote';
+    this.order.convoForm = true;
 
     this.settingsService.getSettings().then( (settings:Settings) => {
       this.settings = settings;
@@ -257,7 +254,9 @@ export class QuoteComponent implements OnInit {
       this.order.notes = notes.map( n => {return n.text}).join('  ');
     }
     quote_items.forEach( item => {
-      if(item.name == "Name"){
+      if(item.text == ''){
+        //hmm.
+      }else if(item.name == "Name"){
         this.order.name = item.text;
       }else if(item.name == "Email"){
         this.order.email = item.text;

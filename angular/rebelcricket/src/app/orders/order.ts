@@ -39,7 +39,8 @@ export class Order {
   canvasDataImg?: any;
 
   quote?: Quote;
-
+  convoForm?: boolean;
+  
   constructor() { 
     this._id = this._id || Math.floor(Date.now()).toString(36); 
     this.created_at = new Date(parseInt(this._id, 36));

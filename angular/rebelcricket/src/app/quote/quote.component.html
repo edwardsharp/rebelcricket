@@ -1,12 +1,12 @@
-<div class="wrapper mat-elevation-z4">
+<div class="wrapper mat-elevation-z4" *ngIf="order">
   <h2 id="title">Price Quote 
     <mat-chip-list *ngIf="order && order.status != 'quote'"><mat-chip>{{orderStatusChip()}}</mat-chip></mat-chip-list>
-    <button mat-icon-button class="hover-item" matTooltip="{{convoForm ? 'Switch to form mode' : 'Switch to conversation mode'}}" (click)="convoForm = !convoForm"><mat-icon *ngIf="convoForm">chat</mat-icon><mat-icon *ngIf="!convoForm">format_list_bulleted</mat-icon></button>
+    <button mat-icon-button class="hover-item" matTooltip="{{order.convoForm ? 'Switch to form mode' : 'Switch to conversation mode'}}" (click)="order.convoForm = !order.convoForm"><mat-icon *ngIf="order.convoForm">chat</mat-icon><mat-icon *ngIf="!order.convoForm">format_list_bulleted</mat-icon></button>
   </h2>
 
-  <app-order-detail *ngIf="!convoForm && order" [order]="order" [nointernal]="true" class="quote"></app-order-detail>
+  <app-order-detail *ngIf="!order.convoForm && order" [order]="order" [nointernal]="true" class="quote"></app-order-detail>
 
-  <div *ngIf="convoForm">
+  <div *ngIf="order.convoForm">
     <div id="content">
       <mat-list *ngIf="quote && quote.items">
        <mat-list-item *ngFor="let item of quote.items" 
@@ -91,7 +91,7 @@
       </button>
 
       <button mat-button (click)="submitOrder()" [hidden]="!quote.doneAsking">
-        <mat-icon>check</mat-icon> Submit
+        <mat-icon>check</mat-icon> Submit &nbsp;
       </button>
 
     </div>

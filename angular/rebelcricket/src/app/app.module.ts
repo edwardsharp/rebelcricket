@@ -80,9 +80,10 @@ const appRoutes: Routes = [
     path: 'vendor_goods/:catalog',
     component: VendorGoodsComponent,
     data: { order_id: 'order_id', line_item_id: 'line_item_id' }
+  },
+  { path: '**', 
+    redirectTo: '/' 
   }
-  // ,
-  // { path: '**', component: PageNotFoundComponent }
 ];
 
 @NgModule({
