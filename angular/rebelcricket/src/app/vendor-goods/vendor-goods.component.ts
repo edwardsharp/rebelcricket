@@ -8,7 +8,6 @@ import { VendorGoodsService } from './vendor-goods.service';
 import { VendorGoodsDialogComponent } from './vendor-goods-dialog.component';
 import { Order } from '../orders/order';
 import { OrderService } from '../orders/order.service';
-import { AuthService } from '../auth/auth.service';
 
 @Component({
   selector: 'app-vendor-goods',
@@ -31,8 +30,8 @@ export class VendorGoodsComponent implements OnInit {
     private route: ActivatedRoute,
     private router: Router,
     private orderService: OrderService,
-    private snackBar: MatSnackBar,
-    private authService: AuthService ) { }
+    private snackBar: MatSnackBar
+  ) { }
 	
 	ngOnInit(): void {
     this.getVendorGoods();
@@ -151,11 +150,7 @@ export class VendorGoodsComponent implements OnInit {
         
         this.orderService.saveOrder(this.order).then(resp => {
           if(result.return_to_order){
-            if(this.authService.isAdmin){
-              this.router.navigate(['/dashboard/order/', this.order._id]);
-            }else{
-              this.router.navigate(['/quote/', this.order._id]);
-            }
+            this.router.navigate(['/quote/', this.order._id]);
           }
         }, err =>{
           this.snackBar.open('Error: Could not add items to order!', '', {

@@ -1,6 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute, Router, ParamMap } from '@angular/router';
 import { Observable } from 'rxjs/Observable';
+import 'rxjs/add/observable/fromEvent';
 import { DomSanitizer } from '@angular/platform-browser';
 import { NgxCarousel, NgxCarouselStore } from 'ngx-carousel';
 

@@ -7,7 +7,6 @@ import { Subscription } from 'rxjs/Subscription';
 
 import { Order } from './order';
 import { environment } from '../../environments/environment';
-import { AuthService } from '../auth/auth.service';
 
 declare var PouchDB:any;
 
@@ -29,7 +28,7 @@ export class OrderService {
   isAdminSubscription: Subscription;
   replication: any;
 
-  constructor(private http: HttpClient, private authService: AuthService) {
+  constructor(private http: HttpClient) {
     if(navigator.vendor && navigator.vendor.indexOf('Apple') > -1){
       console.log("LOADING FRUITDONW DB!");
       this.db = new PouchDB('orders', {adapter: 'fruitdown'});
@@ -39,94 +38,53 @@ export class OrderService {
     
     // PouchDB.plugin(require('pouchdb-find'));
 
-    this.db.createIndex({
-      index: {
-        fields: ['_id','name']
-      }
-    }).then(result => {
-      //console.log('index created! result',result);
-    }).catch(err => {
-      console.log('o noz! this.db.createIndex err:',err);
-    });
+    // this.db.createIndex({
+    //   index: {
+    //     fields: ['_id','name']
+    //   }
+    // }).then(result => {
+    //   //console.log('index created! result',result);
+    // }).catch(err => {
+    //   console.log('o noz! this.db.createIndex err:',err);
+    // });
 
-    this.changes = this.db.changes({
-      since: 'now',
-      live: true,
-      include_docs: true
-    }).on('change', change => {
-      if(parseInt(change.doc["_id"], 36)){
-        this.docChanged(change.doc);
-      }
-    }).on('error', function (err) {
-      console.log('[order.service] changes error!',err);
-    });
+    // this.changes = this.db.changes({
+    //   since: 'now',
+    //   live: true,
+    //   include_docs: true
+    // }).on('change', change => {
+    //   if(parseInt(change.doc["_id"], 36)){
+    //     this.docChanged(change.doc);
+    //   }
+    // }).on('error', function (err) {
+    //   console.log('[order.service] changes error!',err);
+    // });
 
     // this.changes.cancel(); // whenever you want to cancel
 
-    this.isAdminSubscription = this.authService.adminObservable().subscribe( (isAdmin:boolean) => {
-      if(isAdmin){
-        console.log('[order.service] isAdmin! gonna SYNC from remote db!');
-        // do one way, one-off sync from the server until completion
-        
-        this.db.sync(`${environment.couch_host}/orders`, { live: true, retry: true })
-          .on('change', change => {
-            console.log('[order.service] sync change!',change);
-            // if(change.doc["_id"]){
-            //   this.docChanged(change.doc);
-            // }
-          })
-          .on('error', function (err) {
-            console.log('[order.service] sync error!',err);
-          });
-        // this.db.replicate.from(`${environment.couch_host}/orders`).on('complete', function(info) {
-        //   // then two-way, continuous, retriable sync
-        //   console.log('[order.service] gonna try to replicate.to:',`${environment.couch_host}/orders`);
-        //   this.db.replicate.to(`${environment.couch_host}/orders`, { live: true, retry: true })
-        //     .on('change', change => {
-        //       console.log('sync replicate.to change!',change);
-        //       // if(change.doc["_id"]){
-        //       //   this.docChanged(change.doc);
-        //       // }
-        //     })
-        //     .on('error', function (err) {
-        //       console.log('[order.service] replicate.to error!',err);
-        //     });
-        // }).on('error', function (err) {
-        //   console.log('[order.service] replicate.from error!',err);
-        // });
-      }
-    })
-
-    this.remoteDBSubscription = this.authService.remoteDBObservable().subscribe( (remoteDB:string) => {
-      console.log('orders remoteDBSubscription remoteDB:',remoteDB);
-      if(this.remoteDB != remoteDB || !this.isReplicating){
-        this.remoteDB = remoteDB;
-        this.replicate(remoteDB);
-      }
-    });
   }
 
-  onSyncError(err){
-    console.log('orders sync error! err:',err);
-  }
-  docChanged(doc){
-    const copiedData = this.data.slice();
-    const order = doc as Order;
+  // onSyncError(err){
+  //   console.log('orders sync error! err:',err);
+  // }
+  // docChanged(doc){
+  //   const copiedData = this.data.slice();
+  //   const order = doc as Order;
 
-    const idx = copiedData.indexOf(copiedData.find(d=> d._id == doc._id));
-    if(doc["_deleted"]){
-      console.log('ORDER CHANGE: SPLICING DELETE idx:',idx,' order:',order);
-      copiedData.splice(idx, 1);
-    }else if(idx > -1){
-      console.log('ORDER CHANGE: SPLICING UPDATE! idx:',idx,' order:',order);
-      copiedData.splice(idx, 1, order);
-    }else{
-      console.log('ORDER CHANGE: PUSHING! idx:',idx,' order:',order);
-      copiedData.push(order);
-    }
-    console.log('pushing dataChange.next... setTimeout copiedData:',copiedData);
-    this.dataChange.next(copiedData);
-  }
+  //   const idx = copiedData.indexOf(copiedData.find(d=> d._id == doc._id));
+  //   if(doc["_deleted"]){
+  //     console.log('ORDER CHANGE: SPLICING DELETE idx:',idx,' order:',order);
+  //     copiedData.splice(idx, 1);
+  //   }else if(idx > -1){
+  //     console.log('ORDER CHANGE: SPLICING UPDATE! idx:',idx,' order:',order);
+  //     copiedData.splice(idx, 1, order);
+  //   }else{
+  //     console.log('ORDER CHANGE: PUSHING! idx:',idx,' order:',order);
+  //     copiedData.push(order);
+  //   }
+  //   console.log('pushing dataChange.next... setTimeout copiedData:',copiedData);
+  //   this.dataChange.next(copiedData);
+  // }
                      // : Promise<any>   ??
   saveOrder(order:Order){
 
@@ -134,24 +92,12 @@ export class OrderService {
   }
 
   saveQuote(order:Order){
-    if(  order 
-      && order.name && order.name != ''
-      && order.email && order.email != '' 
-    ){
-      //ready to replicate!
-      if(!this.isReplicating){
-        console.log('saveOrder gonna getRemoteDB (not currently replicating)');
-        this.authService.getRemoteDB();
-      }
-      if(  (order.auth_user == undefined || order.auth_user == '') 
-        && (order.auth_key == undefined || order.auth_key == '')
-        && this.authService.user && this.authService.authKey
-      ){
-        console.log('gonna add auth_user && auth_key to order!');
-        order.auth_user = this.authService.user;
-        order.auth_key = this.authService.authKey;
-      }
-    }
+    // if(  order 
+    //   && order.name && order.name != ''
+    //   && order.email && order.email != '' 
+    // ){
+      
+    // }
     return this.db.put(order);
   }
 

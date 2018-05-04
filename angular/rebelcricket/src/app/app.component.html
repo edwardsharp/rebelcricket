@@ -14,30 +14,6 @@
     Price Quote
   </button>
 
-  <app-search-box class="search-container" #searchBox (onSearch)="doSearch($event)" (onFocus)="doSearch($event)" [hidden]="searchHidden"></app-search-box>
-
-  <button mat-icon-button [matMenuTriggerFor]="menu">
-    <mat-icon class="example-icon">more_vert</mat-icon>
-  </button>
-  <mat-menu #menu="matMenu">
-
-    <button mat-menu-item routerLink="/dashboard">
-      <mat-icon>dashboard</mat-icon>
-      <span>Dashboard</span>
-    </button>
-
-    <button *ngIf="environment.admin_party" mat-menu-item>
-      <span style="margin-left:0.5em;margin-right:1em;">🎉 </span> 
-      <span>Admin Party!</span>
-    </button>
-    
-    <button *ngIf="environment.admin_party" mat-menu-item>
-      <mat-icon>favorite_border</mat-icon>
-      <span>madewithlove in nyc</span>
-    </button>
-
-  </mat-menu>
-
 </mat-toolbar>
 
 <mat-sidenav-container class="dashboard-container">

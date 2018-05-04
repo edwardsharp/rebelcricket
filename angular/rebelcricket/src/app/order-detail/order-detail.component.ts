@@ -4,6 +4,7 @@ import { DomSanitizer } from '@angular/platform-browser';
 import { Observable } from 'rxjs/Observable';
 // import 'rxjs/add/operator/map';
 import 'rxjs/add/operator/switchMap';
+import 'rxjs/add/observable/fromEvent';
 import {startWith} from 'rxjs/operators/startWith';
 import {map} from 'rxjs/operators/map';
 import {MatChipInputEvent, MatSnackBar, MatAutocompleteSelectedEvent, MatAutocompleteTrigger} from '@angular/material';

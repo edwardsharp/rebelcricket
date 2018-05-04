@@ -14,7 +14,6 @@ import { OrderService } from '../orders/order.service';
 import { SettingsService } from '../settings/settings.service';
 import { Settings, Service } from '../settings/settings';
 import { OrderField, OrderFieldType } from '../orders/order';
-import { AuthService } from '../auth/auth.service';
 
 @Component({
   selector: 'app-quote',
@@ -63,7 +62,6 @@ export class QuoteComponent implements OnInit {
 
   constructor( 
     private settingsService: SettingsService, 
-    private authService: AuthService,
     private route: ActivatedRoute, 
     private orderService: OrderService,
     private location: Location,
@@ -107,8 +105,6 @@ export class QuoteComponent implements OnInit {
     this.inputFormControl = new FormControl;
     this.inputFormControl.disable();
     this.inputType = 'text';
-
-    this.authService.getRemoteDB();
   }
 
   ngOnDestroy(){

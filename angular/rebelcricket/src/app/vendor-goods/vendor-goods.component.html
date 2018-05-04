@@ -3,9 +3,9 @@
 
   <a mat-button
     *ngIf="order && order._id"
-    routerLink="/dashboard/order/{{order._id}}">
+    routerLink="/quote/{{order._id}}">
     <mat-icon>arrow_back</mat-icon>
-    <span>Back to Order</span>
+    <span>Back to Quote</span>
   </a>
 
   <button class="vendorGoodsCategories" mat-button [matMenuTriggerFor]="vendorGoodsCategoriesMenu">

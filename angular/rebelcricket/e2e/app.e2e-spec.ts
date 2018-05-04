@@ -1,6 +1,6 @@
 import { AppPage } from './app.po';
 
-describe('sched_admin App', () => {
+describe('rebelcricket App', () => {
   let page: AppPage;
 
   beforeEach(() => {
