@@ -19,7 +19,7 @@ RUN mkdir /opt/couch_ws \
 
 VOLUME /opt/sched_admin/uploads
 
-COPY uploads/default-image-square.jpg /opt/sched_admin/uploads/default-image-square.jpg
+COPY default-image-square.jpg /opt/sched_admin/uploads/default-image-square.jpg
 
 RUN chown -R couchdb /opt/sched_admin/uploads
 
