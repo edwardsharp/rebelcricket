@@ -7,11 +7,13 @@ mat-list-item:hover {
   min-height: calc(100vh - 64px);
 }
 
-.dashboard-sidenav-content {
+.main-content {
   display: flex;
   /*overflow-y: scroll;*/
   align-items: flex-start;
   justify-content: center;
+  background-color: #fafafa;
+  min-height: 100vh;
 }
 
 .dashboard-sidenav {
@@ -25,15 +27,9 @@ mat-toolbar {
 	z-index: 2;
 }
 
-.price-quote{
-  border: thin solid white;
-  border-radius: 999px;
-  margin-right: 1em;
-}
-.price-quote:hover{
-  background: white;
-  color: black;
-  border: none;
+.title{
+  color: white;
+  text-decoration: none;
 }
 
 @media (max-width: 767px) {

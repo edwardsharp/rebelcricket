@@ -1,6 +1,6 @@
 import { ServiceWorkerModule } from '@angular/service-worker';
 import { environment } from '../environments/environment';
-import { BrowserModule, Title } from '@angular/platform-browser';
+import { BrowserModule } from '@angular/platform-browser';
 import { NgModule } from '@angular/core';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { RouterModule, Routes }   from '@angular/router';
@@ -15,12 +15,10 @@ import { AppMaterialModule } from './app-material.module';
 import { OrderService } from './orders/order.service';
 import { VendorGoodsService } from './vendor-goods/vendor-goods.service';
 import { AppComponent } from './app.component';
-import { SidebarComponent } from './sidebar/sidebar.component';
 import { OrderDetailComponent } from './order-detail/order-detail.component';
 import { VendorGoodsComponent } from './vendor-goods/vendor-goods.component';
 import { VendorGoodsDialogComponent } from './vendor-goods/vendor-goods-dialog.component';
 import { SettingsService } from './settings/settings.service';
-import { AppTitleService } from './app-title.service';
 
 
 import { 
@@ -89,7 +87,6 @@ const appRoutes: Routes = [
 @NgModule({
   declarations: [
     AppComponent,
-    SidebarComponent,
     OrderDetailComponent,
     VendorGoodsComponent,
     VendorGoodsDialogComponent,
@@ -127,9 +124,7 @@ const appRoutes: Routes = [
   providers: [
     OrderService, 
     VendorGoodsService,  
-    SettingsService, 
-    Title, 
-    AppTitleService
+    SettingsService
   ],
   bootstrap: [AppComponent]
 })

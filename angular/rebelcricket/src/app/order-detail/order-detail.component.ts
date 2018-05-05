@@ -16,7 +16,6 @@ import { Order, LineItem, OrderField, OrderFieldType, Attachments } from '../ord
 import { OrderService } from '../orders/order.service';
 import { SettingsService } from '../settings/settings.service';
 import { Settings, Service } from '../settings/settings';
-import { AppTitleService } from '../app-title.service';
 import { Color, COLORS } from '../gfx/color';
 
 import * as _ from 'underscore';
@@ -74,7 +73,6 @@ export class OrderDetailComponent implements OnInit, OnDestroy  {
     private settingsService: SettingsService,
     private sanitizer: DomSanitizer,
     private snackBar: MatSnackBar,
-    private appTitleService: AppTitleService,
     private location: Location,
     private httpClient: HttpClient
   ) { 
@@ -117,7 +115,6 @@ export class OrderDetailComponent implements OnInit, OnDestroy  {
               this.order.attachmentDimensions = {};
             }
             this.origOrder = JSON.parse(JSON.stringify(order));
-            this.setTitle();
             // this.checkAllServicesNeedHidden();
           }else if(order._id){
             this.order = order;
@@ -140,7 +137,6 @@ export class OrderDetailComponent implements OnInit, OnDestroy  {
 
   ngOnDestroy() {
     // this.orderSub.unsubscribe();
-    this.appTitleService.resetTitle();
   }
 
   setGridCols(){
@@ -194,7 +190,6 @@ export class OrderDetailComponent implements OnInit, OnDestroy  {
     // console.log('SAVE ORDER DIFF:',);
     console.log('SAVE ORDER orig and now:',this.origOrder, this.order);
     
-    this.setTitle();
     // console.log('gonna save this.order:',this.order);
     this.orderService.saveOrder(this.order).then(resp => {
       // console.log('zomg, resp:',resp);
@@ -413,13 +408,6 @@ export class OrderDetailComponent implements OnInit, OnDestroy  {
 
   selectedColor(name: string, event: MatAutocompleteSelectedEvent) {
     this.addColorFor(name, event.option.value);
-  }
-
-  setTitle(): void {
-    let _t = '';
-    _t += this.order.name;
-    _t += this.order.org ? ` (${this.order.org})` : ''; 
-    this.appTitleService.setTitle(_t);
   }
 
   addOrderLineItem(event): void {

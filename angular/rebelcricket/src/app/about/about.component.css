@@ -6,7 +6,7 @@
   text-align: center;
   border-bottom: thin solid black;
   position: sticky;
-  top: 63px;
+  top: 0;
   background-color: #fafafa;
   z-index: 2;
 }
@@ -16,16 +16,15 @@
 }
 .detail{
   width: 50%;
+  margin: 0 2em;
 }
 
 @media (max-width: 767px) {
-  #about-heading{
-    top: 56px;
-  }
   .flex{
     flex-direction: column;
   }
   .detail{
     width: 100%;
+    margin: 0;
   }
 }
