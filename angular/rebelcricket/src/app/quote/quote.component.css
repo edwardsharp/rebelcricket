@@ -136,9 +136,6 @@ mat-grid-tile{
   .mat-elevation-z4{
     box-shadow: none;
   }
-  #title{
-    top: 56px;
-  }
   #content{
     min-height: calc(100vh - 250px);
   }

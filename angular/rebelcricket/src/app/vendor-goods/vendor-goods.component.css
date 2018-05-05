@@ -32,7 +32,7 @@
 mat-toolbar {
 	margin-top: 1em;
 	position: sticky;
-	top: 56px;
+	top: 0;
 	z-index: 2;
 }
 .truncate {
@@ -71,9 +71,6 @@ mat-list-item:hover{
 	 	width: 100vw;
 	}
 
-	#vendorGoodsIndexNarrow {
-		top: 56px;
-	}
 
 	.sticky{
 		top: 106px;

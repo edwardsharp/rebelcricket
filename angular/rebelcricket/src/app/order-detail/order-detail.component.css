@@ -210,7 +210,7 @@ section h3{
 }
 
 :host(.quote) .sticky-service{
-	top: 56px;
+	top: 0;
 }
 
 
@@ -236,7 +236,7 @@ section h3{
 		padding: 0 0.5em;
 	}
 	.sticky-service{
-		top: 56px;
+		top: 0;
 	}
 	#new-attachment{
 		max-width: 100%;
@@ -260,7 +260,7 @@ section h3{
 	}
 
 	:host(.quote) .sticky-service{
-		top: 56px;
+		top: 0;
 	}
 
 }

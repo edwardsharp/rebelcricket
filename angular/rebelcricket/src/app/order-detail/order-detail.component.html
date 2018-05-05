@@ -30,7 +30,7 @@
 		</div>
 	  <div>
 		  <mat-form-field class="fullwidth">
-		    <textarea matInput [(ngModel)]="order.notes" (change)="onChange($event)" placeholder="notes"></textarea>
+		    <textarea matInput [(ngModel)]="order.notes" (change)="onChange($event)" placeholder="notes" matTextareaAutosize matAutosizeMinRows="2" matAutosizeMaxRows = "12" resizeToFitContent="true"></textarea>
 		  </mat-form-field>
 		</div>
 
@@ -61,7 +61,7 @@
 					  </mat-option>
 					</mat-select>
 				</mat-form-field>
-				<mat-form-field *ngIf="field.type == order_field_types['Date']">
+				<mat-form-field *ngIf="field.type == order_field_types['Date']" hintLabel="{{field.hintStart}}">
 				  <input matInput [matDatepicker]="datepicker" 
             [(ngModel)]="field.value" 
             (dateChange)="onChange($event)"
@@ -173,7 +173,7 @@
 
 		  <div *ngIf="line_item.service?.notes">
 		  	<mat-form-field class="fullwidth">
-			    <textarea matInput [(ngModel)]="line_item.service.notes" (change)="onChange($event)" placeholder="notes"></textarea>
+			    <textarea matInput [(ngModel)]="line_item.service.notes" (change)="onChange($event)" placeholder="notes" matTextareaAutosize matAutosizeMinRows="2" matAutosizeMaxRows = "10" resizeToFitContent="true"></textarea>
 			  </mat-form-field>
 			</div>
 

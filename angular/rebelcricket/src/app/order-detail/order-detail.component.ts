@@ -193,9 +193,9 @@ export class OrderDetailComponent implements OnInit, OnDestroy  {
     // console.log('gonna save this.order:',this.order);
     this.orderService.saveOrder(this.order).then(resp => {
       // console.log('zomg, resp:',resp);
-      this.snackBar.open('Order Saved!', '', {
-        duration: 2000,
-      });
+      // this.snackBar.open('Order Saved!', '', {
+      //   duration: 2000,
+      // });
       if(resp["rev"]){
         this.order["_rev"] = resp["rev"];
       }
