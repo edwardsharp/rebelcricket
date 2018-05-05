@@ -1,6 +1,6 @@
 const electron = require('electron')
 // Module to control application life.
-const app = electron.app
+const {app, Menu} = require('electron')
 // Module to create native browser window.
 const BrowserWindow = electron.BrowserWindow
 
@@ -11,21 +11,41 @@ const url = require('url')
 // be closed automatically when the JavaScript object is garbage collected.
 let mainWindow
 
+const template = [
+  {
+    label: app.getName(),
+    submenu: [
+    ]
+  }
+]
+
+const menu = Menu.buildFromTemplate(template)
+Menu.setApplicationMenu(menu)
+
 function createWindow () {
   // Create the browser window.
-  mainWindow = new BrowserWindow({width: 800, height: 600})
-
-  mainWindow.webContents.openDevTools();
+  mainWindow = new BrowserWindow({
+    width: 800, 
+    height: 600, 
+    frame: true, 
+    title: "Rebel Cricket ADMIN", 
+    autoHideMenuBar: true, 
+    "web-preferences": {
+      "web-security": false
+    }
+  })
 
   // and load the index.html of the app.
   mainWindow.loadURL(url.format({
-    pathname: path.join(__dirname, 'dist/index.html'),
+    pathname: path.join(app.getAppPath(), 'dist/index.html'),
     protocol: 'file:',
     slashes: true
   }))
 
+  
+
   // Open the DevTools.
-  // mainWindow.webContents.openDevTools()
+  mainWindow.webContents.openDevTools()
 
   // Emitted when the window is closed.
   mainWindow.on('closed', function () {
