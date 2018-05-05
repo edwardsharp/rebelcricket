@@ -1,4 +1,4 @@
-# sched_admin
+# ADMIN
 
 ## Development server
 
@@ -10,6 +10,10 @@ Run `ng generate component component-name` to generate a new component. You can 
 
 ## Build
 
+for electronjs:  
+`ng build --aot -prod --base-href ./`
+
+for web:  
 `ng build --aot -prod`
 
 Build artifacts will be stored in the `dist/` directory.
