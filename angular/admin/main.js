@@ -15,24 +15,63 @@ const template = [
   {
     label: app.getName(),
     submenu: [
+      {
+        label: 'Preferences',
+        click () {openPreferencesWindow();}
+      },
+      {type: 'separator'},
+      {role: 'hide'},
+      {role: 'hideothers'},
+      {role: 'unhide'},
+      {type: 'separator'},
+      {role: 'quit'}
     ]
   }
 ]
 
 const menu = Menu.buildFromTemplate(template)
-Menu.setApplicationMenu(menu)
+
+
+let preferencesWindow = null;
+
+function openPreferencesWindow() {
+  if (preferencesWindow) {
+   preferencesWindow.focus()
+   return;
+  }
+
+  preferencesWindow = new BrowserWindow({
+    height: 250,
+    resizable: true,
+    width: 450,
+    title: "Preferences",
+    minimizable: false,
+    fullscreenable: false
+  });
+
+  preferencesWindow.loadURL(url.format({
+    pathname: path.join(app.getAppPath(), 'electron/preferences.html'),
+    protocol: 'file:',
+    slashes: true
+  }))
+  // .loadURL('file://' + app.getAppPath() + 'electron/preferences.html');
+
+  preferencesWindow.on('closed', function () {
+    preferencesWindow = null;
+  });
+}
 
 function createWindow () {
+
+  Menu.setApplicationMenu(menu)
+
   // Create the browser window.
   mainWindow = new BrowserWindow({
     width: 800, 
     height: 600, 
     frame: true, 
     title: "Rebel Cricket ADMIN", 
-    autoHideMenuBar: true, 
-    "web-preferences": {
-      "web-security": false
-    }
+    autoHideMenuBar: true
   })
 
   // and load the index.html of the app.
