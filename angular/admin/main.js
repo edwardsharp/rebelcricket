@@ -16,17 +16,80 @@ const template = [
     label: app.getName(),
     submenu: [
       {
-        label: 'Preferences',
-        click () {openPreferencesWindow();}
+        label: 'Login',
+        click() {mainWindow.webContents.send('viewMenu', '/auth');}
       },
+      // {
+      //   label: 'Preferences',
+      //   click () {openPreferencesWindow();}
+      // },
       {type: 'separator'},
       {role: 'hide'},
       {role: 'hideothers'},
       {role: 'unhide'},
       {type: 'separator'},
+      {
+        label: 'Show Dev Tools',
+        click() {mainWindow.webContents.openDevTools()}
+      },
+      {type: 'separator'},
       {role: 'quit'}
     ]
+  },
+  {
+    label: "Edit",
+    submenu: [
+        { label: "Undo", accelerator: "CmdOrCtrl+Z", selector: "undo:" },
+        { label: "Redo", accelerator: "Shift+CmdOrCtrl+Z", selector: "redo:" },
+        { type: "separator" },
+        { label: "Cut", accelerator: "CmdOrCtrl+X", selector: "cut:" },
+        { label: "Copy", accelerator: "CmdOrCtrl+C", selector: "copy:" },
+        { label: "Paste", accelerator: "CmdOrCtrl+V", selector: "paste:" },
+        { label: "Select All", accelerator: "CmdOrCtrl+A", selector: "selectAll:" }
+    ]
+  },
+  {
+    label: 'View',
+    submenu: [
+      {
+        label: 'Dashboard',
+        click() {mainWindow.webContents.send('viewMenu', '/dashboard');}
+      },
+      {
+        label: 'Orders',
+        click() {mainWindow.webContents.send('viewMenu', '/dashboard/orders');}
+      },
+      {
+        label: 'New Order',
+        click() {mainWindow.webContents.send('viewMenu', '/dashboard/order/new');}
+      },
+      {
+        label: 'Upload Files',
+        click() {mainWindow.webContents.send('viewMenu', '/upload');}
+      },
+      {
+        label: 'All Uploads',
+        click() {mainWindow.webContents.send('viewMenu', '/dashboard/uploads');}
+      },
+      {
+        label: 'Vendor Goods',
+        click() {mainWindow.webContents.send('viewMenu', '/vendor_goods');}
+      },
+      {
+        label: 'Vendor Goods Import',
+        click() {mainWindow.webContents.send('viewMenu', '/dashboard/vendor_goods_import');}
+      },
+      {
+        label: 'Settings',
+        click() {mainWindow.webContents.send('viewMenu', '/dashboard/settings');}
+      }
+    ]
   }
+  // ,{
+  //   label: 'Search',
+  //   role: 'help',
+  //   submenu: []
+  // }
 ]
 
 const menu = Menu.buildFromTemplate(template)
@@ -65,10 +128,11 @@ function createWindow () {
 
   Menu.setApplicationMenu(menu)
 
+  const {width, height} = electron.screen.getPrimaryDisplay().workAreaSize
   // Create the browser window.
   mainWindow = new BrowserWindow({
-    width: 800, 
-    height: 600, 
+    width: width, 
+    height: height, 
     frame: true, 
     title: "Rebel Cricket ADMIN", 
     autoHideMenuBar: true
@@ -80,11 +144,6 @@ function createWindow () {
     protocol: 'file:',
     slashes: true
   }))
-
-  
-
-  // Open the DevTools.
-  mainWindow.webContents.openDevTools()
 
   // Emitted when the window is closed.
   mainWindow.on('closed', function () {

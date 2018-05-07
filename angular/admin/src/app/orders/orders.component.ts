@@ -11,8 +11,6 @@ import { OrderDetailComponent } from '../order-detail/order-detail.component';
 import { Order } from './order';
 import { OrderService } from './order.service';
 import { OrderStore } from './order.store';
-import { AppTitleService } from '../app-title.service';
-
 
 
 @Component({
@@ -27,7 +25,7 @@ export class OrdersComponent implements OnInit {
   loading: Boolean = false;
   orderTags: Array<string>=[];
 
-  constructor(public orderService: OrderService, public appTitleService: AppTitleService) { }
+  constructor(private orderService: OrderService) { }
 
   //table sorting stuff
   displayedColumns = ['orderId', 'orderStatus', 'dateNeeded', 'orderName', 'orderEmail', 'orderOrg'];
@@ -40,16 +38,15 @@ export class OrdersComponent implements OnInit {
   ngOnInit() {
 
     this.paginator._intl.itemsPerPageLabel = ''; //a lil'hack-y
-
+    this.paginator.length = this.orderService.data.length;
+    
     this.loading = true;
     this.dataSource = new OrderStore(this.orderService, this.sort, this.paginator);
 
     this.orderService.getOrders(this.paginator.pageSize, this.paginator.pageIndex * this.paginator.pageSize);
-    this.appTitleService.toggleSearch(false);
   }
 
   ngOnDestroy(){
-    this.appTitleService.toggleSearch(true);
   }
 
 

@@ -260,7 +260,7 @@ export class GfxComponent implements OnInit, AfterContentInit {
   }
 
   loadSVG(id):void {
-    fabric.loadSVGFromURL(`/assets/gfx/${id}.svg`, (objects, options) => {
+    fabric.loadSVGFromURL(`assets/gfx/${id}.svg`, (objects, options) => {
       this.plateObj = fabric.util.groupSVGElements(objects, options);
       this.plateObj.selectable = false;
       this.plateObj.hasControls = false

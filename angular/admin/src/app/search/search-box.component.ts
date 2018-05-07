@@ -108,32 +108,6 @@ export class SearchBoxComponent implements OnInit {
   filteredOrders: Observable<any[]>;
   // filteredOrders: Array<any>;
 
-  // states: any[] = [
-  //   {
-  //     name: 'Arkansas',
-  //     population: '2.978M',
-  //     // https://commons.wikimedia.org/wiki/File:Flag_of_Arkansas.svg
-  //     flag: 'https://upload.wikimedia.org/wikipedia/commons/9/9d/Flag_of_Arkansas.svg'
-  //   },
-  //   {
-  //     name: 'California',
-  //     population: '39.14M',
-  //     // https://commons.wikimedia.org/wiki/File:Flag_of_California.svg
-  //     flag: 'https://upload.wikimedia.org/wikipedia/commons/0/01/Flag_of_California.svg'
-  //   },
-  //   {
-  //     name: 'New York',
-  //     population: '19.8M',
-  //     // https://commons.wikimedia.org/wiki/File:Flag_of_New_York.svg
-  //     flag: 'https://upload.wikimedia.org/wikipedia/commons/1/1a/Flag_of_New_York.svg'
-  //   },
-  //   {
-  //     name: 'Oregon',
-  //     population: '4.09M',
-  //     // https://commons.wikimedia.org/wiki/File:Flag_of_Oregon.svg
-  //     flag: 'https://upload.wikimedia.org/wikipedia/commons/b/b9/Flag_of_Oregon.svg'
-  //   }
-  // ];
 
   constructor(
     public dialog: MatDialog, 

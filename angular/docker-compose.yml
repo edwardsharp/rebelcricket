@@ -2,7 +2,7 @@
 version: "2"
 services:
   couch:
-    image: 3dwardsharp/sched_admin
+    image: 3dwardsharp/rebelcricket
     env_file: .env
     ports:
       - "5984:5984"
@@ -16,7 +16,6 @@ services:
     ports:
       - "8080:80"
     environment:
-      - COUCH_SERVER=couch.rebel.cricket
-      - COUCH_WS_SERVER=couchws.rebel.cricket
-      - BASE_SERVER=rebel.cricket
+      - COUCH_SERVER=couch.rebelcricket.com
+      - BASE_SERVER=gamma.rebelcricket.com
     command: /bin/bash -c "envsubst < /etc/nginx/conf.d/nginx.template > /etc/nginx/conf.d/default.conf && nginx -g 'daemon off;'"

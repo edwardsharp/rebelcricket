@@ -33,7 +33,7 @@ mat-toolbar{
 mat-selection-list{
 	overflow: scroll;
 	scroll-behavior: all;
-	max-height: (100vh - 56px);
+	max-height: 100vh;
 	
 }
 
@@ -69,13 +69,13 @@ mat-chip{
 
 .sticky{
 	position: sticky;
-	top: 56px;	
+	top: 0;	
 	z-index: 1;
 }
 
 .stickyTableHeader{
 	position: sticky;
-	top: 64px;	
+	top: 0;	
 	z-index: 1;
 	background-color: white;
 }
@@ -132,9 +132,6 @@ mat-chip{
 		width: 97vw;
 		margin-left: 1vw;
 		margin-right: 1vw;
-	}
-	.stickyTableHeader{
-		top: 56px;	
 	}
 	.hide-narrow{
 		display: none;

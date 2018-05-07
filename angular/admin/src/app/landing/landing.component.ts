@@ -4,7 +4,6 @@ import { NgxCarousel, NgxCarouselStore } from 'ngx-carousel';
 
 import { SettingsService } from '../settings/settings.service';
 import { Settings } from '../settings/settings';
-import { AppTitleService } from '../app-title.service';
 
 
 @Component({
@@ -21,8 +20,8 @@ export class LandingComponent implements OnInit {
 
   constructor(
     private settingsService: SettingsService, 
-    private sanitizer: DomSanitizer,
-    private appTitleService: AppTitleService) { }
+    private sanitizer: DomSanitizer
+  ) { }
 
   ngOnInit() {
 
@@ -37,12 +36,10 @@ export class LandingComponent implements OnInit {
       }
     });
 
-    this.appTitleService.toggleSearch(true);
-    this.appTitleService.toggleQuote(false);
   }
 
   ngOnDestroy() {
-    this.appTitleService.toggleQuote(true);
+    
   }
 
   public initCarouselBanner() {

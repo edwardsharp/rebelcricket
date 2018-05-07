@@ -13,8 +13,8 @@ declare var PouchDB:any;
       <button mat-button (click)="removeDoc(upload)"><mat-icon>delete</mat-icon> Delete {{upload.files.length}} upload{{upload.files.length > 1 ? 's' : ''}}</button>
       <small *ngIf="upload.date">{{upload.date | date:'short'}}</small>
       <mat-list-item *ngFor="let file of upload.files">
-        <img matListAvatar src="/uploads/{{file.thumb}}" alt="{{file.name}}">
-        <h3 matLine class="truncate"><a href="/uploads/{{file.original}}" target="_blank" matTooltip="{{file.name}}">{{file.name}}</a></h3>
+        <img matListAvatar src="{{uploadHost()}}/{{file.thumb}}" alt="{{file.name}}">
+        <h3 matLine class="truncate"><a href="{{uploadHost()}}/{{file.original}}" target="_blank" matTooltip="{{file.name}}">{{file.name}}</a></h3>
       </mat-list-item>
     </mat-list>
   </div>
@@ -56,6 +56,10 @@ export class UploadsComponent implements OnInit {
     this.db.remove(doc).then( resp => {
       this.uploads.splice(this.uploads.indexOf(doc), 1);
     });
+  }
+
+  uploadHost(): string{
+    return environment.upload_host;
   }
 
 }

@@ -24,14 +24,14 @@
 /* flex essentialz */
 #container {
   width: 100vw;
-  height: calc(100vh - 64px);
+  height: 100vh;
   display: flex;
   flex-direction: row;
   overflow-y: hidden;
   overflow-x: scroll;
 }
 .container-ios{
-  height: calc(100vh - 64px - 44px)!important;
+  height: calc(100vh - 44px)!important;
 }
 #container::-webkit-scrollbar {
   -webkit-appearance: none;
@@ -137,11 +137,11 @@ mat-card-actions mat-basic-chip{
 
 .status-container{
   height: 100%;
-  height: calc(100vh - 140px);
+  height: calc(100vh - 75px);
 }
 
 .status-container-ios{
-  height: calc(100vh - 140px - 44px)!important;
+  height: calc(100vh - 75px - 44px)!important;
 }
 
 .fullwidth{

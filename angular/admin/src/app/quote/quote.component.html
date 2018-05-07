@@ -22,7 +22,7 @@
                 <button mat-icon-button class="hover-item" matTooltip="Delete {{att.name}}" (click)="deleteAttachmentFor(item,att.name);"><mat-icon>clear</mat-icon></button>
                 
               </mat-grid-tile-header>
-              <img class="grid-img" alt="{{att.name}}" src="/uploads/{{att.thumb}}" />
+              <img class="grid-img" alt="{{att.name}}" src="{{uploadHost()}}/{{att.thumb}}" />
              
             </mat-grid-tile>
           </mat-grid-list>
@@ -90,8 +90,8 @@
         <mat-icon>add</mat-icon> Service
       </button>
 
-      <button mat-button (click)="submitOrder()" [hidden]="!quote.doneAsking">
-        <mat-icon>check</mat-icon> Submit
+      <button mat-button (click)="saveOrder()" [hidden]="!quote.doneAsking">
+        <mat-icon>save</mat-icon> Save
       </button>
 
     </div>

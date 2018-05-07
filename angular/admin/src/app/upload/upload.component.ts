@@ -1,6 +1,7 @@
 import { Component, OnInit, ViewChild, ElementRef } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { MatSnackBar } from '@angular/material';
+import { environment } from '../../environments/environment';
 
 @Component({
   selector: 'app-upload',
@@ -17,9 +18,9 @@ import { MatSnackBar } from '@angular/material';
         <mat-progress-bar mode="indeterminate" [hidden]="!uploading"></mat-progress-bar>
         <mat-grid-list *ngIf="files" cols="2" rowHeight="1:1" gutterSize="5px" rowHeight="400px">
           <mat-grid-tile *ngFor="let file of files">
-            <a href="/uploads/{{file.thumb}}" target="_blank"><img class="grid-img" alt="image file upload" src="/uploads/{{file.thumb}}" /></a>
+            <a href="{{uploadHost()}}/{{file.thumb}}" target="_blank"><img class="grid-img" alt="image file upload" src="{{uploadHost()}}/{{file.thumb}}" /></a>
             <mat-grid-tile-footer>
-              <a mat-button href="/uploads/{{file.original}}" target="_blank">{{file.name}}</a>            
+              <a mat-button href="{{uploadHost()}}/{{file.original}}" target="_blank">{{file.name}}</a>            
             </mat-grid-tile-footer>
           </mat-grid-tile>
         </mat-grid-list>
@@ -27,9 +28,9 @@ import { MatSnackBar } from '@angular/material';
     </mat-card>
   `,
   styles: [
-    'mat-card{ margin-top: 1em; margin-bottom: 1em; min-width: 75vw;}', 
-    'p,input{margin: 1em}',
-    '.grid-img{max-height: 100%;max-width: 100%;}'
+    'mat-card{width:75vw; margin:auto; margin-top:4em;}', 
+    'p,input{margin:1em}',
+    '.grid-img{max-height:100%; max-width:100%;}'
   ]
 })
 export class UploadComponent implements OnInit {
@@ -58,7 +59,7 @@ export class UploadComponent implements OnInit {
       for (const file of e.target.files) {
         formData.append('files', file);
       }
-      this.httpClient.post('/upload', formData)
+      this.httpClient.post(environment.upload_post, formData)
         .subscribe(
           res => {
             console.log('response:',res);
@@ -84,6 +85,10 @@ export class UploadComponent implements OnInit {
           }
         );
     }
+  }
+
+  uploadHost(): string{
+    return environment.upload_host;
   }
 
 }

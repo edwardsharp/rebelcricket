@@ -1,4 +1,7 @@
 /* app stylez */
+html{
+  background-color: #fafafa;
+}
 body {
 	margin: 0;
 	padding: 0;
@@ -42,7 +45,7 @@ mat-sidenav-container,
 
 .order-details mat-tab-header{
 	position: sticky!important;
-	top: 	128px;
+	top: 	63px;
 	z-index: 2;
 	background-color: white;
 }
@@ -95,9 +98,6 @@ app-order-tags .mat-chip-list-wrapper{
 }
 
 @media (max-width: 599px) {
-	.order-details mat-tab-header{
-		top: 	112px;
-	}
 	#orders-container .mat-paginator-range-label{
 		display: none!important;
 	}

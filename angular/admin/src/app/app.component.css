@@ -12,6 +12,7 @@ mat-list-item:hover {
   /*overflow-y: scroll;*/
   align-items: flex-start;
   justify-content: center;
+  min-height: 100vh;
 }
 
 .dashboard-sidenav {

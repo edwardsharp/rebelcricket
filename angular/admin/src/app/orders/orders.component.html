@@ -63,11 +63,12 @@
 
         <span class="flexfill"></span>
         <mat-paginator #paginator
-          [length]="orderService.data.length"
+          
           [pageIndex]="0"
           [pageSize]="50"
           [pageSizeOptions]="[50, 100, 500]">
         </mat-paginator>
+        <!-- [length]="orderService.data.length" -->
       </div>
     </div>
 

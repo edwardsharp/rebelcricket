@@ -122,12 +122,12 @@ mat-grid-tile-footer mat-expansion-panel{
 .sticky{
 	margin-top: 1em;
 	position: sticky;
-	top: 64px;
+	top: 0;
 	z-index: 2;
 }
 
 .sticky-service{
-	top: 127px;
+	top: 63px;
 	background-color: #fafafa;
 	z-index: 1;
 }
@@ -214,7 +214,7 @@ section h3{
 }
 
 :host(.quote) .sticky-service{
-	top: 104px;
+	top: 63px;
 }
 
 
@@ -240,11 +240,7 @@ section h3{
 		padding: 0 0.5em;
 	}
 	.sticky{
-		top: 56px;
 		margin-top: 0;
-	}
-	.sticky-service{
-		top: 112px;
 	}
 	#new-attachment{
 		max-width: 100%;
@@ -266,9 +262,4 @@ section h3{
 	.color-qty{
 		display: block;
 	}
-
-	:host(.quote) .sticky-service{
-		top: 96px;
-	}
-
 }

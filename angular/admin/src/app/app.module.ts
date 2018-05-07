@@ -1,6 +1,6 @@
 import { ServiceWorkerModule } from '@angular/service-worker';
 import { environment } from '../environments/environment';
-import { BrowserModule, Title } from '@angular/platform-browser';
+import { BrowserModule } from '@angular/platform-browser';
 import { NgModule } from '@angular/core';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { RouterModule, Routes }   from '@angular/router';
@@ -15,7 +15,6 @@ import { AppMaterialModule } from './app-material.module';
 import { OrderService } from './orders/order.service';
 import { VendorGoodsService } from './vendor-goods/vendor-goods.service';
 import { AppComponent } from './app.component';
-import { SidebarComponent } from './sidebar/sidebar.component';
 import { OrdersComponent } from './orders/orders.component';
 import { OrderDetailComponent } from './order-detail/order-detail.component';
 import { OrderTagsComponent } from './orders/order-tags.component';
@@ -27,7 +26,6 @@ import { GsheetService } from './gsheet.service';
 import { SearchBoxComponent } from './search/search-box.component';
 import { SettingsComponent } from './settings/settings.component';
 import { SettingsService } from './settings/settings.service';
-import { AppTitleService } from './app-title.service';
 import { GfxComponent, NotesDialog } from './gfx/gfx.component';
 import { AuthComponent } from './auth/auth.component';
 import { AuthService } from './auth/auth.service';
@@ -51,7 +49,8 @@ import { UploadsComponent } from './uploads/uploads.component';
 const appRoutes: Routes = [
   { 
     path: '',
-    component: LandingComponent
+    redirectTo: '/dashboard',
+    pathMatch: 'full'
   },
   {
     path: 'upload',
@@ -143,7 +142,6 @@ const appRoutes: Routes = [
 @NgModule({
   declarations: [
     AppComponent,
-    SidebarComponent,
     OrdersComponent,
     OrderDetailComponent,
     OrderTagsComponent,
@@ -195,9 +193,7 @@ const appRoutes: Routes = [
     OrderService, 
     VendorGoodsService, 
     GsheetService, 
-    SettingsService, 
-    Title, 
-    AppTitleService
+    SettingsService
   ],
   bootstrap: [AppComponent]
 })

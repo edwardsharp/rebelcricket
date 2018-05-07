@@ -7,5 +7,7 @@ export const environment = {
   production: false,
   admin_party: true, // Admin Party! 🎉
   couch_host: 'http://localhost:5984',
-  couch_ws_host: 'http://localhost:8888'
+  couch_ws_host: 'http://localhost:8888',
+  upload_post: 'http://gamma.rebelcricket.com:8080/upload',
+  upload_host: 'http://gamma.rebelcricket.com:8080/uploads'
 };

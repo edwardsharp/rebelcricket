@@ -15,6 +15,8 @@ import { SettingsService } from '../settings/settings.service';
 import { Settings, Service } from '../settings/settings';
 import { OrderField, OrderFieldType } from '../orders/order';
 import { AuthService } from '../auth/auth.service';
+import { environment } from '../../environments/environment';
+
 
 @Component({
   selector: 'app-quote',
@@ -73,7 +75,7 @@ export class QuoteComponent implements OnInit {
 
   ngOnInit() {
     this.route.paramMap
-      .switchMap((params: ParamMap) => this.orderService.getQuote( params.get('id'), params.get('user'), params.get('key') ))
+      .switchMap((params: ParamMap) => this.orderService.getOrder( params.get('id') ))
       .subscribe((order: Order) => {
         if(order && order['_rev'] && order['_id'] == this.route.snapshot.params.id){
           this.order = order;
@@ -108,12 +110,12 @@ export class QuoteComponent implements OnInit {
     this.inputFormControl.disable();
     this.inputType = 'text';
 
-    this.authService.getRemoteDB();
+    // this.authService.checkIsLoggedIn();
   }
 
   ngOnDestroy(){
     this.beforeUnload();
-    this.orderService.cancelReplication();
+    // this.orderService.cancelReplication();
   }
 
   beforeUnload(){
@@ -446,7 +448,7 @@ export class QuoteComponent implements OnInit {
       for (const file of e.target.files) {
         formData.append('files', file);
       }
-      this.httpClient.post('/upload', formData)
+      this.httpClient.post(environment.upload_post, formData)
         .subscribe(
           res => {
             console.log('response:',res);
@@ -745,38 +747,8 @@ export class QuoteComponent implements OnInit {
     }
   }
 
-  submitOrder(): void {
-    try{
-      this.transformQuote();
-    }catch(e){ console.log('[quote-component] transformQuote() err!',e); }
-    this.order.quote = this.quote;
-    this.orderService.saveQuote(this.order).then(resp => {
-      if(resp["rev"]){
-        this.order["_rev"] = resp["rev"];
-      }
-      this.httpClient.post('/quote', {
-        order: this.order
-      }).subscribe( data => {
-        console.log('post /quote response data:',data);
-        this.order.status = "new";
-        this.order.confirmation = Date.now();
-        this.order.submitted = true;
-        this.orderService.saveQuote(this.order).then(resp => {
-          if(resp["rev"]){
-            this.order["_rev"] = resp["rev"];
-          }
-          this.snackBar.open('Thank you!', '', {duration: 5000}); 
-        }, err =>{
-          console.log('o noz! submitOrder this.saveQuote() err:',err);
-          this.snackBar.open('Opps! An error occurred :(', '', {duration: 5000}); 
-        });
-      }, err => {
-        console.log('post /quote ERR:',err);
-        this.snackBar.open('Opps! An error occurred :(', '', {duration: 5000}); 
-      });
-    }, err =>{
-      console.log('o noz! submitOrder this.saveQuote() err:',err);
-      this.snackBar.open('Opps! An error occurred :(', '', {duration: 5000}); 
-    });
+
+  uploadHost(): string{
+    return environment.upload_host;
   }
 }

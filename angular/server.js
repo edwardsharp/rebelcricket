@@ -14,7 +14,7 @@ const multer = require('multer');
 let filenameID = crypto.randomBytes(6).toString('hex');
 const storage = multer.diskStorage({
   destination: function (req, file, cb) {
-    cb(null, '/opt/sched_admin/uploads/');
+    cb(null, '/opt/rebelcricket/uploads/');
   },
   filename: function (req, file, cb) {
     cb(null, filenameID + '_' + file.originalname);
@@ -70,6 +70,7 @@ if(!process.env.NO_SSL){
 
 const corsOptions = {
   origin: [ 
+    'http://localhost',
     'https://rebelcricket.com',
     'https://beta.rebelcricket.com', 
     'http://localhost:4200', 
@@ -80,7 +81,7 @@ const corsOptions = {
 }
 
 app.use(express.static(__dirname + '/dist'));
-app.use('/uploads', express.static('/opt/sched_admin/uploads'));
+app.use('/uploads', express.static('/opt/rebelcricket/uploads'));
 
 /* 
  * express routez 
@@ -101,9 +102,63 @@ app.post('/quote', cors(corsOptions), function(req, res){
       && parseInt(order._id, 36) < 1840601036000 //10 yearz later
       && order.name && order.name != ''
       && order.email && order.email != '' ){
+      
+
+
+
+      try{
+        delete order._rev;
+        delete order._rev_tree;
+      }catch(e){ }
+      
       sendMail(order);
-      res.json({ok: true});
+
+      order.status = 'new';
+      order.submitted = true;
+      order.confirmation = Date.now();
+
+      orders.get(order._id).then( _order => {
+        order._rev = _order._rev;
+
+        let idUpdated = false;
+        if(  _order.status != 'new' 
+          && _order.status != 'quote' 
+          && _order.status != 'Inbox'
+        ){
+          //create a new order.
+          idUpdated = true;
+          order._id = Date.now().toString(36);
+          delete order._rev;
+        }
+
+        orders.put(order).then( response => {
+          if(response.ok){
+            res.json({ok: true});
+          }else{
+            res.status(500).json({ok: false});
+          }
+        }).catch( err => {
+          res.status(500).json({ok: false, idUpdated: idUpdated, err: err});
+        });
+
+      }).catch( err => {
+        order.auth_key = crypto.randomBytes(16).toString('hex');
+        orders.put(order).then( response => {
+          if(response.ok){
+            res.json({ok: true});
+          }else{
+            res.status(500).json({ok: false});
+          }
+        }).catch( err => {
+          res.status(500).json({ok: false, hmm: 'notget', err: err});
+        });
+      });
+
+    }else{
+      res.status(500).json({ok: false, valid: false});
     }
+  }else{
+    res.status(500).json({ok: false});
   }
 });
 
@@ -143,25 +198,25 @@ app.post('/upload', cors(corsOptions), function (req, res){
 });
 
 //registration for non-admin user filling out a quote:
-app.post('/auth/session', cors(corsOptions), function(req, res){
-  const auth_user = crypto.randomBytes(6).toString('hex');
-  const auth_key = crypto.randomBytes(64).toString('hex');
-  const registration = {
-    "_id": `org.couchdb.user:${auth_user}`,
-    "name": auth_user,
-    "type": "user",
-    "roles": ["rebelcricket"],
-    "password": auth_key
-  }
-  _users.put(registration).then(function (response) {
-    res.json({
-      auth_user: auth_user,
-      auth_key: auth_key
-    });
-  }).catch(function (err) {
-    res.json(err);
-  });
-});
+// app.post('/auth/session', cors(corsOptions), function(req, res){
+//   const auth_user = crypto.randomBytes(6).toString('hex');
+//   const auth_key = crypto.randomBytes(64).toString('hex');
+//   const registration = {
+//     "_id": `org.couchdb.user:${auth_user}`,
+//     "name": auth_user,
+//     "type": "user",
+//     "roles": ["rebelcricket"],
+//     "password": auth_key
+//   }
+//   _users.put(registration).then(function (response) {
+//     res.json({
+//       auth_user: auth_user,
+//       auth_key: auth_key
+//     });
+//   }).catch(function (err) {
+//     res.json(err);
+//   });
+// });
 
 // registration currently disabled.
 // app.post('/auth/register', cors(corsOptions), function(req, res){
@@ -185,9 +240,9 @@ app.listen(process.env.PORT || 8090);
  * init db & set user rolez, user listener & replication stuffz.
  */
 
-let active_tasks = [];
-const _replicator = new PouchDB(`${process.env.COUCH_HOST}/_replicator`)
-const _users = new PouchDB(`${process.env.COUCH_HOST}/_users`);
+// let active_tasks = [];
+// const _replicator = new PouchDB(`${process.env.COUCH_HOST}/_replicator`)
+// const _users = new PouchDB(`${process.env.COUCH_HOST}/_users`);
 const orders = new PouchDB(`${process.env.COUCH_HOST}/orders`);
 const settings = new PouchDB(`${process.env.COUCH_HOST}/settings`);
 const privatesettings = new PouchDB(`${process.env.COUCH_HOST}/privatesettings`);
@@ -204,9 +259,9 @@ setTimeout( () => {
     _active_tasks = JSON.parse(tasks);
   });
 
-  _replicator.allDocs({include_docs: true}).then( tasks => {
-    active_tasks = tasks.rows.map(row => { return {source: row.doc.source, target: row.doc.target}});
-  });
+  // _replicator.allDocs({include_docs: true}).then( tasks => {
+  //   active_tasks = tasks.rows.map(row => { return {source: row.doc.source, target: row.doc.target}});
+  // });
 
   //make sure app dbz are setup correctly
   //doc.admins.names for admin-write public-read
@@ -215,7 +270,7 @@ setTimeout( () => {
     doc.admins.names = doc.admins.names || [];
     if(doc.admins.names.indexOf('rebelcricket-admin') == -1){
       doc.admins.names.push('rebelcricket-admin');
-      //using regular HTTP here since pouchdb doesn't seem to be able to put _users _security doc
+      //using regular HTTP here since pouchdb doesn't seem to be able to put _security doc
       request({
         method: 'PUT',
         uri: `${process.env.COUCH_HOST}/settings/_security`,
@@ -228,7 +283,7 @@ setTimeout( () => {
     doc.admins.names = doc.admins.names || [];
     if(doc.admins.names.indexOf('rebelcricket-admin') == -1){
       doc.admins.names.push('rebelcricket-admin');
-      //using regular HTTP here since pouchdb doesn't seem to be able to put _users _security doc
+      //using regular HTTP here since pouchdb doesn't seem to be able to put _security doc
       request({
         method: 'PUT',
         uri: `${process.env.COUCH_HOST}/settings/_security`,
@@ -253,7 +308,7 @@ setTimeout( () => {
       needsPut = true;
     }
     if(needsPut){
-      //using regular HTTP here since pouchdb doesn't seem to be able to put _users _security doc
+      //using regular HTTP here since pouchdb doesn't seem to be able to put _security doc
       request({
         method: 'PUT',
         uri: `${process.env.COUCH_HOST}/orders/_security`,
@@ -276,7 +331,7 @@ setTimeout( () => {
       needsPut = true;
     }
     if(needsPut){
-      //using regular HTTP here since pouchdb doesn't seem to be able to put _users _security doc
+      //using regular HTTP here since pouchdb doesn't seem to be able to put _security doc
       request({
         method: 'PUT',
         uri: `${process.env.COUCH_HOST}/privatesettings/_security`,
@@ -299,7 +354,7 @@ setTimeout( () => {
       needsPut = true;
     }
     if(needsPut){
-      //using regular HTTP here since pouchdb doesn't seem to be able to put _users _security doc
+      //using regular HTTP here since pouchdb doesn't seem to be able to put _security doc
       request({
         method: 'PUT',
         uri: `${process.env.COUCH_HOST}/uploads/_security`,
@@ -310,47 +365,47 @@ setTimeout( () => {
 
 
   //check all the current users to make sure their roles are set correctly.
-  _users.allDocs({
-    include_docs: true
-  }).then(function (result) {
-    for(i=0; i < result.total_rows; i++){
-      if( result.rows[i].id.match(/org\.couchdb\.user:/) 
-          && result.rows[i].doc
-          && result.rows[i].doc.roles 
-          && result.rows[i].doc.roles.indexOf('rebelcricket') > -1
-      ){
-        let name = result.rows[i].id.split(/org\.couchdb\.user:/).join('');
-        let user = { 
-          id: result.rows[i].id, 
-          name: name, 
-          db: `userdb-${Buffer.from(name, 'utf8').toString('hex')}` 
-        };
-        setupReplication(user);
-        setUserDBRoles(user);
-      }
-    }
-  });
+  // _users.allDocs({
+  //   include_docs: true
+  // }).then(function (result) {
+  //   for(i=0; i < result.total_rows; i++){
+  //     if( result.rows[i].id.match(/org\.couchdb\.user:/) 
+  //         && result.rows[i].doc
+  //         && result.rows[i].doc.roles 
+  //         && result.rows[i].doc.roles.indexOf('rebelcricket') > -1
+  //     ){
+  //       let name = result.rows[i].id.split(/org\.couchdb\.user:/).join('');
+  //       let user = { 
+  //         id: result.rows[i].id, 
+  //         name: name, 
+  //         db: `userdb-${Buffer.from(name, 'utf8').toString('hex')}` 
+  //       };
+  //       setupReplication(user);
+  //       setUserDBRoles(user);
+  //     }
+  //   }
+  // });
 
   //listen for changes on the users db (e.g. registrations) and add to users list (json) 
   // & set roles so admin can view docz...
-  const changes = _users.changes({
-    since: 'now',
-    live: true,
-    include_docs: false
-  }).on('change', function(change) {
-    if(change.id && change.id.match(/org\.couchdb\.user:/)){
-      let _user = _users.get(change.id).then(function(doc){
-        if(doc.roles && doc.roles.indexOf('rebelcricket') > -1){
-          let name = change.id.split(/org\.couchdb\.user:/).join('');
-          let user = { id: change.id, name: name, db: `userdb-${Buffer.from(name, 'utf8').toString('hex')}` };
-          if(!change.deleted){ 
-            setupReplication(user);
-            setUserDBRoles(user);
-          }
-        }
-      });
-    }
-  });
+  // const changes = _users.changes({
+  //   since: 'now',
+  //   live: true,
+  //   include_docs: false
+  // }).on('change', function(change) {
+  //   if(change.id && change.id.match(/org\.couchdb\.user:/)){
+  //     let _user = _users.get(change.id).then(function(doc){
+  //       if(doc.roles && doc.roles.indexOf('rebelcricket') > -1){
+  //         let name = change.id.split(/org\.couchdb\.user:/).join('');
+  //         let user = { id: change.id, name: name, db: `userdb-${Buffer.from(name, 'utf8').toString('hex')}` };
+  //         if(!change.deleted){ 
+  //           setupReplication(user);
+  //           setUserDBRoles(user);
+  //         }
+  //       }
+  //     });
+  //   }
+  // });
 
   //watch for changes to the uploads db and remove files when needed.
   const uploadChanges = uploads.changes({
@@ -361,11 +416,11 @@ setTimeout( () => {
     if(change.deleted){
       //#todo: figure out what file(z) to remove to fs
       //fs.unlink
-      fs.readdir('/opt/sched_admin/uploads/', (err, files) => {
+      fs.readdir('/opt/rebelcricket/uploads/', (err, files) => {
         files.forEach(file => {
           // console.log(file);
           if(file.match(change.id)){
-            fs.unlink(`/opt/sched_admin/uploads/${file}`, (err) => {
+            fs.unlink(`/opt/rebelcricket/uploads/${file}`, (err) => {
               if (err){ console.log('["log", "error deleting: '+file+' err: '+err+'", {"level": "error"}]\n'); }
             });
           }
@@ -377,40 +432,40 @@ setTimeout( () => {
 },10000);
 
 //one-way replication for every user's db to admin's orders DB
-function setupReplication(user){
-  if(!_active_tasks.find( task => {return task.source.match(user.db) })){
-    request({
-      method: 'POST',
-      uri: `${process.env.COUCH_HOST}/_replicator`,
-      json: {
-        "source": `${process.env.COUCH_HOST}/${user.db}`,
-        "target":  `${process.env.COUCH_HOST}/orders`,
-        "create_target":  false,
-        "continuous": true
-      }
-    });
-  }
-}
+// function setupReplication(user){
+//   if(!_active_tasks.find( task => {return task.source.match(user.db) })){
+//     request({
+//       method: 'POST',
+//       uri: `${process.env.COUCH_HOST}/_replicator`,
+//       json: {
+//         "source": `${process.env.COUCH_HOST}/${user.db}`,
+//         "target":  `${process.env.COUCH_HOST}/orders`,
+//         "create_target":  false,
+//         "continuous": true
+//       }
+//     });
+//   }
+// }
 
 //set user's roles so that admin user can access their docz.
-function setUserDBRoles(user){
-  if(user.db){
-    let user_db = new PouchDB(`${process.env.COUCH_HOST}/${user.db}`);
-    user_db.get('_security').then(function (doc) {
-      doc.admins = doc.admins || {};
-      doc.admins.roles = doc.admins.roles || [];
-      if(doc.admins.roles.indexOf('rebelcricket-admin') == -1){
-        doc.admins.roles.push('rebelcricket-admin');
-        //using regular HTTP here since pouchdb doesn't seem to be able to put _users _security doc
-        request({
-          method: 'PUT',
-          uri: `${process.env.COUCH_HOST}/${user.db}/_security`,
-          json: doc
-        });
-      }
-    });
-  }
-}
+// function setUserDBRoles(user){
+//   if(user.db){
+//     let user_db = new PouchDB(`${process.env.COUCH_HOST}/${user.db}`);
+//     user_db.get('_security').then(function (doc) {
+//       doc.admins = doc.admins || {};
+//       doc.admins.roles = doc.admins.roles || [];
+//       if(doc.admins.roles.indexOf('rebelcricket-admin') == -1){
+//         doc.admins.roles.push('rebelcricket-admin');
+//         //using regular HTTP here since pouchdb doesn't seem to be able to put _users _security doc
+//         request({
+//           method: 'PUT',
+//           uri: `${process.env.COUCH_HOST}/${user.db}/_security`,
+//           json: doc
+//         });
+//       }
+//     });
+//   }
+// }
 
 function sendMail(order){
   const mailgun = require('mailgun-js')({ apiKey: process.env.MAIL_KEY, domain: process.env.MAIL_DOMAIN });

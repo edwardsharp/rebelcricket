@@ -11,6 +11,7 @@ Run `ng generate component component-name` to generate a new component. You can 
 ## Build
 
 for electronjs:  
+`ng build --base-href ./`  
 `ng build --aot -prod --base-href ./`
 
 for web:  

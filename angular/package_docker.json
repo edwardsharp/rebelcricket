@@ -1,7 +1,7 @@
 {
-  "name": "sched_admin",
+  "name": "rebelcricket",
   "version": "1.0.0",
-  "description": "sched_admin app",
+  "description": "rebelcricket app",
   "main": "server.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"

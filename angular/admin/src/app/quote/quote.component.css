@@ -10,7 +10,7 @@
   display: flex;
   justify-content: space-between;
   position: sticky;
-  top: 63px;
+  top: 0;
   background: #fafafa;
   z-index: 2;
 }
@@ -126,18 +126,15 @@ mat-grid-tile{
 }
 
 .sticky {
-  top: 104px;
+  top: 40px;
 }
 
 @media (max-width: 599px) {
   :host{
-    min-height: calc(100vh - 56px);
+    min-height: 100vh;
   }
   .mat-elevation-z4{
     box-shadow: none;
-  }
-  #title{
-    top: 56px;
   }
   #content{
     min-height: calc(100vh - 250px);

@@ -13,7 +13,6 @@ import {
 import { OrderService } from '../orders/order.service';
 import { SettingsService } from '../settings/settings.service';
 import { Settings } from '../settings/settings';
-import { AppTitleService } from '../app-title.service';
 import { Order } from '../orders/order';
 
 @Component({
@@ -68,8 +67,7 @@ export class DashboardComponent implements OnInit, OnDestroy {
   	private route: ActivatedRoute,
     private router: Router,
     private settingsService: SettingsService,
-    private snackBar: MatSnackBar,
-    private appTitleService: AppTitleService 
+    private snackBar: MatSnackBar
   ) { }
 
   ngOnInit() {
@@ -107,26 +105,23 @@ export class DashboardComponent implements OnInit, OnDestroy {
       this.needsReloadAfterInit = true;
     });
 
-    this.appTitleService.toggleSearch(false);
-
   }
 
   ngAfterViewInit() {
-    setTimeout(function(){
-      if(navigator.userAgent.match(/(iPod|iPhone|iPad)/)){
-        document.querySelector('#container').classList.add('container-ios');
-        var containerz = document.querySelectorAll(".status-container");
-        for (var i = 0; i < containerz.length; ++i) {
-           containerz[i].classList.add('status-container-ios');
-        }
-      }
-    }, 1000);
+    // setTimeout(function(){
+    //   if(navigator.userAgent.match(/(iPod|iPhone|iPad)/)){
+    //     document.querySelector('#container').classList.add('container-ios');
+    //     var containerz = document.querySelectorAll(".status-container");
+    //     for (var i = 0; i < containerz.length; ++i) {
+    //        containerz[i].classList.add('status-container-ios');
+    //     }
+    //   }
+    // }, 1000);
   }
 
   ngOnDestroy() {
     //hmm... #todo: figure out a good time to unsubscribe?
   	// this.orderService.dataChange.unsubscribe();
-    this.appTitleService.toggleSearch(true);
   }
 
   getOrdersFor(status:string, orderData:Order[]): Order[] {

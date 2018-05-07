@@ -1,10 +1,22 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, NgZone } from '@angular/core';
 import { Location } from '@angular/common';
 import { Router } from '@angular/router';
+import { Subscription } from 'rxjs/Subscription';
 import { environment } from '../environments/environment';
-import { AppTitleService } from './app-title.service';
+
 import { SettingsService } from './settings/settings.service';
 import { Settings } from './settings/settings';
+import { AuthService } from './auth/auth.service';
+
+// import { remote, ipcRenderer } from 'electron';
+declare global {
+  interface Window {
+    require: any;
+  }
+}
+
+const electron = window.require('electron');
+
 
 @Component({
   selector: 'app-root',
@@ -18,24 +30,49 @@ export class AppComponent implements OnInit {
 
   searchHidden: boolean = true;
   quoteHidden: boolean = true;
+  
+  subscription: Subscription;
 
   constructor(
     private location: Location,
-    private appTitleService: AppTitleService,
     private settingsService: SettingsService,
-    public router: Router
+    public router: Router,
+    private authService: AuthService,
+    private zone: NgZone
     // public dialog: MatDialog
   ) { 
-    appTitleService.title.subscribe( t => {
-      this.title = t;
-    });
 
-    appTitleService.searchHidden.subscribe( hidden => {
-      this.searchHidden = hidden;
-    });
+    
+    
+    // this.subscription = this.authService.adminObservable().subscribe( (isAdmin:boolean) => {
+    //   console.log('[app-component] authService.isAdmin$:',isAdmin);
+    //   if(isAdmin){
+    //   }else{
+    //   }
+    // });
 
-    appTitleService.quoteHidden.subscribe( hidden => {
-      this.quoteHidden = hidden;
+    
+
+    // var menu = electron.remote.Menu.buildFromTemplate([{
+    //   label: 'View',
+    //   submenu: [
+    //     {
+    //       label: 'Settings',
+    //       click: () => {
+    //         this.router.navigate(['/settings']);
+    //       }  
+    //     }
+    //   ]
+    // }]);
+
+
+    // electron.remote.Menu.setApplicationMenu(menu);
+
+    electron.ipcRenderer.on('viewMenu', (sender, arg) => {
+      console.log('electron.ipcRenderer on viewMenu arg:',arg);
+      this.zone.run(() => {
+        this.router.navigate([arg]);
+      });
     });
 
   }
@@ -46,6 +83,8 @@ export class AppComponent implements OnInit {
         this.title = settings.site_title;
       }
     });
+
+    this.authService.checkIsLoggedIn();
   }
 
   back() {

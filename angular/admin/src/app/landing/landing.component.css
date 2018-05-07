@@ -1,6 +1,6 @@
 /* carousel */
 .banner, .bannerStyle, .bannerStyle img{
-  height: calc(100vh - 64px); 
+  height: 100vh; 
 }
 .banner{
   width: 100vw;
@@ -115,9 +115,6 @@ img{
 }
 
 @media (max-width: 767px) {
-  .banner, .bannerStyle, .bannerStyle img{
-    height: calc(100vh - 56px); 
-  }
   .flex{
     flex-direction: column;
   }

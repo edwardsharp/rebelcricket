@@ -12,24 +12,19 @@ RUN apt-get install -y --no-install-recommends \
 
 ENV COUCH_HOST=http://localhost:5984
 
-RUN mkdir /opt/couch_ws \
-  && mkdir /opt/sched_admin \
-  && mkdir /opt/sched_admin/dist \
-  && mkdir /opt/sched_admin/uploads
+RUN mkdir /opt/rebelcricket \
+  && mkdir /opt/rebelcricket/dist \
+  && mkdir /opt/rebelcricket/uploads
 
-VOLUME /opt/sched_admin/uploads
+COPY default-image-square.jpg /opt/rebelcricket/uploads/default-image-square.jpg
 
-COPY default-image-square.jpg /opt/sched_admin/uploads/default-image-square.jpg
+RUN chown -R couchdb /opt/rebelcricket/uploads
 
-RUN chown -R couchdb /opt/sched_admin/uploads
+VOLUME /opt/rebelcricket/uploads
 
-COPY package_couch.json /opt/couch_ws/package.json
-COPY couch_ws.js /opt/couch_ws
-RUN cd /opt/couch_ws && npm i
+COPY package_docker.json /opt/rebelcricket/package.json
+RUN cd /opt/rebelcricket && npm i
 
-COPY package_docker.json /opt/sched_admin/package.json
-RUN cd /opt/sched_admin && npm i
-
-COPY dist/ /opt/sched_admin/dist
-COPY couch_ws.ini /opt/couchdb/etc/local.d/couch_ws.ini
-COPY server.js /opt/sched_admin
+COPY rebelcricket/dist/ /opt/rebelcricket/dist
+COPY rebelcricket.ini /opt/couchdb/etc/local.d/rebelcricket.ini
+COPY server.js /opt/rebelcricket

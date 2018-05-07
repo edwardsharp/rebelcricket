@@ -15,8 +15,8 @@ import { Order, LineItem, OrderField, OrderFieldType, Attachments } from '../ord
 import { OrderService } from '../orders/order.service';
 import { SettingsService } from '../settings/settings.service';
 import { Settings, Service } from '../settings/settings';
-import { AppTitleService } from '../app-title.service';
 import { Color, COLORS } from '../gfx/color';
+import { environment } from '../../environments/environment';
 
 import * as _ from 'underscore';
 
@@ -73,7 +73,6 @@ export class OrderDetailComponent implements OnInit, OnDestroy  {
     private settingsService: SettingsService,
     private sanitizer: DomSanitizer,
     private snackBar: MatSnackBar,
-    private appTitleService: AppTitleService,
     private location: Location,
     private httpClient: HttpClient
   ) { 
@@ -116,7 +115,6 @@ export class OrderDetailComponent implements OnInit, OnDestroy  {
               this.order.attachmentDimensions = {};
             }
             this.origOrder = JSON.parse(JSON.stringify(order));
-            this.setTitle();
             // this.checkAllServicesNeedHidden();
           }else if(order._id){
             this.order = order;
@@ -139,7 +137,6 @@ export class OrderDetailComponent implements OnInit, OnDestroy  {
 
   ngOnDestroy() {
     // this.orderSub.unsubscribe();
-    this.appTitleService.resetTitle();
   }
 
   setGridCols(){
@@ -193,7 +190,6 @@ export class OrderDetailComponent implements OnInit, OnDestroy  {
     // console.log('SAVE ORDER DIFF:',);
     console.log('SAVE ORDER orig and now:',this.origOrder, this.order);
     
-    this.setTitle();
     // console.log('gonna save this.order:',this.order);
     this.orderService.saveOrder(this.order).then(resp => {
       // console.log('zomg, resp:',resp);
@@ -281,7 +277,7 @@ export class OrderDetailComponent implements OnInit, OnDestroy  {
       for (const file of e.target.files) {
         formData.append('files', file);
       }
-      this.httpClient.post('/upload', formData)
+      this.httpClient.post(environment.upload_post, formData)
         .subscribe(
           res => {
 
@@ -394,6 +390,7 @@ export class OrderDetailComponent implements OnInit, OnDestroy  {
   }
 
   addColorFor(selectedLayer:string, color:string): void{
+    this.order.canvasLayerColors[selectedLayer] = this.order.canvasLayerColors[selectedLayer] || [];
     this.colorInput.nativeElement.value = '';
     this.matAutocomplete.closePanel();
     if(this.order.canvasLayerColors[selectedLayer].indexOf(color) == -1){
@@ -412,13 +409,6 @@ export class OrderDetailComponent implements OnInit, OnDestroy  {
 
   selectedColor(name: string, event: MatAutocompleteSelectedEvent) {
     this.addColorFor(name, event.option.value);
-  }
-
-  setTitle(): void {
-    let _t = '';
-    _t += this.order.name;
-    _t += this.order.org ? ` (${this.order.org})` : ''; 
-    this.appTitleService.setTitle(_t);
   }
   
   getOrderRevs(): void {
@@ -633,38 +623,9 @@ export class OrderDetailComponent implements OnInit, OnDestroy  {
     }
   }
 
-  submitOrder(): void {
-    this.orderService.saveQuote(this.order).then(resp => {
-      if(resp["rev"]){
-        this.order["_rev"] = resp["rev"];
-      }
-      this.httpClient.post('/quote', {
-        order: this.order
-      }).subscribe( data => {
-        console.log('GREAT! post /quote response data:',data);
-        //todo: navigate? or.
 
-        this.order.status = "new";
-        this.order.confirmation = Date.now();
-        this.order.submitted = true;
-        this.orderService.saveQuote(this.order).then(resp => {
-          if(resp["rev"]){
-            this.order["_rev"] = resp["rev"];
-          }
-          this.snackBar.open('Thank you!', '', {duration: 5000}); 
-        }, err =>{
-          console.log('o noz! submitOrder this.saveQuote() err:',err);
-          this.snackBar.open('Opps! An error occurred :(', '', {duration: 5000}); 
-        });
-
-      }, err => {
-        console.log('post /quote ERR:',err);
-        this.snackBar.open('Opps! An error occurred :(', '', {duration: 5000}); 
-      });
-    }, err =>{
-      console.log('o noz! submitOrder this.saveQuote() err:',err);
-      this.snackBar.open('Opps! An error occurred :(', '', {duration: 5000}); 
-    });
+  uploadHost(): string{
+    return environment.upload_host;
   }
 
   // numberControl(field){

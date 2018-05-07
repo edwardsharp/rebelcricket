@@ -1,4 +1,5 @@
-import { Injectable } from '@angular/core';
+import { Injectable, NgZone } from '@angular/core';
+import { Router } from '@angular/router';
 import { Observable } from 'rxjs/Observable';
 import 'rxjs/add/operator/map';
 import {BehaviorSubject} from 'rxjs/BehaviorSubject';
@@ -8,6 +9,8 @@ import { Subscription } from 'rxjs/Subscription';
 import { Order } from './order';
 import { environment } from '../../environments/environment';
 import { AuthService } from '../auth/auth.service';
+
+// import { Notification } from 'electron';
 
 declare var PouchDB:any;
 
@@ -22,14 +25,16 @@ export class OrderService {
   /** Stream that emits whenever the data has been modified. */
   dataChange: BehaviorSubject<Order[]> = new BehaviorSubject<Order[]>([]);
   get data(): Order[] { return this.dataChange.value; }
-  remoteDBSubscription: Subscription;
   isReplicating: boolean;
-  remoteDB: string;
 
   isAdminSubscription: Subscription;
   replication: any;
 
-  constructor(private http: HttpClient, private authService: AuthService) {
+  constructor( private http: HttpClient, 
+    private authService: AuthService,
+    private router: Router,
+    private zone: NgZone
+  ){
     if(navigator.vendor && navigator.vendor.indexOf('Apple') > -1){
       console.log("LOADING FRUITDONW DB!");
       this.db = new PouchDB('orders', {adapter: 'fruitdown'});
@@ -38,6 +43,8 @@ export class OrderService {
     }
     
     // PouchDB.plugin(require('pouchdb-find'));
+
+    this.authService.checkIsLoggedIn();
 
     this.db.createIndex({
       index: {
@@ -97,13 +104,7 @@ export class OrderService {
       }
     })
 
-    this.remoteDBSubscription = this.authService.remoteDBObservable().subscribe( (remoteDB:string) => {
-      console.log('orders remoteDBSubscription remoteDB:',remoteDB);
-      if(this.remoteDB != remoteDB || !this.isReplicating){
-        this.remoteDB = remoteDB;
-        this.replicate(remoteDB);
-      }
-    });
+  
   }
 
   onSyncError(err){
@@ -121,6 +122,7 @@ export class OrderService {
       console.log('ORDER CHANGE: SPLICING UPDATE! idx:',idx,' order:',order);
       copiedData.splice(idx, 1, order);
     }else{
+      this.createNotification('New Quote!', `${order.name} ${order.email}`, order._id);
       console.log('ORDER CHANGE: PUSHING! idx:',idx,' order:',order);
       copiedData.push(order);
     }
@@ -129,29 +131,10 @@ export class OrderService {
   }
                      // : Promise<any>   ??
   saveOrder(order:Order){
-
     return this.db.put(order);
   }
 
   saveQuote(order:Order){
-    if(  order 
-      && order.name && order.name != ''
-      && order.email && order.email != '' 
-    ){
-      //ready to replicate!
-      if(!this.isReplicating){
-        console.log('saveOrder gonna getRemoteDB (not currently replicating)');
-        this.authService.getRemoteDB();
-      }
-      if(  (order.auth_user == undefined || order.auth_user == '') 
-        && (order.auth_key == undefined || order.auth_key == '')
-        && this.authService.user && this.authService.authKey
-      ){
-        console.log('gonna add auth_user && auth_key to order!');
-        order.auth_user = this.authService.user;
-        order.auth_key = this.authService.authKey;
-      }
-    }
     return this.db.put(order);
   }
 
@@ -187,43 +170,6 @@ export class OrderService {
     }, err => {
       console.log('o noz! order.service getOrder err:',err);
     });
-  }
-
-  getQuote(id:string, user:string, key:string): Promise<Order> {
-    if(user && user != '' && key && key != ''){
-      let _quote_db;
-      if(navigator.vendor && navigator.vendor.indexOf('Apple') > -1){
-        _quote_db = new PouchDB(`${environment.couch_host}/userdb-${this.toHex(user)}`, {adapter: 'fruitdown', auth: {username: user, password: key}});
-      }else{
-        _quote_db = new PouchDB(`${environment.couch_host}/userdb-${this.toHex(user)}`, {auth: {username: user, password: key}});
-      }
-      return _quote_db.get(id).then(doc => {
-        this.db.replicate.from(`${environment.couch_host}/userdb-${this.toHex(user)}`, {
-          live: false,
-          retry: true,
-          auth: {username: user, password: key}
-        }).on('active', () => {
-          console.log('[order.service] replicatin from user-db!');
-          // replicate resumed (e.g. new changes replicating, user went back online)
-        });
-        
-        this.db.replicate.to(`${environment.couch_host}/userdb-${this.toHex(user)}`, {
-          live: true,
-          retry: true,
-          auth: {username: user, password: key}
-        }).on('active', () => {
-          console.log('[order.service] REPLICATION active for existing quote!');
-          this.isReplicating = true;
-          // replicate resumed (e.g. new changes replicating, user went back online)
-        });
-
-        return doc as Order;
-      }, err => {
-        return new Order;
-      });
-    }else{
-      return this.getOrder(id);
-    }
   }
 
   getOrders(limit:number,skip:number): void {
@@ -296,23 +242,16 @@ export class OrderService {
     return this.db.revsDiff(optz);
   }
 
-  replicate(remoteDB:string): void{
-    console.log('gonna start replicating to remoteDB:',remoteDB);
-    this.replication = this.db.replicate.to(remoteDB, {
-      live: true,
-      retry: true
-    }).on('active', () => {
-      console.log('[order.service] REPLICATION active!!!');
-      this.isReplicating = true;
-      // replicate resumed (e.g. new changes replicating, user went back online)
-    });
-  }
-
-  cancelReplication(): void{
-    try{
-      this.replication.cancel();
-    }catch(err){
-      console.log('could not cancel replication! err:',err);
+  createNotification(title:string, body:string, order_id:string): void{
+    let myNotification = new Notification(title, {
+      body: body
+    })
+    if(order_id){
+      myNotification.onclick = () => {
+        this.zone.run(() => {
+          this.router.navigate([`/dashboard/order/${order_id}`]);
+        });
+      }
     }
   }
 

@@ -21,8 +21,6 @@ export class AuthService {
   private _isAdmin: Subject<boolean>;
   user: string;
 
-  remoteDB: string;
-  private _remoteDB: Subject<string>;
   authKey: string;
 
 	// _user = {
@@ -36,7 +34,6 @@ export class AuthService {
   constructor(private http: HttpClient, private router: Router) { 
     this._isAdmin = new Subject<boolean>();
     this._isLoggedIn = new Subject<boolean>();
-    this._remoteDB = new Subject<string>();
     if(!environment.production){
       this.isLoggedIn = true;
       this.isAdmin = true;
@@ -100,34 +97,6 @@ export class AuthService {
         this.isAdmin = true;
         this._isAdmin.next(this.isAdmin);
       },500);
-    }
-  }
-
-  remoteDBObservable(): Observable<string>{
-    return this._remoteDB.asObservable();
-  }
-
-  getRemoteDB(): void{
-    if(this.isAdmin){
-      this.remoteDB = `${environment.couch_host}/orders`;
-      this._remoteDB.next(this.remoteDB);
-    }else if(this.isLoggedIn && this.authKey && this.authKey != ''){
-      this.remoteDB = `${environment.couch_host}/userdb-${this.toHex(this.user)}`;
-      this._remoteDB.next(this.remoteDB);
-    }else{
-      this.http.post(this.sessionURL, {}).subscribe(data => {
-        if(data["auth_user"] && data["auth_key"]){
-          this.user = data["auth_user"];
-          this.authKey = data["auth_key"];
-          this.signIn(this.user, this.authKey);
-          this.remoteDB = `${environment.couch_host}/userdb-${this.toHex(this.user)}`;
-          this._remoteDB.next(this.remoteDB);
-        }
-      }, err => {
-        console.log('[auth] session ERR:',err);
-        this.parseData(undefined);
-      });
-
     }
   }
 
