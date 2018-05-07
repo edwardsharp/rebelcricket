@@ -35,10 +35,13 @@ to start (do this once):
 
 ## Docker
 
-`docker build -t 3dwardsharp/sched_admin .`
+`docker build -t 3dwardsharp/rebelcricket .`
 
 dev:  
-`docker run -p 8080:80 -e NO_SSL=true -e COUCHDB_USER=rebelcricket-admin -e COUCHDB_PASSWORD=zomgzomg -e COUCH_HOST=http://rebelcricket-admin:zomgzomg@localhost:5984 -v $(pwd)/dist:/opt/sched_admin/dist 3dwardsharp/sched_admin`
+
+`docker-compose up`  
+-or-  
+`docker run -p 8080:80 -e NO_SSL=true -e COUCHDB_USER=rebelcricket-admin -e COUCHDB_PASSWORD=zomgzomg -e COUCH_HOST=http://rebelcricket-admin:zomgzomg@localhost:5984 3dwardsharp/rebelcricket`
 
 #### use nginx proxy: 
 
