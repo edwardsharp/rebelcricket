@@ -84,6 +84,11 @@ export class OrderService {
           })
           .on('error', function (err) {
             console.log('[order.service] sync error!',err);
+            if(err.status == 401){
+              console.log('401, gonna redirect to /auth...');
+              this.authService.redirectUrl = '/dashboard';
+              this.router.navigate(['/auth']);
+            }
           });
         // this.db.replicate.from(`${environment.couch_host}/orders`).on('complete', function(info) {
         //   // then two-way, continuous, retriable sync

@@ -1,11 +1,19 @@
-const electron = require('electron')
+const electron = require('electron');
 // Module to control application life.
-const {app, Menu} = require('electron')
+const {app, Menu, ipcMain} = require('electron');
 // Module to create native browser window.
-const BrowserWindow = electron.BrowserWindow
+const BrowserWindow = electron.BrowserWindow;
 
-const path = require('path')
-const url = require('url')
+const {download} = require('electron-dl');
+
+const path = require('path');
+const url = require('url');
+const os = require('os');
+var fs = require('fs');
+
+if (!fs.existsSync(`${os.homedir()}/RebelCricketAdmin`)){
+  fs.mkdirSync(`${os.homedir()}/RebelCricketAdmin`);
+}
 
 // Keep a global reference of the window object, if you don't, the window will
 // be closed automatically when the JavaScript object is garbage collected.
@@ -144,6 +152,24 @@ function createWindow () {
     protocol: 'file:',
     slashes: true
   }))
+
+  ipcMain.on("download", (event, url) => {
+    download(BrowserWindow.getFocusedWindow(), url, {openFolderWhenDone: true, directory: `${os.homedir()}/RebelCricketAdmin`})
+      .then(dl => {
+        // window.webContents.send("download complete", dl.getSavePath())
+        // console.log("download complete, path:", dl.getSavePath());
+      })
+      .catch(console.error);
+  });
+
+  ipcMain.on("syncUpload", (event, url) => {
+    download(BrowserWindow.getFocusedWindow(), url, {directory: `${os.homedir()}/RebelCricketAdmin`})
+      .then(dl => {
+        // window.webContents.send("download complete", dl.getSavePath())
+        
+      })
+      .catch(console.error);
+  });
 
   // Emitted when the window is closed.
   mainWindow.on('closed', function () {

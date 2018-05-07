@@ -16,6 +16,7 @@ import { OrderService } from '../orders/order.service';
 import { SettingsService } from '../settings/settings.service';
 import { Settings, Service } from '../settings/settings';
 import { Color, COLORS } from '../gfx/color';
+import { DownloadService } from '../download.service';
 import { environment } from '../../environments/environment';
 
 import * as _ from 'underscore';
@@ -74,7 +75,8 @@ export class OrderDetailComponent implements OnInit, OnDestroy  {
     private sanitizer: DomSanitizer,
     private snackBar: MatSnackBar,
     private location: Location,
-    private httpClient: HttpClient
+    private httpClient: HttpClient,
+    private downloadService: DownloadService
   ) { 
     this.order_field_types = {
       'Text':     OrderFieldType.Text,
@@ -626,6 +628,11 @@ export class OrderDetailComponent implements OnInit, OnDestroy  {
 
   uploadHost(): string{
     return environment.upload_host;
+  }
+
+  download(url:string):void{
+    console.log('[order-detail.component] gonna download:',url);
+    this.downloadService.downloadFile(`${environment.upload_host}/${url}`);
   }
 
   // numberControl(field){

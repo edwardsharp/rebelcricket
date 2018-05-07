@@ -34,10 +34,6 @@ export class AuthService {
   constructor(private http: HttpClient, private router: Router) { 
     this._isAdmin = new Subject<boolean>();
     this._isLoggedIn = new Subject<boolean>();
-    if(!environment.production){
-      this.isLoggedIn = true;
-      this.isAdmin = true;
-    }
   }
 
   adminObservable(): Observable<boolean> {
@@ -82,22 +78,13 @@ export class AuthService {
   }
 
   checkIsLoggedIn(): void{
-    if(environment.production){
-      this.http.get(this.signInUrl).subscribe( data => {
-        this.parseData(data);
-      }, err => {
-        console.log('[auth] isLoggedIn ERROR:',err);
-        this.parseData(undefined);
-      });
-    }else{
-      setTimeout(() => {
-        this.user = 'devel';
-        this.isLoggedIn = true;
-        this._isLoggedIn.next(true);
-        this.isAdmin = true;
-        this._isAdmin.next(this.isAdmin);
-      },500);
-    }
+    this.http.get(this.signInUrl).subscribe( data => {
+      this.parseData(data);
+      console.log('checkIsLoggedIn! data:',data,' isLoggedIn',this.isLoggedIn,' this.isAdmin',this.isAdmin);
+    }, err => {
+      console.log('[auth] isLoggedIn ERROR:',err);
+      this.parseData(undefined);
+    });
   }
 
   //non-padding string2hex (like `Buffer.from(str, 'utf8').toString('hex')` in nodejs)
@@ -112,8 +99,9 @@ export class AuthService {
   private parseData(data): void{
     if((data 
       && data["userCtx"] 
+      && data["userCtx"]["name"]
       && data["userCtx"]["name"] == this.user)
-      || ( data && data["name"] == this.user )
+      || ( data && data["name"] && data["name"] == this.user )
     ){
       this.isLoggedIn = true;
       this._isLoggedIn.next(true);

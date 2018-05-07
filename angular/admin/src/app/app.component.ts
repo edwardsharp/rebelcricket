@@ -84,6 +84,7 @@ export class AppComponent implements OnInit {
       }
     });
 
+    console.log('[app.component] gonna checkIsLoggedIn...');
     this.authService.checkIsLoggedIn();
   }
 

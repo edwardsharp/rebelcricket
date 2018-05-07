@@ -55,6 +55,7 @@ export class AuthComponent implements OnInit {
     this.hasMailingList = true;
 
     this.isLoggedIn = this.authService.isLoggedInObservable().subscribe( (isLoggedIn:boolean) => {
+      console.log('[auth.component] isLoggedInObservable isLoggedIn:',isLoggedIn);
       if(isLoggedIn){
         this.snackBar.open('Logged in successfully!', '', {
           duration: 3000

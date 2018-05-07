@@ -45,6 +45,7 @@ import { ServicesComponent } from './services/services.component';
 import { QuoteComponent } from './quote/quote.component';
 import { UploadComponent } from './upload/upload.component';
 import { UploadsComponent } from './uploads/uploads.component';
+import { DownloadService } from './download.service';
 
 const appRoutes: Routes = [
   { 
@@ -193,7 +194,7 @@ const appRoutes: Routes = [
     OrderService, 
     VendorGoodsService, 
     GsheetService, 
-    SettingsService
+    SettingsService, DownloadService
   ],
   bootstrap: [AppComponent]
 })

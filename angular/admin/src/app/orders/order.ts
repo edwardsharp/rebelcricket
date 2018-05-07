@@ -54,7 +54,8 @@ export class Order {
 export class Attachments{
   filenameID: string;
   files: Array<{name: string, original: string, thumb: string}>;
-
+  synced?: boolean;
+  
   constructor(obj) {
     obj && Object.assign(this, obj);
   }

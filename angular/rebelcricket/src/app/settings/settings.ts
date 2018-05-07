@@ -30,22 +30,9 @@ export class Settings {
   ){ }
 }
 
-export class PrivateSettings {
-  _id: string = 'privatesettings';
-  _rev?: string;
-  _attachments?: any;
-  constructor(
-    public google_api: GoogleApi
-  ){ }
-}
-
 export class OrderStatus {
 	collapsed?: boolean;
   constructor(public name: string, public position: number) { }
-}
-
-export class GoogleApi {
-  constructor(public client_id: string,public api_key: string) { }
 }
 
 export class Service {

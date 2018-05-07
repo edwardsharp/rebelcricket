@@ -299,7 +299,8 @@
 		  <mat-grid-tile *ngFor="let attachment of attachmentItemsForOrder()">
 		  	<mat-grid-tile-header>
 		  		<button mat-icon-button class="hover-item" matTooltip="Delete {{attachment.name}}" (click)="deleteAttachmentFor(attachment.name);"><mat-icon>clear</mat-icon></button>
-		  		{{attachment.name}}
+		  		<button mat-button (click)="download(attachment.original)" matTooltip="Save {{attachment.name}}"><mat-icon>file_download</mat-icon> {{attachment.name}}</button>
+
 		  	</mat-grid-tile-header>
 		  	<img class="grid-img" alt="{{attachment.name}}" src="{{uploadHost()}}/{{attachment.thumb}}" />
 
