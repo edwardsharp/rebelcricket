@@ -48,7 +48,7 @@ export class OrderService {
 
     this.db.createIndex({
       index: {
-        fields: ['_id','name']
+        fields: ['_id','name', 'email', 'phone']
       }
     }).then(result => {
       //console.log('index created! result',result);
@@ -209,8 +209,14 @@ export class OrderService {
       // selector: {name: q},
       // var regexp = new RegExp(keyword, 'i');
       // {name: {'$regex': regexp}};
-      selector: {name: {$regex: regexp}},
-      fields: ['_id', 'name'],
+      selector: {
+        $or: [
+          { name: {$regex: regexp} }, 
+          { email: {$regex: regexp} }, 
+          { phone: {$regex: regexp} }
+        ]
+      },
+      fields: ['_id', 'name', 'email', 'phone'],
       // sort: [{_id: 'desc'}],
       // limit: 25,
       // skip: 0,

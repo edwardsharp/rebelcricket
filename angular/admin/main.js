@@ -1,6 +1,6 @@
 const electron = require('electron');
 // Module to control application life.
-const {app, Menu, ipcMain} = require('electron');
+const {app, Menu, ipcMain, globalShortcut} = require('electron');
 // Module to create native browser window.
 const BrowserWindow = electron.BrowserWindow;
 
@@ -50,6 +50,12 @@ const template = [
         { label: "Undo", accelerator: "CmdOrCtrl+Z", selector: "undo:" },
         { label: "Redo", accelerator: "Shift+CmdOrCtrl+Z", selector: "redo:" },
         { type: "separator" },
+        {
+          label: 'Find',
+          accelerator: 'CmdOrCtrl+F',
+          click: () => { mainWindow.webContents.send('viewMenu', '/search'); }
+        },
+        { type: "separator" },
         { label: "Cut", accelerator: "CmdOrCtrl+X", selector: "cut:" },
         { label: "Copy", accelerator: "CmdOrCtrl+C", selector: "copy:" },
         { label: "Paste", accelerator: "CmdOrCtrl+V", selector: "paste:" },
@@ -61,19 +67,23 @@ const template = [
     submenu: [
       {
         label: 'Dashboard',
-        click() {mainWindow.webContents.send('viewMenu', '/dashboard');}
+        click() {mainWindow.webContents.send('viewMenu', '/dashboard');},
+        accelerator: "CmdOrCtrl+D"
       },
       {
         label: 'Orders',
-        click() {mainWindow.webContents.send('viewMenu', '/dashboard/orders');}
+        click() {mainWindow.webContents.send('viewMenu', '/dashboard/orders');},
+        accelerator: "CmdOrCtrl+O"
       },
       {
         label: 'New Order',
-        click() {mainWindow.webContents.send('viewMenu', '/dashboard/order/new');}
+        click() {mainWindow.webContents.send('viewMenu', '/dashboard/order/new');},
+        accelerator: "CmdOrCtrl+N"
       },
       {
         label: 'Upload Files',
-        click() {mainWindow.webContents.send('viewMenu', '/upload');}
+        click() {mainWindow.webContents.send('viewMenu', '/upload');},
+        accelerator: "CmdOrCtrl+U"
       },
       {
         label: 'All Uploads',
@@ -89,7 +99,8 @@ const template = [
       },
       {
         label: 'Settings',
-        click() {mainWindow.webContents.send('viewMenu', '/dashboard/settings');}
+        click() {mainWindow.webContents.send('viewMenu', '/dashboard/settings');},
+        accelerator: "CmdOrCtrl+,"
       }
     ]
   }

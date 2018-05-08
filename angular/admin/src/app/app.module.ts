@@ -46,6 +46,7 @@ import { QuoteComponent } from './quote/quote.component';
 import { UploadComponent } from './upload/upload.component';
 import { UploadsComponent } from './uploads/uploads.component';
 import { DownloadService } from './download.service';
+import { SearchComponent } from './search/search.component';
 
 const appRoutes: Routes = [
   { 
@@ -135,6 +136,10 @@ const appRoutes: Routes = [
   {
     path: 'auth',
     component: AuthComponent
+  },
+  {
+    path: 'search',
+    component: SearchComponent
   }
   // ,
   // { path: '**', component: PageNotFoundComponent }
@@ -167,7 +172,8 @@ const appRoutes: Routes = [
     ServicesComponent,
     QuoteComponent,
     UploadComponent,
-    UploadsComponent
+    UploadsComponent,
+    SearchComponent
   ],
   imports: [
   	RouterModule.forRoot(
