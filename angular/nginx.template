@@ -1,18 +1,52 @@
 server {
   listen 80;
   server_name ${COUCH_SERVER};
+
+  include /etc/nginx/snippets/letsencrypt.conf;
+
+  location / {
+    return 301 https://${COUCH_SERVER};
+  }
+}
+server {
+  listen 80;
+  server_name ${BASE_SERVER};
+  
+  include /etc/nginx/snippets/letsencrypt.conf;
+
+  location / {
+    return 301 https://${BASE_SERVER};
+  }
+}
+
+server {
+  server_name ${COUCH_SERVER};
+  listen 443 ssl http2;
+
+  ssl_certificate /etc/letsencrypt/live/${COUCH_SERVER}/fullchain.pem;
+  ssl_certificate_key /etc/letsencrypt/live/${COUCH_SERVER}/privkey.pem;
+  ssl_trusted_certificate /etc/letsencrypt/live/${COUCH_SERVER}/fullchain.pem;
+  include /etc/nginx/snippets/ssl.conf;
+
   location / {
     proxy_pass http://couch:5984;
     client_max_body_size 100m;
     proxy_buffering off;
   }
 }
+
 server {
-  listen 80;
   server_name ${BASE_SERVER};
+  listen 443 ssl http2;
+
+  ssl_certificate /etc/letsencrypt/live/${BASE_SERVER}/fullchain.pem;
+  ssl_certificate_key /etc/letsencrypt/live/${BASE_SERVER}/privkey.pem;
+  ssl_trusted_certificate /etc/letsencrypt/live/${BASE_SERVER}/fullchain.pem;
+  include /etc/nginx/snippets/ssl.conf;
 
   location / {
-    proxy_pass http://couch:8090;   
-    client_max_body_size 1g;
+    proxy_pass http://couch:8090;
+    client_max_body_size 100m;
+    proxy_buffering off;
   }
 }

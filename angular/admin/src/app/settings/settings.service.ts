@@ -39,8 +39,9 @@ export class SettingsService {
 			});
   	});
 
-    this.privatedb.get('privatesettings').then(result=>{
-    }).catch(err =>{
+    this.privatedb.get('privatesettings').then(result => {
+    },err => {
+      console.log('CREATING DEFAULT PRIVATE SETTINGZ!');
       this.privatedb.put(new PrivateSettings(new GoogleApi('',''))).then(function (response) {
         // handle response
       }).catch(function (err) {

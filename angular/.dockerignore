@@ -2,3 +2,5 @@
 admin/*
 rebelcricket/node_modules/*
 rebelcricket/src/*
+.env
+.production.env

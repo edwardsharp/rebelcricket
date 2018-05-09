@@ -14,10 +14,18 @@ for electronjs:
 `ng build --base-href ./`  
 `ng build --aot -prod --base-href ./`
 
+electronjs release build:  
+`./node_modules/.bin/electron-builder . -m`
+
 for web:  
 `ng build --aot -prod`
 
 Build artifacts will be stored in the `dist/` directory.
+
+## certbot (letsencrypt)
+
+in 3dwardsharp/nginx-certbot  
+`certbot certonly --webroot --agree-tos --email edward@edwardsharp.net -w /var/www/letsencrypt -d couch.rebelcricket.com -d beta.rebelcricket.com --dry-run`
 
 ## Running unit tests
 

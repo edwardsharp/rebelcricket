@@ -72,11 +72,7 @@ const corsOptions = {
   origin: [ 
     'http://localhost',
     'https://rebelcricket.com',
-    'https://beta.rebelcricket.com', 
-    'http://localhost:4200', 
-    'http://localhost:8080', 
-    'http://rebel.cricket:8080',
-    'https://pacific-lake-64830.herokuapp.com'],
+    'https://beta.rebelcricket.com'],
   optionsSuccessStatus: 200 // some legacy browsers (IE11, various SmartTVs) choke on 204
 }
 
@@ -514,9 +510,9 @@ function sendMail(order){
   const template = Handlebars.compile(text_mail);
 
   var mailOptions = {
-    from: '<Rebel Cricket Screen Prints> edward@edwardsharp.net',
-    to: 'edward@edwardsharp.net', //order.email,
-    // bcc: 'edward@edwardsharp.net',
+    from: 'Rebel Cricket Screen Prints <rebelcricket@gmail.com>',
+    to: order.email,
+    bcc: 'rebelcricket@gmail.com',
     subject: `Quote Request ${order.email}`,
     // text: template(order),
     html: template(order)
@@ -527,7 +523,10 @@ function sendMail(order){
   mail.compile().build((err, message) => {
    
       var dataToSend = {
-          to: 'edward@edwardsharp.net',
+          from: 'Rebel Cricket Screen Prints <rebelcricket@gmail.com>',
+          to: order.email,
+          bcc: 'rebelcricket@gmail.com',
+          subject: `Quote Request ${order.email}`,
           message: message.toString('ascii')
       };
    

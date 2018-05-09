@@ -1,0 +1,26 @@
+version: "2"
+services:
+  couch:
+    image: 3dwardsharp/rebelcricket
+    restart: always
+    env_file: .env
+    expose:
+      - 8090
+      - 5984
+    volumes:
+      - /home/core/rebeldata:/opt/couchdb/data
+      - /home/core/rebelgfx:/opt/rebelcricket/uploads
+  web:
+    image: 3dwardsharp/nginx-certbot
+    restart: always
+    volumes:
+      - /home/core/letsencrypt:/etc/letsencrypt
+      - ./nginx.template:/etc/nginx/conf.d/nginx.template
+    ports:
+      - "80:80"
+      - "443:443"
+    environment:
+      - COUCH_SERVER=couch.rebelcricket.com
+      - BASE_SERVER=beta.rebelcricket.com
+    command: /bin/bash -c "cron && envsubst < /etc/nginx/conf.d/nginx.template > /etc/nginx/conf.d/default.conf && nginx -g 'daemon off;'"
+

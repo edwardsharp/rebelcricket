@@ -1,0 +1,14 @@
+FROM nginx:1.13
+
+RUN apt-get update -y -qq && apt-get install -y --no-install-recommends apt-transport-https
+
+RUN apt-get install -y certbot cron
+RUN mkdir -p /var/www/letsencrypt/.well-known/acme-challenge
+COPY letsencrypt.conf /etc/nginx/snippets/letsencrypt.conf
+COPY ssl.conf /etc/nginx/snippets/ssl.conf
+
+RUN echo "0 3 * * * certbot renew --noninteractive --renew-hook \"systemctl reload nginx\"" > /etc/cron.d/certbot
+
+RUN crontab /etc/cron.d/certbot
+
+#certbot certonly --webroot --agree-tos --no-eff-email --email edward@edwardsharp.net -w /var/www/letsencrypt -d couch.rebelcricket.com -d beta.rebelcricket.com
