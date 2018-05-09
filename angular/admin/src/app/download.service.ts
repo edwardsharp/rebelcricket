@@ -6,7 +6,10 @@ declare global {
   }
 }
 
-const electron = window.require('electron');
+let electron;
+try{
+  electron = window.require('electron');
+}catch(e){}
 
 @Injectable()
 export class DownloadService {
@@ -15,11 +18,15 @@ export class DownloadService {
 
   downloadFile(url:string){
   	console.log('[download.service] gonna downloadFile:',url);
-  	electron.ipcRenderer.send("download", url);
+  	try{
+      electron.ipcRenderer.send("download", url);
+    }catch(e){}
   }
 
   syncUpload(url:string){
-  	electron.ipcRenderer.send("syncUpload", url);
+    try{
+    	electron.ipcRenderer.send("syncUpload", url);
+    }catch(e){}
   }
 
 }

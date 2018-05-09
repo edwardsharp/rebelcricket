@@ -17,7 +17,10 @@ for electronjs:
 electronjs release build:  
 `./node_modules/.bin/electron-builder . -m`
 
-for web:  
+for admin web:  
+`ng build --aot --env=adminweb`
+
+for rebelcricket web:  
 `ng build --aot -prod`
 
 Build artifacts will be stored in the `dist/` directory.

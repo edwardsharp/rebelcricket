@@ -1,5 +1,14 @@
 server {
   listen 80;
+  server_name ${BASE_SERVER};
+
+  location / {
+    proxy_pass http://couch:8090;   
+    client_max_body_size 1g;
+  }
+}
+server {
+  listen 80;
   server_name ${COUCH_SERVER};
   location / {
     proxy_pass http://couch:5984;
@@ -9,10 +18,10 @@ server {
 }
 server {
   listen 80;
-  server_name ${BASE_SERVER};
+  server_name ${ADMIN_SERVER};
 
   location / {
-    proxy_pass http://couch:8090;   
-    client_max_body_size 1g;
+    proxy_pass http://couch:8091;   
+    client_max_body_size 100m;
   }
 }

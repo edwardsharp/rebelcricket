@@ -52,22 +52,6 @@ const checkInterval = setInterval(checkFree, 500000);
 
 app.use(bodyParser.json()); // for parsing application/json
 
-const forceSSL = function() {
-  return function (req, res, next) {
-    if (req.headers['x-forwarded-proto'] !== 'https') {
-      return res.redirect(
-       ['https://', req.get('Host'), req.url].join('')
-      );
-    }
-    next();
-  }
-}
-
-// use the env var NO_SSL=true if you don't want to force a redirect to https (e.g. in development)
-if(!process.env.NO_SSL){
-	app.use(forceSSL());
-}
-
 const corsOptions = {
   origin: [ 
     'http://localhost',

@@ -15,8 +15,10 @@ declare global {
   }
 }
 
-const electron = window.require('electron');
-
+let electron;
+try{
+  electron = window.require('electron');
+}catch(e){}
 
 @Component({
   selector: 'app-root',
@@ -68,12 +70,14 @@ export class AppComponent implements OnInit {
 
     // electron.remote.Menu.setApplicationMenu(menu);
 
-    electron.ipcRenderer.on('viewMenu', (sender, arg) => {
-      console.log('electron.ipcRenderer on viewMenu arg:',arg);
-      this.zone.run(() => {
-        this.router.navigate([arg]);
+    try{
+      electron.ipcRenderer.on('viewMenu', (sender, arg) => {
+        console.log('electron.ipcRenderer on viewMenu arg:',arg);
+        this.zone.run(() => {
+          this.router.navigate([arg]);
+        });
       });
-    });
+    }catch(e){}
 
   }
 
