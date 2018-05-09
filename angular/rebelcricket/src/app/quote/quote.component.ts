@@ -474,6 +474,11 @@ export class QuoteComponent implements OnInit {
               duration: 2000,
             });
 
+            for(let file of res["files"]){
+              this.order.canvasLayerColors = this.order.canvasLayerColors || {};
+              this.order.canvasLayerColors[file["name"]] = [];
+            }
+            
             this.currentItem.attachments = this.attachmentItemsForOrder();
             //meh, this.currentItem.text
             this.inputValue = description;

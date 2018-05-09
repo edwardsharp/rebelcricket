@@ -41,3 +41,4 @@ config/secrets.yml
 /x-ray/node_modules
 /inboxsdk/examples
 /rails-rebelcricket/rebelcricket/vendorgoods/companycasuals.json
+/angular/.production.env
