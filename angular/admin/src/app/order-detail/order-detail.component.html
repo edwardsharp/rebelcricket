@@ -85,7 +85,7 @@
       </a>
 		  
 		  <mat-form-field class="with-button">
-		    <input matInput [(ngModel)]="order.phone" (change)="onChange($event)" placeholder="phone" type="number" pattern="[0-9]*">
+		    <input matInput [(ngModel)]="order.phone" (change)="onChange($event)" placeholder="phone" type="tel" pattern="[0-9]*">
 		  </mat-form-field>
 		  <a mat-icon-button 
         *ngIf="order.phone"
@@ -262,7 +262,7 @@
 	</div>
 
 
-	<div id="attachments">
+	<div id="attachments" class="page-break-before">
 
 		<section class="sticky sticky-service">
 			<h3>
@@ -295,7 +295,24 @@
 
     <img *ngIf="order.canvasDataImg" class="canvas-data-img" alt="{{canvas-data-img}}" [src]="sanitizer.bypassSecurityTrustUrl(order.canvasDataImg)" />
     <!-- class="attachment-cards" class="attachment-img" -->
-    <mat-grid-list cols="{{gridCols}}" rowHeight="1:1.5" gutterSize="10px">
+    
+    <div id="print-images" class="print-only">
+	    <div *ngFor="let attachment of attachmentItemsForOrder()">
+	    	<h3>{{attachment.name}}</h3>
+	    	<img class="print-img" alt="{{attachment.name}}" src="{{uploadHost()}}/{{attachment.thumb}}" />
+
+	    	<mat-list role="list" class="print-only" *ngIf="order.canvasLayerColors && order.canvasLayerColors[attachment.name]">
+	        <mat-list-item>Colors ({{order.canvasLayerColors[attachment.name]?.length}})</mat-list-item>
+	        <mat-list-item role="listitem" *ngFor="let color of order.canvasLayerColors[attachment.name]">
+	          <span class="color-tile" [style.background]="color">&nbsp;&nbsp;&nbsp;&nbsp;</span>
+	          {{color}}
+	          <button mat-icon-button (click)="deleteColorFor(attachment.name, color);" matTooltip="Remove {{color}}"><mat-icon>clear</mat-icon></button>
+	        </mat-list-item>
+	      </mat-list>
+	    </div>
+	  </div>
+
+    <mat-grid-list cols="{{gridCols}}" rowHeight="1:1.5" gutterSize="10px" class="no-print">
 		  <mat-grid-tile *ngFor="let attachment of attachmentItemsForOrder()">
 		  	<mat-grid-tile-header>
 		  		<button mat-icon-button class="hover-item" matTooltip="Delete {{attachment.name}}" (click)="deleteAttachmentFor(attachment.name);"><mat-icon>clear</mat-icon></button>
@@ -334,18 +351,13 @@
 
 			      </ng-template>
 			    </mat-expansion-panel>
-
 		  	</mat-grid-tile-footer>
-
-
-		  	
-		  	
 		  </mat-grid-tile>
 		</mat-grid-list>
 
+	</div>
 
-
-	<div id="history" class="no-quote">
+	<div id="history" class="no-quote no-print">
 		<section class="sticky sticky-service">
 			<h3>History</h3>
 		</section>
@@ -365,7 +377,7 @@
   </mat-expansion-panel>
 	</div>
 
-	<mat-action-row>
+	<mat-action-row class="no-print">
 		<mat-select
 		  class="service-select hover-item" 
 			[(ngModel)]="selectedService" placeholder="Add Service">

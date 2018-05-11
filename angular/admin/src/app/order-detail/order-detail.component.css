@@ -217,6 +217,16 @@ section h3{
 	top: 63px;
 }
 
+#print-images{
+	display: flex;
+	max-width: 100vw;
+}
+.print-img{
+	max-width: 250px;
+}
+.print-only, .print-only *{
+	display: none;
+}
 
 @media (max-width: 599px) {
 	mat-form-field{
@@ -262,4 +272,30 @@ section h3{
 	.color-qty{
 		display: block;
 	}
+}
+
+@media print
+{    
+	.print-only{
+		display: block;
+	}
+	.print-only *{
+		display: unset;
+	}
+
+	.page-break-before{
+		page-break-before: always;
+	}
+
+	mat-action-row, .sticky{
+		position: unset;
+	}
+
+  button, .no-print, .no-print * {
+    display: none !important;
+  }
+
+  mat-toolbar {
+  	page-break-inside: avoid;
+  }
 }

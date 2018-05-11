@@ -27,3 +27,10 @@ mat-chip{
 	margin-left: -4px;
   margin-right: 6px;
 }
+
+@media print
+{    
+  .no-print, .no-print * {
+    display: none !important;
+  }
+}
