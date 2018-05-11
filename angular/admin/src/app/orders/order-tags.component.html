@@ -6,7 +6,7 @@
       (blur)="chipBlur()"
 			[removable]="removable" 
 			(remove)="remove(tag)">
-	  	<mat-icon matChipRemove>cancel</mat-icon>
+	  	<mat-icon matChipRemove class="no-print">cancel</mat-icon>
       {{tag}}
     </mat-chip>
     <mat-chip (click)="addTag()" (blur)="chipBlur()" class="no-print">
