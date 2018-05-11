@@ -139,8 +139,8 @@ export class SettingsComponent implements OnInit {
       input.value = '';
     }
   }
-  removeStatus(fruit: any): void {
-    let index = this.settings.order_statuses.indexOf(fruit);
+  removeStatus(status: any): void {
+    let index = this.settings.order_statuses.indexOf(status);
     if (index >= 0) {
       this.disableSave = false;
       this.settings.order_statuses.splice(index, 1);
