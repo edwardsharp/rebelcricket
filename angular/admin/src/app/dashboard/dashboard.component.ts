@@ -87,6 +87,12 @@ export class DashboardComponent implements OnInit, OnDestroy {
 	  		if(this.settings && this.settings.order_statuses){
 	  			for(let status of this.settings.order_statuses){
 		  			newOrdersForStatus[status.name] = this.getOrdersFor(status.name, orderData);
+            try{
+              let _container = this.containers.find( c => c.name == status.name );
+              if(newOrdersForStatus[status.name].length == 0){
+                _container.collapsed = 'inactive';
+              }else{  _container.collapsed = 'active'; }
+            }catch(e){}
 		  		}
 	  		}
 
