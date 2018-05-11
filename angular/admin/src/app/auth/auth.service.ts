@@ -97,12 +97,21 @@ export class AuthService {
   }
 
   private parseData(data): void{
+    //#todo: this.user will go away after page reload, so need to find is from somewhere more permanent...
     if((data 
       && data["userCtx"] 
       && data["userCtx"]["name"]
-      && data["userCtx"]["name"] == this.user)
-      || ( data && data["name"] && data["name"] == this.user )
+      && data["userCtx"]["name"] != '')
+      || ( data && data["name"] && data["name"] != '' )
     ){
+      
+      //set this.user from the response cuz the page might have reloaded (and we lost this.user)
+      if(!this.user && this.user != data["userCtx"]["name"]){
+        this.user = data["userCtx"]["name"];
+      }else if(!this.user && this.user != data["name"]){
+        this.user = data["name"];
+      }
+
       this.isLoggedIn = true;
       this._isLoggedIn.next(true);
       if( (data["userCtx"] 
@@ -112,7 +121,7 @@ export class AuthService {
       ){
         this.isAdmin = true;
         this._isAdmin.next(this.isAdmin);
-        this.router.navigate(['/dashboard']);
+        // this.router.navigate(['/dashboard']);
       }else{
         this.isAdmin = false;
         this._isAdmin.next(this.isAdmin);

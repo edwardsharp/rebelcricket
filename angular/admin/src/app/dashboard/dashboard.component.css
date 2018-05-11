@@ -67,6 +67,7 @@ mat-toolbar {
   position: sticky;
   top: 0;
   z-index: 2;
+  height: 40px;
 }
 
 mat-toolbar h1 {
@@ -124,6 +125,22 @@ mat-card-actions mat-basic-chip{
   padding: 4px 10px;
   margin-bottom: 3px;
   margin-left: 5px;
+}
+
+.menu-btn{
+  margin-top: -8px;
+}
+
+.hover-item:hover {
+  background-color: #cfcfcf;
+}
+
+.email-overflow{
+  text-overflow: ellipsis;
+  overflow-x: hidden;
+  display: block;
+  max-width: 100%;
+  text-align: left;
 }
 
 .mat-chip-remove{

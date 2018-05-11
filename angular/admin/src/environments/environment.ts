@@ -6,7 +6,7 @@
 export const environment = {
   production: false,
   admin_party: true, // Admin Party! 🎉
-  couch_host: `http://localhost:5984`,
+  couch_host: `http://localhost:8091/_couch`,
   couch_path: '',
   upload_post: 'https://beta.rebelcricket.com/upload',
   upload_host: 'https://beta.rebelcricket.com/uploads'

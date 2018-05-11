@@ -82,10 +82,19 @@
         <mat-card-header>
           <div mat-card-avatar>
             <button mat-icon-button 
+              class="menu-btn hover-item"
               [matMenuTriggerFor]="cardMenu" 
               matTooltip="More..." 
               matTooltipPosition="above">
               <mat-icon class="icon">more_vert</mat-icon>
+            </button>
+
+            <button mat-icon-button 
+              class="menu-btn hover-item"
+              matTooltip="Move to next status" 
+              matTooltipPosition="above"
+              (click)="moveToNextStatus(order)">
+              <mat-icon class="icon">chevron_right</mat-icon>
             </button>
 
             <mat-menu #cardMenu="matMenu">
@@ -181,6 +190,7 @@
           </a>
 
           <a mat-button 
+            class="email-overflow"
             *ngIf="order.email"
             href="mailto:{{order.email}}"
             matTooltip="Email {{order.email}}">

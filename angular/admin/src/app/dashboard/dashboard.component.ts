@@ -12,7 +12,7 @@ import {
 
 import { OrderService } from '../orders/order.service';
 import { SettingsService } from '../settings/settings.service';
-import { Settings } from '../settings/settings';
+import { Settings, OrderStatus } from '../settings/settings';
 import { Order } from '../orders/order';
 
 @Component({
@@ -44,8 +44,8 @@ import { Order } from '../orders/order';
 	  ]),
 	  trigger('containerState', [
 	    state('inactive', style({
-	      'min-width': '64px',
-	      'max-width': '64px'
+	      'min-width': '40px',
+	      'max-width': '40px'
 	    })),
 	    state('active',   style({
 	      'min-width': '284px',
@@ -194,6 +194,16 @@ export class DashboardComponent implements OnInit, OnDestroy {
   updateOrderStatus(order:Order,status:string): void{
   	order.status = status;
   	this.saveOrder(order);
+  }
+
+  moveToNextStatus(order:Order): void{
+    const _status = this.settings.order_statuses.find( s => s.name == (order.status == 'new' ? 'Inbox' : order.status));
+    const _nextStatus = this.settings.order_statuses.find( s => s.position == _status.position + 1 );
+    if(_nextStatus && _nextStatus.name){
+      console.log('[dashboard.component] moveToNextStatus _nextStatus.name',_nextStatus.name);
+      order.status = _nextStatus.name;
+      this.saveOrder(order);
+    }
   }
 
   removeOrderTag(order: Order, tag: any): void {
