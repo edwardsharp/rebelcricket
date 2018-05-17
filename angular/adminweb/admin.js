@@ -8,6 +8,7 @@ const request = require('request');
 const url = require('url');
 const proxy = require('http-proxy-middleware');
 const Sequelize = require('sequelize');
+require('dotenv').config({path: '../.env'});
 
 const couchProxy = proxy('http://localhost:5984', {
     forwardPath: req => url.parse(req.url).path.replace('/_couch',''),
@@ -44,7 +45,7 @@ const corsOptions = {
 // });
 
 
-const sequelize = new Sequelize('postgres://rebelcricket:password@localhost:5432/rebelcricket', { 
+const sequelize = new Sequelize(`postgres://${process.env.POSTGRES_USER}:${process.env.POSTGRES_PASSWORD}@pg:5432/${process.env.POSTGRES_DB}`, { 
 	define: {
   	timestamps: false
   }
@@ -111,9 +112,22 @@ const Item = sequelize.define('items', {
 // });
 
 app.get('/api/vendor_goods/styles', cors(corsOptions), function (req, res){
-  Style.aggregate('Category Name', 'DISTINCT', { plain: false })
-	.map(function (row) { return row.DISTINCT })
-	.then(function (data) { res.json({data: data}) })
+  //Style.count({distinct: 'categoryName'})
+  // Style.aggregate('Category Name', 'DISTINCT', { plain: false })
+	// .map(function (row) { return row.DISTINCT })
+	Style.findAndCountAll({
+	  attributes: [
+	    'categoryName'
+	  ],
+	  group: 'Category Name'
+	})
+	.then(function (data) { 
+		res.json({
+			data: data.count
+				.map(function(v,i) {return {categoryName: data.rows[i]["categoryName"], count: v["count"] } })
+				
+		}) 
+	})
 	.catch(function (err) { res.status(500).send(err) });
 });
 
@@ -147,4 +161,5 @@ app.use("/*", ngProxy);
 
 //boot.
 app.listen(process.env.ADMIN_PORT || 8091);
+console.log('pg_user',process.env.POSTGRES_USER);
 console.log('listening on http://localhost:',process.env.ADMIN_PORT || 8091);
