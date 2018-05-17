@@ -42,3 +42,4 @@ config/secrets.yml
 /inboxsdk/examples
 /rails-rebelcricket/rebelcricket/vendorgoods/companycasuals.json
 /angular/.production.env
+/angular/adminweb/dist

@@ -1,7 +1,9 @@
 {
   "name": "admin",
   "productName": "admin",
-  "version": "0.0.1",
+  "version": "0.0.2",
+  "author": "3dwardsharp",
+  "description": "Rebel Cricket Admin.app",
   "license": "GPL-3.0",
   "main": "main.js",
   "build": {

@@ -66,6 +66,9 @@ COUCH_HOST=http://admin:zomgzomg@localhost:5984
 MAIL_KEY=key-12345666
 MAIL_DOMAIN=somedomain.mailgun.org
 NG_HOST=http://beta.rebelcricket.com
+POSTGRES_USER=rebelcricket
+POSTGRES_PASSWORD=passwd
+POSTGRES_DB=rebelcricket
 ```
 
 add persistant volume storage in docker-compose.yml (if you'd like)

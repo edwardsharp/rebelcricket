@@ -5,6 +5,8 @@ services:
     image: 3dwardsharp/rebelcricket
     env_file: .env
     ports:
+      - "8090:8090"
+      - "8091:8091"
       - "5984:5984"
     # volumes:
     #   - /storage/couchdata/:/opt/couchdb/data

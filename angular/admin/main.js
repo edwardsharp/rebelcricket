@@ -1,6 +1,6 @@
 const electron = require('electron');
 // Module to control application life.
-const {app, Menu, ipcMain, globalShortcut} = require('electron');
+const {app, Menu, ipcMain, globalShortcut, shell} = require('electron');
 // Module to create native browser window.
 const BrowserWindow = electron.BrowserWindow;
 
@@ -54,6 +54,24 @@ const template = [
           label: 'Find',
           accelerator: 'CmdOrCtrl+F',
           click: () => { mainWindow.webContents.send('viewMenu', '/search'); }
+        },
+        { type: "separator" },
+        {
+          label: 'Print',
+          accelerator: 'CmdOrCtrl+P',
+          click: () => { mainWindow.webContents.print(); }
+        },
+        {
+          label: 'Print PDF',
+          click: () => { mainWindow.webContents.printToPDF({}, (error, data) => {
+            if (error) throw error
+            const filename = `${os.homedir()}/RebelCricketAdmin/${Date.now()}.pdf`;
+            fs.writeFile(filename, data, (error) => {
+              if (error) throw error
+              shell.showItemInFolder(filename);
+            });
+            }); 
+          }
         },
         { type: "separator" },
         { label: "Cut", accelerator: "CmdOrCtrl+X", selector: "cut:" },

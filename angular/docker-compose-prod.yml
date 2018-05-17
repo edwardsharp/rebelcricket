@@ -6,6 +6,7 @@ services:
     env_file: .env
     expose:
       - 8090
+      - 8091
       - 5984
     volumes:
       - /home/core/rebeldata:/opt/couchdb/data
