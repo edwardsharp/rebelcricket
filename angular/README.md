@@ -71,3 +71,81 @@ NG_HOST=http://beta.rebelcricket.com
 add persistant volume storage in docker-compose.yml (if you'd like)
 
 `docker-compose up` 
+
+
+# SQL stuff for vendor goodz
+
+```sql 
+CREATE TABLE "public"."items" (
+    "Company" text,
+    "Item Number" text,
+    "Description" text,
+    "Features" text,
+    "Piece" text,
+    "Dozen" text,
+    "Case" text,
+    "Style Code" text,
+    "Size Name" text,
+    "Size Category" text,
+    "Size Code" text,
+    "Color Name" text,
+    "Hex Code" text,
+    "Color Code" text,
+    "Weight" text,
+    "Domain" text,
+    "ProdDetail Image" text,
+    "ProdGallery Image" text,
+    "Retail Price" text,
+    "Style Number" text,
+    "GTIN Number" text,
+    "Max Inventory" text,
+    "Closeout" text,
+    "Mill Name" text,
+    "Pack Qty" text,
+    "Case Qty" text,
+    "Launch Date" text,
+    "Coming Soon" text,
+    "Front of Image Name" text,
+    "Back of Image Name" text,
+    "Side of Image Name" text,
+    "PMS Code" text,
+    "Size Sort Order" text
+);
+
+COPY items FROM '/Users/edward/Desktop/TRASH/alphabroder/fromweb/items_R064.csv' WITH (FORMAT csv, HEADER, ENCODING 'latin1');
+
+CREATE TABLE "public"."styles" (
+    "Company" text,
+    "Style Code" text,
+    "Description" text,
+    "Features" text,
+    "Domain" text,
+    "ProdDetail Image" text,
+    "ProdThumbnail Image" text,
+    "ProdCompare Image" text,
+    "ProdSearch Image" text,
+    "Mill-Category" text,
+    "Mill Code" text,
+    "Category Code" text,
+    "Item Count" text,
+    "Mill Name" text,
+    "Category Name" text,
+    "Popularity" text
+);
+
+COPY styles FROM '/Users/edward/Desktop/TRASH/alphabroder/fromweb/styles.csv' WITH (FORMAT csv, HEADER, ENCODING 'latin1');
+
+select distinct "Category Name" from styles;
+
+```
+
+```sh
+psql -h beta.rebelcricket.com -d rebelcricket -U rebelcricket -c \
+    "\COPY styles FROM STDIN WITH (FORMAT csv, HEADER, ENCODING 'latin1')" \
+    < /Users/edward/Desktop/TRASH/alphabroder/fromweb/styles.csv
+
+psql -h beta.rebelcricket.com -d rebelcricket -U rebelcricket -c \
+    "\COPY items FROM STDIN WITH (FORMAT csv, HEADER, ENCODING 'latin1')" \
+    < /Users/edward/Desktop/TRASH/alphabroder/fromweb/items_R064.csv
+```
+

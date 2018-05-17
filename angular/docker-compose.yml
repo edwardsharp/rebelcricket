@@ -20,3 +20,12 @@ services:
       - COUCH_SERVER=couch.rebelcricket.com
       - ADMIN_SERVER=admin.rebelcricket.com
     command: /bin/bash -c "envsubst < /etc/nginx/conf.d/nginx.template > /etc/nginx/conf.d/default.conf && nginx -g 'daemon off;'"
+  pg:
+    # restart: always
+    #network_mode: bridge
+    env_file: .env
+    image: postgres:9.6
+    ports:
+      - "5432:5432"
+    volumes:
+      - ./init-vendorgoods-db.sh:/docker-entrypoint-initdb.d/init-vendorgoods-db.sh
