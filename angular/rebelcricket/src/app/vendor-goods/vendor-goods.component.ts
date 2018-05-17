@@ -3,7 +3,7 @@ import { ActivatedRoute, Router, ParamMap } from '@angular/router';
 import { Observable } from 'rxjs/Observable';
 import {MatDialog, MatDialogRef, MAT_DIALOG_DATA, MatDatepickerInputEvent, MatSnackBar} from '@angular/material';
 
-import { VendorGood } from './vendor-good';
+import { VendorGoodStyle, VendorGoodItem } from './vendor-good';
 import { VendorGoodsService } from './vendor-goods.service';
 import { VendorGoodsDialogComponent } from './vendor-goods-dialog.component';
 import { Order } from '../orders/order';
@@ -17,9 +17,15 @@ import { OrderService } from '../orders/order.service';
 export class VendorGoodsComponent implements OnInit {
 
 	loading: boolean = true;
-	vendorGoods: Array<VendorGood> = [];
-  vendorGoodsCategories: Array<{name:string,count:number}> = [];
-	vendorGoodsIndexSelected: Array<string> = [];
+	// vendorGoods: Array<VendorGood> = [];
+  vendorGoodsStyles: Array<VendorGoodStyle> = [];
+  vendorGoodsItems: Array<VendorGoodItem> = [];
+
+  vendorGoodsCategories: Array<{categoryName:string,count:number}> = [];
+	
+  vendorGoodsIndexSelected: Array<string> = [];
+  vendorGoodsIndexLoaded: Array<string> = [];
+
   order: Order;
   line_item_id: string;
   catalog: string;
@@ -34,7 +40,7 @@ export class VendorGoodsComponent implements OnInit {
   ) { }
 	
 	ngOnInit(): void {
-    this.getVendorGoods();
+    this.getCategories();
 
     this.route.paramMap
       .switchMap((params: ParamMap) => {
@@ -49,8 +55,10 @@ export class VendorGoodsComponent implements OnInit {
         if(order && order._id && order.history){ 
           this.order = order;
         }else{ this.line_item_id = undefined; }
+
       });
 
+    
   }
 
   toggleVendorGoodCategory(category:string){
@@ -59,49 +67,62 @@ export class VendorGoodsComponent implements OnInit {
   	}else{
   		this.vendorGoodsIndexSelected.push(category);	
   	}
+
+    if(this.vendorGoodsIndexLoaded.indexOf(category) == -1){
+      this.vendorGoodsIndexLoaded.push(category)
+      this.vendorGoodsService.getStyle(category).subscribe( data => {
+        this.vendorGoodsStyles = this.vendorGoodsStyles.concat(data["data"]);
+      }, err => {
+        console.log('getStyle ERR:',err);
+      });
+    }
   }
 
-  selectAll(selected:boolean,items:any){
-  	items.map(item => item.selected = selected);
-  }
+  // selectAll(selected:boolean,items:any){
+  // 	items.map(item => item.selected = selected);
+  // }
 
-  getVendorGoods(): void {
+  // getVendorGoods(): void {
 
-    this.loading = true;
-    this.vendorGoodsService.getVendorGoods(this.catalog).then((vendorGoods) => {
+  //   this.loading = true;
+  //   this.vendorGoodsService.getVendorGoods(this.catalog).then((vendorGoods) => {
       
-      this.vendorGoods = vendorGoods.rows.map(d=>{return d.doc});
-      let catCount = this.vendorGoods
-        .map(({ category }) => category)
-        .reduce((categories, category) => {
-          const count = categories[category] || 0;
-          categories[category] = count + 1;
-          return categories;
-        }, {});
+  //     this.vendorGoods = vendorGoods.rows.map(d=>{return d.doc});
+  //     let catCount = this.vendorGoods
+  //       .map(({ category }) => category)
+  //       .reduce((categories, category) => {
+  //         const count = categories[category] || 0;
+  //         categories[category] = count + 1;
+  //         return categories;
+  //       }, {});
 
-      for(let item of Object.keys(catCount)){
-        this.vendorGoodsCategories.push({name: item,count: catCount[item]});
-      }
-      this.loading = false;
-    }).catch((err) => {
-      this.loading = false;
-      console.error('o noz! getVendorGoods err:', err);
-    });
+  //     for(let item of Object.keys(catCount)){
+  //       this.vendorGoodsCategories.push({name: item,count: catCount[item]});
+  //     }
+  //     this.loading = false;
+  //   }).catch((err) => {
+  //     this.loading = false;
+  //     console.error('o noz! getVendorGoods err:', err);
+  //   });
 
+  // }
+
+  getCategories(){
+     this.vendorGoodsService.getStyles().subscribe( data => {
+        console.log('getStyles response data:',data);
+        // return data["data"];
+        this.vendorGoodsCategories = data["data"];
+        this.loading = false;
+      }, err => {
+        console.log('getStyles ERR:',err);
+        // return [];
+      });;
   }
 
-  vendorGoodsSubCategories(category:string){
-    return this.vendorGoods
-      .filter(g => g.category == category)
-      .map(g => g.sub_category)
-      .filter((value, index, self) => self.indexOf(value) === index);
-  }
-  vendorGoodsForCategory(category:string,sub_category:string){
-    if(sub_category != undefined || sub_category != ''){
-      return this.vendorGoods.filter(g => g.category == category && g.sub_category == sub_category);
-    }else{
-      return this.vendorGoods.filter(g => g.category == category);
-    } 
+  vendorGoodsForStyle(category:string): Array<VendorGoodStyle>{
+    // return this.vendorGoodsService.getStyle(category);
+    console.log('vendorGoodsForStyle',category,' ret:',this.vendorGoodsStyles);
+    return this.vendorGoodsStyles.filter(g => g.categoryName == category);
   }
 
   // clearCategories(){
@@ -113,8 +134,6 @@ export class VendorGoodsComponent implements OnInit {
   // }
 
   //dialog stuff 
-  animal: string;
-  name: string;
 
   date: Date;
   destination: string;

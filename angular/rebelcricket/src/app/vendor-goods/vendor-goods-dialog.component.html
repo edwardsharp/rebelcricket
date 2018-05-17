@@ -1,16 +1,16 @@
-<h1 mat-dialog-title class="center">{{vendorItem.title}}</h1>
+<h1 mat-dialog-title class="center">{{vendorItem.millName}} {{vendorItem.styleCode}}</h1>
 
 <div mat-dialog-content>     
   <div class="dialog-content-wrapper">
-    <div class="center">{{vendorItem.prod_id}} {{vendorItem.category}} {{vendorItem.sub_category}}</div>
+    <div class="center">{{vendorItem.categoryName}}</div>
     <div class="row">
       <div class="center">
-        <img *ngIf="vendorItem.prod_id" src="http://cdn.companycasuals.com/cache/cc/{{vendorItem.prod_id}}.jpg" class="info">
-        <p>{{vendorItem.prod_desc_text}}</p>
+        <img src="{{vendorItem.domain}}{{vendorItem.prodDetailImage}}" class="info" alt="{{vendorItem.millName}}">
+        <p class="clearboth">{{vendorItem.description}}</p>
       </div>
       <div style="min-width: 33vw;">
         <ul>
-          <li *ngFor="let item of vendorItem.prod_desc_items">{{item}}</li>
+          <li *ngFor="let item of featuresList(vendorItem)">{{item}}</li>
         </ul>
       </div>
 

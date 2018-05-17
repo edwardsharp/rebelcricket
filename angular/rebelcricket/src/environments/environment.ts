@@ -7,5 +7,5 @@ export const environment = {
   production: false,
   admin_party: true, // Admin Party! 🎉
   couch_host: 'http://localhost:5984',
-  api_host: 'http://localhost:8091/api/vendor_goods/styles'
+  api_host: 'http://localhost:8091'
 };

@@ -23,6 +23,7 @@ app.use(bodyParser.json()); // for parsing application/json
 
 const corsOptions = {
   origin: [ 
+  	'http://localhost:4200',
     'http://localhost:8091',
     'https://admin.rebelcricket.com'],
   optionsSuccessStatus: 200 // some legacy browsers (IE11, various SmartTVs) choke on 204
@@ -136,7 +137,7 @@ app.get('/api/vendor_goods/style/:categoryName', cors(corsOptions), function (re
 	  where: {
 	    categoryName: req.params['categoryName']
 	  },
-	  order: [[sequelize.cast(sequelize.col('styles.Popularity'), 'integer'), 'DESC']]
+	  order: [[sequelize.cast(sequelize.col('styles.Popularity'), 'integer'), 'ASC']]
 	})
 	.then(function (data) { res.json({data: data}) })
 	.catch(function (err) { res.status(500).send(err) });

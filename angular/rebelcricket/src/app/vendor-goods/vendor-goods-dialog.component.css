@@ -24,6 +24,10 @@
   background-color: white;
 }
 
+.clearboth{
+  clear: both;
+}
+
 @media (max-width: 599px) {
   .row{
     flex-direction: column;

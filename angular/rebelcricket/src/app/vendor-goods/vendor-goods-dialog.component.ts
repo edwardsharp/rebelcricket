@@ -22,6 +22,10 @@ export class VendorGoodsDialogComponent implements OnInit {
     this.dialogRef.close();
   }
 
+  featuresList(vendorItem){
+    return vendorItem.features.split('; ').filter(String);
+  }
+
   //sometimez shit is nested in a deep array (like low inventory tracking), which is mostly
   // data cruft so try and iron that out flat, here:
   flattenColorName(color:any){
