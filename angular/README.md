@@ -28,7 +28,9 @@ Build artifacts will be stored in the `dist/` directory.
 ## certbot (letsencrypt)
 
 in 3dwardsharp/nginx-certbot  
-`certbot certonly --webroot --agree-tos --email edward@edwardsharp.net -w /var/www/letsencrypt -d couch.rebelcricket.com -d beta.rebelcricket.com --dry-run`
+`certbot certonly --webroot --agree-tos --email edward@edwardsharp.net -w /var/www/letsencrypt -d couch.rebelcricket.com -d beta.rebelcricket.com -d admin.rebelcricket.com --dry-run`
+
+note: i had to run the certbot cmd for each domain (-d) individually (seemz to chain the certs into one folder, which doesn't work with the nginx.template config)
 
 ## Running unit tests
 
