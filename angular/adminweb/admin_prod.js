@@ -92,32 +92,187 @@ const Item = sequelize.define('items', {
 });
 // Item.sync();
 
-app.get('/api/vendor_goods/styles', cors(corsOptions), function (req, res){
-  Style.aggregate('Category Name', 'DISTINCT', { plain: false })
-	.map(function (row) { return row.DISTINCT })
-	.then(function (data) { res.json({data: data}) })
-	.catch(function (err) { res.status(500).send(err) });
+const Catalog = sequelize.define('catalogs', {
+  name: { type: Sequelize.STRING },
+  'Style Code': {
+   type: Sequelize.STRING,
+   references: {
+     model: Style,
+     key: 'Style Code'
+   }
+ }
+});
+// Catalog.hasOne(Style); //, {foreignKey: 'Style Code'} 
+Catalog.belongsTo(Style, {foreignKey: 'Style Code'}); //
+Catalog.sync()
+
+
+app.get('/api/vendor_goods/styles/:catalog', cors(corsOptions), function (req, res){
+	if(req.params['catalog'] && req.params['catalog'] != 'default'){
+		Catalog.findAll({
+			where: {
+				name: req.params['catalog']
+			}
+		})
+		.then(function (catalogz) { 
+			Style.findAndCountAll({
+				where: {
+					'Style Code': {
+						[Sequelize.Op.in]: catalogz.map( c => c['Style Code'])
+					}
+				},
+			  attributes: [
+			    'categoryName'
+			  ],
+			  group: 'Category Name'
+			})
+			.then(function (data) { 
+				res.json({
+					data: data.count
+						.map(function(v,i) {return {categoryName: data.rows[i]["categoryName"], count: v["count"] } })
+						
+				}); 
+			})
+			.catch(function (err) { 
+				res.status(500).send(err) });
+
+		})
+		.catch(function (err) { res.status(500).send(err) });
+	}else{
+		Style.findAndCountAll({
+		  attributes: [
+		    'categoryName'
+		  ],
+		  group: 'Category Name'
+		})
+		.then(function (data) { 
+			res.json({
+				data: data.count
+					.map(function(v,i) {return {categoryName: data.rows[i]["categoryName"], count: v["count"] } })
+					
+			}) 
+		})
+		.catch(function (err) { res.status(500).send(err) });
+	}
 });
 
-app.get('/api/vendor_goods/style/:categoryName', cors(corsOptions), function (req, res){
-	Style.findAll({
-	  where: {
-	    categoryName: req.params['categoryName']
-	  },
-	  order: [[sequelize.cast(sequelize.col('styles.Popularity'), 'integer'), 'DESC']]
-	})
-	.then(function (data) { res.json({data: data}) })
-	.catch(function (err) { res.status(500).send(err) });
+app.get('/api/vendor_goods/style/:catalog/:categoryName', cors(corsOptions), function (req, res){
+	if(req.params['catalog'] != 'default'){
+		Catalog.findAll({
+				where: {
+					name: req.params['catalog']
+				}
+			})
+			.then(function (catalogz) { 
+				Style.findAll({
+					where: {
+						'Style Code': {
+							[Sequelize.Op.in]: catalogz.map( c => c['Style Code'])
+						},
+						categoryName: req.params['categoryName']
+					},
+				  order: [[sequelize.cast(sequelize.col('styles.Popularity'), 'integer'), 'ASC']]
+				})
+				.then(function (data) { res.json({data: data}) })
+				.catch(function (err) { res.status(500).send(err) });
+
+			})
+			.catch(function (err) { res.status(500).send(err) });
+	}else{
+		Style.findAll({
+		  where: {
+		    categoryName: req.params['categoryName']
+		  },
+		  order: [[sequelize.cast(sequelize.col('styles.Popularity'), 'integer'), 'ASC']]
+		})
+		.then(function (data) { res.json({data: data}) })
+		.catch(function (err) { res.status(500).send(err) });
+	}
 });
 
-app.get('/api/vendor_goods/items/:styleCode', cors(corsOptions), function (req, res){
+app.get('/api/vendor_goods/items/:styleNumber', cors(corsOptions), function (req, res){
 	Item.findAll({
 	  where: {
-	    styleCode: req.params['styleCode']
+	    styleNumber: req.params['styleNumber']
 	  }
 	})
 	.then(function (data) { res.json({data: data}) })
 	.catch(function (err) { res.status(500).send(err) });
+});
+
+
+app.get('/api/vendor_goods/catalogs', cors(corsOptions), function(req, res){
+	Catalog.findAll({
+		attributes: [
+	    'name'
+	  ],
+	  group: 'name'
+	})
+	.then(function (data) { res.json({data: data}) })
+	.catch(function (err) { res.status(500).send(err) });
+});
+
+app.get('/api/vendor_goods/catalog/:name', cors(corsOptions), function(req, res){
+	if(req.params['name'] && req.params['name'] != 'default'){
+		Catalog.findAll({
+			where: {
+				name: req.params['name']
+			},
+			include: [
+		    { model: Style }
+		  ]
+		})
+		.then(function (data) { res.json({data: data}) })
+		.catch(function (err) { res.status(500).send(err) });
+	}else{
+		Style.findAll({
+		  order: [
+		  	'Category Name'
+		  	,[sequelize.cast(sequelize.col('styles.Popularity'), 'integer'), 'ASC']
+		  ]
+		})
+		.map( s => [{name: 'defualt', 'Style Code': s.styleCode, style: s}][0])
+		.then(function (data) { res.json({data: data}) })
+		.catch(function (err) { res.status(500).send(err) });
+	}
+});
+
+app.post('/api/vendor_goods/catalog', cors(corsOptions), function(req, res){
+	if( req.body 
+		&& req.body.name
+		&& req.body.styles
+		&&req.headers.cookie 
+		&& req.headers.cookie.match(/AuthSession=[A-z0-9]+/)
+	){
+		
+		let j = request.jar();
+		var url = 'http://couch:5984/_session';
+		j.setCookie(request.cookie(req.headers.cookie.match(/AuthSession=[A-z0-9]+/)[0]), url);
+		
+		request({url: url, jar: j}, function (error, response, body) {
+		  if(error){
+		  	res.status(500).json({error: error});
+		  }else{
+		  	body = JSON.parse(body);
+			  if(body["userCtx"]["name"] != '' 
+			  	&& body["userCtx"]["roles"] 
+			  	&& body["userCtx"]["roles"].includes("_admin")
+			  ){
+			  	for(let style of req.body.styles){
+						Catalog.create({
+							name: req.body.name,
+							'Style Code': style
+						});
+					}
+			  	res.json({ok: true});
+			  }else{
+			  	res.status(500).json({error: true});
+			  }
+		  }
+		});
+	}else{
+		res.status(500).json({error: true});
+	}
 });
 
 
@@ -131,4 +286,3 @@ app.get('/*', function(req, res) {
 
 //boot.
 app.listen(process.env.ADMIN_PORT || 8091);
-console.log('listening on http://localhost:',process.env.ADMIN_PORT || 8091);
