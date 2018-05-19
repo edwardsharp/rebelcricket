@@ -26,14 +26,8 @@ export class VendorGoodsService {
     return this.httpClient.get(`${environment.api_host}${this.styleUrl}${categoryName}`);
   }
 
-  getItems(styleCode:string){
-    this.httpClient.get(`${environment.api_host}${this.styleUrl}${styleCode}`)
-      .subscribe( data => {
-        console.log('get',`${environment.api_host}${this.styleUrl}${styleCode}`,' response data:',data["data"]);
-        return data["data"];
-      }, err => {
-        console.log('get',`${environment.api_host}${this.styleUrl}${styleCode}`,' ERR:',err);
-      });
+  getItems(styleNumber:string): Observable<object>{
+    return this.httpClient.get(`${environment.api_host}${this.itemsUrl}${styleNumber}`)
   }
 
 }

@@ -143,10 +143,10 @@ app.get('/api/vendor_goods/style/:categoryName', cors(corsOptions), function (re
 	.catch(function (err) { res.status(500).send(err) });
 });
 
-app.get('/api/vendor_goods/items/:styleCode', cors(corsOptions), function (req, res){
+app.get('/api/vendor_goods/items/:styleNumber', cors(corsOptions), function (req, res){
 	Item.findAll({
 	  where: {
-	    styleCode: req.params['styleCode']
+	    styleNumber: req.params['styleNumber']
 	  }
 	})
 	.then(function (data) { res.json({data: data}) })

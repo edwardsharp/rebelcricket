@@ -26,23 +26,23 @@
 
     </div>
 
-    <div *ngFor="let item of vendorItem.colors">
-      <div *ngIf="flattenColorName(item.color)" class="row">
+    <div *ngFor="let item of colors">
+      <div class="row">
         <!-- (click)="item.selected = !item.selected" -->
         <mat-checkbox [checked]="item.selected" tabindex="-1" (change)="itemSelectedChange($event, item)">
           <div class="color-img" 
-            [style.background-color]="'none'"
-            [style.background-image]="'url(' + backgroundImgFor(vendorItem.href_items,item.color) + ')'">
+            [style.background-color]="item.hexCode" >
             <div class="subtitle">
-                {{flattenColorName(item.color)}}
+              
+                {{item.name}}
             </div>
           </div>
         </mat-checkbox>
         <div class="flexfill">
           <span class="color-price center" *ngFor="let sizePrices of item.size_prices">
             
-            {{sizePrices[0]}}<br>
-            {{flattenSizePrice(sizePrices[1])}}
+            {{sizePrices.sizeName}}<br>
+            ${{sizePrices.retailPrice}}
           </span>
         </div>
       </div>

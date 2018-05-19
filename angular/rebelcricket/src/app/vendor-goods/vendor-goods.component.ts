@@ -121,7 +121,7 @@ export class VendorGoodsComponent implements OnInit {
 
   vendorGoodsForStyle(category:string): Array<VendorGoodStyle>{
     // return this.vendorGoodsService.getStyle(category);
-    console.log('vendorGoodsForStyle',category,' ret:',this.vendorGoodsStyles);
+    // console.log('vendorGoodsForStyle',category,' ret:',this.vendorGoodsStyles);
     return this.vendorGoodsStyles.filter(g => g.categoryName == category);
   }
 
