@@ -470,8 +470,8 @@ export class OrderDetailComponent implements OnInit, OnDestroy  {
 
     sel_item.price_total = sel_item.size_prices.reduce( (sum, value) => {
       if( !isNaN(parseInt(value.quantity))
-        && !isNaN(parseFloat(value.price.replace(/\$/,'').trim())) ){
-        return (sum + (parseFloat(value.price.replace(/\$/,'').trim()) * parseInt(value.quantity)));
+        && !isNaN(parseFloat(value.retailPrice.replace(/\$/,'').trim())) ){
+        return (sum + (parseFloat(value.retailPrice.replace(/\$/,'').trim()) * parseInt(value.quantity)));
       }else{
         return sum;
       }

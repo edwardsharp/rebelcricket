@@ -100,7 +100,7 @@
   		<div *ngFor="let vendor_good of line_item.vendor_goods">
   			<div style="display:flex;align-items:center;text-align:center;">
 	  			
-	  			<span class="flexfill">{{vendor_good.vendor_title}}
+	  			<span class="flexfill">{{vendor_good.vendor_category}} {{vendor_good.vendor_title}} {{vendor_good.vendor_prod_id}}
 	  				<button mat-icon-button class="hover-item" matTooltip="Remove {{vendor_good.vendor_title}}" 
 		  				(click)="deleteVendorGoodItem(line_item.vendor_goods,vendor_good,line_item)">
 		  				<mat-icon>delete</mat-icon>
@@ -110,12 +110,12 @@
 	  		</div>
 
   			<div *ngFor="let sel_item of vendor_good.selected_items">
-  				color: {{sel_item.color}}
+  				color: {{sel_item.name}}
 					
 					<div class="color-qty">
-  					<mat-form-field class="quantity" *ngFor="let size_price of sel_item.size_prices" matTooltip="Enter Quantity for {{size_price.size}}">
-					    <input matInput [(ngModel)]="size_price.quantity" (change)="sizeQtyChanged(sel_item, line_item)" placeholder="{{size_price.size}}" type="number">
-					    {{size_price.price}}
+  					<mat-form-field class="quantity" *ngFor="let size_price of sel_item.size_prices" matTooltip="Enter Quantity for {{size_price.sizeName}}">
+					    <input matInput [(ngModel)]="size_price.quantity" (change)="sizeQtyChanged(sel_item, line_item)" placeholder="{{size_price.sizeName}}" type="number">
+					    <small>{{size_price.retailPrice}}</small>
 					  </mat-form-field>
 
 					  <mat-form-field class="total">
@@ -123,7 +123,7 @@
 					    ${{sel_item?.price_total?.toFixed(2)}}
 					  </mat-form-field>
 
-					  <button mat-icon-button class="hover-item" matTooltip="Remove {{sel_item.color}}" 
+					  <button mat-icon-button class="hover-item" matTooltip="Remove {{sel_item.name}}" 
 					  	(click)="deleteVendorGoodItem(vendor_good.selected_items,sel_item,line_item)">
 					  	<mat-icon>clear</mat-icon></button>
 	  			</div>
