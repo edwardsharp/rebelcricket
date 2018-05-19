@@ -71,14 +71,12 @@ export class SettingsComponent implements OnInit {
   getSettings(): void {
     this.settingsService.getSettings().then(settings => {
       this.settings = settings;
-
       //sort of a migrationz/init thing, here...
       this.settings.order_statuses = this.settings.order_statuses || [];
       this.settings.services = this.settings.services || [];
       this.settings.about_page_items = this.settings.about_page_items || [];
       this.settings.landing_page_items = this.settings.landing_page_items || [];
       this.settings.landing_page_social_items = this.settings.landing_page_social_items || [];
-      this.visible = true;
     }, err => {
       console.log('o noz! settingsService.getSettings() err:',err);
     });

@@ -44,7 +44,7 @@ import { OrderService } from '../orders/order.service';
 	  </mat-list>
   `,
   styles: [
-    ':host{display:flex; flex-direction:column; justify-content:center; width:75vw; margin:auto; margin-top:4em;}',
+    ':host{display:flex; flex-direction:column; justify-content:center; width:75vw; margin:auto; padding-top:4em;}',
     'mat-list{margin-top: 2em}',
     'mat-list-item:hover{background-color:#e6e6e6}',
     '.item{margin-right: 2em}'

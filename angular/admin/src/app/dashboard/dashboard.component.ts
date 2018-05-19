@@ -203,7 +203,8 @@ export class DashboardComponent implements OnInit, OnDestroy {
   }
 
   moveToNextStatus(order:Order): void{
-    const _status = this.settings.order_statuses.find( s => s.name == (order.status == 'new' ? 'Inbox' : order.status));
+    let _status = this.settings.order_statuses.find( s => s.name == order.status);
+    _status = _status || this.settings.order_statuses[0];
     const _nextStatus = this.settings.order_statuses.find( s => s.position == _status.position + 1 );
     if(_nextStatus && _nextStatus.name){
       console.log('[dashboard.component] moveToNextStatus _nextStatus.name',_nextStatus.name);

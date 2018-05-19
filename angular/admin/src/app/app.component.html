@@ -1,5 +1,32 @@
 <!-- <app-search-box class="search-container" #searchBox (onSearch)="doSearch($event)" (onFocus)="doSearch($event)" [hidden]="searchHidden"></app-search-box>
  -->
-<div class="main-content">
+<!-- <div class="main-content">
   <router-outlet></router-outlet>
 </div>
+
+
+ -->
+
+
+<mat-sidenav-container>
+  <mat-sidenav 
+    #sidenav 
+    mode="push" 
+    opened="false"
+    class="dashboard-sidenav">
+
+    <app-sidebar (sidenavEvent)="sidenav.close()"></app-sidebar>
+
+  </mat-sidenav>
+
+
+  <button mat-button color="accent" (click)="sidenav.toggle()" id="menu-fab">
+    <mat-icon class="mat-24">menu</mat-icon>
+  </button>
+
+
+  <div id="main-content">
+    <router-outlet></router-outlet>
+  </div>
+
+</mat-sidenav-container>

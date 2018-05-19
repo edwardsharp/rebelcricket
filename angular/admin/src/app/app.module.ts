@@ -15,6 +15,7 @@ import { AppMaterialModule } from './app-material.module';
 import { OrderService } from './orders/order.service';
 import { VendorGoodsService } from './vendor-goods/vendor-goods.service';
 import { AppComponent } from './app.component';
+import { SidebarComponent } from './sidebar/sidebar.component';
 import { OrdersComponent } from './orders/orders.component';
 import { OrderDetailComponent } from './order-detail/order-detail.component';
 import { OrderTagsComponent } from './orders/order-tags.component';
@@ -148,6 +149,7 @@ const appRoutes: Routes = [
 @NgModule({
   declarations: [
     AppComponent,
+    SidebarComponent,
     OrdersComponent,
     OrderDetailComponent,
     OrderTagsComponent,
