@@ -19,7 +19,7 @@ psql -v ON_ERROR_STOP=1 --username "$POSTGRES_USER" <<-EOSQL
       "Style Code" text,
       "Size Name" text,
       "Size Category" text,
-      "Size Code" text,
+      "Size Code" text PRIMARY KEY,
       "Color Name" text,
       "Hex Code" text,
       "Color Code" text,
@@ -45,7 +45,7 @@ psql -v ON_ERROR_STOP=1 --username "$POSTGRES_USER" <<-EOSQL
     );
     CREATE TABLE "public"."styles" (
       "Company" text,
-      "Style Code" text,
+      "Style Code" text PRIMARY KEY,
       "Description" text,
       "Features" text,
       "Domain" text,

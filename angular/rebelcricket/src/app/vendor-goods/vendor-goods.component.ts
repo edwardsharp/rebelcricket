@@ -40,12 +40,11 @@ export class VendorGoodsComponent implements OnInit {
   ) { }
   
   ngOnInit(): void {
-    this.getCategories();
-
     this.route.paramMap
       .switchMap((params: ParamMap) => {
         this.catalog = params.get('catalog') || 'default';
         console.log('CATALOG:',this.catalog);
+        this.getCategories();
         this.line_item_id = params.get('line_item_id');
         if(params.get('order_id') && params.get('order_id') != ''){
           return this.orderService.getOrder( params.get('order_id') );
@@ -70,7 +69,7 @@ export class VendorGoodsComponent implements OnInit {
 
     if(this.vendorGoodsIndexLoaded.indexOf(category) == -1){
       this.vendorGoodsIndexLoaded.push(category)
-      this.vendorGoodsService.getStyle(category).subscribe( data => {
+      this.vendorGoodsService.getStyle(this.catalog, category).subscribe( data => {
         this.vendorGoodsStyles = this.vendorGoodsStyles.concat(data["data"]);
       }, err => {
         console.log('getStyle ERR:',err);
@@ -80,8 +79,8 @@ export class VendorGoodsComponent implements OnInit {
 
 
   getCategories(){
-     this.vendorGoodsService.getStyles().subscribe( data => {
-        console.log('getStyles response data:',data);
+     this.vendorGoodsService.getStyles(this.catalog).subscribe( data => {
+        console.log('getStyles for cat:',this.catalog,' response data:',data);
         // return data["data"];
         this.vendorGoodsCategories = data["data"];
         this.loading = false;
@@ -100,7 +99,7 @@ export class VendorGoodsComponent implements OnInit {
 
   date: Date;
   destination: string;
-  
+
   openDialog(data:any,order:Order): void {
     // console.log('openDialog data:',data);
     if(order && order._id){

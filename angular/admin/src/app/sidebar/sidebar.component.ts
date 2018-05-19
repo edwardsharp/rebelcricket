@@ -30,7 +30,6 @@ export class SidebarComponent implements OnInit {
     {'name': 'New Order','href': '/dashboard/order/new'},
     {'name': 'Uploads','href': '/dashboard/uploads'},
     {'name': 'Vendor Goods','href': '/vendor_goods'},
-    {'name': 'Vendor Goods Import', 'href': '/dashboard/vendor_goods_import'},
     {'name': 'Settings','href': '/dashboard/settings'}
   ];
 

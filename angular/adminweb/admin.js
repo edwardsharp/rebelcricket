@@ -108,39 +108,104 @@ const Item = sequelize.define('items', {
 });
 // Item.sync();
 
-// Style.findOne().then(style => {
-//   console.log('a style:',JSON.stringify(style));
-// });
+const Catalog = sequelize.define('catalogs', {
+  name: { type: Sequelize.STRING },
+  'Style Code': {
+   type: Sequelize.STRING,
+   references: {
+     model: Style,
+     key: 'Style Code'
+   }
+ }
+});
+// Catalog.hasOne(Style); //, {foreignKey: 'Style Code'} 
+Catalog.belongsTo(Style, {foreignKey: 'Style Code'}); //
+Catalog.sync()
 
-app.get('/api/vendor_goods/styles', cors(corsOptions), function (req, res){
-  //Style.count({distinct: 'categoryName'})
-  // Style.aggregate('Category Name', 'DISTINCT', { plain: false })
-	// .map(function (row) { return row.DISTINCT })
-	Style.findAndCountAll({
-	  attributes: [
-	    'categoryName'
-	  ],
-	  group: 'Category Name'
-	})
-	.then(function (data) { 
-		res.json({
-			data: data.count
-				.map(function(v,i) {return {categoryName: data.rows[i]["categoryName"], count: v["count"] } })
-				
-		}) 
-	})
-	.catch(function (err) { res.status(500).send(err) });
+
+app.get('/api/vendor_goods/styles/:catalog', cors(corsOptions), function (req, res){
+	if(req.params['catalog'] && req.params['catalog'] != 'default'){
+		Catalog.findAll({
+			where: {
+				name: req.params['catalog']
+			}
+		})
+		.then(function (catalogz) { 
+			Style.findAndCountAll({
+				where: {
+					'Style Code': {
+						[Sequelize.Op.in]: catalogz.map( c => c['Style Code'])
+					}
+				},
+			  attributes: [
+			    'categoryName'
+			  ],
+			  group: 'Category Name'
+			})
+			.then(function (data) { 
+				res.json({
+					data: data.count
+						.map(function(v,i) {return {categoryName: data.rows[i]["categoryName"], count: v["count"] } })
+						
+				}); 
+			})
+			.catch(function (err) { 
+				console.log('style err:',err);
+				res.status(500).send(err) });
+
+		})
+		.catch(function (err) { console.log('catalog err:',err);res.status(500).send(err) });
+	}else{
+		Style.findAndCountAll({
+		  attributes: [
+		    'categoryName'
+		  ],
+		  group: 'Category Name'
+		})
+		.then(function (data) { 
+			res.json({
+				data: data.count
+					.map(function(v,i) {return {categoryName: data.rows[i]["categoryName"], count: v["count"] } })
+					
+			}) 
+		})
+		.catch(function (err) { res.status(500).send(err) });
+	}
 });
 
-app.get('/api/vendor_goods/style/:categoryName', cors(corsOptions), function (req, res){
-	Style.findAll({
-	  where: {
-	    categoryName: req.params['categoryName']
-	  },
-	  order: [[sequelize.cast(sequelize.col('styles.Popularity'), 'integer'), 'ASC']]
-	})
-	.then(function (data) { res.json({data: data}) })
-	.catch(function (err) { res.status(500).send(err) });
+app.get('/api/vendor_goods/style/:catalog/:categoryName', cors(corsOptions), function (req, res){
+	if(req.params['catalog'] != 'default'){
+		Catalog.findAll({
+				where: {
+					name: req.params['catalog']
+				}
+			})
+			.then(function (catalogz) { 
+				console.log('catalogz:',catalogz.map( c => c['Style Code']));
+				Style.findAll({
+					where: {
+						'Style Code': {
+							[Sequelize.Op.in]: catalogz.map( c => c['Style Code'])
+						},
+						categoryName: req.params['categoryName']
+					},
+				  order: [[sequelize.cast(sequelize.col('styles.Popularity'), 'integer'), 'ASC']]
+				})
+				.then(function (data) { res.json({data: data}) })
+				.catch(function (err) { res.status(500).send(err) });
+
+			})
+			.catch(function (err) { console.log('catalog err:',err);res.status(500).send(err) });
+	}else{
+		Style.findAll({
+		  where: {
+		    categoryName: req.params['categoryName']
+		  },
+		  order: [[sequelize.cast(sequelize.col('styles.Popularity'), 'integer'), 'ASC']]
+		})
+		.then(function (data) { res.json({data: data}) })
+		.catch(function (err) { res.status(500).send(err) });
+	}
 });
 
 app.get('/api/vendor_goods/items/:styleNumber', cors(corsOptions), function (req, res){
@@ -151,6 +216,88 @@ app.get('/api/vendor_goods/items/:styleNumber', cors(corsOptions), function (req
 	})
 	.then(function (data) { res.json({data: data}) })
 	.catch(function (err) { res.status(500).send(err) });
+});
+
+
+app.get('/api/vendor_goods/catalogs', cors(corsOptions), function(req, res){
+	Catalog.findAll({
+		attributes: [
+	    'name'
+	  ],
+	  group: 'name'
+	})
+	.then(function (data) { res.json({data: data}) })
+	.catch(function (err) { res.status(500).send(err) });
+});
+
+app.get('/api/vendor_goods/catalog/:name', cors(corsOptions), function(req, res){
+	if(req.params['name'] && req.params['name'] != 'default'){
+		Catalog.findAll({
+			where: {
+				name: req.params['name']
+			},
+			include: [
+		    { model: Style }
+		  ]
+		})
+		.then(function (data) { res.json({data: data}) })
+		.catch(function (err) { res.status(500).send(err) });
+	}else{
+		Style.findAll({
+		  order: [
+		  	'Category Name'
+		  	,[sequelize.cast(sequelize.col('styles.Popularity'), 'integer'), 'ASC']
+		  ]
+		})
+		.map( s => [{name: 'defualt', 'Style Code': s.styleCode, style: s}][0])
+		.then(function (data) { res.json({data: data}) })
+		.catch(function (err) { res.status(500).send(err) });
+	}
+});
+
+app.post('/api/vendor_goods/catalog', cors(corsOptions), function(req, res){
+	if( req.body 
+		&& req.body.name
+		&& req.body.styles
+		&&req.headers.cookie 
+		&& req.headers.cookie.match(/AuthSession=[A-z0-9]+/)
+	){
+		console.log('req cookie:',req.headers.cookie.match(/AuthSession=[A-z0-9]+/)[0]);
+		
+		let j = request.jar();
+		var url = 'http://localhost:5984/_session';
+		j.setCookie(request.cookie(req.headers.cookie.match(/AuthSession=[A-z0-9]+/)[0]), url);
+		
+		request({url: url, jar: j}, function (error, response, body) {
+		  if(error){
+		  	console.log('error:', error); // Print the error if one occurred
+		  	res.status(500);
+		  }else{
+		  	body = JSON.parse(body);
+			  console.log('statusCode:', response && response.statusCode); // Print the response status code if a response was received
+			  console.log('body:', body); // Print the HTML for the Google homepage.
+			  if(body["userCtx"]["name"] != '' 
+			  	&& body["userCtx"]["roles"] 
+			  	&& body["userCtx"]["roles"].includes("_admin")
+			  ){
+			  	console.log('neat, admin user... do admin stuff now...');
+
+			  	for(let style of req.body.styles){
+						Catalog.create({
+							name: req.body.name,
+							'Style Code': style
+						});
+					}
+
+			  	res.status(200);
+			  }else{
+			  	res.status(500);
+			  }
+		  }
+		});
+	}else{
+		res.status(500);
+	}
 });
 
 

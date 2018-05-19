@@ -9,6 +9,7 @@ import { Observable } from 'rxjs/Observable';
 import { SettingsService } from './settings.service';
 import { Settings, PrivateSettings, OrderStatus, Service } from './settings';
 import { OrderField, OrderFieldType } from '../orders/order';
+import { VendorGoodsService } from '../vendor-goods/vendor-goods.service';
 
 const COMMA = 188;
 const ENTER = 13;
@@ -42,16 +43,29 @@ export class SettingsComponent implements OnInit {
   @ViewChild('serviceDetailImage') serviceDetailImage:ElementRef;
   serviceDetailImageUploading: boolean;
   
+  showGoogle: boolean;
+  catalogs: Array<any>;
+  selectedCatalog: any;
+  catalogItems: Array<any>;
+
+  checkedStyleCodes: Array<any>;
+  loadingVendorGoods: boolean;
   constructor(
     private settingsService: SettingsService,
     private snackBar: MatSnackBar,
-    private sanitizer: DomSanitizer
+    private sanitizer: DomSanitizer,
+    private vendorGoodsService: VendorGoodsService
   ) { }
  
   ngOnInit() {
     this.getSettings();
     this.getPrivateSettings();
     this.setGridCols();
+    this.vendorGoodsService.getCatalogs()
+    .subscribe(data => {
+      console.log('vendorGoodsService.getCatalogs data:',data);
+      this.catalogs = data["data"];
+    });
 
     Observable.fromEvent(window, 'resize')
       .debounceTime(500)
@@ -513,6 +527,56 @@ export class SettingsComponent implements OnInit {
   onOrderStatusChange(){
     this.settings.order_statuses.map((s,i) => s.position = i );
     this.onChange();
+  }
+
+  addCatalog(){
+    this.loadingVendorGoods = true;
+    console.log('this.selectedCatalog:',this.selectedCatalog);
+    const newIdx = this.catalogs.push({name: 'New Catalog'});
+    this.selectedCatalog = this.catalogs[newIdx -1];
+    console.log('this.selectedCatalog now:',this.selectedCatalog);
+    this.vendorGoodsService.getCatalog('default')
+    .subscribe(data => {
+      console.log('default catalog items:',data);
+      this.catalogItems = data["data"];
+      this.loadingVendorGoods = false;
+    })
+  }
+
+  saveCatalog(){
+    this.vendorGoodsService.postCatalog(this.selectedCatalog.name, this.checkedStyleCodes)
+    .subscribe( data => {
+      console.log('postCatalog data:',data);
+      this.snackBar.open('Catalog Saved!', undefined, {
+        duration: 2000
+      });
+    }, err => {
+      console.log('vendorGoodsService postCatalog ERR:',err);
+    });
+  }
+
+  selectedCatalogChange(){
+    this.loadingVendorGoods = true;
+    this.vendorGoodsService.getCatalog(this.selectedCatalog.name)
+    .subscribe(data => {
+      console.log('getCatalog data:',data);
+      this.catalogItems = data["data"];
+      this.checkedStyleCodes = [];
+      this.loadingVendorGoods = false;
+    })
+  }
+
+  catalogItemChange(event:any, catalogItem:any){
+    console.log('catalogItemChange event:',event.checked,' catalogItem:',catalogItem);
+
+    if(event.checked){
+      this.checkedStyleCodes.push(catalogItem["Style Code"]);
+    }else{
+      let idx = this.checkedStyleCodes.indexOf(catalogItem["Style Code"]);
+      if(idx > -1){
+        this.checkedStyleCodes.splice(idx, 1);
+      }
+    }
   }
 
 }

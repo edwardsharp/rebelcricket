@@ -296,6 +296,9 @@
                 <mat-option value="default">
                   Default
                 </mat-option>
+                <mat-option *ngFor="let catalog of catalogs" [value]="catalog.name">
+                  {{catalog.name}}
+                </mat-option>
               </mat-select>
             </mat-form-field>
             <mat-checkbox *ngIf="selectedService" matTooltip="Toggle notes field"
@@ -588,8 +591,58 @@
     </mat-action-row>
   </mat-expansion-panel>
 
-
   <mat-expansion-panel *ngIf="privatesettings">
+    <mat-expansion-panel-header>
+      <mat-panel-title>
+        Vendor Goods
+      </mat-panel-title>
+      <mat-panel-description>
+        Import &amp; Create Catalogs
+      </mat-panel-description>
+    </mat-expansion-panel-header>
+
+    <div>
+
+      <mat-form-field>
+        <mat-select matInput placeholder="Edit Catalog" name="catalog"
+          [(ngModel)]="selectedCatalog"
+          (change)="selectedCatalogChange()">
+          <mat-option *ngFor="let catalog of catalogs" [value]="catalog">
+            {{catalog.name}}
+          </mat-option>
+        </mat-select>
+      </mat-form-field>
+
+      <div *ngIf="selectedCatalog">
+        <mat-form-field class="halfwidth">
+          <input matInput 
+            [(ngModel)]="selectedCatalog.name" 
+            placeholder="Catalog Name">
+        </mat-form-field>
+
+        <mat-spinner *ngIf="loadingVendorGoods"></mat-spinner>
+        <mat-list>
+          <mat-list-item *ngFor="let item of catalogItems">
+            <mat-checkbox (change)="catalogItemChange($event, item)"> </mat-checkbox>
+            {{item["Style Code"]}} 
+            {{item.style.categoryName}} {{item.style.millName}} {{item.style.description}}
+          </mat-list-item>
+        </mat-list>
+
+      </div>
+    </div>
+    <mat-action-row>
+      <button type="button" mat-button (click)="addCatalog()">
+        <mat-icon>add</mat-icon> Catalog
+      </button>
+      <span class="flexfill"></span>
+      <button type="button" mat-button (click)="saveCatalog()" *ngIf="selectedCatalog">
+        <mat-icon>save</mat-icon> Catalog
+      </button>
+    </mat-action-row>
+  </mat-expansion-panel>
+
+  <mat-expansion-panel *ngIf="privatesettings && showGoogle">
     <mat-expansion-panel-header>
       <mat-panel-title>
         Google
