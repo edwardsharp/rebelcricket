@@ -211,7 +211,7 @@ section h3{
 }
 
 :host(.quote) .sticky-service{
-	top: 0;
+	top: 25px;
 }
 
 
