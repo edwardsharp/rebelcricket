@@ -154,7 +154,7 @@ app.get('/api/vendor_goods/items/:styleNumber', cors(corsOptions), function (req
 });
 
 
-const ngProxy = proxy('http://localhost:4200', {
+const ngProxy = proxy('http://localhost:4201', {
     forwardPath: req => url.parse(req.url).path
 });
 
