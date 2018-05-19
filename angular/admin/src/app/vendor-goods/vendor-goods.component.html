@@ -24,8 +24,8 @@
     </div>
     
     <mat-selection-list #vendorGoodsIndex dense>
-      <mat-list-option *ngFor="let idx of vendorGoodsCategories" (click)="$event.stopPropagation();toggleVendorGoodCategory(idx.name)">
-        <span class="truncate">{{idx.name}} ({{idx.count}})</span>
+      <mat-list-option *ngFor="let idx of vendorGoodsCategories" (click)="$event.stopPropagation();toggleVendorGoodCategory(idx.categoryName)">
+        <span class="truncate">{{idx.categoryName}} ({{idx.count}})</span>
       </mat-list-option>
     </mat-selection-list>
   </mat-menu>
@@ -67,21 +67,19 @@
     <div *ngFor="let item of vendorGoodsIndexSelected">
       <h3 mat-subheader class="sticky center">{{item}}</h3>
       <a name="{{item}}">&nbsp;</a>
-      <div *ngFor="let subGood of vendorGoodsSubCategories(item)">
-        <h3 mat-subheader class="sticky center">{{item}} - {{subGood}}</h3>
-        <a name="{{subGood}}">&nbsp;</a>
-        <mat-list-item 
-          *ngFor="let vendorGood of vendorGoodsForCategory(item,subGood)"
-          (click)="openDialog(vendorGood,order)">
-          <h3 matLine class="truncate" title="{{vendorGood.title}}"> {{vendorGood.title}} <small class="colorCount">({{vendorGood.colors?.length}} Colors)</small></h3>
-   
-          <button type="button" mat-icon-button>
-            <mat-icon>shopping_basket</mat-icon>
-          </button>
-        </mat-list-item>
-        <mat-divider></mat-divider>
 
-      </div>
+      <mat-list-item 
+        *ngFor="let vendorGood of vendorGoodsForStyle(item)"
+        (click)="openDialog(vendorGood,order)">
+        <h3 matLine class="truncate" title="{{vendorGood.description}}">{{vendorGood.millName}} {{vendorGood.description}} <small class="colorCount">({{vendorGood.itemCount}} Items)</small></h3>
+ 
+        <button type="button" mat-icon-button>
+          <mat-icon>shopping_basket</mat-icon>
+        </button>
+      </mat-list-item>
+      <mat-divider></mat-divider>
+
+
     </div>
   </mat-list>
 
