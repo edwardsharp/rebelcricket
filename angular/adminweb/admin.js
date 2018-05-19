@@ -271,7 +271,7 @@ app.post('/api/vendor_goods/catalog', cors(corsOptions), function(req, res){
 		request({url: url, jar: j}, function (error, response, body) {
 		  if(error){
 		  	console.log('error:', error); // Print the error if one occurred
-		  	res.status(500);
+		  	res.status(500).json({error: error});
 		  }else{
 		  	body = JSON.parse(body);
 			  console.log('statusCode:', response && response.statusCode); // Print the response status code if a response was received
@@ -289,14 +289,14 @@ app.post('/api/vendor_goods/catalog', cors(corsOptions), function(req, res){
 						});
 					}
 
-			  	res.status(200);
+			  	res.json({ok: true});
 			  }else{
-			  	res.status(500);
+			  	res.status(500).json({error: true});
 			  }
 		  }
 		});
 	}else{
-		res.status(500);
+		res.status(500).json({error: true});
 	}
 });
 

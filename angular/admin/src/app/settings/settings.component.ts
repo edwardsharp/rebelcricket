@@ -48,8 +48,13 @@ export class SettingsComponent implements OnInit {
   selectedCatalog: any;
   catalogItems: Array<any>;
 
-  checkedStyleCodes: Array<any>;
+  checkedStyleCodes: Array<any> = [];
   loadingVendorGoods: boolean;
+  vendorGoodsCategories: Array<{categoryName:string,count:number}> = [];
+  selectedCategory: string;
+  directInput: boolean;
+  directInputItems: string;
+
   constructor(
     private settingsService: SettingsService,
     private snackBar: MatSnackBar,
@@ -530,20 +535,23 @@ export class SettingsComponent implements OnInit {
   }
 
   addCatalog(){
-    this.loadingVendorGoods = true;
+    // this.loadingVendorGoods = true;
     console.log('this.selectedCatalog:',this.selectedCatalog);
-    const newIdx = this.catalogs.push({name: 'New Catalog'});
+    const newIdx = this.catalogs.push({name: 'New Catalog', new: true});
     this.selectedCatalog = this.catalogs[newIdx -1];
     console.log('this.selectedCatalog now:',this.selectedCatalog);
-    this.vendorGoodsService.getCatalog('default')
-    .subscribe(data => {
-      console.log('default catalog items:',data);
-      this.catalogItems = data["data"];
-      this.loadingVendorGoods = false;
-    })
+    this.catalogItems = [];
+    this.getCategories('default');
+    // this.vendorGoodsService.getCatalog('default')
+    // .subscribe(data => {
+    //   console.log('default catalog items:',data);
+    //   this.catalogItems = data["data"];
+    //   this.loadingVendorGoods = false;
+    // })
   }
 
   saveCatalog(){
+    console.log('gonna save catalog checkedStyleCodes:',this.checkedStyleCodes);
     this.vendorGoodsService.postCatalog(this.selectedCatalog.name, this.checkedStyleCodes)
     .subscribe( data => {
       console.log('postCatalog data:',data);
@@ -557,6 +565,10 @@ export class SettingsComponent implements OnInit {
 
   selectedCatalogChange(){
     this.loadingVendorGoods = true;
+    this.catalogItems = [];
+    this.directInputItems = []
+    this.directInput = false;
+    this.getCategories('default');
     this.vendorGoodsService.getCatalog(this.selectedCatalog.name)
     .subscribe(data => {
       console.log('getCatalog data:',data);
@@ -567,16 +579,46 @@ export class SettingsComponent implements OnInit {
   }
 
   catalogItemChange(event:any, catalogItem:any){
-    console.log('catalogItemChange event:',event.checked,' catalogItem:',catalogItem);
-
+    const styleCode = catalogItem["Style Code"] ? catalogItem["Style Code"] : catalogItem.styleCode;
+    console.log('catalogItemChange event:',event.checked,' styleCode:',styleCode,' catalogItem:',catalogItem);
     if(event.checked){
-      this.checkedStyleCodes.push(catalogItem["Style Code"]);
+      this.checkedStyleCodes.push(styleCode);
     }else{
-      let idx = this.checkedStyleCodes.indexOf(catalogItem["Style Code"]);
+      let idx = this.checkedStyleCodes.indexOf(styleCode);
       if(idx > -1){
         this.checkedStyleCodes.splice(idx, 1);
       }
     }
+    console.log('checkedStyleCodes.len',this.checkedStyleCodes.length,' checkedStyleCodes:',this.checkedStyleCodes);
+  }
+
+  getCategories(catalog:string){
+     this.vendorGoodsService.getStyles(catalog).subscribe( data => {
+        console.log('getStyles for cat: default response data:',data);
+        // return data["data"];
+        this.vendorGoodsCategories = data["data"];
+      }, err => {
+        console.log('getStyles ERR:',err);
+        // return [];
+      });;
+  }
+
+  selectedCategoryChange(){
+    this.loadingVendorGoods = true;
+    //give the select a moment to close...
+    setTimeout( () => {
+      this.vendorGoodsService.getStyle('default', this.selectedCategory)
+      .subscribe(data => {
+        console.log('default catalog items:',data);
+        this.catalogItems = data["data"];
+        this.loadingVendorGoods = false;
+      });
+    },500);
+  }
+
+  directInputChanged(){
+    this.checkedStyleCodes = this.directInputItems.split(',').map(i => i.trim());
+    console.log('directInputChanged checkedStyleCodes',this.checkedStyleCodes);
   }
 
 }

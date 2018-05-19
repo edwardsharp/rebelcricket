@@ -619,13 +619,42 @@
             [(ngModel)]="selectedCatalog.name" 
             placeholder="Catalog Name">
         </mat-form-field>
+        <mat-form-field>
+        <mat-select matInput placeholder="Category" name="category"
+          [(ngModel)]="selectedCategory"
+          (change)="selectedCategoryChange()">
+            <mat-option *ngFor="let item of vendorGoodsCategories" [value]="item.categoryName">
+              {{item.categoryName}} {{item.count}}
+            </mat-option>
+          </mat-select>
+        </mat-form-field>
+
+        <mat-checkbox (change)="directInput = $event.checked" [(checked)]="directInput">Direct Input</mat-checkbox>
+        <div *ngIf="directInput">
+          <mat-form-field>
+            <textarea matInput 
+              matAutosizeMinRows="4"
+              rows="4"
+              [(ngModel)]="directInputItems" 
+              (change)="directInputChanged()"
+              placeholder="Style Codes"></textarea>
+              <small>Add a comma seperated list of style codes here.</small>
+          </mat-form-field>
+        </div>
+
 
         <mat-spinner *ngIf="loadingVendorGoods"></mat-spinner>
         <mat-list>
           <mat-list-item *ngFor="let item of catalogItems">
             <mat-checkbox (change)="catalogItemChange($event, item)"> </mat-checkbox>
-            {{item["Style Code"]}} 
-            {{item.style.categoryName}} {{item.style.millName}} {{item.style.description}}
+            <span *ngIf="item.style">
+              {{item["Style Code"]}} 
+              {{item.style.categoryName}} {{item.style.millName}} {{item.style.description}}
+            </span>
+            <span *ngIf="!item.style">
+              {{item["styleCode"]}} 
+              {{item.categoryName}} {{item.millName}} {{item.description}}
+            </span>
           </mat-list-item>
         </mat-list>
 
