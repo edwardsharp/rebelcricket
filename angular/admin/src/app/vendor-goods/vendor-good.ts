@@ -1,3 +1,6 @@
+export class VendorGood{
+  ///just a stubbbb
+}
 export class VendorGoodStyle {
   company: string;
   styleCode: string;

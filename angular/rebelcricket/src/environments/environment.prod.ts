@@ -3,5 +3,5 @@ export const environment = {
   admin_party: false, // Admin Party! 🎉
  	couch_host: `https://couch.rebelcricket.com`,
   couch_path: '',
-  api_host: ''
+  api_host: 'https://admin.rebelcricket.com'
 };

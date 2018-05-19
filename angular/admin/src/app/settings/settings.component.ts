@@ -566,7 +566,7 @@ export class SettingsComponent implements OnInit {
   selectedCatalogChange(){
     this.loadingVendorGoods = true;
     this.catalogItems = [];
-    this.directInputItems = []
+    this.directInputItems = '';
     this.directInput = false;
     this.getCategories('default');
     this.vendorGoodsService.getCatalog(this.selectedCatalog.name)

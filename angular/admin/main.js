@@ -112,10 +112,6 @@ const template = [
         click() {mainWindow.webContents.send('viewMenu', '/vendor_goods');}
       },
       {
-        label: 'Vendor Goods Import',
-        click() {mainWindow.webContents.send('viewMenu', '/dashboard/vendor_goods_import');}
-      },
-      {
         label: 'Settings',
         click() {mainWindow.webContents.send('viewMenu', '/dashboard/settings');},
         accelerator: "CmdOrCtrl+,"

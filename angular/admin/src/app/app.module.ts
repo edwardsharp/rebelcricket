@@ -22,7 +22,6 @@ import { OrderTagsComponent } from './orders/order-tags.component';
 import { DashboardComponent } from './dashboard/dashboard.component';
 import { VendorGoodsComponent } from './vendor-goods/vendor-goods.component';
 import { VendorGoodsDialogComponent } from './vendor-goods/vendor-goods-dialog.component';
-import { VendorGoodsImportComponent } from './vendor-goods-import/vendor-goods-import.component';
 import { GsheetService } from './gsheet.service';
 import { SearchBoxComponent } from './search/search-box.component';
 import { SettingsComponent } from './settings/settings.component';
@@ -109,11 +108,6 @@ const appRoutes: Routes = [
     canActivate: [AuthGuard]
   },
   {
-    path: 'dashboard/vendor_goods_import',
-    component: VendorGoodsImportComponent,
-    canActivate: [AuthGuard]
-  },
-  {
     path: 'dashboard/settings',
     component: SettingsComponent,
     canActivate: [AuthGuard]
@@ -156,7 +150,6 @@ const appRoutes: Routes = [
     DashboardComponent,
     VendorGoodsComponent,
     VendorGoodsDialogComponent,
-    VendorGoodsImportComponent,
     SearchBoxComponent,
     SettingsComponent,
     GfxComponent,
