@@ -560,7 +560,7 @@
 	   	<h3>Order Statuses</h3>
 
       <mat-list dnd-sortable-container [sortableData]="settings.order_statuses">
-        <mat-list-item class="sortable-item" (onDropSuccess)="onChange()"
+        <mat-list-item class="sortable-item" (onDropSuccess)="onOrderStatusChange()"
           *ngFor="let item of settings.order_statuses; let i = index" dnd-sortable [sortableIndex]="i">
           <mat-icon matTooltip="Drag to sort">drag_handle</mat-icon>
           {{item.name}}
@@ -568,13 +568,15 @@
         </mat-list-item>
       </mat-list>
 
-	    <mat-form-field class="demo-chip-list fullwidth">
-	      <input matInput placeholder="New status..."
-	             [matChipInputFor]="chipList"
-	             [matChipInputSeparatorKeyCodes]="separatorKeysCodes"
-	             [matChipInputAddOnBlur]="addOnBlur"
-	             (matChipInputTokenEnd)="addStatus($event)" />
-	    </mat-form-field>
+      <div class="inline-flex">
+  	    <mat-form-field>
+  	      <input matInput placeholder="New status..." 
+          [(ngModel)]="newStatusName" (keyup.enter)="addStatus()" />
+  	    </mat-form-field>
+        <button mat-button (click)="addStatus()">
+          <mat-icon>add</mat-icon> Status
+        </button>
+      </div>
 
 		</div>
 

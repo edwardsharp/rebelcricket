@@ -122,28 +122,19 @@ export class SettingsComponent implements OnInit {
     });
   }
 
-  //chip input for tagz
-  visible: boolean = false;
-  selectable: boolean = true;
-  removable: boolean = true;
-  addOnBlur: boolean = true;
-  separatorKeysCodes = [ENTER, COMMA];
-  addStatus(event: MatChipInputEvent): void {
-    let input = event.input;
-    let value = event.value;
-    if ((value || '').trim()) {
-      this.disableSave = false;
-      this.settings.order_statuses.push(new OrderStatus(value.trim(), this.settings.order_statuses.length));
-    }
-    if (input) {
-      input.value = '';
+  newStatusName: string;
+  addStatus(): void{
+    if(this.newStatusName && this.newStatusName != ''){
+      this.settings.order_statuses.push(new OrderStatus(this.newStatusName.trim(), this.settings.order_statuses.length));
+      this.onOrderStatusChange();
+      this.newStatusName = '';
     }
   }
   removeStatus(status: any): void {
     let index = this.settings.order_statuses.indexOf(status);
     if (index >= 0) {
-      this.disableSave = false;
       this.settings.order_statuses.splice(index, 1);
+      this.onOrderStatusChange();
     }
   }
 
@@ -519,6 +510,11 @@ export class SettingsComponent implements OnInit {
     }catch(err){
       console.log('removeAttachment err:',err);
     }
+  }
+
+  onOrderStatusChange(){
+    this.settings.order_statuses.map((s,i) => s.position = i );
+    this.onChange();
   }
 
 }
