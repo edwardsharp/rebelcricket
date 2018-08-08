@@ -34,7 +34,7 @@
 
   <app-services></app-services>
 
-  <div id="price-quote-container">
+  <div id="price-quote-container" *ngIf="settings">
     <button mat-button class="price-quote" (click)="router.navigate(['/quote'])">
       Price Quote
     </button>

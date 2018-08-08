@@ -16,6 +16,7 @@ import { SettingsService } from '../settings/settings.service';
 export class ServicesComponent implements OnInit {
 
   service: Service;
+  services: Array<Service> = [];
   settings: Settings;
   gridCols: number;
   serviceImageItems: Array<any> = [];
@@ -37,6 +38,7 @@ export class ServicesComponent implements OnInit {
     this.settingsService.getSettings()
       .then( (settings: Settings) => {
         this.settings = settings;
+        this.initServices();
       });
 
     // this.route.paramMap
@@ -60,8 +62,8 @@ export class ServicesComponent implements OnInit {
     }
   }
 
-  publicServices(){
-    return this.settings.services.filter( service => { return !service.internal });
+  initServices(){
+    this.services = this.settings.services.filter( service => { return !service.internal });
   }
 
   serviceImageAttachmentSrc(service){

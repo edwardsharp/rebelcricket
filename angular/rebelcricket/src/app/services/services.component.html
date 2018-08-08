@@ -1,10 +1,10 @@
-<div id="services-wrapper">
+<div id="services-wrapper" *ngIf="services && services.length">
   <div *ngIf="!service && settings" id="services">
     <h1 *ngIf="settings.service_heading && settings.service_heading.length > 0" class="services-heading">
       {{settings.service_heading}}
     </h1>
     <mat-grid-list cols="{{gridCols}}" rowHeight="1:1" gutterSize="1em">
-      <mat-grid-tile *ngFor="let serviceItem of publicServices()" (click)="serviceSelected(serviceItem)">
+      <mat-grid-tile *ngFor="let serviceItem of services" (click)="serviceSelected(serviceItem)">
         <mat-grid-tile-header>
           <h1>{{serviceItem.name}}</h1>
         </mat-grid-tile-header>

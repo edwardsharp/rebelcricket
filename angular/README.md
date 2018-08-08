@@ -56,6 +56,9 @@ dev:
 -or-  
 `docker run -p 8080:80 -e NO_SSL=true -e COUCHDB_USER=rebelcricket-admin -e COUCHDB_PASSWORD=zomgzomg -e COUCH_HOST=http://rebelcricket-admin:zomgzomg@localhost:5984 3dwardsharp/rebelcricket`
 
+couchDB  
+`docker-compose up couch`
+
 #### use nginx proxy: 
 
 setup a `.env` file with something like:

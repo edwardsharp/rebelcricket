@@ -2,9 +2,11 @@
   "name": "rebelcricket",
   "version": "0.0.1",
   "license": "GPL-3.0",
+  "author": "edwardsharp",
+  "description": "RebelCricket public website",
   "scripts": {
     "ng": "ng",
-    "start": "node server.js",
+    "start": "ng serve",
     "build": "ng build",
     "test": "ng test",
     "lint": "ng lint",
