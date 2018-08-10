@@ -21,7 +21,7 @@ services:
       - "80:80"
       - "443:443"
     environment:
-      - BASE_SERVER=beta.rebelcricket.com
+      - BASE_SERVER=rebelcricket.com
       - COUCH_SERVER=couch.rebelcricket.com
       - ADMIN_SERVER=admin.rebelcricket.com
     command: /bin/bash -c "cron && envsubst < /etc/nginx/conf.d/nginx.template > /etc/nginx/conf.d/default.conf && nginx -g 'daemon off;'"

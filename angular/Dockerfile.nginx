@@ -11,4 +11,4 @@ RUN echo "0 3 * * * certbot renew --noninteractive --renew-hook \"nginx -s reloa
 
 RUN crontab /etc/cron.d/certbot
 
-#certbot certonly --webroot --agree-tos --no-eff-email --email edward@edwardsharp.net -w /var/www/letsencrypt -d couch.rebelcricket.com -d beta.rebelcricket.com
+#certbot certonly --webroot --agree-tos --no-eff-email --email edward@edwardsharp.net -w /var/www/letsencrypt -d couch.rebelcricket.com -d rebelcricket.com

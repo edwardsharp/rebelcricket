@@ -28,7 +28,7 @@ Build artifacts will be stored in the `dist/` directory.
 ## certbot (letsencrypt)
 
 in 3dwardsharp/nginx-certbot  
-`certbot certonly --webroot --agree-tos --email edward@edwardsharp.net -w /var/www/letsencrypt -d couch.rebelcricket.com -d beta.rebelcricket.com -d admin.rebelcricket.com --dry-run`
+`certbot certonly --webroot --agree-tos --email edward@edwardsharp.net -w /var/www/letsencrypt -d couch.rebelcricket.com -d rebelcricket.com -d admin.rebelcricket.com --dry-run`
 
 note: i had to run the certbot cmd for each domain (-d) individually (seemz to chain the certs into one folder, which doesn't work with the nginx.template config)
 
@@ -70,7 +70,7 @@ COUCHDB_PASSWORD=zomgzomg
 COUCH_HOST=http://admin:zomgzomg@localhost:5984
 MAIL_KEY=key-12345666
 MAIL_DOMAIN=somedomain.mailgun.org
-NG_HOST=http://beta.rebelcricket.com
+NG_HOST=http://rebelcricket.com
 POSTGRES_USER=rebelcricket
 POSTGRES_PASSWORD=passwd
 POSTGRES_DB=rebelcricket
@@ -148,11 +148,11 @@ select distinct "Category Name" from styles;
 ```
 
 ```sh
-psql -h beta.rebelcricket.com -d rebelcricket -U rebelcricket -c \
+psql -h rebelcricket.com -d rebelcricket -U rebelcricket -c \
     "\COPY styles FROM STDIN WITH (FORMAT csv, HEADER, ENCODING 'latin1')" \
     < /Users/edward/Desktop/TRASH/alphabroder/fromweb/styles.csv
 
-psql -h beta.rebelcricket.com -d rebelcricket -U rebelcricket -c \
+psql -h rebelcricket.com -d rebelcricket -U rebelcricket -c \
     "\COPY items FROM STDIN WITH (FORMAT csv, HEADER, ENCODING 'latin1')" \
     < /Users/edward/Desktop/TRASH/alphabroder/fromweb/items_R064.csv
 ```

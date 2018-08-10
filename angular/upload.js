@@ -63,12 +63,8 @@ app.get('/uploads/*', function(req, res) {
 const corsOptions = {
   origin: [ 
     'https://rebelcricket.com',
-    'https://beta.rebelcricket.com', 
-    'http://localhost:4200', 
     'http://localhost:8080', 
-    'http://localhost:8090', 
-    'http://rebel.cricket:8080',
-    'https://pacific-lake-64830.herokuapp.com'],
+    'http://localhost:8090'],
   optionsSuccessStatus: 200 // some legacy browsers (IE11, various SmartTVs) choke on 204
 }
 

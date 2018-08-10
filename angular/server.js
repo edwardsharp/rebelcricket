@@ -55,8 +55,7 @@ app.use(bodyParser.json()); // for parsing application/json
 const corsOptions = {
   origin: [ 
     'http://localhost',
-    'https://rebelcricket.com',
-    'https://beta.rebelcricket.com'],
+    'https://rebelcricket.com'],
   optionsSuccessStatus: 200 // some legacy browsers (IE11, various SmartTVs) choke on 204
 }
 
