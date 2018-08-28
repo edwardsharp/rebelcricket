@@ -87,6 +87,7 @@ export class ServicesComponent implements OnInit {
       this.initCarousel(serviceItem);
     }
     this.service = serviceItem;
+    document.querySelector("#services-wrapper").scrollIntoView();
   }
 
   initCarousel(service) {

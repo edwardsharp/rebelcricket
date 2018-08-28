@@ -76,13 +76,14 @@ img{
 
 .flex-item{
   /*width: 50vw;*/
-  align-self: center;
+  align-self: flex-start;
   text-align: center;
 }
 
 .logo_image{
   height: 250px;
   width: 250px;
+  margin-top: 2em;
 }
 
 .site_description{

@@ -481,7 +481,7 @@ function sendMail(order){
   Graphics:
   {{#attachments}}
     {{#files}}
-      {{name}} {{process.env.NG_HOST}}/uploads/{{thumb}}
+      {{name}} https://rebelcricket.com/uploads/{{thumb}}
     {{/files}}
   {{/attachments}}
 
@@ -494,8 +494,7 @@ function sendMail(order){
 
   var mailOptions = {
     from: 'Rebel Cricket Screen Prints <rebelcricket@gmail.com>',
-    to: order.email,
-    bcc: 'rebelcricket@gmail.com',
+    to: 'rebelcricket@gmail.com',
     subject: `Quote Request ${order.email}`,
     // text: template(order),
     html: template(order)
@@ -507,8 +506,7 @@ function sendMail(order){
    
       var dataToSend = {
           from: 'Rebel Cricket Screen Prints <rebelcricket@gmail.com>',
-          to: order.email,
-          bcc: 'rebelcricket@gmail.com',
+          to: 'rebelcricket@gmail.com',
           subject: `Quote Request ${order.email}`,
           message: message.toString('ascii')
       };

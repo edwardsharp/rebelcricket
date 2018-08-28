@@ -664,9 +664,10 @@ export class QuoteComponent implements OnInit {
         });
       } 
 
-      if(this.currentQuestion.name == 'Service' && this.selectedItem){
-        this.quote.questions.splice(this.quote.spliceIdx, 0, this.serviceQuestion);
-      }
+      // #note might not want to ask the service question again... 
+      // if(this.currentQuestion.name == 'Service' && this.selectedItem){
+      //   this.quote.questions.splice(this.quote.spliceIdx, 0, this.serviceQuestion);
+      // }
 
       if(this.selectMultiple){
         this.inputValue = this.selectedItem.map(i => { return i.value}).join(', ');
