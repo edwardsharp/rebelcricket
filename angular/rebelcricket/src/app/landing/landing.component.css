@@ -139,6 +139,7 @@ img{
   }
   .flex-item{
     /*width: 100vw;*/
+    align-self: center;
   }
   .site_description{
     font-size: 1.5em;

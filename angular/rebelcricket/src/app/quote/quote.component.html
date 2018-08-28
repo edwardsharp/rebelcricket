@@ -58,6 +58,7 @@
           [(ngModel)]="inputValue"
           (keyup.enter)="inputEnter()"
           (change)="quoteChange()"
+          (blur)="inputBlur()"
           [type]="inputType" 
         />
         <mat-error *ngIf="inputHasErrors">

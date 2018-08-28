@@ -610,6 +610,13 @@ export class QuoteComponent implements OnInit {
     }
   }//inputEnter
 
+  inputBlur(){
+    // this is to handle the "Done" button that ios safari puts on the keyboard... 
+    if(navigator.userAgent.match(/(iPod|iPhone|iPad)/) && navigator.userAgent.match(/AppleWebKit/)){
+      this.inputEnter();
+    }
+  }
+
   inputTypeFor(field:OrderField): string{
     switch (field.name) {
       case 'Phone':
