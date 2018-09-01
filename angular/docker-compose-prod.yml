@@ -21,10 +21,10 @@ services:
       - "80:80"
       - "443:443"
     environment:
-      - BASE_SERVER=rebelcricket.com
       - COUCH_SERVER=couch.rebelcricket.com
+      - BASE_SERVER=rebelcricket.com
       - ADMIN_SERVER=admin.rebelcricket.com
-    command: /bin/bash -c "cron && envsubst < /etc/nginx/conf.d/nginx.template > /etc/nginx/conf.d/default.conf && nginx -g 'daemon off;'"
+    command: /bin/bash -c "cron && envsubst '$${COUCH_SERVER},$${BASE_SERVER},$${ADMIN_SERVER}' < /etc/nginx/conf.d/nginx.template > /etc/nginx/conf.d/default.conf && nginx -g 'daemon off;'"
   pg:
     restart: always
     env_file: .env
@@ -34,3 +34,4 @@ services:
     volumes:
       - /home/core/pgdata:/var/lib/postgresql/data
       - ./init-vendorgoods-db.sh:/docker-entrypoint-initdb.d/init-vendorgoods-db.sh
+

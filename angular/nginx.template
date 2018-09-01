@@ -5,6 +5,10 @@ server {
   include /etc/nginx/snippets/letsencrypt.conf;
 
   location / {
+    if ($host ~* www\.(.*)) {
+      set $host_without_www $1;
+      rewrite ^(.*)$ http://$host_without_www$1 permanent;
+    }
     return 301 https://${BASE_SERVER};
   }
 }
